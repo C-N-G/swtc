@@ -1,0 +1,22 @@
+{
+  "name": "swtc",
+  "version": "0.1.0",
+  "description": "Secrets Within the Compound SPA",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/C-N-G/swtc.git"
+  },
+  "keywords": [
+    "game"
+  ],
+  "author": "Cormac Gudge",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/C-N-G/swtc/issues"
+  },
+  "homepage": "https://github.com/C-N-G/swtc#readme"
+}
