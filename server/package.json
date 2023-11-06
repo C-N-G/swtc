@@ -5,7 +5,8 @@
   },
   "dependencies": {
     "nodemon": "^3.0.1",
-    "socket.io": "^4.7.2"
+    "socket.io": "^4.7.2",
+    "sqlite3": "^5.1.6"
   },
   "devDependencies": {
     "eslint": "^8.51.0"
