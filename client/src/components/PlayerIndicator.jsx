@@ -1,11 +1,18 @@
 // import { useState } from 'react'
-import Box from '@mui/material/Box';
+import {styled} from '@mui/material/styles';
+import {Button} from '@mui/material';
 
 function PlayerIndicator() {
 
+  const StyledButton = styled(Button)({
+    width: "15vh",
+    height: "15vh",
+  });
+
   return (
-    <Box sx={{ flexGrow: 1 }}>
-    </Box>
+    <StyledButton variant="contained">
+      PLAYER TEST
+    </StyledButton>
   );
 }
 

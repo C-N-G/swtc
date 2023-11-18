@@ -1,10 +1,11 @@
 // import { useState } from 'react'
-import Box from '@mui/material/Box';
+import {Box, Typography}from '@mui/material';
 
 function Phase() {
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{background: "lightgreen", height: "10vh", width: '80vh', display: "flex", justifyContent: "center", alignItems: "center"}}>
+      <Typography sx={{fontSize: "2rem"}}>Current Phase: Day</Typography>
     </Box>
   );
 }
