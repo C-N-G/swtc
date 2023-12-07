@@ -1,15 +1,20 @@
+25/11/2023 v0.1.1
+- updated player indicator spacing and text
+- added consistent sizing to the dynamic window
+- added voting window
+
 25/11/2023 v0.1.0
 - changed repo licence to cc-by-nc-sa 4.0
 - added detailed player window
- - this window includes controls for:
- - labels
- - notes
- - roles
- - characteristics
- - statues
- - and a dummy talk button
- - this window also displays the player name and player state
- - this window will remember the entered information for each player
+  - this window includes controls for:
+  - labels
+  - notes
+  - roles
+  - characteristics
+  - statues
+  - and a dummy talk button
+  - this window also displays the player name and player state
+  - this window will remember the entered information for each player
 - updated player indicator buttons
 
 18/11/2023 v0.0.2
