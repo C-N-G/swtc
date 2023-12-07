@@ -1,12 +1,18 @@
-// import { useState } from 'react'
-import {Box, Typography}from '@mui/material';
+import {Card, Typography}from '@mui/material';
 
-function Phase() {
+function Phase({phase}) {
 
   return (
-    <Box sx={{background: "lightgreen", height: "10vh", width: '80vh', display: "flex", justifyContent: "center", alignItems: "center"}}>
-      <Typography sx={{fontSize: "2rem"}}>Current Phase: Day</Typography>
-    </Box>
+    <Card sx={{
+      background: "lightgreen", 
+      height: "10vh", 
+      flexGrow: 1,
+      display: "flex", 
+      justifyContent: "center",
+      alignItems: "center",
+    }}>
+      <Typography variant="h4">Current Phase: {phase === 0 ? "Day" : "Night"}</Typography>
+    </Card>
   );
 }
 

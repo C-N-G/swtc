@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {Box, Stack} from '@mui/material';
+import {Card, Stack} from '@mui/material';
 import PlayerIndicator from "./PlayerIndicator.jsx";
 import DynamicWindow from "./DynamicWindow.jsx";
 import PlayerDetails from "./PlayerDetails.jsx";
@@ -25,48 +25,38 @@ const BOARD_CONFIG = [
   [5,3,5], // 16
 ]
 
-const somePlayers = [];
+function Board({players, setPlayers, playerNum, display, setDisplay}) {
 
-for (let i = 0; i < 16; i++) {
-  somePlayers.push({
-    id: i,
-    name: "Player " + i,
-    state: 1,
-    label: "",
-    role: "",
-    characteristic: "",
-    status: "",
-    notes: ""
-  });
-}
-
-function Board({playerNum, showVote}) {
-
-
-  const [players, setPlayers] = useState(somePlayers);
   const [selected, setSelected] = useState(undefined);
-  const [display, setDisplay] = useState(false);
 
   let topNum = BOARD_CONFIG[playerNum][0];
   let sideNum = BOARD_CONFIG[playerNum][1];
   let botNum = BOARD_CONFIG[playerNum][2];
 
+  const createIndicator = (player, index, vertical) => {
+    return (<PlayerIndicator key={index} 
+    id={player.id} 
+    name={player.name} 
+    label={player.label} 
+    handleClick={handlePlayerIndicatorClick}
+    vertical={vertical} />)
+  }
+
   const top = players.slice(0, topNum).map((player, index) => (
-    <PlayerIndicator key={index} id={player.id} name={player.name} label={player.label} handleClick={handlePlayerIndicatorClick} /> 
+    createIndicator(player, index, false)
   ));
 
   const leftside = players.slice(topNum, topNum + sideNum).map((player, index) => (
-    <PlayerIndicator key={index} id={player.id} name={player.name} label={player.label} handleClick={handlePlayerIndicatorClick} /> 
+    createIndicator(player, index, true)
   ));
 
   const rightside = players.slice(topNum + sideNum, topNum + (sideNum*2)).map((player, index) => (
-    <PlayerIndicator key={index} id={player.id} name={player.name} label={player.label} handleClick={handlePlayerIndicatorClick} /> 
+    createIndicator(player, index, true)
   ));
 
   const bot = players.slice(topNum + (sideNum*2), topNum + (sideNum*2) + botNum).map((player, index) => (
-    <PlayerIndicator key={index} id={player.id} name={player.name} label={player.label} handleClick={handlePlayerIndicatorClick} /> 
+    createIndicator(player, index, false)
   ));
-
 
   function handlePlayerDataChange(targetId, targetProperty, targetValue) {
 
@@ -82,21 +72,32 @@ function Board({playerNum, showVote}) {
 
   function handlePlayerIndicatorClick(targetId) {
 
-    if (targetId === selected) {
-      setDisplay((prev) => !prev);
+    if (display === 1 && targetId === selected) {
+      setDisplay(0);
     } else {
-      setDisplay(true);
+      setDisplay(1);
       setSelected(targetId)
     }
 
   }
 
+  const voteWindow = (
+    <Vote nominatedPlayer={players[1]} 
+      accusingPlayer={players[0]} 
+      handleChange={handlePlayerDataChange}/>
+    )
+
+  const playerdetails = (
+    <PlayerDetails { ...players[selected]} 
+      handleChange={handlePlayerDataChange}/>
+  )
+
   function displayDynamicContent() {
 
-    if (showVote) {
-      return (<Vote />)
-    } else if (selected != undefined) {
-      return (<PlayerDetails { ...players[selected]} handleChange={handlePlayerDataChange}/>)
+    if (display === 2) {
+      return voteWindow;
+    } else if (display === 1 && selected != undefined) {
+      return playerdetails;
     } else {
       return false;
     }
@@ -104,25 +105,28 @@ function Board({playerNum, showVote}) {
   }
 
   return (
-    <Box sx={{width: '80vh', height: '80vh', background: 'lightblue'}}>
+    <Card sx={{
+      aspectRatio: "1/1",
+      background: 'lightblue',
+    }}>
       <Stack direction="row" justifyContent="space-between">
         {top}
       </Stack>
       <Stack direction="row" justifyContent="space-between">
-        <Stack direction="column" justifyContent="space-evenly">
+        <Stack width="20%" direction="column" justifyContent="space-evenly">
           {leftside}
         </Stack>
-        <DynamicWindow display={display}>
+        <DynamicWindow width="60%" display={display}>
           {displayDynamicContent()}
         </DynamicWindow>
-        <Stack direction="column" justifyContent="space-evenly">
+        <Stack width="20%" direction="column" justifyContent="space-evenly">
           {rightside}
         </Stack>
       </Stack>
       <Stack direction="row" justifyContent="space-between">
         {bot}
       </Stack>
-    </Box>
+    </Card>
   );
 }
 

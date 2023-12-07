@@ -1,11 +1,24 @@
 // import { useState } from 'react'
-import {Box} from '@mui/material';
+import {Card} from '@mui/material';
 
-function Chat() {
+function Chat({children}) {
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-    </Box>
+    <Card sx={{
+      background: "lightcyan", 
+      width: "100%",
+      height: "28%",
+      flexGrow: 1,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: '1.3rem',
+      flexDirection: "column",
+      gap: "10px",
+      mt: 2
+    }}>
+      {children}
+    </Card>
   );
 }
 

@@ -1,21 +1,27 @@
 // import { forwardRef } from "react";
-import {Box, Fade} from '@mui/material';
+import {Card, Box, Fade} from '@mui/material';
 
 function DynamicWindow({children, display}) {
 
   return (
     <Box sx={{
-      width: "50vh", 
-      height: "50vh", 
-      textAlign: "center",
-      background: "lightpink",
+      aspectRatio: "1/1",
+      width: "60%", 
       display: "flex"
-      }}>
-      <Fade in={display}>
-        <Box sx={{display: "flex", flexGrow: 1}}>
-          {children}
-        </Box>
-      </Fade>
+    }}>
+      <Card sx={{
+        textAlign: "center",
+        background: "lightpink",
+        display: "flex",
+        flexGrow: 1,
+        m: 0.8
+        }}>
+        <Fade in={display === 0 ? false : true}>
+          <Box sx={{display: "flex", flexGrow: 1}}>
+            {children}
+          </Box>
+        </Fade>
+      </Card>
     </Box>
   );
 }

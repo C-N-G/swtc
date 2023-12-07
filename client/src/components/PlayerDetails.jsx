@@ -1,14 +1,13 @@
-// import { useMemo, useState } from "react";
 import {Box, Typography, Button, Grid, TextField, Autocomplete, Stack, Divider} from '@mui/material';
-// import {styled} from '@mui/material/styles';
+
 const STATE = {
   0: "Dead",
   1: "Alive"
 }
 
 function PlayerDetails({
-  id, name, label, state, role, 
-  characteristic, status, notes, handleChange }) {
+  id, name, state, label, role, 
+  char, status, notes, handleChange }) {
 
   return (
     <Grid container>
@@ -46,18 +45,18 @@ function PlayerDetails({
           />
           <Autocomplete
             disablePortal
-            id="characteristic-input"
+            id="char-input"
             options={[{label: "Characteristic 1", id: 0}, {label: "Drunkard", id: 1}]}
             size="small"
             renderInput={(params) => <TextField {...params} label="Characteristic" />}
-            value={characteristic}
-            onChange={(event, newValue) => handleChange(id, "characteristic", newValue)}
+            value={char}
+            onChange={(event, newValue) => handleChange(id, "char", newValue)}
             isOptionEqualToValue={(option, value) => value.id === option.id || value === ""}
           />
           <Autocomplete
             disablePortal
             id="status-input"
-            options={[{label: "Status 1", id: 0}, {label: "Malfunctioning", id: 1}]}
+            options={[{label: "Status 1", id: 0}, {label: "Malfunctioning", id: 1}, {label: "Normal", id: 2}]}
             size="small"
             renderInput={(params) => <TextField {...params} label="Status" />}
             value={status}
@@ -67,7 +66,7 @@ function PlayerDetails({
         </Stack>
       </Grid>
       <Grid item xs={12}>
-        <Box sx={{maxWidth: "100%", margin: "1rem"}}>
+        <Box sx={{maxWidth: "100%", mx: "1rem"}}>
           <TextField 
               id="player-notes"
               label="Player Notes"
