@@ -6,20 +6,9 @@ const STATE = {
   1: "Alive"
 }
 
-function PlayerDetails({id, name, label, state, role, characteristic, status, notes, handleChange}) {
-
-  // const [name, setName] = useState("Player Name");
-  // const [label, setLabel] = useState("");
-  // const [state, setState] = useState("Alive");
-  // const [role, setRole] = useState("");
-  // const [characteristic, setCharacteristic] = useState("");
-  // const [status, setStatus] = useState("");
-  // const [notes, setNotes] = useState("");
-
-  // const selectedRole = useMemo(
-  //   () => allValues.filter((v) => v.selected),
-  //   [allValues],
-  // );
+function PlayerDetails({
+  id, name, label, state, role, 
+  characteristic, status, notes, handleChange }) {
 
   return (
     <Grid container>
