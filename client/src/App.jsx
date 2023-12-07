@@ -1,7 +1,7 @@
-import {useState} from 'react';
+import {useState, createContext} from 'react';
 // eslint-disable-next-line no-unused-vars
 import { createTheme } from '@mui/material/styles';
-import {Box, Container, Grid} from '@mui/material';
+import {Box, Container, Grid, Button} from '@mui/material';
 import {InputLabel, MenuItem, FormControl, Select} from '@mui/material'; //debug menu
 import Board from './components/Board.jsx';
 import Phase from "./components/Phase.jsx";
@@ -9,11 +9,27 @@ import Options from "./components/Options.jsx";
 import Character from "./components/Character.jsx";
 import './App.css'
 
+export const UserContext = createContext({});
+
+const PLAYER = {
+  id: 54321,
+  name: "Player " + 54321,
+  state: 1,
+  label: "",
+  role: "",
+  characteristic: "",
+  status: "",
+  notes: ""
+}
+
 function App() {
 
   const [playerNum, setPlayerNum] = useState(8);
+  const [showVote, setShowVote] = useState(true);
+  const [user, setUser] = useState(PLAYER);
 
   return (
+    <UserContext.Provider value={{user, setUser}}>
     <Container sx={{maxWidth: "1440px"}}>
       <Grid container>
         <Grid item xs>
@@ -23,7 +39,7 @@ function App() {
           <Options />
         </Grid>
         <Grid item xs>
-          <Board playerNum={playerNum} />
+          <Board playerNum={playerNum} showVote={showVote} />
         </Grid>
         <Grid item xs>
           <Character />
@@ -39,19 +55,20 @@ function App() {
           }}>
             CHAT W.I.P & temporary debug menu
             <div>
-              <DebugMenu playerNum={playerNum} setPlayerNum={setPlayerNum}/>
+              <DebugMenu playerNum={playerNum} setPlayerNum={setPlayerNum} setShowVote={setShowVote}/>
             </div>
           </Box>
         </Grid>
       </Grid>
       
     </Container>
+    </UserContext.Provider>
   );
 }
 
 export default App
 
-function DebugMenu({playerNum, setPlayerNum}) {
+function DebugMenu({playerNum, setPlayerNum, setShowVote}) {
   
   return (
     <Box sx={{ width: 75 }}>
@@ -62,7 +79,7 @@ function DebugMenu({playerNum, setPlayerNum}) {
           id="player-select"
           value={playerNum}
           label="Players"
-          onChange={(event) => {setPlayerNum(event.target.value);}}
+          onChange={(event) => {setPlayerNum(event.target.value)}}
         >
           <MenuItem value={1}>1</MenuItem>
           <MenuItem value={2}>2</MenuItem>
@@ -82,6 +99,9 @@ function DebugMenu({playerNum, setPlayerNum}) {
           <MenuItem value={16}>16</MenuItem>
         </Select>
       </FormControl>
+      <Button variant="contained" onClick={() => {setShowVote((prev) => !prev)}} >
+        show vote menu
+      </Button>
     </Box>
   );
 }

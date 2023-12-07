@@ -3,6 +3,7 @@ import {Box, Stack} from '@mui/material';
 import PlayerIndicator from "./PlayerIndicator.jsx";
 import DynamicWindow from "./DynamicWindow.jsx";
 import PlayerDetails from "./PlayerDetails.jsx";
+import Vote from "./Vote.jsx";
 
 const BOARD_CONFIG = [
   [0,0,0], // top, sides, bottom - player count
@@ -39,7 +40,7 @@ for (let i = 0; i < 16; i++) {
   });
 }
 
-function Board({playerNum}) {
+function Board({playerNum, showVote}) {
 
 
   const [players, setPlayers] = useState(somePlayers);
@@ -92,7 +93,9 @@ function Board({playerNum}) {
 
   function displayDynamicContent() {
 
-    if (selected != undefined) {
+    if (showVote) {
+      return (<Vote />)
+    } else if (selected != undefined) {
       return (<PlayerDetails { ...players[selected]} handleChange={handlePlayerDataChange}/>)
     } else {
       return false;
