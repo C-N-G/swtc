@@ -8,12 +8,13 @@ function DynamicWindow({children, display}) {
       width: "50vh", 
       height: "50vh", 
       textAlign: "center",
-      background: "lightpink"
+      background: "lightpink",
+      display: "flex"
       }}>
       <Fade in={display}>
-        <div>
+        <Box sx={{display: "flex", flexGrow: 1}}>
           {children}
-        </div>
+        </Box>
       </Fade>
     </Box>
   );
