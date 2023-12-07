@@ -1,4 +1,13 @@
-25/11/2023 v0.1.1
+07/12/2023 v0.1.2
+- added nodejs server for serving the SPA
+- synced voting window state with clientside players
+- improve general responsive design
+  - all elements sizes have been refactored
+  - board element has been made fully responsive
+- added player class
+- added initial server side socket boilerplate
+
+06/12/2023 v0.1.1
 - updated player indicator spacing and text
 - added consistent sizing to the dynamic window
 - added voting window
