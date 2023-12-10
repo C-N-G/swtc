@@ -1,3 +1,6 @@
+09/12/2023 v0.1.3
+- added dummy story teller debug changer
+
 07/12/2023 v0.1.2
 - added nodejs server for serving the SPA
 - synced voting window state with clientside players
