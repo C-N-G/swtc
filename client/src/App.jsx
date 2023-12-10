@@ -13,7 +13,7 @@ import './App.css'
 
 export const UserContext = createContext({});
 
-const PLAYER = new Player(54321, "Player " + 54321, "Hunter", "Gluttonous", "Normal").data
+const PLAYER = new Player(54321, "Player " + 54321, 0, "Hunter", "Gluttonous", "Normal").data;
 
 const somePlayers = [];
 for (let i = 0; i < 16; i++) {
@@ -53,7 +53,8 @@ function App() {
             <div>
               <DebugMenu playerNum={playerNum} 
                 setPlayerNum={setPlayerNum} 
-                setDisplay={setDisplay} />
+                setDisplay={setDisplay}
+                setUser={setUser} />
             </div>
           </Chat>
         </Grid>
@@ -66,7 +67,21 @@ function App() {
 
 export default App
 
-function DebugMenu({playerNum, setPlayerNum, setDisplay}) {
+function DebugMenu({playerNum, setPlayerNum, setDisplay, setUser}) {
+
+  const STORYTELLER = new Player(54321, "Player " + 54321, 1, "Hunter", "Gluttonous", "Normal").data
+
+  function handleChange() {
+
+    setUser((prev) => {
+      if (prev.type === 1) {
+        return PLAYER;
+      } else {
+        return STORYTELLER;
+      }
+    })
+
+  }
   
   return (
     <Grid container >
@@ -99,11 +114,16 @@ function DebugMenu({playerNum, setPlayerNum, setDisplay}) {
           </Select>
         </FormControl>
       </Grid>
-      <Grid item xs>
-        <Button variant="contained" onClick={() => {setDisplay(2)}} >
+      <Grid item width={80}>
+        <Button size="small" variant="contained" onClick={() => {setDisplay(2)}} >
           show vote menu
         </Button>
-        </Grid>
+      </Grid>
+      <Grid item width={80}>
+        <Button size="small" variant="contained" onClick={() => {handleChange()}} >
+          toggle story teller
+        </Button>
+      </Grid>
     </Grid>
   );
 }

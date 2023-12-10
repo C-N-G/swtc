@@ -71,7 +71,7 @@ function PlayerDetails({
               id="player-notes"
               label="Player Notes"
               multiline
-              rows={7}
+              rows={6}
               fullWidth
               value={notes}
               onChange={(event) => handleChange(id, "notes", event.target.value)}

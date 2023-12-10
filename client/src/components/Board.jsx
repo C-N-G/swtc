@@ -96,7 +96,7 @@ function Board({players, setPlayers, playerNum, display, setDisplay}) {
 
     if (display === 2) {
       return voteWindow;
-    } else if (display === 1 && selected != undefined) {
+    } else if (selected != undefined) {
       return playerdetails;
     } else {
       return false;

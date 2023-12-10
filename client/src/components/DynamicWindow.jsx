@@ -1,7 +1,10 @@
-// import { forwardRef } from "react";
+// import { uesState } from "react";
 import {Card, Box, Fade} from '@mui/material';
 
+
 function DynamicWindow({children, display}) {
+
+  // const [lastDisplay, setLastDisplay] = useState()
 
   return (
     <Box sx={{
@@ -16,7 +19,10 @@ function DynamicWindow({children, display}) {
         flexGrow: 1,
         m: 0.8
         }}>
-        <Fade in={display === 0 ? false : true}>
+        <Fade 
+        // onEntered={() => {console.log("started")}}
+        // onExited={() => {console.log("stopped")}}
+        in={display === 0 ? false : true}>
           <Box sx={{display: "flex", flexGrow: 1}}>
             {children}
           </Box>
