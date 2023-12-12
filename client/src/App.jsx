@@ -26,15 +26,16 @@ function App() {
   const [playerNum, setPlayerNum] = useState(8);
   const [players, setPlayers] = useState(somePlayers);
   const [user, setUser] = useState(PLAYER);
-  const [phase, setPhase] = useState(0);
-  const [display, setDisplay] = useState(0);
+  const [phase, setPhase] = useState({cycle: "Night", round: 1});
+  const [display, setDisplay] = useState(false);
+  const [voting, setVoting] = useState(false);
 
   return (
     <UserContext.Provider value={user}>
     <Container sx={{maxWidth: "1440px"}}>
       <Grid container spacing={2}>
         <Grid item xs={8}>
-          <Phase phase={phase}/>
+          <Phase phase={phase} setPhase={setPhase}/>
         </Grid>
         <Grid item xs={4}>
           <Options />
@@ -44,7 +45,9 @@ function App() {
             setPlayers={setPlayers} 
             playerNum={playerNum} 
             display={display}
-            setDisplay={setDisplay} />
+            setDisplay={setDisplay}
+            voting={voting}
+            setVoting={setVoting} />
         </Grid>
         <Grid item xs={4}>
           <Character />
