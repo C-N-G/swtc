@@ -13,7 +13,7 @@ import './App.css'
 
 export const UserContext = createContext({});
 
-const PLAYER = new Player(54321, "Player " + 54321, 0, "Hunter", "Gluttonous", "Normal").data;
+const PLAYER = new Player(54321, "Player " + 54321, 1, "Hunter", "Gluttonous", "Normal").data;
 
 const somePlayers = [];
 for (let i = 0; i < 16; i++) {
