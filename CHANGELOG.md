@@ -1,3 +1,23 @@
+12/12/2023 v0.2.0
+- added phase control button for the story teller
+- updated the phase indicator to show which numbered day/night it is
+- added storyteller version of the player details display
+  - this includes inputs for changing a players real attributes
+  - and fields for changing a players shown attributes
+  - also includes a button for starting this players dismissal
+- added storyteller version of player indicators
+  - it will now display the shown player attributes in the player indicator
+  - there will be an asterisk "*" next to the attribute if it differs from the real attribute
+- added more hardcoded dummy values for playing around with e.g. more roles
+- added player select modal when dismissing a player
+  - this window allows you to select the player nominating player
+  - once the begin button is pressed the voting window becomes accessible
+- added storyteller version of the voting window
+  - this window now shows the player names of those who voted for and against
+  - it will also tally the votes for each
+  - once the finish button is pressed the voting will end and the window will no longer be accessible until another vote begins
+  - for testing purposes currently a player can vote multiple times
+
 09/12/2023 v0.1.3
 - added dummy story teller debug changer
 
