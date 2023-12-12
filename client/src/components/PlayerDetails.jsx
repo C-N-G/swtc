@@ -1,13 +1,36 @@
+import {useContext} from "react";
 import {Box, Typography, Button, Grid, TextField, Autocomplete, Stack, Divider} from '@mui/material';
+import {UserContext} from "../App.jsx";
+import {STATES, ROLES, CHARS, STATUSES} from "../data.js";
 
-const STATE = {
-  0: "Dead",
-  1: "Alive"
+function PlayerDetails(props) {
+
+  const user = useContext(UserContext);
+
+  const getUserTypeCheckedComponent = () => {
+
+    if (user.type === 0) {
+      return <StoryTellerDetails {...props}/>
+    } else if (user.type === 1) {
+      return <RegularPlayerDetails {...props} />
+    } else {
+      return false
+    }
+
+  }
+
+  return getUserTypeCheckedComponent();
+
 }
 
-function PlayerDetails({
+export default PlayerDetails
+
+
+
+function RegularPlayerDetails({
   id, name, state, label, role, 
   char, status, notes, handleChange }) {
+
 
   return (
     <Grid container>
@@ -15,7 +38,7 @@ function PlayerDetails({
         <Stack>
           <Typography variant="h5" sx={{marginTop: "1rem"}}>{name}</Typography>
           <TextField sx={{margin: "1rem"}}
-            id="label-input"
+            id="player-label-input"
             label="Quick Label"
             multiline
             rows={4}
@@ -31,37 +54,37 @@ function PlayerDetails({
           <Box sx={{display: "flex", justifyContent: "center", gap: "0.5rem"}}>
             <Typography variant="h5">State</Typography>
             <Divider orientation="vertical" flexItem />
-            <Typography variant="h5">{STATE[state]}</Typography>
+            <Typography variant="h5">{STATES[state]}</Typography>
           </Box>
           <Autocomplete
             disablePortal
-            id="role-input"
+            disableClearable
+            id="player-role-input"
             size="small"
-            options={[{label: "Role 1", id: 0}, {label: "Vampire", id: 1}]}
+            options={ROLES}
             renderInput={(params) => <TextField {...params} label="Role"/>}
-            value={role}
-            onChange={(event, newValue) => handleChange(id, "role", newValue)}
-            isOptionEqualToValue={(option, value) => value.id === option.id || value === ""}
+            value={ROLES[role]}
+            onChange={(_, newValue) => handleChange(id, "role", ROLES.indexOf(newValue))}
           />
           <Autocomplete
             disablePortal
-            id="char-input"
-            options={[{label: "Characteristic 1", id: 0}, {label: "Drunkard", id: 1}]}
+            disableClearable
+            id="player-char-input"
+            options={CHARS}
             size="small"
             renderInput={(params) => <TextField {...params} label="Characteristic" />}
-            value={char}
-            onChange={(event, newValue) => handleChange(id, "char", newValue)}
-            isOptionEqualToValue={(option, value) => value.id === option.id || value === ""}
+            value={CHARS[char]}
+            onChange={(_, newValue) => handleChange(id, "char", CHARS.indexOf(newValue))}
           />
           <Autocomplete
             disablePortal
-            id="status-input"
-            options={[{label: "Status 1", id: 0}, {label: "Malfunctioning", id: 1}, {label: "Normal", id: 2}]}
+            disableClearable
+            id="player-status-input"
+            options={STATUSES}
             size="small"
             renderInput={(params) => <TextField {...params} label="Status" />}
-            value={status}
-            onChange={(event, newValue) => handleChange(id, "status", newValue)}
-            isOptionEqualToValue={(option, value) => value.id === option.id || value === ""}
+            value={STATUSES[status]}
+            onChange={(_, newValue) => handleChange(id, "status", STATUSES.indexOf(newValue))}
           />
         </Stack>
       </Grid>
@@ -80,6 +103,116 @@ function PlayerDetails({
       </Grid>
     </Grid>
   );
+
 }
 
-export default PlayerDetails
+
+
+function StoryTellerDetails({
+  id, name, state, role, char, status, 
+  rState, rRole, rChar, rStatus, handleChange, handleDismissalClick }) {
+
+
+  return (
+    <Grid container alignContent="flex-start" sx={{m: 1}} rowSpacing={1}>
+      <Grid item xs={6}>
+        <Typography variant="h5" >{name}</Typography>
+      </Grid>
+      <Grid item xs={6}>
+        <Button variant="outlined" onClick={() => {handleDismissalClick(id)}}>Start Dismissal</Button>
+      </Grid>
+      <Grid item xs={6}>
+        <Stack spacing={2} sx={{m: 1}}>
+          <Autocomplete
+            disablePortal
+            disableClearable
+            id="storyteller-real-state-input"
+            size="small"
+            options={STATES}
+            renderInput={(params) => <TextField {...params} label="Real State"/>}
+            value={STATES[rState]}
+            onChange={(_, newValue) => handleChange(id, "rState", STATES.indexOf(newValue))}
+          />
+          <Autocomplete
+            disablePortal
+            disableClearable
+            id="storyteller-real-role-input"
+            size="small"
+            options={ROLES}
+            renderInput={(params) => <TextField {...params} label="Real Role"/>}
+            value={ROLES[rRole]}
+            onChange={(_, newValue) => handleChange(id, "rRole", ROLES.indexOf(newValue))}
+          />
+          <Autocomplete
+            disablePortal
+            disableClearable
+            id="storyteller-real-char-input"
+            options={CHARS}
+            size="small"
+            renderInput={(params) => <TextField {...params} label="Real Characteristic"/>}
+            value={CHARS[rChar]}
+            onChange={(_, newValue) => handleChange(id, "rChar", CHARS.indexOf(newValue))}
+          />
+          <Autocomplete
+            disablePortal
+            disableClearable
+            id="storyteller-real-status-input"
+            options={STATUSES}
+            size="small"
+            renderInput={(params) => <TextField {...params} label="Real Status" />}
+            value={STATUSES[rStatus]}
+            onChange={(_, newValue) => handleChange(id, "rStatus", STATUSES.indexOf(newValue))}
+          />
+        </Stack>
+      </Grid>
+      <Grid item xs={6}>
+        <Stack spacing={2} sx={{m: 1}}>
+          <Autocomplete
+            disablePortal
+            disableClearable
+            id="storyteller-shown-state-input"
+            size="small"
+            options={STATES}
+            renderInput={(params) => <TextField {...params} label="Shown State"/>}
+            value={STATES[state]}
+            onChange={(_, newValue) => handleChange(id, "state", STATES.indexOf(newValue))}
+            isOptionEqualToValue={(option, value) => value.id === option.id || value === ""}
+          />
+          <Autocomplete
+            disablePortal
+            disableClearable
+            id="storyteller-shown-role-input"
+            size="small"
+            options={ROLES}
+            renderInput={(params) => <TextField {...params} label="Shown Role"/>}
+            value={ROLES[role]}
+            onChange={(_, newValue) => handleChange(id, "role", ROLES.indexOf(newValue))}
+            isOptionEqualToValue={(option, value) => value.id === option.id || value === ""}
+          />
+          <Autocomplete
+            disablePortal
+            disableClearable
+            id="storyteller-shown-char-input"
+            options={CHARS}
+            size="small"
+            renderInput={(params) => <TextField {...params} label="Shown Characteristic"/>}
+            value={CHARS[char]}
+            onChange={(_, newValue) => handleChange(id, "char", CHARS.indexOf(newValue))}
+            isOptionEqualToValue={(option, value) => value.id === option.id || value === ""}
+          />
+          <Autocomplete
+            disablePortal
+            disableClearable
+            id="storyteller-shown-status-input"
+            options={STATUSES}
+            size="small"
+            renderInput={(params) => <TextField {...params} label="Shown Status" />}
+            value={STATUSES[status]}
+            onChange={(_, newValue) => handleChange(id, "status", STATUSES.indexOf(newValue))}
+          />
+        </Stack>
+      </Grid>
+    </Grid>
+  );
+
+}
