@@ -17,6 +17,7 @@
   - it will also tally the votes for each
   - once the finish button is pressed the voting will end and the window will no longer be accessible until another vote begins
   - for testing purposes currently a player can vote multiple times
+- changed board player ordering to clockwise
 
 09/12/2023 v0.1.3
 - added dummy story teller debug changer
