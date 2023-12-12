@@ -72,12 +72,12 @@ export default App
 
 function DebugMenu({playerNum, setPlayerNum, setDisplay, setUser}) {
 
-  const STORYTELLER = new Player(54321, "Player " + 54321, 1, "Hunter", "Gluttonous", "Normal").data
+  const STORYTELLER = new Player(54321, "Player " + 54321, 0, "Hunter", "Gluttonous", "Normal").data
 
   function handleChange() {
 
     setUser((prev) => {
-      if (prev.type === 1) {
+      if (prev.type === 0) {
         return PLAYER;
       } else {
         return STORYTELLER;
