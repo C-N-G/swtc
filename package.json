@@ -1,6 +1,6 @@
 {
   "name": "swtc",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Secrets Within the Compound SPA",
   "main": "index.js",
   "scripts": {

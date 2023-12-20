@@ -1,3 +1,13 @@
+20/12/2023 v0.2.1
+- added websocket server to http backend
+- added websocket client to spa
+- synced the phase changes
+- synced the player attribute changes
+- synced the player voting changes
+- changed shown attributes to secret attributes
+- changed the real attributes to be the values shown to other players and on player indicators
+- added special effect to player indicators to show they are dead
+
 12/12/2023 v0.2.0
 - added phase control button for the story teller
 - updated the phase indicator to show which numbered day/night it is
