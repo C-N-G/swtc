@@ -1,6 +1,7 @@
 import {useContext} from "react";
 import {Card, Button, Typography}from '@mui/material';
 import {UserContext} from "../App.jsx";
+import { socket } from "../socket";
 
 function Phase({phase, setPhase}) {
 
@@ -48,22 +49,19 @@ function StoryTellerPhase({phase, setPhase}) {
 
   function hanldeClick() {
 
-    setPhase((prev) => {
-
       let newCycle;
       let newRound;
 
-      if (prev.cycle === "Night") {
+      if (phase.cycle === "Night") {
         newCycle = "Day";
-        newRound = prev.round;
-      } else if (prev.cycle === "Day") {
+        newRound = phase.round;
+      } else if (phase.cycle === "Day") {
         newCycle = "Night";
-        newRound = prev.round + 1;
+        newRound = phase.round + 1;
       }
 
-      return {cycle: newCycle, round: newRound}
+      socket.emit("phase", {cycle: newCycle, round: newRound});
 
-    })
 
   }
 
