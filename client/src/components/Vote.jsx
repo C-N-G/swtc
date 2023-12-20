@@ -1,6 +1,7 @@
 import {useContext} from "react";
 import {Button, Typography, TextField, Stack, Grid, Card, List, ListItem, ListItemText} from '@mui/material';
 import {UserContext} from "../App.jsx";
+import {socket} from "../socket";
 
 function Vote(props) {
 
@@ -8,18 +9,21 @@ function Vote(props) {
 
   function handleVote(player, aVote) {
 
-    props.setVote(() => {
-      let state = {0: {}, 1: {}};
-      state[aVote] = {
-        "backgroundColor": "#2f8bf3",
-        "transform": "scale(1.15)"
-      }
-      return state;
-    });
+    // disallow voting if user has already voted
+    if (props.votes.vote[0] !== props.votes.vote[1]) {
+      return;
+    }
 
-    // send vote to server
-    // DISALLOW THE SAME PERSON VOTING TWICE
-    props.setVotes((prev) => ([...prev, {id: player.id, vote: aVote, name: player.name}]))
+    const large = {
+      "backgroundColor": "#2f8bf3",
+      "transform": "scale(1.15)"
+    }
+
+    props.setVotes((prev) => ({...prev, vote: {...prev.vote, [aVote]: large}}));
+
+    const data = {id: player.id, vote: aVote, name: player.name};
+
+    socket.emit("vote", {list: data});
     
   }
 
@@ -46,7 +50,7 @@ export default Vote
 
 
 
-function PlayerVote({nominatedPlayer, accusingPlayer, handleChange, vote, handleVote, user}) {
+function PlayerVote({nominatedPlayer, accusingPlayer, handleChange, votes, handleVote, user}) {
 
   return (
     <Stack sx={{flexGrow: 1, m: 4}} justifyContent="space-between">
@@ -62,8 +66,22 @@ function PlayerVote({nominatedPlayer, accusingPlayer, handleChange, vote, handle
         onChange={(event) => handleChange(nominatedPlayer.id, "notes", event.target.value)}
       />
       <Stack direction="row" justifyContent="space-between">
-        <Button sx={{...vote[1], transition: "transform 0.25s"}} variant="contained" onClick={() => {handleVote(user, 1)}}>vote for</Button>
-        <Button sx={{...vote[0], transition: "transform 0.25s"}} variant="contained" onClick={() => {handleVote(user, 0)}}>vote against</Button>
+        <Button 
+          disabled={votes.vote[0] !== votes.vote[1]} 
+          sx={{...votes.vote[1], transition: "transform 0.25s"}} 
+          variant="contained" 
+          onClick={() => {handleVote(user, 1)}}
+        >
+          vote for
+        </Button>
+        <Button 
+          disabled={votes.vote[0] !== votes.vote[1]} 
+          sx={{...votes.vote[0], transition: "transform 0.25s"}} 
+          variant="contained" 
+          onClick={() => {handleVote(user, 0)}}
+          >
+            vote against
+          </Button>
       </Stack>
     </Stack>
   );
@@ -73,7 +91,7 @@ function PlayerVote({nominatedPlayer, accusingPlayer, handleChange, vote, handle
 
 function StoryTellerVote({nominatedPlayer, accusingPlayer, votes, handleFinishClick}) {
 
-  const forVotes = votes?.filter(aVote => aVote.vote === 1).map((aVote, index) => {
+  const forVotes = votes.list?.filter(aVote => aVote.vote === 1).map((aVote, index) => {
     return (
       <ListItem key={index}>
         <ListItemText primary={aVote.name}/>
@@ -81,7 +99,7 @@ function StoryTellerVote({nominatedPlayer, accusingPlayer, votes, handleFinishCl
     )
   })
 
-  const againstVotes = votes?.filter(aVote => aVote.vote === 0).map((aVote, index) => {
+  const againstVotes = votes.list?.filter(aVote => aVote.vote === 0).map((aVote, index) => {
     return (
       <ListItem key={index}>
         <ListItemText primary={aVote.name}/>
