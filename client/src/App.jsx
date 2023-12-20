@@ -1,15 +1,16 @@
-import {useState, createContext} from 'react';
+import {useState, createContext, useEffect} from "react";
 // eslint-disable-next-line no-unused-vars
-import { createTheme } from '@mui/material/styles';
-import {Container, Grid, Button} from '@mui/material';
-import {InputLabel, MenuItem, FormControl, Select} from '@mui/material'; //debug menu
-import Board from './components/Board.jsx';
+import { createTheme } from "@mui/material/styles";
+import {Container, Grid, Button} from "@mui/material";
+import {InputLabel, MenuItem, FormControl, Select} from "@mui/material"; //debug menu
+import Board from "./components/Board.jsx";
 import Phase from "./components/Phase.jsx";
 import Options from "./components/Options.jsx";
 import Character from "./components/Character.jsx";
 import Chat from "./components/Chat.jsx";
 import Player from "./classes/player.js";
-import './App.css'
+import { socket } from "./socket";
+import "./App.css"
 
 export const UserContext = createContext({});
 
@@ -28,7 +29,84 @@ function App() {
   const [user, setUser] = useState(PLAYER);
   const [phase, setPhase] = useState({cycle: "Night", round: 1});
   const [display, setDisplay] = useState(false);
-  const [voting, setVoting] = useState(false);
+  const [votes, setVotes] = useState({list: [], voting: false, accusingPlayer: null, nominatedPlayer: null, vote: {0: null, 1: null}});
+  const [isConnected, setIsConnected] = useState(socket.connected);
+
+  function handlePlayerDataChange(targetId, targetProperty, targetValue, fromServer = false) {
+
+    if (["rRole", "rChar", "rState", "rStatus"].includes(targetProperty) && fromServer === false) {
+      return socket.emit("attribute", {targetId: targetId, targetProperty: targetProperty, targetValue: targetValue});
+    }
+
+    setPlayers((prev) => prev.map((player) => {
+      if (player.id === targetId) {
+        return {...player, [targetProperty]: targetValue};
+      } else {
+        return player;
+      }
+    }))
+
+  }
+
+  useEffect(() => {
+    function onConnect() {
+      setIsConnected(true);
+      socket.emit("join", "Wg97Ev");
+    }
+
+    function onDisconnect() {
+      setIsConnected(false);
+    }
+
+    function onPhaseChange(data) {
+      console.log("phaseChange", data);
+      setPhase(data);
+    }
+
+    function onPlayerAttributeChange(data) {
+      console.log("attributeChange", data);
+      handlePlayerDataChange(data.targetId, data.targetProperty, data.targetValue, true);
+    }
+
+    function onVoteStateChange(data) {
+      console.log("voteState", data);
+      if (Object.hasOwn(data, "voting")) {
+        setVotes((prev) => ({...prev, voting: data.voting}));
+        if (data.voting === true) setDisplay(2);
+      }
+      
+      if (Object.hasOwn(data, "list")){
+        if (Array.isArray(data.list)) {
+          setVotes((prev) => ({...prev, list: data.list, vote: {0: null, 1: null}}));
+        } else {
+          setVotes((prev) => ({...prev, list: [...prev.list, data.list]}));
+        }
+      }
+      
+      if (Object.hasOwn(data, "accusingPlayer")){
+        setVotes((prev) => ({...prev, accusingPlayer: data.accusingPlayer}));
+      }
+      
+      if (Object.hasOwn(data, "nominatedPlayer")){
+        setVotes((prev) => ({...prev, nominatedPlayer: data.nominatedPlayer}));
+      }
+      
+    }
+
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
+    socket.on("phase", onPhaseChange);
+    socket.on("attribute", onPlayerAttributeChange);
+    socket.on("vote", onVoteStateChange);
+
+    return () => {
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+      socket.off("phase", onPhaseChange);
+      socket.off("attribute", onPlayerAttributeChange);
+      socket.off("vote", onVoteStateChange);
+    };
+  }, []);
 
   return (
     <UserContext.Provider value={user}>
@@ -42,12 +120,12 @@ function App() {
         </Grid>
         <Grid item xs={8}>
           <Board players={players} 
-            setPlayers={setPlayers} 
             playerNum={playerNum} 
             display={display}
             setDisplay={setDisplay}
-            voting={voting}
-            setVoting={setVoting} />
+            votes={votes}
+            setVotes={setVotes}
+            handleChange={handlePlayerDataChange} />
         </Grid>
         <Grid item xs={4}>
           <Character />
