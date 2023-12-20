@@ -170,10 +170,10 @@ function StoryTellerDetails({
           <Autocomplete
             disablePortal
             disableClearable
-            id="storyteller-shown-state-input"
+            id="storyteller-secret-state-input"
             size="small"
             options={STATES}
-            renderInput={(params) => <TextField {...params} label="Shown State"/>}
+            renderInput={(params) => <TextField {...params} label="Secret State"/>}
             value={STATES[state]}
             onChange={(_, newValue) => handleChange(id, "state", STATES.indexOf(newValue))}
             isOptionEqualToValue={(option, value) => value.id === option.id || value === ""}
@@ -181,10 +181,10 @@ function StoryTellerDetails({
           <Autocomplete
             disablePortal
             disableClearable
-            id="storyteller-shown-role-input"
+            id="storyteller-secret-role-input"
             size="small"
             options={ROLES}
-            renderInput={(params) => <TextField {...params} label="Shown Role"/>}
+            renderInput={(params) => <TextField {...params} label="Secret Role"/>}
             value={ROLES[role]}
             onChange={(_, newValue) => handleChange(id, "role", ROLES.indexOf(newValue))}
             isOptionEqualToValue={(option, value) => value.id === option.id || value === ""}
@@ -192,10 +192,10 @@ function StoryTellerDetails({
           <Autocomplete
             disablePortal
             disableClearable
-            id="storyteller-shown-char-input"
+            id="storyteller-secret-char-input"
             options={CHARS}
             size="small"
-            renderInput={(params) => <TextField {...params} label="Shown Characteristic"/>}
+            renderInput={(params) => <TextField {...params} label="Secret Characteristic"/>}
             value={CHARS[char]}
             onChange={(_, newValue) => handleChange(id, "char", CHARS.indexOf(newValue))}
             isOptionEqualToValue={(option, value) => value.id === option.id || value === ""}
@@ -203,10 +203,10 @@ function StoryTellerDetails({
           <Autocomplete
             disablePortal
             disableClearable
-            id="storyteller-shown-status-input"
+            id="storyteller-secret-status-input"
             options={STATUSES}
             size="small"
-            renderInput={(params) => <TextField {...params} label="Shown Status" />}
+            renderInput={(params) => <TextField {...params} label="Secret Status" />}
             value={STATUSES[status]}
             onChange={(_, newValue) => handleChange(id, "status", STATUSES.indexOf(newValue))}
           />

@@ -4,6 +4,7 @@ import PlayerIndicator from "./PlayerIndicator.jsx";
 import DynamicWindow from "./DynamicWindow.jsx";
 import PlayerDetails from "./PlayerDetails.jsx";
 import Vote from "./Vote.jsx";
+import {socket} from "../socket";
 
 const BOARD_CONFIG = [
   [0,0,0], // top, sides, bottom - player count
@@ -38,13 +39,9 @@ const modalStyle = {
   px: 4,
 };
 
-function Board({players, setPlayers, playerNum, display, setDisplay, voting, setVoting}) {
+function Board({players, playerNum, display, setDisplay, votes, setVotes, handleChange}) {
 
   const [selected, setSelected] = useState(null);
-  const [nominatedPlayer, setNominatedPlayer] = useState(null);
-  const [accusingPlayer, setAccusingPlayer]= useState(null);
-  const [vote, setVote] = useState({0: {}, 1: {}});
-  const [votes, setVotes] = useState([]);
   const [open, setOpen] = useState(false); 
 
   let topNum = BOARD_CONFIG[playerNum][0];
@@ -60,23 +57,11 @@ function Board({players, setPlayers, playerNum, display, setDisplay, voting, set
 
   }
 
-  function handlePlayerDataChange(targetId, targetProperty, targetValue) {
-
-    setPlayers(players.map((player) => {
-      if (player.id === targetId) {
-        return {...player, [targetProperty]: targetValue};
-      } else {
-        return player;
-      }
-    }))
-
-  }
-
   function handlePlayerIndicatorClick(targetId) {
 
     if (display === 1 && targetId === selected) {
       setSelected(null);
-      if (voting) {
+      if (votes.voting) {
         setDisplay(2);
       }
     } else {
@@ -87,26 +72,21 @@ function Board({players, setPlayers, playerNum, display, setDisplay, voting, set
   }
 
   function handleDismissalClick(nominatedPlayerId) {
-    setNominatedPlayer(nominatedPlayerId);
-    setAccusingPlayer(null);
+    setVotes((prev) => ({...prev, nominatedPlayer: nominatedPlayerId, accusingPlayer: null}));
     setOpen(true);
   }
 
   function handlePlayerSelect(event) {
-    setAccusingPlayer(event.target.value);
+    setVotes((prev) => ({...prev, accusingPlayer: event.target.value}));
   }
 
   function handleBeginClick() {
     setOpen(false);
-    setVoting(true);
-    setDisplay(2);
+    socket.emit("vote", {nominatedPlayer: votes.nominatedPlayer, accusingPlayer: votes.accusingPlayer, voting: true})
   }
 
   function handleFinishClick() {
-    setVoting(false);
-    setNominatedPlayer(null);
-    setAccusingPlayer(null);
-    setVotes([]);
+    socket.emit("vote", {list: [], voting: false, accusingPlayer: null, nominatedPlayer: null});
     setDisplay(0);
   }
 
@@ -136,32 +116,30 @@ function Board({players, setPlayers, playerNum, display, setDisplay, voting, set
     createIndicator(player, index, true)
   ));
 
-  const selectablePlayers = players.filter(player => player.id !== nominatedPlayer).map((player, index) => {
+  const selectablePlayers = players.filter(player => player.id !== votes.nominatedPlayer).map((player, index) => {
     return (<MenuItem key={index} value={player.id}>{player.name}</MenuItem>)
   })
 
   const voteWindow = (
-    <Vote nominatedPlayer={players[nominatedPlayer]} 
-      accusingPlayer={players[accusingPlayer]} 
-      vote={vote}
-      setVote={setVote}
-      votes={votes}
+    <Vote nominatedPlayer={players[votes.nominatedPlayer]} 
+      accusingPlayer={players[votes.accusingPlayer]} 
       setVotes={setVotes}
-      handleChange={handlePlayerDataChange}
+      votes={votes}
+      handleChange={handleChange}
       handleFinishClick={handleFinishClick}/>
     )
 
   const playerdetails = (
     <PlayerDetails { ...players[selected]} 
       handleDismissalClick={handleDismissalClick}
-      handleChange={handlePlayerDataChange}/>
+      handleChange={handleChange}/>
   )
 
   function displayDynamicContent() {
 
     if (selected !== null && display === 1) {
       return playerdetails;
-    } else if (voting && display === 2) {
+    } else if (votes.voting && display === 2) {
       return voteWindow;
     } else {
       return false;
@@ -193,7 +171,7 @@ function Board({players, setPlayers, playerNum, display, setDisplay, voting, set
               labelId="nominating-player-select-label"
               id="nominating-player-select"
               label="Player"
-              value={accusingPlayer ? accusingPlayer : ""}
+              value={votes.accusingPlayer ? votes.accusingPlayer : ""}
               onChange={handlePlayerSelect}
             >
               {selectablePlayers}

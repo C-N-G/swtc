@@ -27,7 +27,7 @@ export default PlayerIndicator
 
 
 
-function RegularPlayerIndicator({id, name, label, handleClick, vertical}) {
+function RegularPlayerIndicator({id, name, label, handleClick, vertical, rState}) {
 
   return (
     <Box sx={{
@@ -43,7 +43,8 @@ function RegularPlayerIndicator({id, name, label, handleClick, vertical}) {
         flexDirection: "column",
         justifyContent: "flex-start",
         m: 0.8,
-        overflow: "inherit" 
+        overflow: "inherit",
+        backgroundImage: rState === 0 ? "linear-gradient(180deg, rgba(255,0,0,0), rgba(255,0,0,0.2), rgba(255,0,0,0.7))" : "" 
       }}>
         <Typography>{name}</Typography>
         <Box sx={{
@@ -106,13 +107,13 @@ function StorytellerPlayerIndicator({
               overflow: "inherit",
               textTransform: "none",
             }}>
-              {STATES[state]}{state !== rState ? "*" : ""}
+              {STATES[rState]}{state !== rState ? "*" : ""}
               <br />
-              {ROLES[role]}{role !== rRole ? "*" : ""}
+              {ROLES[rRole]}{role !== rRole ? "*" : ""}
               <br />
-              {CHARS[char]}{char !== rChar ? "*" : ""}
+              {CHARS[rChar]}{char !== rChar ? "*" : ""}
               <br />
-              {STATUSES[status]}{status !== rStatus ? "*" : ""}
+              {STATUSES[rStatus]}{status !== rStatus ? "*" : ""}
           </Typography>
         </Box>
       </Button>
