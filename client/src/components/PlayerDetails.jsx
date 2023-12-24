@@ -28,7 +28,7 @@ export default PlayerDetails
 
 
 function RegularPlayerDetails({
-  id, name, state, label, role, 
+  id, name, rState, label, role, 
   char, status, notes, handleChange }) {
 
 
@@ -54,7 +54,7 @@ function RegularPlayerDetails({
           <Box sx={{display: "flex", justifyContent: "center", gap: "0.5rem"}}>
             <Typography variant="h5">State</Typography>
             <Divider orientation="vertical" flexItem />
-            <Typography variant="h5">{STATES[state]}</Typography>
+            <Typography variant="h5">{STATES[rState]}</Typography>
           </Box>
           <Autocomplete
             disablePortal
