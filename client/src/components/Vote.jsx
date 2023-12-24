@@ -10,7 +10,7 @@ function Vote(props) {
   function handleVote(player, aVote) {
 
     // disallow voting if user has already voted
-    if (props.votes.vote[0] !== props.votes.vote[1]) {
+    if (props.userVote[0] !== props.userVote[1]) {
       return;
     }
 
@@ -19,7 +19,7 @@ function Vote(props) {
       "transform": "scale(1.15)"
     }
 
-    props.setVotes((prev) => ({...prev, vote: {...prev.vote, [aVote]: large}}));
+    props.setUserVote((prev) => ({...prev, [aVote]: large}));
 
     const data = {id: player.id, vote: aVote, name: player.name};
 
@@ -50,7 +50,7 @@ export default Vote
 
 
 
-function PlayerVote({nominatedPlayer, accusingPlayer, handleChange, votes, handleVote, user}) {
+function PlayerVote({nominatedPlayer, accusingPlayer, handleChange, userVote, handleVote, user}) {
 
   return (
     <Stack sx={{flexGrow: 1, m: 4}} justifyContent="space-between">
@@ -67,16 +67,16 @@ function PlayerVote({nominatedPlayer, accusingPlayer, handleChange, votes, handl
       />
       <Stack direction="row" justifyContent="space-between">
         <Button 
-          disabled={votes.vote[0] !== votes.vote[1]} 
-          sx={{...votes.vote[1], transition: "transform 0.25s"}} 
+          disabled={userVote[0] !== userVote[1]} 
+          sx={{...userVote[1], transition: "transform 0.25s"}} 
           variant="contained" 
           onClick={() => {handleVote(user, 1)}}
         >
           vote for
         </Button>
         <Button 
-          disabled={votes.vote[0] !== votes.vote[1]} 
-          sx={{...votes.vote[0], transition: "transform 0.25s"}} 
+          disabled={userVote[0] !== userVote[1]} 
+          sx={{...userVote[0], transition: "transform 0.25s"}} 
           variant="contained" 
           onClick={() => {handleVote(user, 0)}}
           >
