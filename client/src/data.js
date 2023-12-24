@@ -35,10 +35,26 @@ export const CHARS = [
   "Unkown",
   "Envious",
   "Gluttonous",
-  "Drunkard",
+  "Empathic",
+  "Telepathic",
+  "Clairvoyant",
+  "Kind",
+  "Slothful",
+  "Prideful",
+  "Wrathful",
+  "Greedy",
+  "Patient",
+  "Charitable",
+  "Diligent",
+  "Chaste",
+  "Temperate",
+  "Humble",
+  "Lustful",
+  "Alcoholic",
 ]
 
 export const STATUSES = [
   "Normal",
   "Malfunctioning",
+  "Injured"
 ]
