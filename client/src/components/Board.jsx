@@ -39,10 +39,14 @@ const modalStyle = {
   px: 4,
 };
 
-function Board({players, playerNum, display, setDisplay, votes, setVotes, handleChange}) {
+function Board({players, display, setDisplay, votes, setVotes, userVote, setUserVote, handleChange}) {
 
   const [selected, setSelected] = useState(null);
   const [open, setOpen] = useState(false); 
+
+  const playerNum = players.length;
+
+  const drawPlayers = players.filter(player => player.type === 1);
 
   let topNum = BOARD_CONFIG[playerNum][0];
   let sideNum = BOARD_CONFIG[playerNum][1];
@@ -90,47 +94,53 @@ function Board({players, playerNum, display, setDisplay, votes, setVotes, handle
     setDisplay(0);
   }
 
-  const top = players
+  const top = drawPlayers
   .slice(0, topNum)
   .map((player, index) => (
     createIndicator(player, index, false)
   ));
 
-  const rightside = players
+  const rightside = drawPlayers
   .slice(topNum, topNum + sideNum)
   .map((player, index) => (
     createIndicator(player, index, true)
   ));
 
-  const bot = players
+  const bot = drawPlayers
   .slice(topNum + sideNum, topNum + sideNum + botNum)
   .reverse()
   .map((player, index) => (
     createIndicator(player, index, false)
   ));
 
-  const leftside = players
+  const leftside = drawPlayers
   .slice(topNum + sideNum + botNum, topNum + (sideNum*2) + botNum)
   .reverse()
   .map((player, index) => (
     createIndicator(player, index, true)
   ));
 
-  const selectablePlayers = players.filter(player => player.id !== votes.nominatedPlayer).map((player, index) => {
+  const selectablePlayers = drawPlayers.filter(player => player.id !== votes.nominatedPlayer).map((player, index) => {
     return (<MenuItem key={index} value={player.id}>{player.name}</MenuItem>)
   })
 
+  const nominatedPlayer = drawPlayers.find(player => player.id === votes.nominatedPlayer);
+  const accusingPlayer = drawPlayers.find(player => player.id === votes.accusingPlayer);
+  const selectedPlayer = drawPlayers.find(player => player.id === selected);
+
   const voteWindow = (
-    <Vote nominatedPlayer={players[votes.nominatedPlayer]} 
-      accusingPlayer={players[votes.accusingPlayer]} 
+    <Vote nominatedPlayer={nominatedPlayer} 
+      accusingPlayer={accusingPlayer} 
       setVotes={setVotes}
       votes={votes}
+      userVote={userVote}
+      setUserVote={setUserVote}
       handleChange={handleChange}
       handleFinishClick={handleFinishClick}/>
     )
 
   const playerdetails = (
-    <PlayerDetails { ...players[selected]} 
+    <PlayerDetails { ...selectedPlayer} 
       handleDismissalClick={handleDismissalClick}
       handleChange={handleChange}/>
   )
@@ -182,7 +192,7 @@ function Board({players, playerNum, display, setDisplay, votes, setVotes, handle
           </Button>
         </Box>
       </Modal>
-      <Stack direction="row" justifyContent="space-between">
+      <Stack sx={{minHeight: "20%"}} direction="row" justifyContent="space-between">
         {top}
       </Stack>
       <Stack direction="row" justifyContent="space-between">
