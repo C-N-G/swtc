@@ -24,13 +24,16 @@ for (let i = 0; i < 16; i++) {
 
 function App() {
 
-  const [playerNum, setPlayerNum] = useState(8);
-  const [players, setPlayers] = useState(somePlayers);
-  const [user, setUser] = useState(PLAYER);
+  const [players, setPlayers] = useState([]);
+  const [userId, setUserId] = useState(null);
   const [phase, setPhase] = useState({cycle: "Night", round: 1});
   const [display, setDisplay] = useState(false);
-  const [votes, setVotes] = useState({list: [], voting: false, accusingPlayer: null, nominatedPlayer: null, vote: {0: null, 1: null}});
+  const [votes, setVotes] = useState({list: [], voting: false, accusingPlayer: null, nominatedPlayer: null});
+  const [userVote, setUserVote] = useState({0: null, 1: null});
+  const [session, setSession] = useState(null);
   const [isConnected, setIsConnected] = useState(socket.connected);
+
+  const user = players.find(player => player.id === userId);
 
   function handlePlayerDataChange(targetId, targetProperty, targetValue, fromServer = false) {
 
@@ -51,7 +54,7 @@ function App() {
   useEffect(() => {
     function onConnect() {
       setIsConnected(true);
-      socket.emit("join", "Wg97Ev");
+      socket.emit("join", "Wg97Ev", socket.id);
     }
 
     function onDisconnect() {
@@ -59,17 +62,14 @@ function App() {
     }
 
     function onPhaseChange(data) {
-      console.log("phaseChange", data);
       setPhase(data);
     }
 
     function onPlayerAttributeChange(data) {
-      console.log("attributeChange", data);
       handlePlayerDataChange(data.targetId, data.targetProperty, data.targetValue, true);
     }
 
     function onVoteStateChange(data) {
-      console.log("voteState", data);
       if (Object.hasOwn(data, "voting")) {
         setVotes((prev) => ({...prev, voting: data.voting}));
         if (data.voting === true) setDisplay(2);
@@ -93,11 +93,24 @@ function App() {
       
     }
 
+    function onSyncState(session, userId) {
+
+      setPlayers(session.players);
+      setPhase(session.phase);
+      setVotes(session.votes);
+      setSession(session.id);
+      if (userId) {
+        setUserId(userId);
+      }
+
+    }
+
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
     socket.on("phase", onPhaseChange);
     socket.on("attribute", onPlayerAttributeChange);
     socket.on("vote", onVoteStateChange);
+    socket.on("sync", onSyncState);
 
     return () => {
       socket.off("connect", onConnect);
@@ -105,6 +118,7 @@ function App() {
       socket.off("phase", onPhaseChange);
       socket.off("attribute", onPlayerAttributeChange);
       socket.off("vote", onVoteStateChange);
+      socket.off("sync", onSyncState);
     };
   }, []);
 
@@ -116,27 +130,28 @@ function App() {
           <Phase phase={phase} setPhase={setPhase}/>
         </Grid>
         <Grid item xs={4}>
-          <Options />
+          <Options session={session}/>
         </Grid>
         <Grid item xs={8}>
           <Board players={players} 
-            playerNum={playerNum} 
             display={display}
             setDisplay={setDisplay}
             votes={votes}
             setVotes={setVotes}
+            userVote={userVote}
+            setUserVote={setUserVote}
             handleChange={handlePlayerDataChange} />
         </Grid>
         <Grid item xs={4}>
-          <Character />
+          <Character session={session}/>
           <Chat>
-            CHAT W.I.P & temporary debug menu
-            <div>
+            CHAT W.I.P
+            {/* <div>
               <DebugMenu playerNum={playerNum} 
                 setPlayerNum={setPlayerNum} 
                 setDisplay={setDisplay}
                 setUser={setUser} />
-            </div>
+            </div> */}
           </Chat>
         </Grid>
       </Grid>

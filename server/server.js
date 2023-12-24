@@ -1,9 +1,19 @@
 // create http server to serve spa
 
-const http = require("node:http");
-const path = require("node:path");
-const fs = require("node:fs");
-const { Server } = require("socket.io");
+// const http = require("node:http");
+// const path = require("node:path");
+// const fs = require("node:fs");
+// const { Server } = require("socket.io");
+// const SessionManager = require("./sessionManager.js");
+import http from "node:http";
+import path from "node:path";
+import { fileURLToPath } from 'url';
+import fs from "node:fs";
+import {Server} from "socket.io";
+import SessionManager from "./sessionManager.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const hostname = "127.0.0.1";
 const port = 3001;
@@ -55,73 +65,118 @@ const options = process.env.NODE_ENV === "production" ? {} : {
 // create websocket server
 const io = new Server(httpserver, options);
 
-function getRoom() {
-  return "room1";
-}
+// TODO GAME JOINING FUNCTIONALITY
+// TODO GAME SESSION FUNCTIONALITY
+// TODO GAME SESSION DESTROYING
+// TODO UPDATE PLAYER DETAILS BASED ON ACTUAL PLAYER DATA
 
-function createId(length = 7) {
-
-  const array = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890";
-
-  let output = [];
-
-  for (let i = 0; i < length; i++) {
-    output.push(array[Math.floor(Math.random()*array.length)]);
-  }
-
-  return output.join("");
-
-}
-
-function createNewGameSession() {
-
-  const session = {};
-
-  session.id = createId();
-  session.players = [];
-  session.votes = [];
-  session.voting = false;
-  gameSessions[session.id] = session;
-
-  return session.id;
-
-}
-
-const gameSessions = {};
-const userIdToRoomId = {};
+const sessionManager = new SessionManager();
 
 io.on("connection", (socket) => {
   console.log("new socket connection");
-  // console.log(socket.id)
-  // socket.emit("foo", {foo: "data"});
-  // socket.join("room1");
 
-  socket.on("join", (aRoomId) => {
-    console.log(aRoomId);
-    userIdToRoomId[socket.id] = aRoomId;
-    socket.join(aRoomId);
-    console.log(userIdToRoomId);
+  let connectedSessionId = null;
+  const playerId = socket.id;
+
+  socket.on("join", (sessionId, name) => {
+
+    if (connectedSessionId !== null) {
+      return;
+    }
+
+    if (sessionManager.sessionExists(sessionId)) {
+      connectedSessionId = sessionId;
+      const session = sessionManager.getSession(sessionId);
+      const userId = sessionManager.joinSession(sessionId, playerId, name);
+      socket.join(sessionId);
+      socket.to(sessionId).emit("sync", session.getData());
+      socket.emit("sync", session.getData(), userId);
+      console.log("user joined session", sessionId, "with name", name);
+    }
+
+  })
+
+  socket.on("host", (name) => {
+
+    if (connectedSessionId !== null) {
+      return;
+    }
+
+    const session = sessionManager.createSession();
+    connectedSessionId = session.id;
+    const userId = sessionManager.joinSession(session.id, playerId, name);
+    socket.join(session.id);
+    socket.emit("sync", session.getData(), userId);
+    console.log("user hosted session", session.id, "with name", name);
+
+
   })
 
   socket.on("phase", (data) => {
-    console.log(data);
-    io.to(userIdToRoomId[socket.id]).emit("phase", data);
+
+    const session = sessionManager.getSession(connectedSessionId);
+    session.setPhase(data);
+    io.to(connectedSessionId).emit("phase", data);
+    console.log("phase updated with", data);
+
   })
 
   socket.on("attribute", (data) => {
-    console.log(data);
-    // this only needs to be sent to the player who is being updated
-    io.to(userIdToRoomId[socket.id]).emit("attribute", data);
+
+    const session = sessionManager.getSession(connectedSessionId);
+    session.updatePlayer(data.targetId, data.targetProperty, data.targetValue);
+    io.to(connectedSessionId).emit("attribute", data);
+    console.log("player updated with", data);
+
   })
 
   socket.on("vote", (data) => {
-    console.log(data);
-    io.to(userIdToRoomId[socket.id]).emit("vote", data);
+
+    console.log("data", data)
+    console.log("data", connectedSessionId)
+
+
+    const session = sessionManager.getSession(connectedSessionId);
+    console.log("session", session)
+    Object.keys(data).map(property => {
+      if (property === "voting") session.setVoting(data[property]);
+      if (property === "accusingPlayer") session.setAcuPlayer(data[property]);
+      if (property === "nominatedPlayer") session.setNomPlayer(data[property]);
+      if (property === "list") session.addVote(data[property]);
+    })
+    io.to(connectedSessionId).emit("vote", data);
+    console.log("vote updated with", data);
+
   })
 
   socket.on("disconnect", () => {
-    delete userIdToRoomId[socket.id];
+
+    if (connectedSessionId !== null) {
+      sessionManager.leaveSession(connectedSessionId, playerId);
+      console.log("player", playerId, "disconnected from session", connectedSessionId);
+    }
+
+    if (sessionManager.sessionExists(connectedSessionId)) {
+      const session = sessionManager.getSession(connectedSessionId);
+      io.to(connectedSessionId).emit("sync", session.getData());
+    }
+
   })
+
+  socket.on("leave", () => {
+
+    sessionManager.leaveSession(connectedSessionId, playerId);
+    socket.leave(connectedSessionId);
+    console.log("player", playerId, "left session", connectedSessionId);
+    connectedSessionId = null;
+    const blankSession = sessionManager.createSession();
+    socket.emit("sync", blankSession.getData(), null);
+    sessionManager.removeSession(blankSession);
+
+    // RESET STATE TO DEFAULTS WHEN LEAVING
+
+  })
+
 });
 
 
