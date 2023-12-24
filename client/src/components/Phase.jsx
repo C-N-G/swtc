@@ -1,7 +1,7 @@
 import {useContext} from "react";
 import {Card, Button, Typography}from '@mui/material';
 import {UserContext} from "../App.jsx";
-import { socket } from "../socket";
+import {socket} from "../socket.js";
 
 function Phase({phase, setPhase}) {
 
@@ -9,9 +9,9 @@ function Phase({phase, setPhase}) {
 
   const getUserTypeCheckedComponent = () => {
 
-    if (user.type === 0) {
+    if (user?.type === 0) {
       return <StoryTellerPhase phase={phase} setPhase={setPhase}/>
-    } else if (user.type === 1) {
+    } else if (user?.type === 1) {
       return <PlayerPhase phase={phase} />
     } else {
       return false
@@ -19,7 +19,18 @@ function Phase({phase, setPhase}) {
 
   }
 
-  return getUserTypeCheckedComponent();
+  return (
+  <Card sx={{
+    background: "lightgreen", 
+    height: "10vh", 
+    flexGrow: 1,
+    display: "flex", 
+    justifyContent: "center",
+    alignItems: "center",
+  }}>
+    {getUserTypeCheckedComponent()}
+  </Card>
+  )
 }
 
 export default Phase
@@ -29,16 +40,7 @@ export default Phase
 function PlayerPhase({phase}) {
   
   return (
-    <Card sx={{
-      background: "lightgreen", 
-      height: "10vh", 
-      flexGrow: 1,
-      display: "flex", 
-      justifyContent: "center",
-      alignItems: "center",
-    }}>
-      <Typography variant="h4">Current Phase: {phase.cycle} {phase.round}</Typography>
-    </Card>
+    <Typography variant="h4">Current Phase: {phase.cycle} {phase.round}</Typography>
   )
 
 }
@@ -66,14 +68,7 @@ function StoryTellerPhase({phase, setPhase}) {
   }
 
   return (
-    <Card sx={{
-      background: "lightgreen", 
-      height: "10vh", 
-      flexGrow: 1,
-      display: "flex", 
-      justifyContent: "center",
-      alignItems: "center",
-    }}>
+    <>
       <Typography variant="h4">Current Phase: {phase.cycle} {phase.round}</Typography>
       <Button 
         size="small" 
@@ -83,7 +78,7 @@ function StoryTellerPhase({phase, setPhase}) {
       >
         Progress Phase
       </Button>
-    </Card>
+    </>
   )
 
 }
