@@ -1,3 +1,21 @@
+23/12/2023 v0.3.0
+- added state syncing when players join or leave
+- added host session menu item under options
+  - an name will have to be input and submitted first
+  - then a new session will be created
+  - with the user joining as storyteller
+  - and the session id shown for other players to join
+- added join session menu item under options
+  - a name and session id will be needed before subitting
+  - assuming the session exists it will be joined as a player
+- until a session is joined much of the ui will be hidden
+- the debug menu has been removed
+- the board configuration will now adjust to the nuber of players joined in the session
+- the character window now correctly shows the real values of the user
+- added storyteller character window which currently only displays the session id
+- updated the hardcoded data to include the rest of the rule document
+- updated the detailed player view to correctly display the real player state
+
 20/12/2023 v0.2.1
 - added websocket server to http backend
 - added websocket client to spa
@@ -7,6 +25,7 @@
 - changed shown attributes to secret attributes
 - changed the real attributes to be the values shown to other players and on player indicators
 - added special effect to player indicators to show they are dead
+- after plays place their vote, the vote buttons will become disabled, disallowing them to vote again
 
 12/12/2023 v0.2.0
 - added phase control button for the story teller
