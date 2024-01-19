@@ -44,9 +44,9 @@ function Board({players, display, setDisplay, votes, setVotes, userVote, setUser
   const [selected, setSelected] = useState(null);
   const [open, setOpen] = useState(false); 
 
-  const playerNum = players.length;
-
   const drawPlayers = players.filter(player => player.type === 1);
+
+  const playerNum = drawPlayers.length;
 
   let topNum = BOARD_CONFIG[playerNum][0];
   let sideNum = BOARD_CONFIG[playerNum][1];

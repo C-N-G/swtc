@@ -16,7 +16,7 @@ function Options({session}) {
   function handleClose() {
     setAnchorEl(null);
     setOpenModal(0);
-  };
+  }
 
   function handleHost() {
 
