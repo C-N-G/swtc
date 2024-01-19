@@ -1,0 +1,228 @@
+[
+  {
+    "Name": "Unknown",
+    "Description": "",
+    "Ability": "",
+    "Attributes": [],
+    "Additional Information": []
+  },
+
+  {
+    "Name": "Hunter",
+    "Description": "“Howling dogs sound the same as men.”",
+    "Ability": "Once per game, during the day, you may publicly choose a player (not yourself): if they are non-Human they die.",
+    "Attributes": ["Human", "Loyalist", "Agency"],
+    "Additional Information": []
+  },
+
+  {
+    "Name": "Biologist",
+    "Description": "“Congratulations, Agent Johnson. I’ve conducted some tests, and I can confirm you’re telling the truth.”",
+    "Ability": "You start knowing two other players that are Human.",
+    "Attributes": ["Human", "Loyalist", "Agency"],
+    "Additional Information": [
+      "If the Biologist is malfunctioning, then they might be given false information."
+    ]
+  },
+
+  {
+    "Name": "Bodyguard",
+    "Description": "“Your service will be remembered.”",
+    "Ability": "Each night*, you must choose a player (not yourself): if that player is killed that night you are killed instead.",
+    "Attributes": ["Human", "Loyalist", "Agency"],
+    "Additional Information": [
+      "The Bodyguard can not use their ability on the first night."
+    ]
+  },
+
+  {
+    "Name": "Cook",
+    "Description": "“First, we eat.”",
+    "Ability": "Your neighbours can not malfunction.",
+    "Attributes": ["Human", "Loyalist", "Agency"],
+    "Additional Information": []
+  },
+
+  {
+    "Name": "Doctor",
+    "Description": "“What’s up, Doc?”",
+    "Ability": "Each night, you must choose a player (not yourself): they are not injured.",
+    "Attributes": ["Human", "Loyalist", "Agency"],
+    "Additional Information": []
+  },
+
+  {
+    "Name": "Engineer",
+    "Description": "“Trust me, I’m an engineer.”",
+    "Ability": "Once per game, during the day, you may publicly change the location of any number of players.",
+    "Attributes": ["Human", "Loyalist", "Agency"],
+    "Additional Information": []
+  },
+
+  {
+    "Name": "Janitor",
+    "Description": "“I’ve seen things in the dark hours of the night, things you people wouldn’t believe.”",
+    "Ability": "Each night, you learn how many other players woke up, and will wake up, that night due to their ability.",
+    "Attributes": ["Human", "Loyalist", "Agency"],
+    "Additional Information": [
+      "If the Janitor is malfunctioning, then they might be given false information."
+    ]
+  },
+
+  {
+    "Name": "Medic",
+    "Description": "“You can’t save everyone.”",
+    "Ability": "Each night*, you learn of any players that died that night, and you may choose one to resurrect.",
+    "Attributes": ["Human", "Loyalist", "Agency"],
+    "Additional Information": [
+      "The Medic will not learn any players that died and then were resurrected before the Medic woke up.",
+      "If the Medic is malfunctioning, then they might be given false information."
+    ]
+  },
+
+  {
+    "Name": "Mortician",
+    "Description": "“Everybody tells a story, but every body tells the truth.”",
+    "Ability": "Each night*, if any players died this night, or the previous day, you learn if they are Human or not.",
+    "Attributes": ["Human", "Loyalist", "Agency"],
+    "Additional Information": [
+      "The Mortician can not use their ability on the first night.",
+      "The Mortician will not learn information about players that died and then were resurrected before the Mortician woke up.",
+      "If the Mortician is malfunctioning, then they might be given false information."
+    ]
+  },
+  
+  {
+    "Name": "Quartermaster",
+    "Description": "“Form an orderly line! It’s important we ration our supplies!”",
+    "Ability": "Each night, you learn a different Loyalist role that is in play.",
+    "Attributes": ["Human", "Loyalist", "Agency"],
+    "Additional Information": [
+      "If the Quartermaster is malfunctioning, then they might be given false information."
+    ]
+  },
+  
+  {
+    "Name": "Recruit/Trainee",
+    "Description": "“Don’t worry, the first twenty years are the worst.”",
+    "Ability": "Once per game, during the night, you may choose any not in-play Loyalist role, you become that role. If the role is in-play, you become injured.",
+    "Attributes": ["Human", "Loyalist", "Agency"],
+    "Additional Information": [
+      "If the Recruit gains a first night information role then they will gain that information the night they become that role."
+    ]
+  },
+  
+  {
+    "Name": "Researcher",
+    "Description": "“No, no, no! Lycanthropes do not behave in this manner! I think...”",
+    "Ability": "Each night, you learn a different Antagonist role that is not in play.",
+    "Attributes": ["Human", "Loyalist", "Agency"],
+    "Additional Information": [
+      "If the Researcher is malfunctioning, then they might be given false information."
+    ]
+  },
+  
+  {
+    "Name": "Supervisor",
+    "Description": "“You have the power, now make them listen.”",
+    "Ability": "All players know who you are.",
+    "Attributes": ["Human", "Loyalist", "Agency"],
+    "Additional Information": [
+      "If a player becomes the Supervisor after the game’s start, then the players will learn who they are on the first day in which that player is now the Supervisor."
+    ]
+  },
+  
+  {
+    "Name": "Tracker",
+    "Description": "“PLACEHOLDER”",
+    "Ability": "Each night, you learn the direction to the closest Subversive player from you, or if they’re equidistant.",
+    "Attributes": ["Human", "Loyalist", "Agency"],
+    "Additional Information": [
+      "If the Tracker is malfunctioning, then they might be given false information."
+    ]
+  },
+  
+  {
+    "Name": "Maniac",
+    "Description": "“Without a few lights, there’d be no shadows to enjoy.”",
+    "Ability": "You do not know you are the Maniac. You think you are an Antagonist role, but you are not.",
+    "Attributes": ["Human", "Loyalist", "Detrimental"],
+    "Additional Information": [
+      "If the Maniac is injured, then they learn that they’re the Maniac."
+    ]
+  },
+  
+  {
+    "Name": "Outsider",
+    "Description": "“I won’t tell anyone anything, I swear!”",
+    "Ability": "If you are obsessed about being the Outsider, you might be dismissed. If you are dismissed, Exposure increases by one.",
+    "Attributes": ["Human", "Loyalist", "Detrimental"],
+    "Additional Information": []
+  },
+  
+  {
+    "Name": "Prisoner",
+    "Description": "“How long will you keep me here? I beg you just let it end!”",
+    "Ability": "You can not nominate anyone for dismissal, or vote on any current nominations. You appear on the Subversive team and as anAntagonist role to Loyalist players.",
+    "Attributes": ["Human", "Loyalist", "Detrimental"],
+    "Additional Information": []
+  },
+  
+  {
+    "Name": "Banshee",
+    "Description": "“Shrieking, howling, wailing, keening. Your warning will be heard.”",
+    "Ability": "Each night, you must choose a player (not yourself): if they were nominated for dismissal, they die when you choose again. Your target knows they were chosen. If a player dies due to this ability, Exposure increases by one.",
+    "Attributes": ["Subversive", "Antagonist", "Psychic", "Spirit"],
+    "Additional Information": []
+  },
+  
+  {
+    "Name": "Bogeyman",
+    "Description": "“Full of fear, they’ll get no rest, consumed with terror and distress, and when that fear is all that’s left, here comes the Bogeyman.”",
+    "Ability": "Each night, you must choose a different player (not yourself): if they are dismissed, their team loses. If your target was not dismissed, they die when you choose again. All players know you are in the game. Every day, Exposure increases by one.",
+    "Attributes": ["Subversive", "Antagonist", "Psychic", "Spirit"],
+    "Additional Information": []
+  },
+  
+  {
+    "Name": "Necromancer",
+    "Description": "“Spirits gather round me, hearken to my call; I chain you to these bones, one, many, or all!”",
+    "Ability": "Each night*, you may choose a dead player: they learn who you are and join your team, they must choose a player (not themselves) to kill. If a dead player is chosen due to this ability, Exposure increases by one.",
+    "Attributes": ["Subversive", "Antagonist", "Psychic", "Human"],
+    "Additional Information": [
+      "The Necromancer can not use their ability on the first night."
+    ]
+  },
+  
+  {
+    "Name": "Serial Killer",
+    "Description": "“Kill them allslowly and painfully.”",
+    "Ability": "Each night*, you must choose a player: that player dies. If a player dies due to this ability, Exposure increases by one.",
+    "Attributes": ["Subversive", "Antagonist", "Human"],
+    "Additional Information": [
+      "The Serial Killer can not use their ability on the first night."
+    ]
+  },
+  
+  {
+    "Name": "Vampire",
+    "Description": "“Who is worthy of your gift?”",
+    "Ability": "Each night*, you may choose a player: they die. Once per game, if your last choice was no one, choose a player: if they’re Human they become a Subversive Vampire. If a player becomes a Vampire due to this ability, Exposure increases by one.",
+    "Attributes": ["Subversive", "Antagonist", "Accursed"],
+    "Additional Information": [
+      "The Vampire can not use their ability on the first night.",
+      "The first night does not count as the Vampire choosing to not use their ability, nor does a night where the Vampire is injured."
+    ]
+  },
+  
+  {
+    "Name": "Werewolf",
+    "Description": "“Inside of you, there is the beast. Inside the beast, there is you.”",
+    "Ability": "Each night*, you learn who would wake after you: they die, if the third player to die to this ability is a Human they become a Subversive Werewolf. If a player dies due to this ability, Exposure increases by one.",
+    "Attributes": ["Subversive", "Antagonist", "Accursed"],
+    "Additional Information": [
+      "A player will not be killed by Werewolf on the first night.",
+      "If the Werewolf is malfunctioning, then they might learn false information."
+    ]
+  }
+]
