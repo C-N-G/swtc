@@ -50,7 +50,7 @@ export default class Session {
 
     addVote(voteObj) {
 
-        if (voteObj === []) {
+        if (voteObj.length === 0) {
             this.votes = []
         } else {
             this.votes.push(voteObj);
