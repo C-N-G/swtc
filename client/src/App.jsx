@@ -9,28 +9,34 @@ import Options from "./components/Options.jsx";
 import Character from "./components/Character.jsx";
 import Chat from "./components/Chat.jsx";
 import Player from "./classes/player.js";
+import useLoader from "./hooks/useLoader.jsx";
 import { socket } from "./socket";
 import "./App.css"
 
 export const UserContext = createContext({});
 
-const PLAYER = new Player(54321, "Player " + 54321, 1, "Hunter", "Gluttonous", "Normal").data;
+const PLAYER = new Player(54321, "Player " + 54321, 0).data;
 
-const somePlayers = [];
-for (let i = 0; i < 16; i++) {
+const somePlayers = [PLAYER];
+for (let i = 0; i < 8; i++) {
   let player = new Player(i, "Player " + i);
   somePlayers.push(player.data);
 }
 
 function App() {
 
-  const [players, setPlayers] = useState([]);
-  const [userId, setUserId] = useState(null);
+  // const [players, setPlayers] = useState([]);
+  // const [userId, setUserId] = useState(null);
+  const [players, setPlayers] = useState(somePlayers);
+  const [userId, setUserId] = useState(54321);
+
   const [phase, setPhase] = useState({cycle: "Night", round: 1});
   const [display, setDisplay] = useState(false);
   const [votes, setVotes] = useState({list: [], voting: false, accusingPlayer: null, nominatedPlayer: null});
   const [userVote, setUserVote] = useState({0: null, 1: null});
   const [session, setSession] = useState(null);
+  const [modules, setModules] = useState([]);
+  const GameData = useLoader();
   const [isConnected, setIsConnected] = useState(socket.connected);
 
   const user = players.find(player => player.id === userId);
