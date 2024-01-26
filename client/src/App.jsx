@@ -107,7 +107,7 @@ function App() {
       if (session.players) setPlayers(session.players);
       if (session.phase) setPhase(session.phase);
       if (session.votes) setVotes(session.votes);
-      if (session.id) setSession(session.id);
+      if (session.id || session.id === null) setSession(session.id);
       if (session.modules) setModules(session.modules);
       if (userId) setUserId(userId);
 

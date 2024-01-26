@@ -193,7 +193,7 @@ io.on("connection", (socket) => {
     console.log("player", playerId, "left session", connectedSessionId);
     connectedSessionId = null;
     const blankSession = sessionManager.createSession();
-    socket.emit("sync", blankSession.getData(), null);
+    socket.emit("sync", {...blankSession.getData(), id: null}, null);
     sessionManager.removeSession(blankSession);
 
     // RESET STATE TO DEFAULTS WHEN LEAVING
