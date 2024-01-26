@@ -53,14 +53,15 @@ function Board({players, display, setDisplay, votes, setVotes, userVote, setUser
   let sideNum = BOARD_CONFIG[playerNum][1];
   let botNum = BOARD_CONFIG[playerNum][2];
 
-  const chars = useMemo(() => GameData.getCharNames(modules), [modules])
-  const roles = useMemo(() => GameData.getRoleNames(modules), [modules])
+  const [chars, roles] = useMemo(() => GameData.getFilteredValues(modules), [modules]);
 
   function createIndicator(player, index, vertical) {
 
     return (<PlayerIndicator key={index} 
     {...player}
     handleClick={handlePlayerIndicatorClick}
+    chars={chars}
+    roles={roles}
     vertical={vertical} />)
 
   }

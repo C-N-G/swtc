@@ -1,7 +1,6 @@
-import { useContext, useState } from 'react'
+import {useContext, useState, useMemo} from 'react'
 import {Card, Typography, Grid, Paper, Checkbox, FormGroup, FormControlLabel, Dialog, DialogActions, DialogContent, DialogTitle, Button}from '@mui/material';
 import {UserContext} from "../App.jsx";
-import {STATES, ROLES, CHARS, STATUSES} from "../data.js";
 import GameData from "../GameData.js"
 
 function Character(props) {
@@ -39,18 +38,20 @@ function Character(props) {
 export default Character
 
 
-function PlayerCharacter({user}) {
+function PlayerCharacter({user, modules}) {
+
+  const [chars, roles] = useMemo(() => GameData.getFilteredValues(modules), [modules]);
 
   return (<>
       <Grid container justifyContent="left" mb={2} spacing={2}>
       <Grid item xs={6}>
         <Paper elevation={2} sx={{backgroundColor: "lightgreen"}}>
-          <Typography variant="h6">State: {STATES[user.rState]}</Typography> 
+          <Typography variant="h6">State: {GameData.states[user.rState]}</Typography> 
         </Paper>
       </Grid>
       <Grid item xs={6}>
         <Paper elevation={2} sx={{backgroundColor: "lightgreen"}}>
-          <Typography variant="h6">Status: {STATUSES[user.rStatus]}</Typography> 
+          <Typography variant="h6">Status: {GameData.statuses[user.rStatus]}</Typography> 
         </Paper>
       </Grid>
       <Grid item xs textAlign="right">
@@ -59,9 +60,9 @@ function PlayerCharacter({user}) {
         <Typography>Team</Typography> 
       </Grid>
       <Grid item xs textAlign="left">
-        <Typography fontWeight={600}>{ROLES[user.rRole]}</Typography> 
-        <Typography fontWeight={600}>{CHARS[user.rChar]}</Typography> 
-        <Typography fontWeight={600}>{user.team === 0 ? "Loyalist" : "Subversive"}</Typography> 
+        <Typography fontWeight={600}>{roles[user.rRole]}</Typography> 
+        <Typography fontWeight={600}>{chars[user.rChar]}</Typography> 
+        {/* <Typography fontWeight={600}>{user.team === 0 ? "Loyalist" : "Subversive"}</Typography>  */}
       </Grid>
     </Grid>
     <iframe src="https://drive.google.com/file/d/1BSgDm_VNXi-e2_0v5L5Xd781-kFyde7k/preview" style={{flexGrow: 1}} allow="autoplay"></iframe>

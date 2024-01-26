@@ -1,7 +1,7 @@
 import {useContext} from "react";
 import {Box, Button, Typography} from '@mui/material';
 import {UserContext} from "../App.jsx";
-import {STATES, ROLES, CHARS, STATUSES} from "../data.js";
+import GameData from "../GameData.js"
 
 function PlayerIndicator(props) {
 
@@ -73,6 +73,7 @@ function RegularPlayerIndicator({id, name, label, handleClick, vertical, rState}
 
 
 function StorytellerPlayerIndicator({
+  chars, roles,
   id, name, state, role, char, status, 
   rState, rRole, rChar, rStatus, handleClick, vertical}) {
 
@@ -107,13 +108,13 @@ function StorytellerPlayerIndicator({
               overflow: "inherit",
               textTransform: "none",
             }}>
-              {STATES[rState]}{state !== rState ? "*" : ""}
+              {GameData.states[rState]}{state !== rState ? "*" : ""}
               <br />
-              {ROLES[rRole]}{role !== rRole ? "*" : ""}
+              {roles[rRole]}{role !== rRole ? "*" : ""}
               <br />
-              {CHARS[rChar]}{char !== rChar ? "*" : ""}
+              {chars[rChar]}{char !== rChar ? "*" : ""}
               <br />
-              {STATUSES[rStatus]}{status !== rStatus ? "*" : ""}
+              {GameData.statuses[rStatus]}{status !== rStatus ? "*" : ""}
           </Typography>
         </Box>
       </Button>

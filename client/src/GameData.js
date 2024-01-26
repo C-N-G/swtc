@@ -23,15 +23,9 @@ let GameData = {
     
   },
 
-  getCharNames(array) {
+  getFilteredValues(array) {
 
-    return this.filterByModule(array, "chars");
-
-  },
-
-  getRoleNames(array) {
-
-    return this.filterByModule(array, "roles");
+    return [this.filterByModule(array, "chars"), this.filterByModule(array, "roles")]
 
   },
 
