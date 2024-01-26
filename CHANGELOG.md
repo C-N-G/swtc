@@ -23,6 +23,7 @@
   - slightly reformatted the content
   - added scrollability to the window if the role or characteristic text is too long
 - added input validation to the host and join dialogues, also added some helper text
+  - also added keyboard event listeners to the input fields so pressing enter will now active them
 - fixed player order bug
 - fixed logical error in vote adding
 - fixed bug with session id not updating after leaving a session
