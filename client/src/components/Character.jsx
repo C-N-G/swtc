@@ -1,5 +1,6 @@
 import {useContext, useState, useMemo} from 'react'
-import {Card, Typography, Grid, Paper, Checkbox, FormGroup, FormControlLabel, Dialog, DialogActions, DialogContent, DialogTitle, Button}from '@mui/material';
+import {Card, Typography, Grid, Paper, Checkbox, FormGroup, FormControlLabel, Dialog, 
+        DialogActions, DialogContent, DialogTitle, Button, Box}from '@mui/material';
 import {UserContext} from "../App.jsx";
 import GameData from "../GameData.js"
 import {socket} from "../socket.js";
@@ -43,8 +44,11 @@ function PlayerCharacter({user, modules}) {
 
   const [chars, roles] = useMemo(() => GameData.getFilteredValues(modules), [modules]);
 
+  const fullRole = GameData.roles.find(ele => ele.Name === GameData.hackValue(roles[user.rRole]));
+  const fullChar = GameData.chars.find(ele => ele.Name === GameData.hackValue(chars[user.rChar]));
+
   return (<>
-      <Grid container justifyContent="left" mb={2} spacing={2}>
+    <Grid container justifyContent="left" spacing={2}>
       <Grid item xs={6}>
         <Paper elevation={2} sx={{backgroundColor: "lightgreen"}}>
           <Typography variant="h6">State: {GameData.states[user.rState]}</Typography> 
@@ -55,27 +59,43 @@ function PlayerCharacter({user, modules}) {
           <Typography variant="h6">Status: {GameData.statuses[user.rStatus]}</Typography> 
         </Paper>
       </Grid>
+    </Grid>
+    <Grid container justifyContent="left" mt={1} spacing={2} sx={{overflow: "auto"}}>
       <Grid item xs textAlign="right">
-        <Typography>Role</Typography> 
-        <Typography>Characteristic</Typography> 
-        {/* <Typography>Team</Typography>  */}
+        <Typography fontWeight={"Bold"}>Role</Typography> 
       </Grid>
       <Grid item xs textAlign="left">
-        <Typography fontWeight={600}>{GameData.hackValue(roles[user.rRole])}</Typography> 
-        <Typography fontWeight={600}>{GameData.hackValue(chars[user.rChar])}</Typography> 
-        {/* <Typography fontWeight={600}>{user.team === 0 ? "Loyalist" : "Subversive"}</Typography>  */}
+        <Typography>{GameData.hackValue(roles[user.rRole])}</Typography> 
+      </Grid>
+      <Grid item xs={12}>
+        <Typography variant="body2" gutterBottom>{fullRole.Description}</Typography>
+        <Typography variant="body2"><Box component="span" fontWeight={"Bold"}>{fullRole.Ability ? "Mechanics: " : ""}</Box>{fullRole.Ability}</Typography>
+        {fullRole["Additional Information"].map((ele, index) => <Typography variant="body2" key={fullRole.Name + index}>{ele}</Typography>)}
+      </Grid>
+      <Grid item xs textAlign="right">
+        <Typography fontWeight={"Bold"}>Characteristic</Typography> 
+      </Grid>
+      <Grid item xs textAlign="left">
+        <Typography>{GameData.hackValue(chars[user.rChar])}</Typography> 
+      </Grid>
+      <Grid item xs={12}>
+        <Typography variant="body2" gutterBottom>{fullChar.Description}</Typography>
+        <Typography variant="body2"><Box component="span" fontWeight={"Bold"}>{fullChar.Ability ? "Mechanics: " : ""}</Box>{fullChar.Ability}</Typography>
+        {fullChar["Additional Information"].map((ele, index) => <Typography variant="body2" key={fullChar.Name + index}>{ele}</Typography>)}
       </Grid>
     </Grid>
-    <iframe src="https://drive.google.com/file/d/1BSgDm_VNXi-e2_0v5L5Xd781-kFyde7k/preview" style={{flexGrow: 1}} allow="autoplay"></iframe>
+    {/* <iframe src="https://drive.google.com/file/d/1BSgDm_VNXi-e2_0v5L5Xd781-kFyde7k/preview" style={{flexGrow: 1}} allow="autoplay"></iframe> */}
   </>)
 
 }
 
 
 
-function StoryTellerCharacter({session, modules}) {
+function StoryTellerCharacter({session, modules, players}) {
 
   const [modSelOpen, setModSelOpen] = useState(false);
+
+  const [chars, roles] = useMemo(() => GameData.getFilteredValues(modules), [modules]);
 
   function handleModuleSelection(e) {
 
@@ -96,6 +116,49 @@ function StoryTellerCharacter({session, modules}) {
 
   }
 
+  function randomisePlayers() {
+    
+    const charsTaken = new Set();
+    const rolesTaken = new Set();
+
+    const randomisedPlayers = players.map(player => {
+
+      let randomChar;
+      while (typeof randomChar === "undefined") {
+        let randomNum = Math.floor(Math.random() * (chars.length - 1) + 1)
+        if (charsTaken.has(randomNum) === false) {
+          charsTaken.add(randomNum);
+          randomChar = randomNum;
+        }
+        if (players.length > chars.length) {
+          randomChar = randomNum;
+        }
+      }
+      player.char = randomChar;
+      player.rChar = randomChar;
+
+      let randomRole;
+      while (typeof randomRole === "undefined") {
+        let randomNum = Math.floor(Math.random() * (roles.length - 1) + 1)
+        if (rolesTaken.has(randomNum) === false) {
+          rolesTaken.add(randomNum);
+          randomRole = randomNum;
+        }
+        if (players.length > roles.length) {
+          randomRole = randomNum;
+        }
+      }
+      player.role = randomRole;
+      player.rRole = randomRole;
+
+      return player
+    })
+
+
+    socket.emit("sync", {players: randomisedPlayers})
+      
+  }
+
   const allMods = GameData.modules.map(mod => {
     const title = `${mod.Name} - ${mod.roles.length} roles - ${mod.chars.length} chars`;
     const checkbox = <Checkbox 
@@ -107,9 +170,13 @@ function StoryTellerCharacter({session, modules}) {
 
   return (<>
     <Typography variant="h6">Session Id: {session}</Typography>
-    <Button variant="contained" onClick={() => setModSelOpen(true)}>
+    <Button variant="contained" sx={{my: 1}} onClick={() => setModSelOpen(true)}>
       Select Modules
     </Button>
+    <Button variant="contained" sx={{my: 1}} onClick={randomisePlayers}>
+      Randomise Players
+    </Button>
+
     <Dialog open={modSelOpen} onClose={() => setModSelOpen(false)} >
       <DialogTitle>Select Modules</DialogTitle>
       <DialogContent>

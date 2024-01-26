@@ -40,19 +40,15 @@ const modalStyle = {
   px: 4,
 };
 
-function Board({players, display, setDisplay, votes, setVotes, userVote, setUserVote, handleChange, modules}) {
+function Board({drawPlayers, display, setDisplay, votes, setVotes, userVote, setUserVote, handleChange, modules}) {
 
   const [selected, setSelected] = useState(null);
   const [open, setOpen] = useState(false); 
 
-  const drawPlayers = players.filter(player => player.type === 1);
-
   const playerNum = drawPlayers.length;
-
-  let topNum = BOARD_CONFIG[playerNum][0];
-  let sideNum = BOARD_CONFIG[playerNum][1];
-  let botNum = BOARD_CONFIG[playerNum][2];
-
+  const topNum = BOARD_CONFIG[playerNum][0];
+  const sideNum = BOARD_CONFIG[playerNum][1];
+  const botNum = BOARD_CONFIG[playerNum][2];
   const [chars, roles] = useMemo(() => GameData.getFilteredValues(modules), [modules]);
 
   function createIndicator(player, index, vertical) {

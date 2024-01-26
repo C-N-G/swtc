@@ -49,6 +49,12 @@ export default class Session {
 
     }
 
+    setPlayers(players) {
+
+      this.players = players;
+      
+    }
+
     addVote(voteObj) {
 
         if (voteObj.length === 0) {

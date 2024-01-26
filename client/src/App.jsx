@@ -1,8 +1,7 @@
 import {useState, createContext, useEffect} from "react";
 // eslint-disable-next-line no-unused-vars
 import { createTheme } from "@mui/material/styles";
-import {Container, Grid, Button} from "@mui/material";
-import {InputLabel, MenuItem, FormControl, Select} from "@mui/material"; //debug menu
+import {Container, Grid} from "@mui/material";
 import Board from "./components/Board.jsx";
 import Phase from "./components/Phase.jsx";
 import Options from "./components/Options.jsx";
@@ -26,22 +25,23 @@ function App() {
 
   const [players, setPlayers] = useState([]);
   const [userId, setUserId] = useState(null);
+  const [modules, setModules] = useState([]);
   // const [players, setPlayers] = useState(somePlayers);
   // const [userId, setUserId] = useState(54321);
+  // const [modules, setModules] = useState(["Standard Procedure"]);
 
   const [phase, setPhase] = useState({cycle: "Night", round: 1});
   const [display, setDisplay] = useState(false);
   const [votes, setVotes] = useState({list: [], voting: false, accusingPlayer: null, nominatedPlayer: null});
   const [userVote, setUserVote] = useState({0: null, 1: null});
   const [session, setSession] = useState(null);
-  const [modules, setModules] = useState([]);
+  
   const [isConnected, setIsConnected] = useState(socket.connected);
 
   const user = players.find(player => player.id === userId);
+  const drawPlayers = players.filter(player => player.type === 1);
 
   function handlePlayerDataChange(targetId, targetProperty, targetValue, fromServer = false) {
-
-    // console.log(targetId, targetProperty, targetValue);
 
     if (["rRole", "rChar", "rState", "rStatus"].includes(targetProperty) && fromServer === false) {
       return socket.emit("attribute", {targetId: targetId, targetProperty: targetProperty, targetValue: targetValue});
@@ -60,7 +60,6 @@ function App() {
   useEffect(() => {
     function onConnect() {
       setIsConnected(true);
-      // socket.emit("join", "Wg97Ev", socket.id);
     }
 
     function onDisconnect() {
@@ -105,14 +104,12 @@ function App() {
 
     function onSyncState(session, userId) {
 
-      setPlayers(session.players);
-      setPhase(session.phase);
-      setVotes(session.votes);
-      setSession(session.id);
-      if (userId) {
-        setUserId(userId);
-      }
-      setModules(session.modules);
+      if (session.players) setPlayers(session.players);
+      if (session.phase) setPhase(session.phase);
+      if (session.votes) setVotes(session.votes);
+      if (session.id) setSession(session.id);
+      if (session.modules) setModules(session.modules);
+      if (userId) setUserId(userId);
 
     }
 
@@ -146,7 +143,7 @@ function App() {
           <Options session={session}/>
         </Grid>
         <Grid item xs={8}>
-          <Board players={players} 
+          <Board drawPlayers={drawPlayers} 
             display={display}
             setDisplay={setDisplay}
             votes={votes}
@@ -159,15 +156,10 @@ function App() {
         <Grid item xs={4}>
           <Character 
             session={session}
-            modules={modules}/>
+            modules={modules}
+            players={players}/>
           <Chat>
             CHAT W.I.P
-            {/* <div>
-              <DebugMenu playerNum={playerNum} 
-                setPlayerNum={setPlayerNum} 
-                setDisplay={setDisplay}
-                setUser={setUser} />
-            </div> */}
           </Chat>
         </Grid>
       </Grid>
@@ -178,64 +170,3 @@ function App() {
 }
 
 export default App
-
-function DebugMenu({playerNum, setPlayerNum, setDisplay, setUser}) {
-
-  const STORYTELLER = new Player(54321, "Player " + 54321, 0, "Hunter", "Gluttonous", "Normal").data
-
-  function handleChange() {
-
-    setUser((prev) => {
-      if (prev.type === 0) {
-        return PLAYER;
-      } else {
-        return STORYTELLER;
-      }
-    })
-
-  }
-  
-  return (
-    <Grid container >
-      <Grid item width={80}>
-        <FormControl fullWidth>
-          <InputLabel id="player-select-label">Players</InputLabel>
-          <Select
-            labelId="player-select-label"
-            id="player-select"
-            value={playerNum}
-            label="Players"
-            onChange={(event) => {setPlayerNum(event.target.value)}}
-          >
-            <MenuItem value={1}>1</MenuItem>
-            <MenuItem value={2}>2</MenuItem>
-            <MenuItem value={3}>3</MenuItem>
-            <MenuItem value={4}>4</MenuItem>
-            <MenuItem value={5}>5</MenuItem>
-            <MenuItem value={6}>6</MenuItem>
-            <MenuItem value={7}>7</MenuItem>
-            <MenuItem value={8}>8</MenuItem>
-            <MenuItem value={9}>9</MenuItem>
-            <MenuItem value={10}>10</MenuItem>
-            <MenuItem value={11}>11</MenuItem>
-            <MenuItem value={12}>12</MenuItem>
-            <MenuItem value={13}>13</MenuItem>
-            <MenuItem value={14}>14</MenuItem>
-            <MenuItem value={15}>15</MenuItem>
-            <MenuItem value={16}>16</MenuItem>
-          </Select>
-        </FormControl>
-      </Grid>
-      <Grid item width={80}>
-        <Button size="small" variant="contained" onClick={() => {setDisplay(2)}} >
-          show vote menu
-        </Button>
-      </Grid>
-      <Grid item width={80}>
-        <Button size="small" variant="contained" onClick={() => {handleChange()}} >
-          toggle story teller
-        </Button>
-      </Grid>
-    </Grid>
-  );
-}

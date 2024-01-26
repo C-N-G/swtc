@@ -153,6 +153,25 @@ io.on("connection", (socket) => {
 
   })
 
+  socket.on("sync", (data) => {
+
+    console.log("syncing session data from client", Object.keys(data));
+
+    const session = sessionManager.getSession(connectedSessionId);
+    if (!session) return;
+
+    let returnData = {}
+
+    if (data.players) {
+      session.setPlayers(data.players);
+      returnData.players = data.players;
+    }
+
+    io.to(connectedSessionId).emit("sync", returnData);
+    console.log("synced session with clients", Object.keys(returnData));
+
+  })
+
   socket.on("disconnect", () => {
 
     if (connectedSessionId !== null) {
