@@ -1,4 +1,4 @@
-import {useState, useRef} from "react";
+import {useState} from "react";
 import {Button, Menu, MenuItem, Box, Card, Typography, TextField, Dialog, 
   DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -6,36 +6,59 @@ import {socket} from "../socket.js";
 
 function Options({session}) {
 
+  const defaultInputs = {
+    hostName: {value: "", error: false}, 
+    joinName: {value: "", error: false}, 
+    joinId: {value: "", error: false}
+  };
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [openModal, setOpenModal] = useState(0);
-  const hostName = useRef("");
-  const joinName = useRef("");
-  const joinId = useRef("");
+  const [inputs, setInputs] = useState(defaultInputs);
+
   const open = Boolean(anchorEl);
   
   function handleClose() {
     setAnchorEl(null);
     setOpenModal(0);
+    setInputs(defaultInputs);
   }
 
   function handleHost() {
 
-    const name = hostName.current.value;
-    if (name.length > 0) {
+    const name = inputs.hostName.value;
+    if (name.length >= 3 && name.length <= 16) {
       socket.emit("host", name);
       handleClose();
+    } else {
+      setInputs(prev => { 
+        return {...prev, hostName: {...prev.hostName, error: true}} 
+      })
     }
 
   }
 
   function handleJoin() {
 
-    const id = joinId.current.value;
-    const name = joinName.current.value;
-    if (name.length > 0) {
+    const name = inputs.joinName.value;
+    const id = inputs.joinId.value;
+    
+    const nameValidated = name.length >= 3 && name.length <= 16;
+    const idValidated = id.length === 7;
+
+    console.log(nameValidated, idValidated);
+    
+    setInputs(prev => { 
+      return {...prev, 
+        joinName: {...prev.joinName, error: !nameValidated},
+        joinId: {...prev.joinId, error: !idValidated}} 
+    })
+    
+    if (nameValidated && idValidated) {
       socket.emit("join", id, name);
       handleClose();
     }
+
 
   }
 
@@ -43,6 +66,25 @@ function Options({session}) {
 
     socket.emit("leave");
     handleClose();
+
+  }
+
+  function textFieldBuilder(id, label, input, errorText, handleFunc, focus) {
+
+    return <TextField
+      autoFocus={focus}
+      margin="dense"
+      id={id}
+      label={label}
+      type="text"
+      fullWidth
+      variant="standard"
+      error={inputs[input].error}
+      value={inputs[input].value}
+      onChange={(e) => {setInputs(prev => {return {...prev, [input]: {...prev[input], value: e.target.value}}})}}
+      onKeyDown={(e) => e.key === "Enter" ? handleFunc() : "" }
+      helperText={inputs[input].error ? errorText : ""}
+    />
 
   }
 
@@ -90,16 +132,7 @@ function Options({session}) {
             <DialogContentText>
               To host a session, please enter your name below.
             </DialogContentText>
-            <TextField
-              inputRef={hostName}
-              autoFocus
-              margin="dense"
-              id="host-name"
-              label="Name"
-              type="text"
-              fullWidth
-              variant="standard"
-            />
+            {textFieldBuilder("host-name", "Name", "hostName", "Must be between 3 to 16 characters", handleHost, true)}
           </DialogContent>
           <DialogActions>
             <Button onClick={handleHost}>Host</Button>
@@ -114,25 +147,8 @@ function Options({session}) {
               To join a session, plase enter your display name.
               And the ID of the session you wish to connect to.
             </DialogContentText>
-            <TextField
-              inputRef={joinName}
-              autoFocus
-              margin="dense"
-              id="join-name"
-              label="Name"
-              type="text"
-              fullWidth
-              variant="standard"
-            />
-            <TextField
-              inputRef={joinId}
-              margin="dense"
-              id="join-id"
-              label="Session ID"
-              type="text"
-              fullWidth
-              variant="standard"
-            />
+            {textFieldBuilder("join-name", "Name", "joinName", "Must be between 3 to 16 characters", handleJoin, true)}
+            {textFieldBuilder("join-id", "Session ID", "joinId", "Must be 7 characters long", handleJoin, false)}
           </DialogContent>
           <DialogActions>
             <Button onClick={handleJoin}>Join</Button>
