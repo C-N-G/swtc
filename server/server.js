@@ -1,10 +1,3 @@
-// create http server to serve spa
-
-// const http = require("node:http");
-// const path = require("node:path");
-// const fs = require("node:fs");
-// const { Server } = require("socket.io");
-// const SessionManager = require("./sessionManager.js");
 import http from "node:http";
 import path from "node:path";
 import { fileURLToPath } from 'url';
@@ -65,11 +58,6 @@ const options = process.env.NODE_ENV === "production" ? {} : {
 // create websocket server
 const io = new Server(httpserver, options);
 
-// TODO GAME JOINING FUNCTIONALITY
-// TODO GAME SESSION FUNCTIONALITY
-// TODO GAME SESSION DESTROYING
-// TODO UPDATE PLAYER DETAILS BASED ON ACTUAL PLAYER DATA
-
 const sessionManager = new SessionManager();
 
 io.on("connection", (socket) => {
@@ -87,6 +75,7 @@ io.on("connection", (socket) => {
     if (sessionManager.sessionExists(sessionId)) {
       connectedSessionId = sessionId;
       const session = sessionManager.getSession(sessionId);
+      if (!session) return;
       const userId = sessionManager.joinSession(sessionId, playerId, name);
       socket.join(sessionId);
       socket.to(sessionId).emit("sync", session.getData());
@@ -115,6 +104,7 @@ io.on("connection", (socket) => {
   socket.on("phase", (data) => {
 
     const session = sessionManager.getSession(connectedSessionId);
+    if (!session) return;
     session.setPhase(data);
     io.to(connectedSessionId).emit("phase", data);
     console.log("phase updated with", data);
@@ -124,6 +114,7 @@ io.on("connection", (socket) => {
   socket.on("attribute", (data) => {
 
     const session = sessionManager.getSession(connectedSessionId);
+    if (!session) return;
     session.updatePlayer(data.targetId, data.targetProperty, data.targetValue);
     io.to(connectedSessionId).emit("attribute", data);
     console.log("player updated with", data);
@@ -137,6 +128,7 @@ io.on("connection", (socket) => {
 
 
     const session = sessionManager.getSession(connectedSessionId);
+    if (!session) return;
     console.log("session", session)
     Object.keys(data).map(property => {
       if (property === "voting") session.setVoting(data[property]);
@@ -154,6 +146,7 @@ io.on("connection", (socket) => {
     console.log("module change data", data);
 
     const session = sessionManager.getSession(connectedSessionId);
+    if (!session) return;
     session.setModules(data);
     io.to(connectedSessionId).emit("module", data);
     console.log("updated modules with", data);
