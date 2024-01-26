@@ -1,3 +1,32 @@
+26/01/2023 v0.3.1
+- created strings directory for storing game related data e.g. roles and characteristics
+  - created data loading logic so future future data can be added easily
+  - organised loading and storage directory to incorporate module functionality
+  - currently data is sorted in alphabetical order (with the exception of "Unknown" whish is a special value)
+- added new game data source to player indicators, player details, and character window
+- added new module select button to the character window in the storyteller view 
+  - synced module selection to all connected clients of a session
+  - players and storytellers can now only select roles and chars from enabled modules
+  - the button also shows how many modules are currently selected
+- added server error checking for invalid sessions
+- added randomiser button to character window in the storyteller view
+  - current functionality will choose a random role and characteristic for all connected clients
+  - each role and characteristic can only be chosen once, unless there are less roles or characteristics than connect clients
+  - aside from that there is currently no special logic involved, and all choises are complete random
+  - as such the storyteller may wish to make some changes after randomising
+  - this feature is synced and will impact all connect clients immediately
+- added copy button to the session id section of the character window for the storyteller
+- updated the character window for players
+  - removed the Iframe to the rulebook pdf
+  - added locally stored game data text specific to that players role and characteristic
+  - removed the team section in the character window
+  - slightly reformatted the content
+  - added scrollability to the window if the role or characteristic text is too long
+- added input validation to the host and join dialogues, also added some helper text
+- fixed player order bug
+- fixed logical error in vote adding
+- fixed bug with session id not updating after leaving a session
+
 23/12/2023 v0.3.0
 - added state syncing when players join or leave
 - added host session menu item under options
