@@ -110,9 +110,9 @@ function StorytellerPlayerIndicator({
             }}>
               {GameData.states[rState]}{state !== rState ? "*" : ""}
               <br />
-              {roles[rRole]}{role !== rRole ? "*" : ""}
+              {GameData.hackValue(roles[rRole])}{role !== rRole ? "*" : ""}
               <br />
-              {chars[rChar]}{char !== rChar ? "*" : ""}
+              {GameData.hackValue(chars[rChar])}{char !== rChar ? "*" : ""}
               <br />
               {GameData.statuses[rStatus]}{status !== rStatus ? "*" : ""}
           </Typography>

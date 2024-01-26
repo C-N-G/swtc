@@ -11,6 +11,7 @@ export default class Session {
         this.accusingPlayer = null;
         this.nominatedPlayer = null;
         this.phase = {cycle: "Night", round: 1};
+        this.modules = [];
 
     }
 
@@ -97,6 +98,12 @@ export default class Session {
 
     }
 
+    setModules(newModules) {
+
+      this.modules = newModules;
+
+    }
+
     getData() {
 
         return {
@@ -107,7 +114,8 @@ export default class Session {
                 accusingPlayer: this.accusingPlayer, 
                 nominatedPlayer: this.nominatedPlayer, 
                 voting: this.isVoting },
-            phase: this.phase
+            phase: this.phase,
+            modules: this.modules
         }
 
     }

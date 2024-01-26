@@ -132,8 +132,8 @@ io.on("connection", (socket) => {
 
   socket.on("vote", (data) => {
 
-    console.log("data", data)
-    console.log("data", connectedSessionId)
+    console.log("data", data);
+    console.log("data", connectedSessionId);
 
 
     const session = sessionManager.getSession(connectedSessionId);
@@ -146,6 +146,17 @@ io.on("connection", (socket) => {
     })
     io.to(connectedSessionId).emit("vote", data);
     console.log("vote updated with", data);
+
+  })
+
+  socket.on("module", (data) => {
+
+    console.log("module change data", data);
+
+    const session = sessionManager.getSession(connectedSessionId);
+    session.setModules(data);
+    io.to(connectedSessionId).emit("module", data);
+    console.log("updated modules with", data);
 
   })
 

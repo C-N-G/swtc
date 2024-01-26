@@ -40,7 +40,7 @@ function RegularPlayerDetails({
       size="small"
       options={list}
       renderInput={(params) => <TextField {...params} label={type} />}
-      value={list[value] ? list[value] : list[0]} // hack - this is for when the modules change and the current value no longer exists
+      value={GameData.hackValue(list[value])} // hack - this is for when the modules change and the current value no longer exists
       onChange={(_, newValue) => handleChange(playerId, type.toLowerCase(), list.indexOf(newValue))}
     />
   }

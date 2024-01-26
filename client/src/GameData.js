@@ -29,6 +29,10 @@ let GameData = {
 
   },
 
+  hackValue(input) {
+    return typeof input === "undefined" ? "Unknown" : input; 
+  }
+
 }
 
 function loader(load_obj) {

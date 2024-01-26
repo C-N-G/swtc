@@ -2,6 +2,7 @@ import {useContext, useState, useMemo} from 'react'
 import {Card, Typography, Grid, Paper, Checkbox, FormGroup, FormControlLabel, Dialog, DialogActions, DialogContent, DialogTitle, Button}from '@mui/material';
 import {UserContext} from "../App.jsx";
 import GameData from "../GameData.js"
+import {socket} from "../socket.js";
 
 function Character(props) {
 
@@ -57,11 +58,11 @@ function PlayerCharacter({user, modules}) {
       <Grid item xs textAlign="right">
         <Typography>Role</Typography> 
         <Typography>Characteristic</Typography> 
-        <Typography>Team</Typography> 
+        {/* <Typography>Team</Typography>  */}
       </Grid>
       <Grid item xs textAlign="left">
-        <Typography fontWeight={600}>{roles[user.rRole]}</Typography> 
-        <Typography fontWeight={600}>{chars[user.rChar]}</Typography> 
+        <Typography fontWeight={600}>{GameData.hackValue(roles[user.rRole])}</Typography> 
+        <Typography fontWeight={600}>{GameData.hackValue(chars[user.rChar])}</Typography> 
         {/* <Typography fontWeight={600}>{user.team === 0 ? "Loyalist" : "Subversive"}</Typography>  */}
       </Grid>
     </Grid>
@@ -72,7 +73,7 @@ function PlayerCharacter({user, modules}) {
 
 
 
-function StoryTellerCharacter({session, modules, setModules}) {
+function StoryTellerCharacter({session, modules}) {
 
   const [modSelOpen, setModSelOpen] = useState(false);
 
@@ -80,15 +81,18 @@ function StoryTellerCharacter({session, modules, setModules}) {
 
     const checked = e.target.checked;
     const targetMod = e.target.value;
+
+    let data;
+
     if (checked === true) {
-      setModules(prev => [...prev, targetMod]);
+      data = [...modules, targetMod];
     }
 
     if (checked === false) {
-      setModules(prev => prev.filter((mod) => mod !== targetMod));
+      data = modules.filter((mod) => mod !== targetMod);
     }
 
-
+    socket.emit("module", data);
 
   }
 

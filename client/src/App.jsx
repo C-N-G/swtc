@@ -24,10 +24,10 @@ for (let i = 0; i < 8; i++) {
 
 function App() {
 
-  // const [players, setPlayers] = useState([]);
-  // const [userId, setUserId] = useState(null);
-  const [players, setPlayers] = useState(somePlayers);
-  const [userId, setUserId] = useState(54321);
+  const [players, setPlayers] = useState([]);
+  const [userId, setUserId] = useState(null);
+  // const [players, setPlayers] = useState(somePlayers);
+  // const [userId, setUserId] = useState(54321);
 
   const [phase, setPhase] = useState({cycle: "Night", round: 1});
   const [display, setDisplay] = useState(false);
@@ -75,6 +75,10 @@ function App() {
       handlePlayerDataChange(data.targetId, data.targetProperty, data.targetValue, true);
     }
 
+    function onModuleChange(data) {
+      setModules(data);
+    }
+
     function onVoteStateChange(data) {
       if (Object.hasOwn(data, "voting")) {
         setVotes((prev) => ({...prev, voting: data.voting}));
@@ -108,6 +112,7 @@ function App() {
       if (userId) {
         setUserId(userId);
       }
+      setModules(session.modules);
 
     }
 
@@ -117,6 +122,7 @@ function App() {
     socket.on("attribute", onPlayerAttributeChange);
     socket.on("vote", onVoteStateChange);
     socket.on("sync", onSyncState);
+    socket.on("module", onModuleChange);
 
     return () => {
       socket.off("connect", onConnect);
@@ -125,6 +131,7 @@ function App() {
       socket.off("attribute", onPlayerAttributeChange);
       socket.off("vote", onVoteStateChange);
       socket.off("sync", onSyncState);
+      socket.off("module", onModuleChange);
     };
   }, []);
 
@@ -152,8 +159,7 @@ function App() {
         <Grid item xs={4}>
           <Character 
             session={session}
-            modules={modules}
-            setModules={setModules}/>
+            modules={modules}/>
           <Chat>
             CHAT W.I.P
             {/* <div>
