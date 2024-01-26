@@ -1,7 +1,7 @@
 import {useContext} from "react";
 import {Box, Typography, Button, Grid, TextField, Autocomplete, Stack, Divider} from '@mui/material';
 import {UserContext} from "../App.jsx";
-import {STATES, ROLES, CHARS, STATUSES} from "../data.js";
+import GameData from "../GameData.js"
 
 function PlayerDetails(props) {
 
@@ -28,8 +28,22 @@ export default PlayerDetails
 
 
 function RegularPlayerDetails({
+  chars, roles,
   id, name, rState, label, role, 
   char, status, notes, handleChange }) {
+
+  function selectBuilder(playerId, type, list, value) {
+    return <Autocomplete
+      disablePortal
+      disableClearable
+      id={`player-${type.toLowerCase()}-input`}
+      size="small"
+      options={list}
+      renderInput={(params) => <TextField {...params} label={type} />}
+      value={list[value] ? list[value] : list[0]} // hack - this is for when the modules change and the current value no longer exists
+      onChange={(_, newValue) => handleChange(playerId, type.toLowerCase(), list.indexOf(newValue))}
+    />
+  }
 
 
   return (
@@ -54,38 +68,11 @@ function RegularPlayerDetails({
           <Box sx={{display: "flex", justifyContent: "center", gap: "0.5rem"}}>
             <Typography variant="h5">State</Typography>
             <Divider orientation="vertical" flexItem />
-            <Typography variant="h5">{STATES[rState]}</Typography>
+            <Typography variant="h5">{GameData.states[rState]}</Typography>
           </Box>
-          <Autocomplete
-            disablePortal
-            disableClearable
-            id="player-role-input"
-            size="small"
-            options={ROLES}
-            renderInput={(params) => <TextField {...params} label="Role"/>}
-            value={ROLES[role]}
-            onChange={(_, newValue) => handleChange(id, "role", ROLES.indexOf(newValue))}
-          />
-          <Autocomplete
-            disablePortal
-            disableClearable
-            id="player-char-input"
-            options={CHARS}
-            size="small"
-            renderInput={(params) => <TextField {...params} label="Characteristic" />}
-            value={CHARS[char]}
-            onChange={(_, newValue) => handleChange(id, "char", CHARS.indexOf(newValue))}
-          />
-          <Autocomplete
-            disablePortal
-            disableClearable
-            id="player-status-input"
-            options={STATUSES}
-            size="small"
-            renderInput={(params) => <TextField {...params} label="Status" />}
-            value={STATUSES[status]}
-            onChange={(_, newValue) => handleChange(id, "status", STATUSES.indexOf(newValue))}
-          />
+          {selectBuilder(id, "Role", roles, role)}
+          {selectBuilder(id, "Char", chars, char)}
+          {selectBuilder(id, "Status", GameData.statuses, status)}
         </Stack>
       </Grid>
       <Grid item xs={12}>
@@ -109,8 +96,25 @@ function RegularPlayerDetails({
 
 
 function StoryTellerDetails({
-  id, name, state, role, char, status, 
-  rState, rRole, rChar, rStatus, handleChange, handleDismissalClick }) {
+  id, name, handleChange, handleDismissalClick, chars, roles,
+  state, role, char, status, 
+  rState, rRole, rChar, rStatus }) {
+
+  const leftVal = "Shown";
+  const rightVal = "True"
+
+  function selectBuilder(playerId, type, real, list, value) {
+    return <Autocomplete
+      disablePortal
+      disableClearable
+      id={`storyteller-${real ? leftVal : rightVal}-${type.toLowerCase()}-input`}
+      size="small"
+      options={list}
+      renderInput={(params) => <TextField {...params} label={`${real ? leftVal : rightVal} ${type}`} />}
+      value={list[value] ? list[value] : list[0]} // hack - this is for when the modules change and the current value no longer exists
+      onChange={(_, newValue) => handleChange(playerId, `${real ? "r" : ""}${real ? type : type.toLowerCase()}`, list.indexOf(newValue))}
+    />
+  }
 
 
   return (
@@ -123,93 +127,18 @@ function StoryTellerDetails({
       </Grid>
       <Grid item xs={6}>
         <Stack spacing={2} sx={{m: 1}}>
-          <Autocomplete
-            disablePortal
-            disableClearable
-            id="storyteller-real-state-input"
-            size="small"
-            options={STATES}
-            renderInput={(params) => <TextField {...params} label="Real State"/>}
-            value={STATES[rState]}
-            onChange={(_, newValue) => handleChange(id, "rState", STATES.indexOf(newValue))}
-          />
-          <Autocomplete
-            disablePortal
-            disableClearable
-            id="storyteller-real-role-input"
-            size="small"
-            options={ROLES}
-            renderInput={(params) => <TextField {...params} label="Real Role"/>}
-            value={ROLES[rRole]}
-            onChange={(_, newValue) => handleChange(id, "rRole", ROLES.indexOf(newValue))}
-          />
-          <Autocomplete
-            disablePortal
-            disableClearable
-            id="storyteller-real-char-input"
-            options={CHARS}
-            size="small"
-            renderInput={(params) => <TextField {...params} label="Real Characteristic"/>}
-            value={CHARS[rChar]}
-            onChange={(_, newValue) => handleChange(id, "rChar", CHARS.indexOf(newValue))}
-          />
-          <Autocomplete
-            disablePortal
-            disableClearable
-            id="storyteller-real-status-input"
-            options={STATUSES}
-            size="small"
-            renderInput={(params) => <TextField {...params} label="Real Status" />}
-            value={STATUSES[rStatus]}
-            onChange={(_, newValue) => handleChange(id, "rStatus", STATUSES.indexOf(newValue))}
-          />
+          {selectBuilder(id, "State", true, GameData.states, rState)}
+          {selectBuilder(id, "Role", true, roles, rRole)}
+          {selectBuilder(id, "Char", true, chars, rChar)}
+          {selectBuilder(id, "Status", true, GameData.statuses, rStatus)}
         </Stack>
       </Grid>
       <Grid item xs={6}>
         <Stack spacing={2} sx={{m: 1}}>
-          <Autocomplete
-            disablePortal
-            disableClearable
-            id="storyteller-secret-state-input"
-            size="small"
-            options={STATES}
-            renderInput={(params) => <TextField {...params} label="Secret State"/>}
-            value={STATES[state]}
-            onChange={(_, newValue) => handleChange(id, "state", STATES.indexOf(newValue))}
-            isOptionEqualToValue={(option, value) => value.id === option.id || value === ""}
-          />
-          <Autocomplete
-            disablePortal
-            disableClearable
-            id="storyteller-secret-role-input"
-            size="small"
-            options={ROLES}
-            renderInput={(params) => <TextField {...params} label="Secret Role"/>}
-            value={ROLES[role]}
-            onChange={(_, newValue) => handleChange(id, "role", ROLES.indexOf(newValue))}
-            isOptionEqualToValue={(option, value) => value.id === option.id || value === ""}
-          />
-          <Autocomplete
-            disablePortal
-            disableClearable
-            id="storyteller-secret-char-input"
-            options={CHARS}
-            size="small"
-            renderInput={(params) => <TextField {...params} label="Secret Characteristic"/>}
-            value={CHARS[char]}
-            onChange={(_, newValue) => handleChange(id, "char", CHARS.indexOf(newValue))}
-            isOptionEqualToValue={(option, value) => value.id === option.id || value === ""}
-          />
-          <Autocomplete
-            disablePortal
-            disableClearable
-            id="storyteller-secret-status-input"
-            options={STATUSES}
-            size="small"
-            renderInput={(params) => <TextField {...params} label="Secret Status" />}
-            value={STATUSES[status]}
-            onChange={(_, newValue) => handleChange(id, "status", STATUSES.indexOf(newValue))}
-          />
+          {selectBuilder(id, "State", false, GameData.states, state)}
+          {selectBuilder(id, "Role", false, roles, role)}
+          {selectBuilder(id, "Char", false, chars, char)}
+          {selectBuilder(id, "Status", false, GameData.statuses, status)}
         </Stack>
       </Grid>
     </Grid>

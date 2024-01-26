@@ -9,7 +9,6 @@ import Options from "./components/Options.jsx";
 import Character from "./components/Character.jsx";
 import Chat from "./components/Chat.jsx";
 import Player from "./classes/player.js";
-import useLoader from "./hooks/useLoader.jsx";
 import { socket } from "./socket";
 import "./App.css"
 
@@ -36,12 +35,13 @@ function App() {
   const [userVote, setUserVote] = useState({0: null, 1: null});
   const [session, setSession] = useState(null);
   const [modules, setModules] = useState([]);
-  const GameData = useLoader();
   const [isConnected, setIsConnected] = useState(socket.connected);
 
   const user = players.find(player => player.id === userId);
 
   function handlePlayerDataChange(targetId, targetProperty, targetValue, fromServer = false) {
+
+    // console.log(targetId, targetProperty, targetValue);
 
     if (["rRole", "rChar", "rState", "rStatus"].includes(targetProperty) && fromServer === false) {
       return socket.emit("attribute", {targetId: targetId, targetProperty: targetProperty, targetValue: targetValue});
@@ -60,7 +60,7 @@ function App() {
   useEffect(() => {
     function onConnect() {
       setIsConnected(true);
-      socket.emit("join", "Wg97Ev", socket.id);
+      // socket.emit("join", "Wg97Ev", socket.id);
     }
 
     function onDisconnect() {
@@ -146,10 +146,14 @@ function App() {
             setVotes={setVotes}
             userVote={userVote}
             setUserVote={setUserVote}
-            handleChange={handlePlayerDataChange} />
+            handleChange={handlePlayerDataChange}
+            modules={modules} />
         </Grid>
         <Grid item xs={4}>
-          <Character session={session}/>
+          <Character 
+            session={session}
+            modules={modules}
+            setModules={setModules}/>
           <Chat>
             CHAT W.I.P
             {/* <div>

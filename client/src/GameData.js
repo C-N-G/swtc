@@ -1,13 +1,49 @@
-const modules = import.meta.glob(["../strings/*.json", "../strings/modules/*/*.json"], {eager: true})
+const modules = import.meta.glob(["./strings/*.json", "./strings/modules/*/*.json"], {eager: true})
 
-// this might be a computationally expensive function
+let GameData = {
+  chars: [],
+  roles: [],
+  states: [],
+  statuses: [],
+  modules: {},
 
-function useLoader() {
+  filterByModule(array, type) {
+
+    const enabledSet = new Set(
+      array.map(mod => {
+        return this.modules.find(ele => ele.Name === mod)[type]
+      }).flat()
+    )
+
+    const return_data = this[type] // hack - leave unknown out of the filtering
+    .filter(ele => enabledSet.has(ele.Name) || ele.Name === "Unknown")
+    .map(ele => ele.Name);
+
+    return return_data;
+    
+  },
+
+  getCharNames(array) {
+
+    return this.filterByModule(array, "chars");
+
+  },
+
+  getRoleNames(array) {
+
+    return this.filterByModule(array, "roles");
+
+  },
+
+}
+
+function loader(load_obj) {
 
   function import_json(file_path, load_origin, load_target) {
 
     const property = file_path.split("/").pop().slice(0, -5);
 
+    // if the file is inside a module then also add just its property names to modules
     if (file_path.includes("modules")) {
 
       const module_name = file_path.split("/")[3];
@@ -21,6 +57,7 @@ function useLoader() {
 
     }
 
+    // add file contents to correct property array in game data
     load_target[property] = load_target[property].concat(load_origin[file_path].default);
 
   }
@@ -42,6 +79,10 @@ function useLoader() {
     function sort_name(a, b) {
       const nameA = a.Name.toUpperCase();
       const nameB = b.Name.toUpperCase();
+      // hack - unknown should always be first in the sorting
+      if ((nameA === "UNKNOWN") != (nameB === "UNKNOWN")) {
+        return nameA === "UNKNOWN" ? -1 : 1;
+      }
       if (nameA < nameB) return -1;
       if (nameA > nameB) return 1;
       return 0;
@@ -72,25 +113,17 @@ function useLoader() {
 
   }
 
-  const GameData = {
-  chars: [],
-  roles: [],
-  states: [],
-  statuses: [],
-  modules: {}
-  }
+  Object.keys(modules).forEach((path) => import_json(path, modules, load_obj))
 
-  Object.keys(modules).forEach((path) => import_json(path, modules, GameData))
+  convert_modules_to_array(load_obj);
 
-  convert_modules_to_array(GameData);
+  sort_game_data(load_obj);
 
-  sort_game_data(GameData);
+  remove_module_prefix(load_obj);
 
-  remove_module_prefix(GameData);
-
-  console.log(GameData);
-
-  return GameData;
+  return load_obj;
 }
 
-export default useLoader;
+GameData = loader(GameData);
+
+export default GameData;

@@ -1,10 +1,11 @@
-import {useState} from "react";
+import {useState, useMemo} from "react";
 import {Card, Stack, Typography, Box, Modal, FormControl, Select, InputLabel, MenuItem, Button} from "@mui/material";
 import PlayerIndicator from "./PlayerIndicator.jsx";
 import DynamicWindow from "./DynamicWindow.jsx";
 import PlayerDetails from "./PlayerDetails.jsx";
 import Vote from "./Vote.jsx";
 import {socket} from "../socket";
+import GameData from "../GameData.js"
 
 const BOARD_CONFIG = [
   [0,0,0], // top, sides, bottom - player count
@@ -39,7 +40,7 @@ const modalStyle = {
   px: 4,
 };
 
-function Board({players, display, setDisplay, votes, setVotes, userVote, setUserVote, handleChange}) {
+function Board({players, display, setDisplay, votes, setVotes, userVote, setUserVote, handleChange, modules}) {
 
   const [selected, setSelected] = useState(null);
   const [open, setOpen] = useState(false); 
@@ -51,6 +52,9 @@ function Board({players, display, setDisplay, votes, setVotes, userVote, setUser
   let topNum = BOARD_CONFIG[playerNum][0];
   let sideNum = BOARD_CONFIG[playerNum][1];
   let botNum = BOARD_CONFIG[playerNum][2];
+
+  const chars = useMemo(() => GameData.getCharNames(modules), [modules])
+  const roles = useMemo(() => GameData.getRoleNames(modules), [modules])
 
   function createIndicator(player, index, vertical) {
 
@@ -142,7 +146,9 @@ function Board({players, display, setDisplay, votes, setVotes, userVote, setUser
   const playerdetails = (
     <PlayerDetails { ...selectedPlayer} 
       handleDismissalClick={handleDismissalClick}
-      handleChange={handleChange}/>
+      handleChange={handleChange}
+      chars={chars}
+      roles={roles}/>
   )
 
   function displayDynamicContent() {

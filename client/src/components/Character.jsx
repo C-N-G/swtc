@@ -1,7 +1,8 @@
-import { useContext } from 'react'
-import {Card, Typography, Grid, Paper}from '@mui/material';
+import { useContext, useState } from 'react'
+import {Card, Typography, Grid, Paper, Checkbox, FormGroup, FormControlLabel, Dialog, DialogActions, DialogContent, DialogTitle, Button}from '@mui/material';
 import {UserContext} from "../App.jsx";
 import {STATES, ROLES, CHARS, STATUSES} from "../data.js";
+import GameData from "../GameData.js"
 
 function Character(props) {
 
@@ -69,10 +70,52 @@ function PlayerCharacter({user}) {
 }
 
 
-function StoryTellerCharacter({session}) {
+
+function StoryTellerCharacter({session, modules, setModules}) {
+
+  const [modSelOpen, setModSelOpen] = useState(false);
+
+  function handleModuleSelection(e) {
+
+    const checked = e.target.checked;
+    const targetMod = e.target.value;
+    if (checked === true) {
+      setModules(prev => [...prev, targetMod]);
+    }
+
+    if (checked === false) {
+      setModules(prev => prev.filter((mod) => mod !== targetMod));
+    }
+
+
+
+  }
+
+  const allMods = GameData.modules.map(mod => {
+    const title = `${mod.Name} - ${mod.roles.length} roles - ${mod.chars.length} chars`;
+    const checkbox = <Checkbox 
+      checked={modules.includes(mod.Name)} 
+      onChange={handleModuleSelection} 
+      value={mod.Name} />
+    return <FormControlLabel key={mod.Name} control={checkbox} label={title} />
+  })
 
   return (<>
     <Typography variant="h6">Session Id: {session}</Typography>
+    <Button variant="contained" onClick={() => setModSelOpen(true)}>
+      Select Modules
+    </Button>
+    <Dialog open={modSelOpen} onClose={() => setModSelOpen(false)} >
+      <DialogTitle>Select Modules</DialogTitle>
+      <DialogContent>
+        <FormGroup>
+          {allMods}
+        </FormGroup>
+      </DialogContent>
+      <DialogActions>
+        <Button variant="contained" onClick={() => setModSelOpen(false)}>Close</Button>
+      </DialogActions>
+    </Dialog>
   </>)
 
 }
