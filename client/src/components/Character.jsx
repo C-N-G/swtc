@@ -1,6 +1,7 @@
 import {useContext, useState, useMemo} from 'react'
 import {Card, Typography, Grid, Paper, Checkbox, FormGroup, FormControlLabel, Dialog, 
-        DialogActions, DialogContent, DialogTitle, Button, Box}from '@mui/material';
+        DialogActions, DialogContent, DialogTitle, Button, Box, IconButton}from '@mui/material';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import {UserContext} from "../App.jsx";
 import GameData from "../GameData.js"
 import {socket} from "../socket.js";
@@ -169,7 +170,12 @@ function StoryTellerCharacter({session, modules, players}) {
   })
 
   return (<>
-    <Typography variant="h6">Session Id: {session}</Typography>
+    <Typography variant="h6">
+      Session ID: {session}
+      <IconButton onClick={() => {navigator.clipboard.writeText(session)}}>
+        <ContentCopyIcon />
+      </IconButton>
+    </Typography>
     <Button variant="contained" sx={{my: 1}} onClick={() => setModSelOpen(true)}>
       Select Modules
     </Button>
