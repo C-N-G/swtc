@@ -177,7 +177,7 @@ function StoryTellerCharacter({session, modules, players}) {
       </IconButton>
     </Typography>
     <Button variant="contained" sx={{my: 1}} onClick={() => setModSelOpen(true)}>
-      Select Modules
+      Select Modules ({modules.length})
     </Button>
     <Button variant="contained" sx={{my: 1}} onClick={randomisePlayers}>
       Randomise Players
