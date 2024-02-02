@@ -1,9 +1,12 @@
 [
   {
-    "Name": "Unknown",
-    "Description": "",
-    "Ability": "",
-    "Attributes": [],
-    "Additional Information": []
+    "name": "Unknown",
+    "team": "",
+    "types": [],
+    "description": "",
+    "ability": "",
+    "attributes": [],
+    "additional": [],
+    "setup": []
   }
 ]
