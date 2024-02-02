@@ -48,6 +48,8 @@ function PlayerCharacter({user, modules}) {
   const fullRole = GameData.roles.find(ele => ele.name === GameData.hackValue(roles[user.rRole]));
   const fullChar = GameData.chars.find(ele => ele.name === GameData.hackValue(chars[user.rChar]));
 
+  console.log(user);
+
   return (<>
     <Grid container justifyContent="left" spacing={2}>
       <Grid item xs={6}>
@@ -71,20 +73,30 @@ function PlayerCharacter({user, modules}) {
         <Typography>{GameData.teams[user.rTeam]}</Typography> 
       </Grid>
       <Grid item xs={12}>
-        <Typography variant="body2" gutterBottom>{fullRole.Description}</Typography>
-        <Typography variant="body2"><Box component="span" fontWeight={"Bold"}>{fullRole.Ability ? "Mechanics: " : ""}</Box>{fullRole.Ability}</Typography>
-        {fullRole["additional"].map((ele, index) => <Typography variant="body2" key={fullRole.name + index}>{ele}</Typography>)}
+        <Typography variant="body2" gutterBottom>{fullRole["description"]}</Typography>
+        <Typography variant="body2"><Box component="span" fontWeight={"Bold"}>{fullRole["ability"] ? "Mechanics: " : ""}</Box>{fullRole["ability"]}</Typography>
+        {fullRole["additional"].map((ele, index) => <Typography variant="body2" key={fullRole["name"] + "additional" + index}>{ele}</Typography>)}
       </Grid>
-      <Grid item xs textAlign="right">
+      <Grid item xs={6} textAlign="right">
+        <Typography fontWeight={"Bold"}>Attributes</Typography> 
+      </Grid>
+      <Grid item xs={6} textAlign="left">
+        <Typography>{fullRole.attributes.join(", ")}</Typography> 
+      </Grid>
+      <Grid item xs={12}>
+        <Typography variant="body2" fontWeight={"Bold"}>{fullRole["setup"].length > 0 ? "Role Setup" : ""}</Typography>
+        {fullRole["setup"].map((ele, index) => <Typography variant="body2" key={fullRole["name"] + "setup" + index}>{index+1}: {ele[0]}</Typography>)}
+      </Grid>
+      <Grid item xs={6} textAlign="right">
         <Typography fontWeight={"Bold"}>Characteristic</Typography> 
       </Grid>
-      <Grid item xs textAlign="left">
+      <Grid item xs={6} textAlign="left">
         <Typography>{GameData.hackValue(chars[user.rChar])}</Typography> 
       </Grid>
       <Grid item xs={12}>
-        <Typography variant="body2" gutterBottom>{fullChar.Description}</Typography>
-        <Typography variant="body2"><Box component="span" fontWeight={"Bold"}>{fullChar.Ability ? "Mechanics: " : ""}</Box>{fullChar.Ability}</Typography>
-        {fullChar["additional"].map((ele, index) => <Typography variant="body2" key={fullChar.name + index}>{ele}</Typography>)}
+        <Typography variant="body2" gutterBottom>{fullChar["description"]}</Typography>
+        <Typography variant="body2"><Box component="span" fontWeight={"Bold"}>{fullChar["ability"] ? "Mechanics: " : ""}</Box>{fullChar["ability"]}</Typography>
+        {fullChar["additional"].map((ele, index) => <Typography variant="body2" key={fullChar["name"] + index}>{ele}</Typography>)}
       </Grid>
     </Grid>
     {/* <iframe src="https://drive.google.com/file/d/1BSgDm_VNXi-e2_0v5L5Xd781-kFyde7k/preview" style={{flexGrow: 1}} allow="autoplay"></iframe> */}
@@ -99,7 +111,7 @@ function NarratorCharacter({session, modules, setModules, players, setPlayers, a
   const [modSelOpen, setModSelOpen] = useState(false);
   const [sync, setSync] = useState({progress: false, error: false});
 
-  const [chars, roles] = useMemo(() => GameData.getFilteredValues(modules), [modules]);
+  const [chars, roles] = useMemo(() => GameData.getFilteredValues(modules, true), [modules]);
 
   function handleModuleSelection(e) {
 
@@ -124,16 +136,33 @@ function NarratorCharacter({session, modules, setModules, players, setPlayers, a
 
   function randomisePlayers() {
 
-    // URGENT TODO - currently when the randomiser button is used it will show everyones true role to the players
-    // this needs to be fixed so it won't happen
+    // function add(cmd) {
+
+    // }
+
+    // function addStrict(cmd) {
+
+    // }
+
+    // function convert(cmd) {
+
+    // }
 
     setAutoSync(false);
     
     const charsTaken = new Set();
     const rolesTaken = new Set();
+    let targetAntags = 1;
+    let targetDetrimentals = 2;
+    let skip = 0;
 
     const randomisedPlayers = players.map(player => {
 
+      // skip narrators
+      if (player.type === 0) return player;
+
+
+      
       let randomChar;
       while (typeof randomChar === "undefined") {
         let randomNum = Math.floor(Math.random() * (chars.length - 1) + 1)
@@ -148,21 +177,71 @@ function NarratorCharacter({session, modules, setModules, players, setPlayers, a
       player.char = randomChar;
       player.rChar = randomChar;
 
+      // set the selection of roles to pick from
+      let targetRoles
+      if (targetAntags > 0) {
+        targetRoles = roles.filter(role => role.types.includes("Antagonist"));
+        targetAntags--;
+      } else if (targetDetrimentals > 0) {
+        targetRoles = roles.filter(role => role.types.includes("Detrimental"));
+        targetDetrimentals--;
+      } else {
+        targetRoles = roles.filter(role => role.types.includes("Agent"));
+      }
+
+      // pick a random role from that selection
       let randomRole;
       while (typeof randomRole === "undefined") {
-        let randomNum = Math.floor(Math.random() * (roles.length - 1) + 1)
-        if (rolesTaken.has(randomNum) === false) {
-          rolesTaken.add(randomNum);
-          randomRole = randomNum;
+        let randomNum = Math.floor(Math.random() * targetRoles.length)
+        let index = roles.findIndex(role => role.name === targetRoles[randomNum].name)
+        if (rolesTaken.has(index) === false) {
+          rolesTaken.add(index);
+          randomRole = index;
         }
         if (players.length > roles.length) {
-          randomRole = randomNum;
+          randomRole = index;
         }
       }
       player.role = randomRole;
       player.rRole = randomRole;
 
-      return player
+      return player;
+
+      // check for role setup commands
+      // if (roles[player.role]["setup"].length < 1) {
+      //   return player
+      // }
+
+      // else run the commands
+      // roles[player.role]["setup"].forEach(cmd => {
+
+      //   if (cmd.length < 2) return;
+
+      //   const commandArray = cmd[1].split(" ");
+      //   const magicWord = commandArray[0];
+
+
+      //   switch (magicWord) {
+      //     case "Add":
+            
+      //       break;
+
+      //     case "AddStrict": //AddStrict 2 Cultist
+      //       const quantity = commandArray[1];
+      //       const target = commandArray[2];
+      //       const neighbour = commandArray.length > 3 ? true : false;
+      //       break;
+
+      //     case "Convert":
+            
+      //       break;
+
+      //     default:
+      //       break;
+      //   }
+
+      // })
+
     })
 
     setPlayers(randomisedPlayers);

@@ -8,7 +8,7 @@ let GameData = {
   teams: [],
   modules: {},
 
-  filterByModule(array, type) {
+  filterByModule(array, type, full) {
 
     const enabledSet = new Set(
       array.map(mod => {
@@ -16,17 +16,18 @@ let GameData = {
       }).flat()
     )
 
+
     const return_data = this[type] // hack - leave unknown out of the filtering
     .filter(ele => enabledSet.has(ele.name) || ele.name === "Unknown")
-    .map(ele => ele.name);
 
-    return return_data;
+    // full will include all the role and char data, instead of just the name
+    return full ? return_data : return_data.map(role => role.name);
     
   },
 
-  getFilteredValues(array) {
+  getFilteredValues(array, full = false) {
 
-    return [this.filterByModule(array, "chars"), this.filterByModule(array, "roles")]
+    return [this.filterByModule(array, "chars", full), this.filterByModule(array, "roles", full)]
 
   },
 
