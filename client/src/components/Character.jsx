@@ -45,8 +45,8 @@ function PlayerCharacter({user, modules}) {
 
   const [chars, roles] = useMemo(() => GameData.getFilteredValues(modules), [modules]);
 
-  const fullRole = GameData.roles.find(ele => ele.Name === GameData.hackValue(roles[user.rRole]));
-  const fullChar = GameData.chars.find(ele => ele.Name === GameData.hackValue(chars[user.rChar]));
+  const fullRole = GameData.roles.find(ele => ele.name === GameData.hackValue(roles[user.rRole]));
+  const fullChar = GameData.chars.find(ele => ele.name === GameData.hackValue(chars[user.rChar]));
 
   return (<>
     <Grid container justifyContent="left" spacing={2}>
@@ -71,7 +71,7 @@ function PlayerCharacter({user, modules}) {
       <Grid item xs={12}>
         <Typography variant="body2" gutterBottom>{fullRole.Description}</Typography>
         <Typography variant="body2"><Box component="span" fontWeight={"Bold"}>{fullRole.Ability ? "Mechanics: " : ""}</Box>{fullRole.Ability}</Typography>
-        {fullRole["Additional Information"].map((ele, index) => <Typography variant="body2" key={fullRole.Name + index}>{ele}</Typography>)}
+        {fullRole["Additional Information"].map((ele, index) => <Typography variant="body2" key={fullRole.name + index}>{ele}</Typography>)}
       </Grid>
       <Grid item xs textAlign="right">
         <Typography fontWeight={"Bold"}>Characteristic</Typography> 
@@ -82,7 +82,7 @@ function PlayerCharacter({user, modules}) {
       <Grid item xs={12}>
         <Typography variant="body2" gutterBottom>{fullChar.Description}</Typography>
         <Typography variant="body2"><Box component="span" fontWeight={"Bold"}>{fullChar.Ability ? "Mechanics: " : ""}</Box>{fullChar.Ability}</Typography>
-        {fullChar["Additional Information"].map((ele, index) => <Typography variant="body2" key={fullChar.Name + index}>{ele}</Typography>)}
+        {fullChar["Additional Information"].map((ele, index) => <Typography variant="body2" key={fullChar.name + index}>{ele}</Typography>)}
       </Grid>
     </Grid>
     {/* <iframe src="https://drive.google.com/file/d/1BSgDm_VNXi-e2_0v5L5Xd781-kFyde7k/preview" style={{flexGrow: 1}} allow="autoplay"></iframe> */}
@@ -183,7 +183,7 @@ function NarratorCharacter({session, modules, setModules, players, setPlayers, a
     socket.timeout(5000).emit("sync", syncData, (error, response) => {
 
       setSync({...sync, progress: false})
-      
+
       if (error || response.error) {
         setSync({progress: false, error: true});
         setTimeout(() => {setSync({...sync, error: false})}, 3000);
@@ -201,12 +201,12 @@ function NarratorCharacter({session, modules, setModules, players, setPlayers, a
   }
 
   const allMods = GameData.modules.map(mod => {
-    const title = `${mod.Name} - ${mod.roles.length} roles - ${mod.chars.length} chars`;
+    const title = `${mod.name} - ${mod.roles.length} roles - ${mod.chars.length} chars`;
     const checkbox = <Checkbox 
-      checked={modules.includes(mod.Name)} 
+      checked={modules.includes(mod.name)} 
       onChange={handleModuleSelection} 
-      value={mod.Name} />
-    return <FormControlLabel key={mod.Name} control={checkbox} label={title} />
+      value={mod.name} />
+    return <FormControlLabel key={mod.name} control={checkbox} label={title} />
   })
 
   return (<>

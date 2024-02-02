@@ -11,13 +11,13 @@ let GameData = {
 
     const enabledSet = new Set(
       array.map(mod => {
-        return this.modules.find(ele => ele.Name === mod)[type]
+        return this.modules.find(ele => ele.name === mod)[type]
       }).flat()
     )
 
     const return_data = this[type] // hack - leave unknown out of the filtering
-    .filter(ele => enabledSet.has(ele.Name) || ele.Name === "Unknown")
-    .map(ele => ele.Name);
+    .filter(ele => enabledSet.has(ele.name) || ele.name === "Unknown")
+    .map(ele => ele.name);
 
     return return_data;
     
@@ -45,7 +45,7 @@ function loader(load_obj) {
     if (file_path.includes("modules")) {
 
       const module_name = file_path.split("/")[3];
-      const property_names = load_origin[file_path].default.map((ele) => ele.Name);
+      const property_names = load_origin[file_path].default.map((ele) => ele.name);
 
       if (!Object.hasOwn(load_target.modules, module_name)) {
         load_target.modules[module_name] = {};
@@ -64,7 +64,7 @@ function loader(load_obj) {
 
     load_target.modules = Object.keys(load_target.modules).map((mod) => {
       return {
-        Name: mod,
+        name: mod,
         chars: load_target.modules[mod].chars,
         roles: load_target.modules[mod].roles
       }
@@ -75,8 +75,8 @@ function loader(load_obj) {
   function sort_game_data(load_target) {
 
     function sort_name(a, b) {
-      const nameA = a.Name.toUpperCase();
-      const nameB = b.Name.toUpperCase();
+      const nameA = a.name.toUpperCase();
+      const nameB = b.name.toUpperCase();
       // hack - unknown should always be first in the sorting
       if ((nameA === "UNKNOWN") != (nameB === "UNKNOWN")) {
         return nameA === "UNKNOWN" ? -1 : 1;
@@ -87,8 +87,8 @@ function loader(load_obj) {
     }
 
     function sort_module(a, b) {
-      const modA = Number(a.Name.split("_")[0]);
-      const modB = Number(b.Name.split("_")[0]);
+      const modA = Number(a.name.split("_")[0]);
+      const modB = Number(b.name.split("_")[0]);
       if (modA < modB) return -1;
       if (modA > modB) return 1;
       return 0;
@@ -105,7 +105,7 @@ function loader(load_obj) {
     load_target.modules = load_target.modules.map((mod) => {
       return {
         ...mod,
-        Name: mod.Name.split("_")[1]
+        name: mod.name.split("_")[1]
       }
     })
 
