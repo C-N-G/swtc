@@ -63,7 +63,7 @@ export default class SessionManager {
         let output = [];
       
         for (let i = 0; i < length; i++) {
-            output.push(array[Math.round(Math.random() * (array.length - 1))]);
+            output.push(array[Math.floor(Math.random() * array.length)]);
         }
       
         return output.join("");
