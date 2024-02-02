@@ -1,5 +1,33 @@
 [
 	{
+		"name": "Investigator",
+		"team": "Loyalist",
+		"types": ["Agent"],
+		"description": "PLACEHOLDER",
+		"ability": "Each night, choose a player: you learn a role they are not.",
+		"attributes": ["Human"],
+		"additional": [
+			"Additional Text Placeholder Text"
+		],
+		"setup": [
+		]
+	},
+
+	{
+		"name": "Haematologist",
+		"team": "Loyalist",
+		"types": ["Detrimental"],
+		"description": "PLACEHOLDER",
+		"ability": "If you are dismissed, a living Loyalist Human player (not yourself) will become a Subversive Vampire.",
+		"attributes": ["Human"],
+		"additional": [
+			"Additional Text Placeholder Text"
+		],
+		"setup": [
+		]
+	},
+	
+	{
 		"name": "Cultist",
 		"team": "Subversive",
 		"types": ["Antagonist"],
@@ -15,7 +43,3 @@
 		]
 	}
 ]
-
-
-
-
