@@ -1,3 +1,20 @@
+02/02/2024 v0.3.2
+- added sync button to the narrator view
+  - the sync button contains two components, button itself, and the toggle to its left
+  - the toggle indicates if the narrators changes to players will be synced live to other players
+  - when the toggle is off the player can make as much chnages as they want, before finally syncing the changes
+  - once off the toggle can only be turned on again by pressing the sync button
+  - changing modules or pressing the randomise players button will disable autoSyncing
+  - the toggle can also be manually toggled off if the narrator would like to update players without them being synced
+- added new entries to the players view of the character window
+  - this window will now display team, attributes, and role setup
+- added team changing functionality
+  - the narrators view of the player details widget now includes inputs for both shown and real team values
+  - the players view of the player details wiget now inlcudes a team input
+  - also in the players view of the same widget, the player state is now shown below the player name
+- improved the randomise players logic
+  - the function will now choose exactly one antagonist role, and two detrimental roles
+
 26/01/2023 v0.3.1
 - created strings directory for storing game related data e.g. roles and characteristics
   - created data loading logic so future future data can be added easily
