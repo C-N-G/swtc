@@ -1,9 +1,21 @@
 [
-  {
-    "Name": "Placeholder_Role",
-    "Description": "",
-    "Ability": "",
-    "Attributes": [],
-    "Additional Information": []
-  }
+	{
+		"name": "Cultist",
+		"team": "Subversive",
+		"types": ["Antagonist"],
+		"description": "PLACEHOLDER AMONGUS AMONGUS",
+		"ability": "You start knowing all the Cultists in the game. Each night, after the first, choose a player: the player that most Cultists choose dies. If no player receives a majority of Cultist votes, then a Cultist dies.",
+		"attributes": ["Human"],
+		"additional": [
+			"Additional Text Placeholder Text AMONGUS"
+		],
+		"setup": [
+			["Three players are Cultists.", "AddStrict 2 Cultist"],
+			["General Description Placeholder Text"]
+		]
+	}
 ]
+
+
+
+
