@@ -113,6 +113,7 @@ io.on("connection", (socket) => {
 
   socket.on("attribute", (data) => {
 
+    // TODO ONLY SEND UPDATES TO THE SPECIFIC PLAYER THAT IS BEING UPDATED
     const session = sessionManager.getSession(connectedSessionId);
     if (!session) return;
     session.updatePlayer(data.targetId, data.targetProperty, data.targetValue);
@@ -153,12 +154,12 @@ io.on("connection", (socket) => {
 
   })
 
-  socket.on("sync", (data) => {
+  socket.on("sync", (data, callback) => {
 
     console.log("syncing session data from client", Object.keys(data));
 
     const session = sessionManager.getSession(connectedSessionId);
-    if (!session) return;
+    if (!session) return callback({status: "error", error: "no session found"});
 
     let returnData = {}
 
@@ -167,8 +168,14 @@ io.on("connection", (socket) => {
       returnData.players = data.players;
     }
 
-    io.to(connectedSessionId).emit("sync", returnData);
+    if (data.modules) {
+      session.setModules(data.modules);
+      returnData.modules= data.modules;
+    }
+
+    socket.to(connectedSessionId).emit("sync", returnData); // won't send to sender
     console.log("synced session with clients", Object.keys(returnData));
+    callback({status: "ok"})
 
   })
 

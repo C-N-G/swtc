@@ -45,8 +45,6 @@ function Options({session}) {
     
     const nameValidated = name.length >= 3 && name.length <= 16;
     const idValidated = id.length === 7;
-
-    console.log(nameValidated, idValidated);
     
     setInputs(prev => { 
       return {...prev, 

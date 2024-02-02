@@ -1,6 +1,6 @@
 import {useContext, useState, useMemo} from 'react'
 import {Card, Typography, Grid, Paper, Checkbox, FormGroup, FormControlLabel, Dialog, 
-        DialogActions, DialogContent, DialogTitle, Button, Box, IconButton}from '@mui/material';
+        DialogActions, DialogContent, DialogTitle, Button, Box, IconButton, CircularProgress, Switch}from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import {UserContext} from "../App.jsx";
 import GameData from "../GameData.js"
@@ -92,13 +92,16 @@ function PlayerCharacter({user, modules}) {
 
 
 
-function NarratorCharacter({session, modules, players}) {
+function NarratorCharacter({session, modules, setModules, players, setPlayers, autoSync, setAutoSync}) {
 
   const [modSelOpen, setModSelOpen] = useState(false);
+  const [sync, setSync] = useState({progress: false, error: false});
 
   const [chars, roles] = useMemo(() => GameData.getFilteredValues(modules), [modules]);
 
   function handleModuleSelection(e) {
+
+    setAutoSync(false);
 
     const checked = e.target.checked;
     const targetMod = e.target.value;
@@ -113,7 +116,7 @@ function NarratorCharacter({session, modules, players}) {
       data = modules.filter((mod) => mod !== targetMod);
     }
 
-    socket.emit("module", data);
+    setModules(data);
 
   }
 
@@ -121,6 +124,8 @@ function NarratorCharacter({session, modules, players}) {
 
     // URGENT TODO - currently when the randomiser button is used it will show everyones true role to the players
     // this needs to be fixed so it won't happen
+
+    setAutoSync(false);
     
     const charsTaken = new Set();
     const rolesTaken = new Set();
@@ -158,9 +163,41 @@ function NarratorCharacter({session, modules, players}) {
       return player
     })
 
-
-    socket.emit("sync", {players: randomisedPlayers})
+    setPlayers(randomisedPlayers);
       
+  }
+
+  function syncWithServer() {
+
+    setSync({progress: true, error: false});
+
+    // map will mutate the objects in an array if used the usual way, hence the ({...player})
+    const sanitisedPlayers = players.map(({...player}) => {
+      player.role = 0;
+      player.char = 0;
+      return player;
+    });
+
+    let syncData = {"players": sanitisedPlayers, "modules": modules};
+
+    socket.timeout(5000).emit("sync", syncData, (error, response) => {
+
+      setSync({...sync, progress: false})
+      
+      if (error || response.error) {
+        setSync({progress: false, error: true});
+        setTimeout(() => {setSync({...sync, error: false})}, 3000);
+        if (error) console.log("Sync Error: server timeout");
+        if (response.error) console.log("Sync Error:", response.error);
+      }
+
+      if (response.status === "ok") {
+        setAutoSync(true);
+      }
+
+    })
+
+
   }
 
   const allMods = GameData.modules.map(mod => {
@@ -176,9 +213,9 @@ function NarratorCharacter({session, modules, players}) {
     <Typography variant="h6">
       Session ID: {session}
       {/* this doesn't work without https */}
-      <IconButton onClick={() => {navigator.clipboard.writeText(session)}}>
+      {/* <IconButton onClick={() => {navigator.clipboard.writeText(session)}}>
         <ContentCopyIcon />
-      </IconButton>
+      </IconButton> */}
     </Typography>
     <Button variant="contained" sx={{my: 1}} onClick={() => setModSelOpen(true)}>
       Select Modules ({modules.length})
@@ -186,6 +223,25 @@ function NarratorCharacter({session, modules, players}) {
     <Button variant="contained" sx={{my: 1}} onClick={randomisePlayers}>
       Randomise Players
     </Button>
+    <Box sx={{display: "flex", alignItems: "center"}}>
+      <Switch 
+        color={sync.error ? "error" : "primary"} 
+        checked={autoSync}
+        onChange={() => {setAutoSync(prev => !prev)}}
+        disabled={autoSync ? false : true}
+        inputProps={{"aria-label": "autoSync control"}}/>
+      <Button 
+        variant={sync.progress ? "outlined" : "contained"} 
+        color={sync.error ? "error" : "primary"} 
+        sx={{my: 1, flexGrow: 1}} 
+        onClick={syncWithServer}
+      >
+        {sync.progress ? <CircularProgress size={24} /> : sync.error ? "Error Syncing" : "Sync"}
+      </Button>
+    </Box>
+
+    
+
 
     <Dialog open={modSelOpen} onClose={() => setModSelOpen(false)} >
       <DialogTitle>Select Modules</DialogTitle>

@@ -23,27 +23,28 @@ for (let i = 0; i < 8; i++) {
 
 function App() {
 
-  const [players, setPlayers] = useState([]);
-  const [userId, setUserId] = useState(null);
-  const [modules, setModules] = useState([]);
-  // const [players, setPlayers] = useState(somePlayers);
-  // const [userId, setUserId] = useState(54321);
-  // const [modules, setModules] = useState(["Standard Procedure"]);
+  // const [players, setPlayers] = useState([]);
+  // const [userId, setUserId] = useState(null);
+  // const [modules, setModules] = useState([]);
+  const [players, setPlayers] = useState(somePlayers);
+  const [userId, setUserId] = useState(54321);
+  const [modules, setModules] = useState(["Standard Procedure"]);
 
   const [phase, setPhase] = useState({cycle: "Night", round: 1});
   const [display, setDisplay] = useState(false);
   const [votes, setVotes] = useState({list: [], voting: false, accusingPlayer: null, nominatedPlayer: null});
   const [userVote, setUserVote] = useState({0: null, 1: null});
   const [session, setSession] = useState(null);
+  const [autoSync, setAutoSync] = useState(false);
   
   const [isConnected, setIsConnected] = useState(socket.connected);
 
-  const user = players.find(player => player.id === userId);
-  const drawPlayers = players.filter(player => player.type === 1);
+  const user = players.find(player => player.id === userId); // the users player object
+  const drawPlayers = players.filter(player => player.type === 1); // the players to draw on the board e.g. not the narrators
 
   function handlePlayerDataChange(targetId, targetProperty, targetValue, fromServer = false) {
 
-    if (["rRole", "rChar", "rState", "rStatus"].includes(targetProperty) && fromServer === false) {
+    if (["rRole", "rChar", "rState", "rStatus"].includes(targetProperty) && fromServer === false && autoSync === true) {
       return socket.emit("attribute", {targetId: targetId, targetProperty: targetProperty, targetValue: targetValue});
     }
 
@@ -157,7 +158,11 @@ function App() {
           <Character 
             session={session}
             modules={modules}
-            players={players}/>
+            setModules={setModules}
+            players={players}
+            setPlayers={setPlayers}
+            autoSync={autoSync}
+            setAutoSync={setAutoSync}/>
           <Chat>
             CHAT W.I.P
           </Chat>
