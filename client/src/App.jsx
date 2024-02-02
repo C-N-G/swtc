@@ -44,7 +44,7 @@ function App() {
 
   function handlePlayerDataChange(targetId, targetProperty, targetValue, fromServer = false) {
 
-    if (["rRole", "rChar", "rState", "rStatus"].includes(targetProperty) && fromServer === false && autoSync === true) {
+    if (["rRole", "rChar", "rState", "rStatus", "rTeam"].includes(targetProperty) && fromServer === false && autoSync === true) {
       return socket.emit("attribute", {targetId: targetId, targetProperty: targetProperty, targetValue: targetValue});
     }
 

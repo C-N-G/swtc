@@ -5,6 +5,7 @@ let GameData = {
   roles: [],
   states: [],
   statuses: [],
+  teams: [],
   modules: {},
 
   filterByModule(array, type) {
@@ -123,5 +124,7 @@ function loader(load_obj) {
 }
 
 GameData = loader(GameData);
+
+console.log(GameData);
 
 export default GameData;

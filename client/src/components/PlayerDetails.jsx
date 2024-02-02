@@ -1,5 +1,5 @@
 import {useContext} from "react";
-import {Box, Typography, Button, Grid, TextField, Autocomplete, Stack, Divider} from '@mui/material';
+import {Box, Typography, Button, Grid, TextField, Autocomplete, Stack} from '@mui/material';
 import {UserContext} from "../App.jsx";
 import GameData from "../GameData.js"
 
@@ -28,7 +28,7 @@ export default PlayerDetails
 
 
 function RegularPlayerDetails({
-  chars, roles,
+  chars, roles, team,
   id, name, rState, label, role, 
   char, status, notes, handleChange }) {
 
@@ -50,7 +50,20 @@ function RegularPlayerDetails({
     <Grid container>
       <Grid item xs={5}>
         <Stack>
-          <Typography variant="h5" sx={{marginTop: "1rem"}}>{name}</Typography>
+          <Box position={"relative"}>
+          <Typography variant="h5" sx={{marginTop: "1rem"}}>
+            {name}
+          </Typography>
+          <Typography variant="caption" sx={{
+              position: "absolute",
+              top: "98%",
+              left: "50%",
+              transform: "translate(-50%, -50%)"
+              }}
+          >
+            ({GameData.states[rState]})
+          </Typography>
+          </Box>
           <TextField sx={{margin: "1rem"}}
             id="player-label-input"
             label="Quick Label"
@@ -60,19 +73,15 @@ function RegularPlayerDetails({
             value={label}
             onChange={(event) => handleChange(id, "label", event.target.value)}
           />
-          <Button variant="outlined" sx={{marginLeft: "1rem", marginRight: "1rem"}}>Talk</Button>
+          <Button variant="outlined" sx={{marginLeft: "1rem", marginRight: "1rem"}}>Talk (W.I.P)</Button>
         </Stack>
       </Grid>
       <Grid item xs={7}>
         <Stack spacing={2} sx={{margin: "1rem"}}>
-          <Box sx={{display: "flex", justifyContent: "center", gap: "0.5rem"}}>
-            <Typography variant="h5">State</Typography>
-            <Divider orientation="vertical" flexItem />
-            <Typography variant="h5">{GameData.states[rState]}</Typography>
-          </Box>
           {selectBuilder(id, "Role", roles, role)}
           {selectBuilder(id, "Char", chars, char)}
           {selectBuilder(id, "Status", GameData.statuses, status)}
+          {selectBuilder(id, "Team", GameData.teams, team)}
         </Stack>
       </Grid>
       <Grid item xs={12}>
@@ -97,8 +106,8 @@ function RegularPlayerDetails({
 
 function NarratorDetails({
   id, name, handleChange, handleDismissalClick, chars, roles,
-  state, role, char, status, 
-  rState, rRole, rChar, rStatus }) {
+  state, role, char, status, team,
+  rState, rRole, rChar, rStatus, rTeam }) {
 
   const leftVal = "Shown";
   const rightVal = "True"
@@ -131,6 +140,7 @@ function NarratorDetails({
           {selectBuilder(id, "Role", true, roles, rRole)}
           {selectBuilder(id, "Char", true, chars, rChar)}
           {selectBuilder(id, "Status", true, GameData.statuses, rStatus)}
+          {selectBuilder(id, "Team", true, GameData.teams, rTeam)}
         </Stack>
       </Grid>
       <Grid item xs={6}>
@@ -139,6 +149,7 @@ function NarratorDetails({
           {selectBuilder(id, "Role", false, roles, role)}
           {selectBuilder(id, "Char", false, chars, char)}
           {selectBuilder(id, "Status", false, GameData.statuses, status)}
+          {selectBuilder(id, "Team", false, GameData.teams, team)}
         </Stack>
       </Grid>
     </Grid>

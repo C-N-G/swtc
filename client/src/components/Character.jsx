@@ -1,7 +1,7 @@
 import {useContext, useState, useMemo} from 'react'
 import {Card, Typography, Grid, Paper, Checkbox, FormGroup, FormControlLabel, Dialog, 
-        DialogActions, DialogContent, DialogTitle, Button, Box, IconButton, CircularProgress, Switch}from '@mui/material';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+        DialogActions, DialogContent, DialogTitle, Button, Box, CircularProgress, Switch}from '@mui/material';
+// import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import {UserContext} from "../App.jsx";
 import GameData from "../GameData.js"
 import {socket} from "../socket.js";
@@ -63,15 +63,17 @@ function PlayerCharacter({user, modules}) {
     </Grid>
     <Grid container justifyContent="left" mt={1} spacing={2} sx={{overflow: "auto"}}>
       <Grid item xs textAlign="right">
-        <Typography fontWeight={"Bold"}>Role</Typography> 
+        <Typography fontWeight={"Bold"}>Role</Typography>
+        <Typography fontWeight={"Bold"}>Team</Typography>
       </Grid>
       <Grid item xs textAlign="left">
-        <Typography>{GameData.hackValue(roles[user.rRole])}</Typography> 
+        <Typography>{GameData.hackValue(roles[user.rRole])}</Typography>
+        <Typography>{GameData.teams[user.rTeam]}</Typography> 
       </Grid>
       <Grid item xs={12}>
         <Typography variant="body2" gutterBottom>{fullRole.Description}</Typography>
         <Typography variant="body2"><Box component="span" fontWeight={"Bold"}>{fullRole.Ability ? "Mechanics: " : ""}</Box>{fullRole.Ability}</Typography>
-        {fullRole["Additional Information"].map((ele, index) => <Typography variant="body2" key={fullRole.name + index}>{ele}</Typography>)}
+        {fullRole["additional"].map((ele, index) => <Typography variant="body2" key={fullRole.name + index}>{ele}</Typography>)}
       </Grid>
       <Grid item xs textAlign="right">
         <Typography fontWeight={"Bold"}>Characteristic</Typography> 
@@ -82,7 +84,7 @@ function PlayerCharacter({user, modules}) {
       <Grid item xs={12}>
         <Typography variant="body2" gutterBottom>{fullChar.Description}</Typography>
         <Typography variant="body2"><Box component="span" fontWeight={"Bold"}>{fullChar.Ability ? "Mechanics: " : ""}</Box>{fullChar.Ability}</Typography>
-        {fullChar["Additional Information"].map((ele, index) => <Typography variant="body2" key={fullChar.name + index}>{ele}</Typography>)}
+        {fullChar["additional"].map((ele, index) => <Typography variant="body2" key={fullChar.name + index}>{ele}</Typography>)}
       </Grid>
     </Grid>
     {/* <iframe src="https://drive.google.com/file/d/1BSgDm_VNXi-e2_0v5L5Xd781-kFyde7k/preview" style={{flexGrow: 1}} allow="autoplay"></iframe> */}
