@@ -10,7 +10,7 @@ function PlayerIndicator(props) {
   const getUserTypeCheckedComponent = () => {
 
     if (user.type === 0) {
-      return <StorytellerPlayerIndicator {...props}/>
+      return <NarratorPlayerIndicator {...props}/>
     } else if (user.type === 1) {
       return <RegularPlayerIndicator {...props} />
     } else {
@@ -72,7 +72,7 @@ function RegularPlayerIndicator({id, name, label, handleClick, vertical, rState}
 
 
 
-function StorytellerPlayerIndicator({
+function NarratorPlayerIndicator({
   chars, roles,
   id, name, state, role, char, status, 
   rState, rRole, rChar, rStatus, handleClick, vertical}) {

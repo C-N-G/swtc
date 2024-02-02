@@ -13,7 +13,7 @@ function Character(props) {
   const getUserTypeCheckedComponent = () => {
 
     if (user?.type === 0) {
-      return <StoryTellerCharacter {...props} />
+      return <NarratorCharacter {...props} />
     } else if (user?.type === 1) {
       return <PlayerCharacter user={user} {...props} />
     } else {
@@ -92,7 +92,7 @@ function PlayerCharacter({user, modules}) {
 
 
 
-function StoryTellerCharacter({session, modules, players}) {
+function NarratorCharacter({session, modules, players}) {
 
   const [modSelOpen, setModSelOpen] = useState(false);
 
@@ -118,6 +118,9 @@ function StoryTellerCharacter({session, modules, players}) {
   }
 
   function randomisePlayers() {
+
+    // URGENT TODO - currently when the randomiser button is used it will show everyones true role to the players
+    // this needs to be fixed so it won't happen
     
     const charsTaken = new Set();
     const rolesTaken = new Set();
@@ -172,6 +175,7 @@ function StoryTellerCharacter({session, modules, players}) {
   return (<>
     <Typography variant="h6">
       Session ID: {session}
+      {/* this doesn't work without https */}
       <IconButton onClick={() => {navigator.clipboard.writeText(session)}}>
         <ContentCopyIcon />
       </IconButton>

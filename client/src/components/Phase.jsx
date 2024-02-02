@@ -10,7 +10,7 @@ function Phase({phase, setPhase}) {
   const getUserTypeCheckedComponent = () => {
 
     if (user?.type === 0) {
-      return <StoryTellerPhase phase={phase} setPhase={setPhase}/>
+      return <NarratorPhase phase={phase} setPhase={setPhase}/>
     } else if (user?.type === 1) {
       return <PlayerPhase phase={phase} />
     } else {
@@ -47,7 +47,7 @@ function PlayerPhase({phase}) {
 
 
 
-function StoryTellerPhase({phase, setPhase}) {
+function NarratorPhase({phase, setPhase}) {
 
   function hanldeClick() {
 

@@ -2,7 +2,7 @@ export default class Player {
 
   #id;        // unique user identifier 
   #name;      // user name
-  #type;      // type of user. 0 = teller, 1 = player
+  #type;      // type of user. 0 = narrator, 1 = player
   #role;      // player role
   #char;      // player characteristic
   #status;    // player status
@@ -10,10 +10,10 @@ export default class Player {
   #notes;     // notes of targetted player
   #team;      // player team. 0 = loyalist, 1 = subversives
   #state;     // player state. 0 = dead, 1 = alive
-  #rRole;     // real player role shown to storyteller
-  #rChar;     // real player characteristic shown to storyteller
-  #rStatus;   // real player status shown to storyteller
-  #rState;    // real player state shown to storyteller
+  #rRole;     // real player role shown to narrator
+  #rChar;     // real player characteristic shown to narrator
+  #rStatus;   // real player status shown to narrator
+  #rState;    // real player state shown to narrator
 
   constructor(
     id, 

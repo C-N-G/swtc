@@ -4,18 +4,18 @@
   - organised loading and storage directory to incorporate module functionality
   - currently data is sorted in alphabetical order (with the exception of "Unknown" whish is a special value)
 - added new game data source to player indicators, player details, and character window
-- added new module select button to the character window in the storyteller view 
+- added new module select button to the character window in the narrator view 
   - synced module selection to all connected clients of a session
-  - players and storytellers can now only select roles and chars from enabled modules
+  - players and narrators can now only select roles and chars from enabled modules
   - the button also shows how many modules are currently selected
 - added server error checking for invalid sessions
-- added randomiser button to character window in the storyteller view
+- added randomiser button to character window in the narrator view
   - current functionality will choose a random role and characteristic for all connected clients
   - each role and characteristic can only be chosen once, unless there are less roles or characteristics than connect clients
   - aside from that there is currently no special logic involved, and all choises are complete random
-  - as such the storyteller may wish to make some changes after randomising
+  - as such the narrator may wish to make some changes after randomising
   - this feature is synced and will impact all connect clients immediately
-- added copy button to the session id section of the character window for the storyteller
+- added copy button to the session id section of the character window for the narrator
 - updated the character window for players
   - removed the Iframe to the rulebook pdf
   - added locally stored game data text specific to that players role and characteristic
@@ -33,7 +33,7 @@
 - added host session menu item under options
   - an name will have to be input and submitted first
   - then a new session will be created
-  - with the user joining as storyteller
+  - with the user joining as narrator
   - and the session id shown for other players to join
 - added join session menu item under options
   - a name and session id will be needed before subitting
@@ -42,7 +42,7 @@
 - the debug menu has been removed
 - the board configuration will now adjust to the nuber of players joined in the session
 - the character window now correctly shows the real values of the user
-- added storyteller character window which currently only displays the session id
+- added narrator character window which currently only displays the session id
 - updated the hardcoded data to include the rest of the rule document
 - updated the detailed player view to correctly display the real player state
 
@@ -60,18 +60,18 @@
 12/12/2023 v0.2.0
 - added phase control button for the story teller
 - updated the phase indicator to show which numbered day/night it is
-- added storyteller version of the player details display
+- added narrator version of the player details display
   - this includes inputs for changing a players real attributes
   - and fields for changing a players shown attributes
   - also includes a button for starting this players dismissal
-- added storyteller version of player indicators
+- added narrator version of player indicators
   - it will now display the shown player attributes in the player indicator
   - there will be an asterisk "*" next to the attribute if it differs from the real attribute
 - added more hardcoded dummy values for playing around with e.g. more roles
 - added player select modal when dismissing a player
   - this window allows you to select the player nominating player
   - once the begin button is pressed the voting window becomes accessible
-- added storyteller version of the voting window
+- added narrator version of the voting window
   - this window now shows the player names of those who voted for and against
   - it will also tally the votes for each
   - once the finish button is pressed the voting will end and the window will no longer be accessible until another vote begins

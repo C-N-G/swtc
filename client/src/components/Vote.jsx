@@ -32,7 +32,7 @@ function Vote(props) {
   const getUserTypeCheckedComponent = () => {
 
     if (user.type === 0) {
-      return <StoryTellerVote {...props}/>
+      return <NarratorVote {...props}/>
     } else if (user.type === 1) {
       return <PlayerVote {...props} handleVote={handleVote} user={user}/>
     } else {
@@ -89,7 +89,7 @@ function PlayerVote({nominatedPlayer, accusingPlayer, handleChange, userVote, ha
 
 
 
-function StoryTellerVote({nominatedPlayer, accusingPlayer, votes, handleFinishClick}) {
+function NarratorVote({nominatedPlayer, accusingPlayer, votes, handleFinishClick}) {
 
   const forVotes = votes.list?.filter(aVote => aVote.vote === 1).map((aVote, index) => {
     return (

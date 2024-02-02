@@ -10,7 +10,7 @@ function PlayerDetails(props) {
   const getUserTypeCheckedComponent = () => {
 
     if (user.type === 0) {
-      return <StoryTellerDetails {...props}/>
+      return <NarratorDetails {...props}/>
     } else if (user.type === 1) {
       return <RegularPlayerDetails {...props} />
     } else {
@@ -95,7 +95,7 @@ function RegularPlayerDetails({
 
 
 
-function StoryTellerDetails({
+function NarratorDetails({
   id, name, handleChange, handleDismissalClick, chars, roles,
   state, role, char, status, 
   rState, rRole, rChar, rStatus }) {
@@ -107,7 +107,7 @@ function StoryTellerDetails({
     return <Autocomplete
       disablePortal
       disableClearable
-      id={`storyteller-${real ? leftVal : rightVal}-${type.toLowerCase()}-input`}
+      id={`narrator-${real ? leftVal : rightVal}-${type.toLowerCase()}-input`}
       size="small"
       options={list}
       renderInput={(params) => <TextField {...params} label={`${real ? leftVal : rightVal} ${type}`} />}
