@@ -83,6 +83,7 @@ function App() {
       if (Object.hasOwn(data, "voting")) {
         setVotes((prev) => ({...prev, voting: data.voting}));
         if (data.voting === true) setDisplay(2);
+        else setUserVote({0: null, 1: null});
       }
       
       if (Object.hasOwn(data, "list")){
