@@ -73,7 +73,7 @@ function RegularPlayerIndicator({id, name, label, handleClick, vertical, rState}
 
 
 function NarratorPlayerIndicator({
-  chars, roles,
+  chars, roles, rTeam,
   id, name, state, role, char, status, 
   rState, rRole, rChar, rStatus, handleClick, vertical}) {
 
@@ -91,7 +91,8 @@ function NarratorPlayerIndicator({
         flexDirection: "column",
         justifyContent: "flex-start",
         m: 0.8,
-        overflow: "inherit" 
+        overflow: "inherit",
+        background: rTeam === 2 ? "rgb(180, 30, 10)" : "rgb(25, 118, 210)"
       }}>
         <Typography>{name}</Typography>
         <Box sx={{

@@ -5,6 +5,7 @@ import {Card, Typography, Grid, Paper, Checkbox, FormGroup, FormControlLabel, Di
 import {UserContext} from "../App.jsx";
 import GameData from "../strings/_gameData.js";
 import {socket} from "../helpers/socket.js";
+import randomiser from '../helpers/randomiser.js';
 
 function Character(props) {
 
@@ -136,115 +137,9 @@ function NarratorCharacter({session, modules, setModules, players, setPlayers, a
 
   function randomisePlayers() {
 
-    // function add(cmd) {
-
-    // }
-
-    // function addStrict(cmd) {
-
-    // }
-
-    // function convert(cmd) {
-
-    // }
-
     setAutoSync(false);
-    
-    const charsTaken = new Set();
-    const rolesTaken = new Set();
-    let targetAntags = 1;
-    let targetDetrimentals = 2;
-    let skip = 0;
 
-    const randomisedPlayers = players.map(player => {
-
-      // skip narrators
-      if (player.type === 0) return player;
-
-
-      
-      let randomChar;
-      while (typeof randomChar === "undefined") {
-        let randomNum = Math.floor(Math.random() * (chars.length - 1) + 1)
-        if (charsTaken.has(randomNum) === false) {
-          charsTaken.add(randomNum);
-          randomChar = randomNum;
-        }
-        if (players.length > chars.length) {
-          randomChar = randomNum;
-        }
-      }
-      player.char = randomChar;
-      player.rChar = randomChar;
-
-      // set the selection of roles to pick from
-      let targetRoles
-      if (targetAntags > 0) {
-        targetRoles = roles.filter(role => role.types.includes("Antagonist"));
-        targetAntags--;
-      } else if (targetDetrimentals > 0) {
-        targetRoles = roles.filter(role => role.types.includes("Detrimental"));
-        targetDetrimentals--;
-      } else {
-        targetRoles = roles.filter(role => role.types.includes("Agent"));
-      }
-
-      // pick a random role from that selection
-      let randomRole;
-      while (typeof randomRole === "undefined") {
-        let randomNum = Math.floor(Math.random() * targetRoles.length)
-        let index = roles.findIndex(role => role.name === targetRoles[randomNum].name)
-        if (rolesTaken.has(index) === false) {
-          rolesTaken.add(index);
-          randomRole = index;
-        }
-        if (players.length > roles.length) {
-          randomRole = index;
-        }
-      }
-      player.role = randomRole;
-      player.rRole = randomRole;
-
-      return player;
-
-      // check for role setup commands
-      // if (roles[player.role]["setup"].length < 1) {
-      //   return player
-      // }
-
-      // else run the commands
-      // roles[player.role]["setup"].forEach(cmd => {
-
-      //   if (cmd.length < 2) return;
-
-      //   const commandArray = cmd[1].split(" ");
-      //   const magicWord = commandArray[0];
-
-
-      //   switch (magicWord) {
-      //     case "Add":
-            
-      //       break;
-
-      //     case "AddStrict": //AddStrict 2 Cultist
-      //       const quantity = commandArray[1];
-      //       const target = commandArray[2];
-      //       const neighbour = commandArray.length > 3 ? true : false;
-      //       break;
-
-      //     case "Convert":
-            
-      //       break;
-
-      //     default:
-      //       break;
-      //   }
-
-      // })
-
-    })
-
-    setPlayers(randomisedPlayers);
+    setPlayers(prev_players => { return randomiser(prev_players, chars, roles) });
       
   }
 

@@ -1,4 +1,4 @@
-import loader from "../helpers/gameDataLoader";
+import loader from "../helpers/gameDataLoader.js";
 
 const modules = import.meta.glob(["./*.json", "./modules/*/*.json"], {eager: true});
 

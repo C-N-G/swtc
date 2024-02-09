@@ -138,6 +138,22 @@
 			"Additional Text Placeholder"
 		],
 		"setup": [
+      ["Three players are Cultists.", "Add 1 Subversive"]
+		]
+	},
+
+  {
+		"name": "Convert Killer",
+		"team": "Subversive",
+		"types": ["Antagonist"],
+		"description": "CHUNGUS",
+		"ability": "Each night, BIG CHUNGUSS",
+		"attributes": ["Human"],
+		"additional": [
+			"Additional Text Placeholder"
+		],
+		"setup": [
+      ["Three players are Cultists.", "Convert 2 Subversive"]
 		]
 	}
 ]
