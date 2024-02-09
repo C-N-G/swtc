@@ -1,8 +1,8 @@
 {
   "name": "swtc",
   "version": "0.3.2",
-  "description": "Secrets Within the Compound SPA",
-  "main": "index.js",
+  "description": "Secrets Within the Compound Game",
+  "main": "./server/server.js",
   "scripts": {
     "test": "npm --prefix ./test run test",
     "client": "npm --prefix ./client run dev",
