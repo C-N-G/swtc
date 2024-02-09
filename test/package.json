@@ -1,7 +1,10 @@
 {
   "name": "test",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "npx playwright test",
+    "uitest": "npx playwright test --ui"
+  },
   "devDependencies": {
     "@playwright/test": "^1.41.2",
     "@types/node": "^20.11.16"
