@@ -1,43 +1,4 @@
-const modules = import.meta.glob(["./strings/*.json", "./strings/modules/*/*.json"], {eager: true})
-
-let GameData = {
-  chars: [],
-  roles: [],
-  states: [],
-  statuses: [],
-  teams: [],
-  modules: {},
-
-  filterByModule(array, type, full) {
-
-    const enabledSet = new Set(
-      array.map(mod => {
-        return this.modules.find(ele => ele.name === mod)[type]
-      }).flat()
-    )
-
-
-    const return_data = this[type] // hack - leave unknown out of the filtering
-    .filter(ele => enabledSet.has(ele.name) || ele.name === "Unknown")
-
-    // full will include all the role and char data, instead of just the name
-    return full ? return_data : return_data.map(role => role.name);
-    
-  },
-
-  getFilteredValues(array, full = false) {
-
-    return [this.filterByModule(array, "chars", full), this.filterByModule(array, "roles", full)]
-
-  },
-
-  hackValue(input) {
-    return typeof input === "undefined" ? "Unknown" : input; 
-  }
-
-}
-
-function loader(load_obj) {
+export default function gameDataLoader(load_obj, modules) {
 
   function import_json(file_path, load_origin, load_target) {
 
@@ -46,7 +7,7 @@ function loader(load_obj) {
     // if the file is inside a module then also add just its property names to modules
     if (file_path.includes("modules")) {
 
-      const module_name = file_path.split("/")[3];
+      const module_name = file_path.split("/")[2];
       const property_names = load_origin[file_path].default.map((ele) => ele.name);
 
       if (!Object.hasOwn(load_target.modules, module_name)) {
@@ -123,9 +84,3 @@ function loader(load_obj) {
 
   return load_obj;
 }
-
-GameData = loader(GameData);
-
-console.log(GameData);
-
-export default GameData;

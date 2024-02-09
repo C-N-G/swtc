@@ -1,7 +1,7 @@
 import {useContext} from "react";
 import {Button, Typography, TextField, Stack, Grid, Card, List, ListItem, ListItemText} from '@mui/material';
 import {UserContext} from "../App.jsx";
-import {socket} from "../socket";
+import {socket} from "../helpers/socket";
 
 function Vote(props) {
 

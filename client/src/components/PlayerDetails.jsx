@@ -1,7 +1,7 @@
 import {useContext} from "react";
 import {Box, Typography, Button, Grid, TextField, Autocomplete, Stack} from '@mui/material';
 import {UserContext} from "../App.jsx";
-import GameData from "../GameData.js"
+import GameData from "../strings/_gameData.js"
 
 function PlayerDetails(props) {
 

@@ -1,7 +1,7 @@
 import {useContext} from "react";
 import {Card, Button, Typography}from '@mui/material';
 import {UserContext} from "../App.jsx";
-import {socket} from "../socket.js";
+import {socket} from "../helpers/socket.js";
 
 function Phase({phase, setPhase}) {
 

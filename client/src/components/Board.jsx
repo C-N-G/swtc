@@ -4,8 +4,8 @@ import PlayerIndicator from "./PlayerIndicator.jsx";
 import DynamicWindow from "./DynamicWindow.jsx";
 import PlayerDetails from "./PlayerDetails.jsx";
 import Vote from "./Vote.jsx";
-import {socket} from "../socket";
-import GameData from "../GameData.js"
+import {socket} from "../helpers/socket.js";
+import GameData from "../strings/_gameData.js"
 
 const BOARD_CONFIG = [
   [0,0,0], // top, sides, bottom - player count

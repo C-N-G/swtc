@@ -8,7 +8,7 @@ import Options from "./components/Options.jsx";
 import Character from "./components/Character.jsx";
 import Chat from "./components/Chat.jsx";
 import Player from "./classes/player.js";
-import { socket } from "./socket";
+import { socket } from "./helpers/socket.js";
 import "./App.css"
 
 export const UserContext = createContext({});

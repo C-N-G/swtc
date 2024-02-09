@@ -3,8 +3,8 @@ import {Card, Typography, Grid, Paper, Checkbox, FormGroup, FormControlLabel, Di
         DialogActions, DialogContent, DialogTitle, Button, Box, CircularProgress, Switch}from '@mui/material';
 // import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import {UserContext} from "../App.jsx";
-import GameData from "../GameData.js"
-import {socket} from "../socket.js";
+import GameData from "../strings/_gameData.js";
+import {socket} from "../helpers/socket.js";
 
 function Character(props) {
 

@@ -2,7 +2,7 @@ import {useState} from "react";
 import {Button, Menu, MenuItem, Box, Card, Typography, TextField, Dialog, 
   DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import {socket} from "../socket.js";
+import {socket} from "../helpers/socket.js";
 
 function Options({session}) {
 
