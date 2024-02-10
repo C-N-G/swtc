@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 
 const hostname = "127.0.0.1";
 const port = 3001;
-const basePath = path.join(__dirname, "..", "client", "dist");
+const basePath = path.join(__dirname, "..", "..", "client", "dist");
 
 const httpserver = http.createServer((req, res) => {
   
@@ -28,7 +28,7 @@ const httpserver = http.createServer((req, res) => {
 
   let target
 
-  if (req.url === "/") {
+  if (req.url === "/" || "req.url" === "/swtc") {
     target = "index.html";
     res.setHeader('Content-Type', 'text/html');
   } else {
