@@ -18,6 +18,7 @@ const httpserver = http.createServer((req, res) => {
   
   res.setHeader('Access-Control-Allow-Origin', '*');
 
+  // set header for content type
   if (req.url.endsWith("html")) {
     res.setHeader('Content-Type', 'text/html');
   } else if (req.url.endsWith("js")) {
@@ -26,15 +27,24 @@ const httpserver = http.createServer((req, res) => {
     res.setHeader('Content-Type', 'text/css');
   }
 
-  let target
+  // redirect url to work with nginx server
+  if (req.url === "/swtc") {
+    req.url = "/"
+  } else if (req.url.startsWith("/swtc")) {
+    req.url = req.url.slice(5)
+  }
 
-  if (req.url === "/" || req.url === "/swtc") {
+  let target;
+
+  // redirect base path to app
+  if (req.url === "/") {
     target = "index.html";
     res.setHeader('Content-Type', 'text/html');
   } else {
     target = req.url;
   }
 
+  // try and read requested file
   try {
     const file = fs.readFileSync(path.join(basePath, target));
     res.statusCode = 200;
