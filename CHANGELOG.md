@@ -1,3 +1,16 @@
+09/02/2024 v0.3.3
+- added partial setup commands support for roles
+  - currently supports the quantity and target arguments
+  - commands will not work in all situations e.g. if all players have already been given a role
+  - commands currently do not take into account already chosen roles for keeping roles unique
+  - commands can currently target the following
+    - individual role names
+    - any role belonging to a team
+    - and role that has a certain tag
+- refactored several core functions
+- changed the player indicator colour to reflect the players team for in narrator view
+- added end to end testing
+
 02/02/2024 v0.3.2
 - added sync button to the narrator view
   - the sync button contains two components, button itself, and the toggle to its left
