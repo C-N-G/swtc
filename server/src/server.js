@@ -71,7 +71,9 @@ const io = new Server(httpserver, options);
 
 const sessionManager = new SessionManager();
 
-io.of("/swtc").on("connection", (socket) => {
+const swtcNamespace = io.of("/swtc")
+
+swtcNamespace.on("connection", (socket) => {
   console.log("new socket connection");
 
   let connectedSessionId = null;
@@ -117,7 +119,7 @@ io.of("/swtc").on("connection", (socket) => {
     const session = sessionManager.getSession(connectedSessionId);
     if (!session) return;
     session.setPhase(data);
-    io.to(connectedSessionId).emit("phase", data);
+    swtcNamespace.to(connectedSessionId).emit("phase", data);
     console.log("phase updated with", data);
 
   })
@@ -128,7 +130,7 @@ io.of("/swtc").on("connection", (socket) => {
     const session = sessionManager.getSession(connectedSessionId);
     if (!session) return;
     session.updatePlayer(data.targetId, data.targetProperty, data.targetValue);
-    io.to(connectedSessionId).emit("attribute", data);
+    swtcNamespace.to(connectedSessionId).emit("attribute", data);
     console.log("player updated with", data);
 
   })
@@ -148,7 +150,7 @@ io.of("/swtc").on("connection", (socket) => {
       if (property === "nominatedPlayer") session.setNomPlayer(data[property]);
       if (property === "list") session.addVote(data[property]);
     })
-    io.to(connectedSessionId).emit("vote", data);
+    swtcNamespace.to(connectedSessionId).emit("vote", data);
     console.log("vote updated with", data);
 
   })
@@ -160,7 +162,7 @@ io.of("/swtc").on("connection", (socket) => {
     const session = sessionManager.getSession(connectedSessionId);
     if (!session) return;
     session.setModules(data);
-    io.to(connectedSessionId).emit("module", data);
+    swtcNamespace.to(connectedSessionId).emit("module", data);
     console.log("updated modules with", data);
 
   })
@@ -199,7 +201,7 @@ io.of("/swtc").on("connection", (socket) => {
 
     if (sessionManager.sessionExists(connectedSessionId)) {
       const session = sessionManager.getSession(connectedSessionId);
-      io.to(connectedSessionId).emit("sync", session.getData());
+      swtcNamespace.to(connectedSessionId).emit("sync", session.getData());
     }
 
   })
