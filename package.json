@@ -4,10 +4,13 @@
   "description": "Secrets Within the Compound Game",
   "main": "./server/server.js",
   "scripts": {
-    "test": "npm --prefix ./test run test",
-    "client": "npm --prefix ./client run dev",
-    "server": "npm --prefix ./server run dev",
-    "build": "npm --prefix ./client run build"
+    "start": "node ./server/src/server.js",
+    "server": "cd server && nodemon ./src/server.js",
+    "client": "npm --prefix ./server run dev",
+    "build": "npm --prefix ./client run build",
+    "test": "cd test && npx playwright test",
+    "uitest": "cd test && npx playwright test --ui",
+    "report": "cd test && npx playwright show-report"
   },
   "repository": {
     "type": "git",
