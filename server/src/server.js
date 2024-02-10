@@ -70,7 +70,7 @@ const io = new Server(httpserver, options);
 
 const sessionManager = new SessionManager();
 
-io.on("connection", (socket) => {
+io.of("/swtc").on("connection", (socket) => {
   console.log("new socket connection");
 
   let connectedSessionId = null;
