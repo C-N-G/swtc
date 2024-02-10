@@ -88,6 +88,7 @@ test.describe("narrator tools", () => {
     await narrator.locator("#narrator-Shown-state-input").click();
     await narrator.locator("#narrator-Shown-state-input").press("ArrowUp");
     await narrator.locator("#narrator-Shown-state-input").press("Enter");
+    await narrator.getByRole("button", {name: /player1/i}).click();
     await expect(player1.getByText(/State:/i)).toContainText(/Dead/i);
 
   });
