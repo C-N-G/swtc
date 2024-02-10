@@ -11,11 +11,11 @@ let sessionID: string;
 test.beforeAll("session setup", async ({browser}) => {
 
   narrator = await browser.newPage();
-  await narrator.goto("http://127.0.0.1:3001");
+  await narrator.goto("http://127.0.0.1:3001/swtc");
   player1 = await browser.newPage();
-  await player1.goto("http://127.0.0.1:3001");
+  await player1.goto("http://127.0.0.1:3001/swtc");
   player2 = await browser.newPage();
-  await player2.goto("http://127.0.0.1:3001");
+  await player2.goto("http://127.0.0.1:3001/swtc");
   
 })
 
@@ -26,7 +26,8 @@ test.beforeAll("hosting a session", async () => {
   await narrator.getByText("Host Session").click();
   await narrator.locator("#host-name").fill("narrator1");
   await narrator.getByRole("button", {name: "Host"}).click();
-  sessionID = (await narrator.getByText(/Session ID:/i).innerText()).split(" ")[2]
+  sessionID = (await narrator.getByText(/Session ID:/i).innerText()).split(" ")[2];
+  expect(sessionID).toHaveLength(7);
 
 })
 
@@ -74,7 +75,22 @@ test.describe("narrator tools", () => {
 
   });
 
-  
+  test("sync button", async () => {
+
+    await narrator.getByRole("button", {name: /Sync/i}).click();
+    await expect(narrator.getByLabel(/autoSync control/i)).toBeChecked();
+
+  });
+
+  test("changing attribute", async () => {
+
+    await narrator.getByText("player1").click();
+    await narrator.locator("#narrator-Shown-state-input").click();
+    await narrator.locator("#narrator-Shown-state-input").press("ArrowUp");
+    await narrator.locator("#narrator-Shown-state-input").press("Enter");
+    await expect(player1.getByText(/State:/i)).toContainText(/Dead/i);
+
+  });
 
 });
 
@@ -116,7 +132,3 @@ test.describe("dismissal voting", () => {
   });
 
 })
-
-// test.describe("changing attributes", () => {
-
-// });
