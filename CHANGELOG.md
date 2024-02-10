@@ -1,3 +1,8 @@
+10/02/2024 v0.3.4
+- moved app end point from http://cormacgudge.xyz:3002 to https://cormacgudge.zyx/swtc
+- added https support
+- reimplemented clipboard copy button next to session id
+
 09/02/2024 v0.3.3
 - added partial setup commands support for roles
   - currently supports the quantity and target arguments
