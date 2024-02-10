@@ -59,10 +59,11 @@ const httpserver = http.createServer((req, res) => {
 
 });
 
-const options = process.env.NODE_ENV === "production" ? {} : {
+const options = process.env.NODE_ENV === "production" ? {path: "/swtc/socket.io"} : {
   cors: {
     origin: "http://localhost:5173"
-  } 
+  },
+  path: "/swtc/socket.io"
 }
 
 // create websocket server

@@ -6,4 +6,4 @@ const URL = process.env.NODE_ENV === "production" ? "https://cormacgudge.xyz/swt
 
 console.log("connectiong websocket to", URL);
 
-export const socket = io(URL);
+export const socket = io(URL, {path: "/swtc/socket.io"});
