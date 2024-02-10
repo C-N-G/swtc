@@ -1,7 +1,7 @@
 import {useState, createContext, useEffect} from "react";
 // eslint-disable-next-line no-unused-vars
 import { createTheme } from "@mui/material/styles";
-import {Container, Grid} from "@mui/material";
+import {Button, Container, Grid} from "@mui/material";
 import Board from "./components/Board.jsx";
 import Phase from "./components/Phase.jsx";
 import Options from "./components/Options.jsx";
@@ -9,6 +9,7 @@ import Character from "./components/Character.jsx";
 import Chat from "./components/Chat.jsx";
 import Player from "./classes/player.js";
 import { socket } from "./helpers/socket.js";
+import GameData from "./strings/_gameData.js";
 import "./App.css"
 
 export const UserContext = createContext({});
@@ -23,12 +24,9 @@ for (let i = 0; i < 8; i++) {
 
 function App() {
 
-  // const [players, setPlayers] = useState([]);
-  // const [userId, setUserId] = useState(null);
-  // const [modules, setModules] = useState([]);
-  const [players, setPlayers] = useState(somePlayers);
-  const [userId, setUserId] = useState(54321);
-  const [modules, setModules] = useState(["Standard Procedure"]);
+  const [players, setPlayers] = useState([]);
+  const [userId, setUserId] = useState(null);
+  const [modules, setModules] = useState([]);
 
   const [phase, setPhase] = useState({cycle: "Night", round: 1});
   const [display, setDisplay] = useState(false);
@@ -166,6 +164,16 @@ function App() {
             setAutoSync={setAutoSync}/>
           <Chat>
             CHAT W.I.P
+            {session ? "" :
+            <Button variant="contained" onClick={() => {
+              setUserId(54321);
+              setPlayers(somePlayers);
+              setModules([...GameData.modules.map(mod => mod.name)]);
+            }}>
+              Add Dummy Players
+            </Button>
+            }
+
           </Chat>
         </Grid>
       </Grid>
