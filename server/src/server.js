@@ -28,7 +28,7 @@ const httpserver = http.createServer((req, res) => {
 
   let target
 
-  if (req.url === "/" || "req.url" === "/swtc") {
+  if (req.url === "/" || req.url === "/swtc") {
     target = "index.html";
     res.setHeader('Content-Type', 'text/html');
   } else {
