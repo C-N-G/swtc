@@ -224,7 +224,7 @@ swtcNamespace.on("connection", (socket) => {
 
 
 httpserver.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
+  console.log(`Server running at http://${hostname}:${port}/swtc`);
 }); 
 
 
