@@ -3,20 +3,9 @@ import {Button, Menu, MenuItem, Box, Card, Typography, TextField, Dialog,
   DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import {socket} from "../helpers/socket.js";
+import { useSession } from "./SessionContext.jsx";
 
-function Options({session}) {
-
-  const defaultInputs = {
-    hostName: {value: "", error: false}, 
-    joinName: {value: "", error: false}, 
-    joinId: {value: "", error: false}
-  };
-
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [openModal, setOpenModal] = useState(0);
-  const [inputs, setInputs] = useState(defaultInputs);
-
-  const open = Boolean(anchorEl);
+function Options() {
   
   function handleClose() {
     setAnchorEl(null);
@@ -86,6 +75,20 @@ function Options({session}) {
 
   }
 
+  const defaultInputs = {
+    hostName: {value: "", error: false}, 
+    joinName: {value: "", error: false}, 
+    joinId: {value: "", error: false}
+  };
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [openModal, setOpenModal] = useState(0);
+  const [inputs, setInputs] = useState(defaultInputs);
+
+  const open = Boolean(anchorEl);
+
+  const session = useSession();
+
   return (
     <Card sx={{
       background: "lightcoral", 
@@ -119,9 +122,9 @@ function Options({session}) {
             "aria-labelledby": "basic-button",
           }}
         >
-          {session ? "" : <MenuItem onClick={() => {setOpenModal(1)}}>Host Session</MenuItem>}
-          {session ? "" : <MenuItem onClick={() => {setOpenModal(2)}}>Join Session</MenuItem>}
-          {session ? <MenuItem onClick={handleLeave}>Leave Session</MenuItem> : ""}
+          {session.sessionId ? "" : <MenuItem onClick={() => {setOpenModal(1)}}>Host Session</MenuItem>}
+          {session.sessionId ? "" : <MenuItem onClick={() => {setOpenModal(2)}}>Join Session</MenuItem>}
+          {session.sessionId ? <MenuItem onClick={handleLeave}>Leave Session</MenuItem> : ""}
         </Menu>
 
         <Dialog disableRestoreFocus open={openModal === 1} onClose={handleClose}>

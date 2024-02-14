@@ -2,32 +2,32 @@ import {useContext} from "react";
 import {Button, Typography, TextField, Stack, Grid, Card, List, ListItem, ListItemText} from '@mui/material';
 import {UserContext} from "../App.jsx";
 import {socket} from "../helpers/socket";
+import { useSession, useSessionDispatch } from "./SessionContext.jsx";
 
-function Vote(props) {
+// function Vote(props) {
+function Vote() {
 
   const user = useContext(UserContext);
+  const session = useSession();
+  const dispatch = useSessionDispatch();
 
   function handleVote(player, aVote) {
 
     // disallow voting if user has already voted
-    if (props.userVote[0] !== props.userVote[1]) {
+    if (session.userVote[0] !== session.userVote[1]) {
       return;
     }
 
-    const large = {
-      "backgroundColor": "#2f8bf3",
-      "transform": "scale(1.15)"
-    }
-
-    props.setUserVote((prev) => ({...prev, [aVote]: large}));
+    dispatch({
+      type: "userVoteChanged",
+      vote: aVote
+    })
 
     const data = {id: player.id, vote: aVote, name: player.name};
 
     socket.emit("vote", {list: data});
     
   }
-
-
 
   const getUserTypeCheckedComponent = () => {
 
@@ -51,6 +51,7 @@ export default Vote
 
 
 function PlayerVote({nominatedPlayer, accusingPlayer, handleChange, userVote, handleVote, user}) {
+// function PlayerVote() {
 
   return (
     <Stack sx={{flexGrow: 1, m: 4}} justifyContent="space-between">
@@ -90,6 +91,7 @@ function PlayerVote({nominatedPlayer, accusingPlayer, handleChange, userVote, ha
 
 
 function NarratorVote({nominatedPlayer, accusingPlayer, votes, handleFinishClick}) {
+// function NarratorVote() {
 
   const forVotes = votes.list?.filter(aVote => aVote.vote === 1).map((aVote, index) => {
     return (

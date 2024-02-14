@@ -44,19 +44,6 @@ const modalStyle = {
 // function Board({drawPlayers, display, setDisplay, votes, setVotes, userVote, setUserVote, handleChange, modules}) {
 function Board() {
 
-  const session = useSession();
-  const dispatch = useSessionDispatch();
-
-  const [selected, setSelected] = useState(null);
-  const [open, setOpen] = useState(false); 
-
-  const drawPlayers = session.players.filter(player => player.type === 1);
-  const playerNum = drawPlayers.length;
-  const topNum = BOARD_CONFIG[playerNum][0];
-  const sideNum = BOARD_CONFIG[playerNum][1];
-  const botNum = BOARD_CONFIG[playerNum][2];
-  const [chars, roles] = useMemo(() => GameData.getFilteredValues(session.modules), [session.modules]);
-
   function createIndicator(player, index, vertical) {
 
     return (<PlayerIndicator key={index} 
@@ -116,6 +103,31 @@ function Board() {
     })
   }
 
+  function displayDynamicContent() {
+
+    if (selected !== null && session.display === 1) {
+      return playerdetails;
+    } else if (session.votes.voting && session.display === 2) {
+      return voteWindow;
+    } else {
+      return false;
+    }
+
+  }
+
+  const session = useSession();
+  const dispatch = useSessionDispatch();
+
+  const [selected, setSelected] = useState(null);
+  const [open, setOpen] = useState(false); 
+
+  const drawPlayers = session.players.filter(player => player.type === 1);
+  const playerNum = drawPlayers.length;
+  const topNum = BOARD_CONFIG[playerNum][0];
+  const sideNum = BOARD_CONFIG[playerNum][1];
+  const botNum = BOARD_CONFIG[playerNum][2];
+  const [chars, roles] = useMemo(() => GameData.getFilteredValues(session.modules), [session.modules]);
+
   const top = drawPlayers
   .slice(0, topNum)
   .map((player, index) => (
@@ -154,11 +166,11 @@ function Board() {
     <Vote 
       nominatedPlayer={nominatedPlayer} 
       accusingPlayer={accusingPlayer} 
-      // setVotes={setVotes}
-      // votes={votes}
-      // userVote={userVote}
-      // setUserVote={setUserVote}
-      // handleChange={handleChange}
+      setVotes={setVotes}
+      votes={votes}
+      userVote={userVote}
+      setUserVote={setUserVote}
+      handleChange={handleChange}
       handleFinishClick={handleFinishClick}/>
     )
 
@@ -166,22 +178,9 @@ function Board() {
     <PlayerDetails 
       { ...selectedPlayer} 
       handleDismissalClick={handleDismissalClick}
-      handleChange={handleChange}
       chars={chars}
       roles={roles}/>
   )
-
-  function displayDynamicContent() {
-
-    if (selected !== null && session.display === 1) {
-      return playerdetails;
-    } else if (session.votes.voting && session.display === 2) {
-      return voteWindow;
-    } else {
-      return false;
-    }
-
-  }
 
   return (
     <Card sx={{

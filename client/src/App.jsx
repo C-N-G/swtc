@@ -171,10 +171,10 @@ function App() {
     <Container sx={{maxWidth: "1440px"}}>
       <Grid container spacing={2}>
         <Grid item xs={8}>
-          <Phase phase={phase} setPhase={setPhase}/>
+          <Phase />
         </Grid>
         <Grid item xs={4}>
-          <Options session={session}/>
+          <Options />
         </Grid>
         <Grid item xs={8}>
           <Board />

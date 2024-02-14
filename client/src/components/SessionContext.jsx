@@ -160,6 +160,21 @@ function sessionReducer(session, action) {
         display: action.display
       }
     }
+    case "userVoteChanged": {
+
+      const large = {
+        "backgroundColor": "#2f8bf3",
+        "transform": "scale(1.15)"
+      }
+
+      return {
+        ...session,
+        userVote: {
+          ...session.userVote,
+          [action.vote]: large
+        }
+      }
+    }
     default:
       throw Error('Unknown action: ' + action.type);
   }

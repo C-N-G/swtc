@@ -2,17 +2,28 @@ import {useContext} from "react";
 import {Box, Typography, Button, Grid, TextField, Autocomplete, Stack} from '@mui/material';
 import {UserContext} from "../App.jsx";
 import GameData from "../strings/_gameData.js"
+import { useSessionDispatch } from "./SessionContext.jsx";
 
 function PlayerDetails(props) {
 
   const user = useContext(UserContext);
+  const dispatch = useSessionDispatch();
+
+  function handleChange(targetId, targetProperty, targetValue) {
+    dispatch({
+      type: "attributeChanged",
+      targetId: targetId,
+      targetProperty: targetProperty,
+      targetValue: targetValue
+    })
+  }
 
   const getUserTypeCheckedComponent = () => {
 
     if (user.type === 0) {
-      return <NarratorDetails {...props}/>
+      return <NarratorDetails {...props} handleChange={handleChange} />
     } else if (user.type === 1) {
-      return <RegularPlayerDetails {...props} />
+      return <RegularPlayerDetails {...props} handleChange={handleChange} />
     } else {
       return false
     }
@@ -28,7 +39,7 @@ export default PlayerDetails
 
 
 function RegularPlayerDetails({
-  chars, roles, team,
+  chars, roles, team, handleChange,
   id, name, rState, label, role, 
   char, status, notes }) {
 
