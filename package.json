@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node ./server/src/server.js",
     "server": "cd server && nodemon ./src/server.js",
-    "client": "npm --prefix ./server run dev",
+    "client": "npm --prefix ./client run dev",
     "build": "npm --prefix ./client run build",
     "test": "cd test && npx playwright test",
     "uitest": "cd test && npx playwright test --ui",
