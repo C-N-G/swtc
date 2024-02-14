@@ -6,6 +6,7 @@ import PlayerDetails from "./PlayerDetails.jsx";
 import Vote from "./Vote.jsx";
 import {socket} from "../helpers/socket.js";
 import GameData from "../strings/_gameData.js"
+import { useSession, useSessionDispatch } from "./SessionContext.jsx";
 
 const BOARD_CONFIG = [
   [0,0,0], // top, sides, bottom - player count
@@ -40,16 +41,21 @@ const modalStyle = {
   px: 4,
 };
 
-function Board({drawPlayers, display, setDisplay, votes, setVotes, userVote, setUserVote, handleChange, modules}) {
+// function Board({drawPlayers, display, setDisplay, votes, setVotes, userVote, setUserVote, handleChange, modules}) {
+function Board() {
+
+  const session = useSession();
+  const dispatch = useSessionDispatch();
 
   const [selected, setSelected] = useState(null);
   const [open, setOpen] = useState(false); 
 
+  const drawPlayers = session.players.filter(player => player.type === 1);
   const playerNum = drawPlayers.length;
   const topNum = BOARD_CONFIG[playerNum][0];
   const sideNum = BOARD_CONFIG[playerNum][1];
   const botNum = BOARD_CONFIG[playerNum][2];
-  const [chars, roles] = useMemo(() => GameData.getFilteredValues(modules), [modules]);
+  const [chars, roles] = useMemo(() => GameData.getFilteredValues(session.modules), [session.modules]);
 
   function createIndicator(player, index, vertical) {
 
@@ -64,35 +70,50 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, userVote, set
 
   function handlePlayerIndicatorClick(targetId) {
 
-    if (display === 1 && targetId === selected) {
+    if (session.display === 1 && targetId === selected) {
       setSelected(null);
-      if (votes.voting) {
-        setDisplay(2);
+      if (session.votes.voting) {
+        dispatch({
+          type: "displayChanged",
+          display: 2
+        })
       }
     } else {
-      setDisplay(1);
+      dispatch({
+        type: "displayChanged",
+        display: 1
+      })
       setSelected(targetId)
     }
 
   }
 
   function handleDismissalClick(nominatedPlayerId) {
-    setVotes((prev) => ({...prev, nominatedPlayer: nominatedPlayerId, accusingPlayer: null}));
+    dispatch({
+      type: "votesChanged",
+      newVote: {nominatedPlayer: nominatedPlayerId, accusingPlayer: null}
+    })
     setOpen(true);
   }
 
   function handlePlayerSelect(event) {
-    setVotes((prev) => ({...prev, accusingPlayer: event.target.value}));
+    dispatch({
+      type: "votesChanged",
+      newVote: {accusingPlayer: event.target.value}
+    })
   }
 
   function handleBeginClick() {
     setOpen(false);
-    socket.emit("vote", {nominatedPlayer: votes.nominatedPlayer, accusingPlayer: votes.accusingPlayer, voting: true})
+    socket.emit("vote", {nominatedPlayer: session.votes.nominatedPlayer, accusingPlayer: session.votes.accusingPlayer, voting: true})
   }
 
   function handleFinishClick() {
     socket.emit("vote", {list: [], voting: false, accusingPlayer: null, nominatedPlayer: null});
-    setDisplay(0);
+    dispatch({
+      type: "displayChanged",
+      display: 0
+    })
   }
 
   const top = drawPlayers
@@ -121,27 +142,29 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, userVote, set
     createIndicator(player, index, true)
   ));
 
-  const selectablePlayers = drawPlayers.filter(player => player.id !== votes.nominatedPlayer).map((player, index) => {
+  const selectablePlayers = drawPlayers.filter(player => player.id !== session.votes.nominatedPlayer).map((player, index) => {
     return (<MenuItem key={index} value={player.id}>{player.name}</MenuItem>)
   })
 
-  const nominatedPlayer = drawPlayers.find(player => player.id === votes.nominatedPlayer);
-  const accusingPlayer = drawPlayers.find(player => player.id === votes.accusingPlayer);
+  const nominatedPlayer = drawPlayers.find(player => player.id === session.votes.nominatedPlayer);
+  const accusingPlayer = drawPlayers.find(player => player.id === session.votes.accusingPlayer);
   const selectedPlayer = drawPlayers.find(player => player.id === selected);
 
   const voteWindow = (
-    <Vote nominatedPlayer={nominatedPlayer} 
+    <Vote 
+      nominatedPlayer={nominatedPlayer} 
       accusingPlayer={accusingPlayer} 
-      setVotes={setVotes}
-      votes={votes}
-      userVote={userVote}
-      setUserVote={setUserVote}
-      handleChange={handleChange}
+      // setVotes={setVotes}
+      // votes={votes}
+      // userVote={userVote}
+      // setUserVote={setUserVote}
+      // handleChange={handleChange}
       handleFinishClick={handleFinishClick}/>
     )
 
   const playerdetails = (
-    <PlayerDetails { ...selectedPlayer} 
+    <PlayerDetails 
+      { ...selectedPlayer} 
       handleDismissalClick={handleDismissalClick}
       handleChange={handleChange}
       chars={chars}
@@ -150,9 +173,9 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, userVote, set
 
   function displayDynamicContent() {
 
-    if (selected !== null && display === 1) {
+    if (selected !== null && session.display === 1) {
       return playerdetails;
-    } else if (votes.voting && display === 2) {
+    } else if (session.votes.voting && session.display === 2) {
       return voteWindow;
     } else {
       return false;
@@ -184,7 +207,7 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, userVote, set
               labelId="nominating-player-select-label"
               id="nominating-player-select"
               label="Player"
-              value={votes.accusingPlayer ? votes.accusingPlayer : ""}
+              value={session.votes.accusingPlayer ? session.votes.accusingPlayer : ""}
               onChange={handlePlayerSelect}
             >
               {selectablePlayers}
@@ -202,7 +225,7 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, userVote, set
         <Stack width="20%" direction="column" justifyContent="space-evenly">
           {leftside}
         </Stack>
-        <DynamicWindow width="60%" display={display}>
+        <DynamicWindow width="60%" display={session.display}>
           {displayDynamicContent()}
         </DynamicWindow>
         <Stack width="20%" direction="column" justifyContent="space-evenly">

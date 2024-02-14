@@ -30,7 +30,7 @@ export default PlayerDetails
 function RegularPlayerDetails({
   chars, roles, team,
   id, name, rState, label, role, 
-  char, status, notes, handleChange }) {
+  char, status, notes }) {
 
   function selectBuilder(playerId, type, list, value) {
     return <Autocomplete

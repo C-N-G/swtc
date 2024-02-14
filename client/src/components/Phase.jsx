@@ -2,17 +2,20 @@ import {useContext} from "react";
 import {Card, Button, Typography}from '@mui/material';
 import {UserContext} from "../App.jsx";
 import {socket} from "../helpers/socket.js";
+import { useSession, useSessionDispatch } from "./SessionContext.jsx";
 
-function Phase({phase, setPhase}) {
+function Phase() {
 
   const user = useContext(UserContext);
+
+  const session = useSession();
 
   const getUserTypeCheckedComponent = () => {
 
     if (user?.type === 0) {
-      return <NarratorPhase phase={phase} setPhase={setPhase}/>
+      return <NarratorPhase phase={session.phase} />
     } else if (user?.type === 1) {
-      return <PlayerPhase phase={phase} />
+      return <PlayerPhase phase={session.phase} />
     } else {
       return false
     }
@@ -47,7 +50,9 @@ function PlayerPhase({phase}) {
 
 
 
-function NarratorPhase({phase, setPhase}) {
+function NarratorPhase({phase}) {
+
+  const dispatch = useSessionDispatch();
 
   function hanldeClick() {
 
@@ -61,6 +66,11 @@ function NarratorPhase({phase, setPhase}) {
         newCycle = "Night";
         newRound = phase.round + 1;
       }
+
+      // dispatch({
+      //   type: "phaseChanged",
+      //   newPhase: {cycle: newCycle, round: newRound}
+      // })
 
       socket.emit("phase", {cycle: newCycle, round: newRound});
 

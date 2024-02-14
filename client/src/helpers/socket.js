@@ -7,3 +7,63 @@ const URL = process.env.NODE_ENV === "production" ? window.location.host + "/swt
 console.log("connectiong websocket to", URL);
 
 export const socket = io(URL, {path: "/swtc/socket.io"});
+
+export function socketFunctionBuilder(dispatch) {
+
+  return {
+
+    connect() {
+      dispatch({
+        type: "connectionChanged",
+        connected: true
+      }); 
+    },
+
+    disconnect() {
+      dispatch({
+        type: "connectionChanged",
+        connected: false
+      }); 
+    },
+
+    phase(data) {
+      dispatch({
+        type: "phaseChanged",
+        newPhase: data
+      })
+    },
+
+    attribute(data) {
+      dispatch({
+        type: "attributeChanged",
+        targetId: data.targetId,
+        targetProperty: data.targetProperty,
+        targetValue: data.targetValue
+      })
+    },
+
+    module(data) {
+      dispatch({
+        type: "modulesChanged",
+        newModules: data
+      })
+    },
+
+    vote(data) {
+      dispatch({
+        type: "votesChanged",
+        newVote: data
+      })
+    },
+
+    sync(session, userId) {
+      dispatch({
+        type: "sessionSynchronised",
+        newSession: session,
+        newUserId: userId
+      })
+    }
+
+  }
+
+}
