@@ -1,4 +1,4 @@
-import {useState, createContext, useEffect} from "react";
+import {useState, createContext, useEffect, useCallback} from "react";
 // eslint-disable-next-line no-unused-vars
 import { createTheme } from "@mui/material/styles";
 import {Button, Container, Grid} from "@mui/material";
@@ -29,7 +29,7 @@ function App() {
   const [modules, setModules] = useState([]);
 
   const [phase, setPhase] = useState({cycle: "Night", round: 1});
-  const [display, setDisplay] = useState(false);
+  const [display, setDisplay] = useState(0);
   const [votes, setVotes] = useState({list: [], voting: false, accusingPlayer: null, nominatedPlayer: null});
   const [userVote, setUserVote] = useState({0: null, 1: null});
   const [session, setSession] = useState(null);
@@ -40,7 +40,7 @@ function App() {
   const user = players.find(player => player.id === userId); // the users player object
   const drawPlayers = players.filter(player => player.type === 1); // the players to draw on the board e.g. not the narrators
 
-  function handlePlayerDataChange(targetId, targetProperty, targetValue, fromServer = false) {
+  const handlePlayerDataChange = useCallback((targetId, targetProperty, targetValue, fromServer = false) => {
 
     if (["rRole", "rChar", "rState", "rStatus", "rTeam"].includes(targetProperty) && fromServer === false && autoSync === true) {
       return socket.emit("attribute", {targetId: targetId, targetProperty: targetProperty, targetValue: targetValue});
@@ -54,83 +54,80 @@ function App() {
       }
     }))
 
-  }
+  }, [autoSync])
 
   useEffect(() => {
-    function onConnect() {
-      setIsConnected(true);
-    }
 
-    function onDisconnect() {
-      setIsConnected(false);
-    }
+    const socketEvents = {
 
-    function onPhaseChange(data) {
-      setPhase(data);
-    }
+      connect() {
+        setIsConnected(true);
+      },
 
-    function onPlayerAttributeChange(data) {
-      handlePlayerDataChange(data.targetId, data.targetProperty, data.targetValue, true);
-    }
+      disconnect() {
+        setIsConnected(false);
+      },
 
-    function onModuleChange(data) {
-      setModules(data);
-    }
+      phase(data) {
+        setPhase(data);
+      },
 
-    function onVoteStateChange(data) {
-      if (Object.hasOwn(data, "voting")) {
-        setVotes((prev) => ({...prev, voting: data.voting}));
-        if (data.voting === true) setDisplay(2);
-        else setUserVote({0: null, 1: null});
-      }
-      
-      if (Object.hasOwn(data, "list")){
-        if (Array.isArray(data.list)) {
-          setVotes((prev) => ({...prev, list: data.list, vote: {0: null, 1: null}}));
-        } else {
-          setVotes((prev) => ({...prev, list: [...prev.list, data.list]}));
+      attribute(data) {
+        handlePlayerDataChange(data.targetId, data.targetProperty, data.targetValue, true);
+      },
+
+      module(data) {
+        setModules(data);
+      },
+
+      vote(data) {
+        if (Object.hasOwn(data, "voting")) {
+          setVotes((prev) => ({...prev, voting: data.voting}));
+          if (data.voting === true) setDisplay(2);
+          else setUserVote({0: null, 1: null});
         }
-      }
-      
-      if (Object.hasOwn(data, "accusingPlayer")){
-        setVotes((prev) => ({...prev, accusingPlayer: data.accusingPlayer}));
-      }
-      
-      if (Object.hasOwn(data, "nominatedPlayer")){
-        setVotes((prev) => ({...prev, nominatedPlayer: data.nominatedPlayer}));
-      }
-      
+        
+        if (Object.hasOwn(data, "list")){
+          if (Array.isArray(data.list)) {
+            setVotes((prev) => ({...prev, list: data.list, vote: {0: null, 1: null}}));
+          } else {
+            setVotes((prev) => ({...prev, list: [...prev.list, data.list]}));
+          }
+        }
+        
+        if (Object.hasOwn(data, "accusingPlayer")){
+          setVotes((prev) => ({...prev, accusingPlayer: data.accusingPlayer}));
+        }
+        
+        if (Object.hasOwn(data, "nominatedPlayer")){
+          setVotes((prev) => ({...prev, nominatedPlayer: data.nominatedPlayer}));
+        }
+        
+      },
+
+      sync(session, userId) {
+
+        if (session.players) setPlayers(session.players);
+        if (session.phase) setPhase(session.phase);
+        if (session.votes) setVotes(session.votes);
+        if (session.id || session.id === null) setSession(session.id);
+        if (session.modules) setModules(session.modules);
+        if (userId) setUserId(userId);
+
+      },
+
     }
 
-    function onSyncState(session, userId) {
-
-      if (session.players) setPlayers(session.players);
-      if (session.phase) setPhase(session.phase);
-      if (session.votes) setVotes(session.votes);
-      if (session.id || session.id === null) setSession(session.id);
-      if (session.modules) setModules(session.modules);
-      if (userId) setUserId(userId);
-
+    for (const event in socketEvents) {
+      socket.on(event, socketEvents[event])
     }
-
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-    socket.on("phase", onPhaseChange);
-    socket.on("attribute", onPlayerAttributeChange);
-    socket.on("vote", onVoteStateChange);
-    socket.on("sync", onSyncState);
-    socket.on("module", onModuleChange);
 
     return () => {
-      socket.off("connect", onConnect);
-      socket.off("disconnect", onDisconnect);
-      socket.off("phase", onPhaseChange);
-      socket.off("attribute", onPlayerAttributeChange);
-      socket.off("vote", onVoteStateChange);
-      socket.off("sync", onSyncState);
-      socket.off("module", onModuleChange);
+      for (const event in socketEvents) {
+        socket.off(event, socketEvents[event])
+      }
     };
-  }, []);
+  }, [handlePlayerDataChange]);
 
   return (
     <UserContext.Provider value={user}>
