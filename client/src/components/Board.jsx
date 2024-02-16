@@ -40,7 +40,7 @@ const modalStyle = {
   px: 4,
 };
 
-function Board({drawPlayers, display, setDisplay, votes, setVotes, userVote, setUserVote, handleChange, modules}) {
+function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerDataChange, session}) {
 
   const [selected, setSelected] = useState(null);
   const [open, setOpen] = useState(false); 
@@ -49,7 +49,7 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, userVote, set
   const topNum = BOARD_CONFIG[playerNum][0];
   const sideNum = BOARD_CONFIG[playerNum][1];
   const botNum = BOARD_CONFIG[playerNum][2];
-  const [chars, roles] = useMemo(() => GameData.getFilteredValues(modules), [modules]);
+  const [chars, roles] = useMemo(() => GameData.getFilteredValues(session.modules), [session.modules]);
 
   function createIndicator(player, index, vertical) {
 
@@ -77,12 +77,12 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, userVote, set
   }
 
   function handleDismissalClick(nominatedPlayerId) {
-    setVotes((prev) => ({...prev, nominatedPlayer: nominatedPlayerId, accusingPlayer: null}));
+    setVotes(prev => ({...prev, nominatedPlayer: nominatedPlayerId, accusingPlayer: null}));
     setOpen(true);
   }
 
   function handlePlayerSelect(event) {
-    setVotes((prev) => ({...prev, accusingPlayer: event.target.value}));
+    setVotes(prev => ({...prev, accusingPlayer: event.target.value}));
   }
 
   function handleBeginClick() {
@@ -134,16 +134,14 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, userVote, set
       accusingPlayer={accusingPlayer} 
       setVotes={setVotes}
       votes={votes}
-      userVote={userVote}
-      setUserVote={setUserVote}
-      handleChange={handleChange}
+      handlePlayerDataChange={handlePlayerDataChange}
       handleFinishClick={handleFinishClick}/>
     )
 
   const playerdetails = (
     <PlayerDetails { ...selectedPlayer} 
       handleDismissalClick={handleDismissalClick}
-      handleChange={handleChange}
+      handlePlayerDataChange={handlePlayerDataChange}
       chars={chars}
       roles={roles}/>
   )

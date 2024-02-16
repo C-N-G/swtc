@@ -30,7 +30,7 @@ export default PlayerDetails
 function RegularPlayerDetails({
   chars, roles, team,
   id, name, rState, label, role, 
-  char, status, notes, handleChange }) {
+  char, status, notes, handlePlayerDataChange }) {
 
   function selectBuilder(playerId, type, list, value) {
     return <Autocomplete
@@ -41,7 +41,7 @@ function RegularPlayerDetails({
       options={list}
       renderInput={(params) => <TextField {...params} label={type} />}
       value={GameData.hackValue(list[value])} // hack - this is for when the modules change and the current value no longer exists
-      onChange={(_, newValue) => handleChange(playerId, type.toLowerCase(), list.indexOf(newValue))}
+      onChange={(_, newValue) => handlePlayerDataChange(playerId, type.toLowerCase(), list.indexOf(newValue))}
     />
   }
 
@@ -71,7 +71,7 @@ function RegularPlayerDetails({
             rows={4}
             size="small"
             value={label}
-            onChange={(event) => handleChange(id, "label", event.target.value)}
+            onChange={(event) => handlePlayerDataChange(id, "label", event.target.value)}
           />
           <Button variant="outlined" sx={{marginLeft: "1rem", marginRight: "1rem"}}>Talk (W.I.P)</Button>
         </Stack>
@@ -93,7 +93,7 @@ function RegularPlayerDetails({
               rows={6}
               fullWidth
               value={notes}
-              onChange={(event) => handleChange(id, "notes", event.target.value)}
+              onChange={(event) => handlePlayerDataChange(id, "notes", event.target.value)}
             />
         </Box>
       </Grid>
@@ -105,7 +105,7 @@ function RegularPlayerDetails({
 
 
 function NarratorDetails({
-  id, name, handleChange, handleDismissalClick, chars, roles,
+  id, name, handlePlayerDataChange, handleDismissalClick, chars, roles,
   state, role, char, status, team,
   rState, rRole, rChar, rStatus, rTeam }) {
 
@@ -121,7 +121,7 @@ function NarratorDetails({
       options={list}
       renderInput={(params) => <TextField {...params} label={`${real ? leftVal : rightVal} ${type}`} />}
       value={list[value] ? list[value] : list[0]} // hack - this is for when the modules change and the current value no longer exists
-      onChange={(_, newValue) => handleChange(playerId, `${real ? "r" : ""}${real ? type : type.toLowerCase()}`, list.indexOf(newValue))}
+      onChange={(_, newValue) => handlePlayerDataChange(playerId, `${real ? "r" : ""}${real ? type : type.toLowerCase()}`, list.indexOf(newValue))}
     />
   }
 

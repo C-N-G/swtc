@@ -10,7 +10,7 @@ function Vote(props) {
   function handleVote(player, aVote) {
 
     // disallow voting if user has already voted
-    if (props.userVote[0] !== props.userVote[1]) {
+    if (props.votes.userVote[0] !== props.votes.userVote[1]) {
       return;
     }
 
@@ -19,7 +19,12 @@ function Vote(props) {
       "transform": "scale(1.15)"
     }
 
-    props.setUserVote((prev) => ({...prev, [aVote]: large}));
+    props.setVotes(prev => ({
+      ...prev,
+      userVote: prev.userVote.map((_, index) => {
+        return index === aVote ? large : null;
+      })
+    }));
 
     const data = {id: player.id, vote: aVote, name: player.name};
 
@@ -50,7 +55,7 @@ export default Vote
 
 
 
-function PlayerVote({nominatedPlayer, accusingPlayer, handleChange, userVote, handleVote, user}) {
+function PlayerVote({nominatedPlayer, accusingPlayer, votes, handlePlayerDataChange, handleVote, user}) {
 
   return (
     <Stack sx={{flexGrow: 1, m: 4}} justifyContent="space-between">
@@ -63,20 +68,20 @@ function PlayerVote({nominatedPlayer, accusingPlayer, handleChange, userVote, ha
         rows={7}
         fullWidth
         value={nominatedPlayer.notes}
-        onChange={(event) => handleChange(nominatedPlayer.id, "notes", event.target.value)}
+        onChange={(event) => handlePlayerDataChange(nominatedPlayer.id, "notes", event.target.value)}
       />
       <Stack direction="row" justifyContent="space-between">
         <Button 
-          disabled={userVote[0] !== userVote[1]} 
-          sx={{...userVote[1], transition: "transform 0.25s"}} 
+          disabled={votes.userVote[0] !== votes.userVote[1]} 
+          sx={{...votes.userVote[1], transition: "transform 0.25s"}} 
           variant="contained" 
           onClick={() => {handleVote(user, 1)}}
         >
           vote for
         </Button>
         <Button 
-          disabled={userVote[0] !== userVote[1]} 
-          sx={{...userVote[0], transition: "transform 0.25s"}} 
+          disabled={votes.userVote[0] !== votes.userVote[1]} 
+          sx={{...votes.userVote[0], transition: "transform 0.25s"}} 
           variant="contained" 
           onClick={() => {handleVote(user, 0)}}
           >

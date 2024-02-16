@@ -42,14 +42,12 @@ function Character(props) {
 export default Character
 
 
-function PlayerCharacter({user, modules}) {
+function PlayerCharacter({user, session}) {
 
-  const [chars, roles] = useMemo(() => GameData.getFilteredValues(modules), [modules]);
+  const [chars, roles] = useMemo(() => GameData.getFilteredValues(session.modules), [session.modules]);
 
   const fullRole = GameData.roles.find(ele => ele.name === GameData.hackValue(roles[user.rRole]));
   const fullChar = GameData.chars.find(ele => ele.name === GameData.hackValue(chars[user.rChar]));
-
-  console.log(user);
 
   return (<>
     <Grid container justifyContent="left" spacing={2}>
@@ -107,16 +105,14 @@ function PlayerCharacter({user, modules}) {
 
 
 
-function NarratorCharacter({session, modules, setModules, players, setPlayers, autoSync, setAutoSync}) {
+function NarratorCharacter({session, setSession, players, setPlayers}) {
 
   const [modSelOpen, setModSelOpen] = useState(false);
   const [sync, setSync] = useState({progress: false, error: false});
 
-  const [chars, roles] = useMemo(() => GameData.getFilteredValues(modules, true), [modules]);
+  const [chars, roles] = useMemo(() => GameData.getFilteredValues(session.modules, true), [session.modules]);
 
   function handleModuleSelection(e) {
-
-    setAutoSync(false);
 
     const checked = e.target.checked;
     const targetMod = e.target.value;
@@ -124,22 +120,36 @@ function NarratorCharacter({session, modules, setModules, players, setPlayers, a
     let data;
 
     if (checked === true) {
-      data = [...modules, targetMod];
+      data = [...session.modules, targetMod];
     }
 
     if (checked === false) {
-      data = modules.filter((mod) => mod !== targetMod);
+      data = session.modules.filter((mod) => mod !== targetMod);
     }
 
-    setModules(data);
+    setSession(prevSession => ({
+      ...prevSession,
+      sync: false,
+      modules: data
+    }))
 
   }
 
   function randomisePlayers() {
 
-    setAutoSync(false);
+    setSession(prevSession => ({
+      ...prevSession,
+      sync: false,
+    }))
 
-    setPlayers(prev_players => { return randomiser(prev_players, chars, roles) });
+    setPlayers(prevPlayers => { 
+      try {
+        return randomiser(prevPlayers, chars, roles) ;
+      } catch (error) {
+        console.log("randomiser error: ", error);
+        return prevPlayers;
+      }
+    });
       
   }
 
@@ -154,7 +164,7 @@ function NarratorCharacter({session, modules, setModules, players, setPlayers, a
       return player;
     });
 
-    let syncData = {"players": sanitisedPlayers, "modules": modules};
+    let syncData = {"players": sanitisedPlayers, "modules": session.modules};
 
     socket.timeout(5000).emit("sync", syncData, (error, response) => {
 
@@ -168,7 +178,10 @@ function NarratorCharacter({session, modules, setModules, players, setPlayers, a
       }
 
       if (response.status === "ok") {
-        setAutoSync(true);
+        setSession(prevSession => ({
+          ...prevSession,
+          sync: true,
+        }))
       }
 
     })
@@ -179,7 +192,7 @@ function NarratorCharacter({session, modules, setModules, players, setPlayers, a
   const allMods = GameData.modules.map(mod => {
     const title = `${mod.name} - ${mod.roles.length} roles - ${mod.chars.length} chars`;
     const checkbox = <Checkbox 
-      checked={modules.includes(mod.name)} 
+      checked={session.modules.includes(mod.name)} 
       onChange={handleModuleSelection} 
       value={mod.name} />
     return <FormControlLabel key={mod.name} control={checkbox} label={title} />
@@ -187,14 +200,14 @@ function NarratorCharacter({session, modules, setModules, players, setPlayers, a
 
   return (<>
     <Typography variant="h6">
-      Session ID: {session}
+      Session ID: {session.id}
       {/* this doesn't work without https */}
-      <IconButton onClick={() => {navigator.clipboard.writeText(session)}}>
+      <IconButton onClick={() => {navigator.clipboard.writeText(session.id)}}>
         <ContentCopyIcon />
       </IconButton>
     </Typography>
     <Button variant="contained" sx={{my: 1}} onClick={() => setModSelOpen(true)}>
-      Select Modules ({modules.length})
+      Select Modules ({session.modules.length})
     </Button>
     <Button variant="contained" sx={{my: 1}} onClick={randomisePlayers}>
       Randomise Players
@@ -202,9 +215,9 @@ function NarratorCharacter({session, modules, setModules, players, setPlayers, a
     <Box sx={{display: "flex", alignItems: "center"}}>
       <Switch 
         color={sync.error ? "error" : "primary"} 
-        checked={autoSync}
-        onChange={() => {setAutoSync(prev => !prev)}}
-        disabled={autoSync ? false : true}
+        checked={session.sync}
+        onChange={() => {setSession(prevSession => ({...prevSession, sync: !prevSession.sync}))}}
+        disabled={session.sync ? false : true}
         inputProps={{"aria-label": "autoSync control"}}/>
       <Button 
         variant={sync.progress ? "outlined" : "contained"} 

@@ -26,14 +26,22 @@ function App() {
 
   const [players, setPlayers] = useState([]);
   const [userId, setUserId] = useState(null);
-  const [modules, setModules] = useState([]);
 
   const [phase, setPhase] = useState({cycle: "Night", round: 1});
   const [display, setDisplay] = useState(0);
-  const [votes, setVotes] = useState({list: [], voting: false, accusingPlayer: null, nominatedPlayer: null});
-  const [userVote, setUserVote] = useState({0: null, 1: null});
-  const [session, setSession] = useState(null);
-  const [autoSync, setAutoSync] = useState(false);
+  const [votes, setVotes] = useState({
+    list: [], 
+    voting: false, 
+    accusingPlayer: null, 
+    nominatedPlayer: null,
+    userVote: [null, null]
+  });
+  const [session, setSession] = useState({
+    id: null,
+    sync: false,
+    modules: []
+
+  });
   
   const [isConnected, setIsConnected] = useState(socket.connected);
 
@@ -42,7 +50,7 @@ function App() {
 
   const handlePlayerDataChange = useCallback((targetId, targetProperty, targetValue, fromServer = false) => {
 
-    if (["rRole", "rChar", "rState", "rStatus", "rTeam"].includes(targetProperty) && fromServer === false && autoSync === true) {
+    if (["rRole", "rChar", "rState", "rStatus", "rTeam"].includes(targetProperty) && fromServer === false && session.sync === true) {
       return socket.emit("attribute", {targetId: targetId, targetProperty: targetProperty, targetValue: targetValue});
     }
 
@@ -54,7 +62,7 @@ function App() {
       }
     }))
 
-  }, [autoSync])
+  }, [session])
 
   useEffect(() => {
 
@@ -77,30 +85,33 @@ function App() {
       },
 
       module(data) {
-        setModules(data);
+        setSession(session => ({
+          ...session,
+          modules: data
+        }))
       },
 
       vote(data) {
         if (Object.hasOwn(data, "voting")) {
-          setVotes((prev) => ({...prev, voting: data.voting}));
+          setVotes(prev => ({...prev, voting: data.voting}));
           if (data.voting === true) setDisplay(2);
-          else setUserVote({0: null, 1: null});
+          else setVotes(prev => ({...prev, userVote: [null, null]}));
         }
         
         if (Object.hasOwn(data, "list")){
           if (Array.isArray(data.list)) {
-            setVotes((prev) => ({...prev, list: data.list, vote: {0: null, 1: null}}));
+            setVotes(prev => ({...prev, list: data.list, userVote: [null, null]}));
           } else {
-            setVotes((prev) => ({...prev, list: [...prev.list, data.list]}));
+            setVotes(prev => ({...prev, list: [...prev.list, data.list]}));
           }
         }
         
         if (Object.hasOwn(data, "accusingPlayer")){
-          setVotes((prev) => ({...prev, accusingPlayer: data.accusingPlayer}));
+          setVotes(prev => ({...prev, accusingPlayer: data.accusingPlayer}));
         }
         
         if (Object.hasOwn(data, "nominatedPlayer")){
-          setVotes((prev) => ({...prev, nominatedPlayer: data.nominatedPlayer}));
+          setVotes(prev => ({...prev, nominatedPlayer: data.nominatedPlayer}));
         }
         
       },
@@ -109,9 +120,9 @@ function App() {
 
         if (session.players) setPlayers(session.players);
         if (session.phase) setPhase(session.phase);
-        if (session.votes) setVotes(session.votes);
-        if (session.id || session.id === null) setSession(session.id);
-        if (session.modules) setModules(session.modules);
+        if (session.votes) setVotes(prev => ({...prev, ...session.votes}));
+        if (session.id || session.id === null) setSession(prevSession => ({...prevSession, id: session.id}));
+        if (session.modules) setSession(prevSession => ({...prevSession, modules: session.modules}));
         if (userId) setUserId(userId);
 
       },
@@ -140,32 +151,27 @@ function App() {
           <Options session={session}/>
         </Grid>
         <Grid item xs={8}>
-          <Board drawPlayers={drawPlayers} 
-            display={display}
-            setDisplay={setDisplay}
-            votes={votes}
-            setVotes={setVotes}
-            userVote={userVote}
-            setUserVote={setUserVote}
-            handleChange={handlePlayerDataChange}
-            modules={modules} />
+          <Board 
+            drawPlayers={drawPlayers} 
+            display={display} setDisplay={setDisplay}
+            votes={votes} setVotes={setVotes} 
+            handlePlayerDataChange={handlePlayerDataChange}
+            session={session} />
         </Grid>
         <Grid item xs={4}>
           <Character 
-            session={session}
-            modules={modules}
-            setModules={setModules}
-            players={players}
-            setPlayers={setPlayers}
-            autoSync={autoSync}
-            setAutoSync={setAutoSync}/>
+            session={session} setSession={setSession}
+            players={players} setPlayers={setPlayers} />
           <Chat>
             CHAT W.I.P
-            {session ? "" :
+            {session.id ? "" :
             <Button variant="contained" onClick={() => {
               setUserId(54321);
               setPlayers(somePlayers);
-              setModules([...GameData.modules.map(mod => mod.name)]);
+              setSession(prevSession => ({
+                ...prevSession,
+                modules: [...GameData.modules.map(mod => mod.name)]
+              }));
             }}>
               Add Dummy Players
             </Button>

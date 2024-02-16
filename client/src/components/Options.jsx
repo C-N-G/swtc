@@ -119,9 +119,9 @@ function Options({session}) {
             "aria-labelledby": "basic-button",
           }}
         >
-          {session ? "" : <MenuItem onClick={() => {setOpenModal(1)}}>Host Session</MenuItem>}
-          {session ? "" : <MenuItem onClick={() => {setOpenModal(2)}}>Join Session</MenuItem>}
-          {session ? <MenuItem onClick={handleLeave}>Leave Session</MenuItem> : ""}
+          {session.id ? "" : <MenuItem onClick={() => {setOpenModal(1)}}>Host Session</MenuItem>}
+          {session.id ? "" : <MenuItem onClick={() => {setOpenModal(2)}}>Join Session</MenuItem>}
+          {session.id ? <MenuItem onClick={handleLeave}>Leave Session</MenuItem> : ""}
         </Menu>
 
         <Dialog disableRestoreFocus open={openModal === 1} onClose={handleClose}>
