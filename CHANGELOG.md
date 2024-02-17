@@ -1,3 +1,8 @@
+17/02/2024 v0.3.5
+- changed the player indicator for the narrator view to show the true team instead of the shown team
+- added "ShowAs" setup command support
+- added partial support for the neighbour property of setup commands
+
 10/02/2024 v0.3.4
 - moved app end point from http://cormacgudge.xyz:3002 to https://cormacgudge.zyx/swtc
 - added https support
