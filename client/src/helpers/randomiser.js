@@ -1,7 +1,58 @@
 import GameData from "../strings/_gameData.js";
 
+/**
+ * @typedef {Object} Player
+ * @property {number} id
+ * @property {string} name
+ * @property {number} type
+ * @property {number} char
+ * @property {number} role
+ * @property {number} team
+ * @property {number} rChar
+ * @property {number} rRole
+ * @property {number} rTeam
+ */
+
+/**
+ * @typedef {Object} Char
+ * @property {string} name
+ * @property {Array<string>} types
+ * @property {string} description
+ * @property {string} ability
+ * @property {Array<string>} attributes
+ * @property {Array<string>} additional
+ * @property {Array<Array<string>>} setup
+ */
+
+/**
+ * @typedef {Object} Role
+ * @property {string} name
+ * @property {string} team
+ * @property {Array<string>} types
+ * @property {string} description
+ * @property {string} ability
+ * @property {Array<string>} attributes
+ * @property {Array<string>} additional
+ * @property {Array<Array<string>>} setup
+ */
+
+/**
+ * Selects random roles and characteristics for a given set of players
+ * Runs any setup commands found in the roles or characteristics selected
+ * @param {Array<Player>} playerArray 
+ * @param {Array<Char>} charArray 
+ * @param {Array<Role>} roleArray 
+ * @returns {Array<Player>} list of players with randomised attributes 
+ */
 export default function randomiser(playerArray, charArray, roleArray) {
 
+  /**
+   * Gets a random id from a list and marks it as taken
+   * @param {Array<Char|Role>} idArray
+   * @param {Set<number>} takenIdsSet 
+   * @param {Array<Char|Role>=} filteredIdArray 
+   * @returns {number} a random id
+   */
   function getRandomId(idArray, takenIdsSet, filteredIdArray) {
 
     const EveryFilteredIdTaken = filteredIdArray ? filteredIdArray
@@ -28,6 +79,7 @@ export default function randomiser(playerArray, charArray, roleArray) {
 
       // prevent infinte loop
       if (takenIdsSet.size === idArray.length || EveryFilteredIdTaken) {
+        if (debug) console.log(Array.from(takenIdsSet).map(id => roleArray[id].name), filteredIdArray)
         throw Error("not enough options to uniquely randomise")
       }
 
@@ -36,6 +88,15 @@ export default function randomiser(playerArray, charArray, roleArray) {
 
   }
 
+  /**
+   * Updates the selected player using the first command in the command queue
+   * @param {Player} player 
+   * @param {Array<string>} commandsArray 
+   * @param {Array<Char>} allChars 
+   * @param {Array<Role>} allRoles 
+   * @param {{chars: Set<char>, roles: Set<Role>}} takenObj 
+   * @returns {Array<Player|boolean>} updated player object and strict flag
+   */
   function updatePlayerFromCommand(player, commandsArray, allChars, allRoles, takenObj) {
 
     const commandArray = commandsArray[0];
@@ -52,11 +113,16 @@ export default function randomiser(playerArray, charArray, roleArray) {
       commandsArray.shift();
     }
 
-    return [player, commandsArray, isStrict];
+    return [player, isStrict];
 
   }
 
-  function shuffle(inputArray) {
+  /**
+   * Shuffles a given array out of place
+   * @param {Array<number>} inputArray 
+   * @returns {Array<number>}
+   */
+  function toShuffled(inputArray) {
 
     let array = [...inputArray];
     let currentIndex = array.length,  randomIndex;
@@ -69,6 +135,15 @@ export default function randomiser(playerArray, charArray, roleArray) {
 
   }
 
+  /**
+   * Adds setup commands from a given role to commandArrays
+   * @param {number} roleId 
+   * @param {Array<string>} commandsArray 
+   * @param {boolean} isStrict 
+   * @param {Player} player 
+   * @param {{masters: Array<number>, minions: Object<number, number>}} neighbourGroups 
+   * @returns {Array<string>} command list to run immediately
+   */
   function addSetupCommand(roleId, commandsArray, isStrict, player, neighbourGroups) {
 
     let immediateCommandsArray = [];
@@ -82,32 +157,37 @@ export default function randomiser(playerArray, charArray, roleArray) {
 
       // if the command doesn't have a quantity then run it immediately
       if (Number.isNaN(Number(commandArray[1]))) {
+        commandArray[1] = commandArray[1].replace("_", " "); // support underscores in target names
         immediateCommandsArray.push(commandArray);
       } else if (!isStrict) { // do not add commands if the command was strict
         if (commandArray[3] === "Neighbour") {
           commandArray[3] = `${commandArray[3]}_${player.id}`;
           neighbourGroups.masters.push(player.id);
         }
+        commandArray[2] = commandArray[2].replace("_", " "); // support underscores in target names
         commandsArray.push(commandArray);
       }
       
 
     })
 
-    return [commandsArray, immediateCommandsArray, neighbourGroups];
+    return immediateCommandsArray
 
   }
 
   /**
-   * edge case: two neighbour roles both adding neighbours.
-   * edge case: neighbour overwrites detrimental.
-   * edge case: command target has already been picked.
-   * edge case: command target type has already been picked.
-   * edge case: add 1 subversive where it picks a subversive that has its own setup commeands.
+   * Applies a setup commnad to a given player
+   * @param {Player} player 
+   * @param {Array<string>} cmd 
+   * @param {Array<Char>} allChars 
+   * @param {Array<Role>} allRoles 
+   * @param {{chars: Set<Char>, roles: Set<Role>}} takenObj 
+   * @param {boolean} keepSame
+   * @returns {Array<Player|boolean>} updated player object and strict flag
    */
   function runSetupCommand(player, cmd, allChars, allRoles, takenObj, keepSame = false) {
 
-    const [command, target] = [cmd[0], cmd[1].replace("_", " ")];
+    const [command, target] = [cmd[0], cmd[1]];
 
     // randomise player initially
     if (!keepSame) {
@@ -123,7 +203,7 @@ export default function randomiser(playerArray, charArray, roleArray) {
       || role.types.includes(target) 
     )
 
-    console.log("running command", command, target);
+    if (debug) console.log("running setup command", command, target);
 
     // if command is Add or AddStrict
     if (command.includes("Add")) {
@@ -171,6 +251,13 @@ export default function randomiser(playerArray, charArray, roleArray) {
 
   }
 
+  /**
+   * Finds the neighbour indexes for a given index
+   * Views the array as circular, and takes into account skipping narrator type players
+   * @param {number} idIndex 
+   * @param {Array<Player>} playerArray 
+   * @returns {Array<number>} left and right neighbour indexes
+   */
   function findNeighbourIds(idIndex, playerArray) {
 
     let neighbourIds;
@@ -192,120 +279,94 @@ export default function randomiser(playerArray, charArray, roleArray) {
   
   }
 
+  /**
+   * Finds a position to place the next player
+   * Will take into account any neighbour setup commands currently in the queue
+   * @param {Array<Player>} playerArray 
+   * @param {Array<number>} randomIndexes 
+   * @param {Array<string>} runningCommands 
+   * @param {{masters: Array<number>, minions: Object<number, number>}} neighbourGroups 
+   * @returns {number} an index position for the next player
+   */
   function getNextPlayer(playerArray, randomIndexes, runningCommands, neighbourGroups) {
 
     let playerIndex;
 
-    if (runningCommands.length > 0 
-      && typeof runningCommands[0][3] !== "undefined"
-      && runningCommands[0][3].startsWith("Neighbour")
+    // if no neighbour property then just return a random index
+    if (runningCommands.length === 0 
+      || typeof runningCommands[0][3] === "undefined"
+      || !runningCommands[0][3].startsWith("Neighbour")
       ) {
-
-      let masterId = parseInt(runningCommands[0][3].split("_")[1]);
-      let masterIndex = playerArray.findIndex(player => player.id === masterId);
-      let neighbourIds = findNeighbourIds(masterIndex, playerArray);
-    
-      // if left is free
-      if (randomIndexes.includes(neighbourIds[0])) {
-        console.log("left neighbour free");
-        playerIndex = neighbourIds[0];
-      } 
-      
-      // if right is free
-      else if (randomIndexes.includes(neighbourIds[1])) {
-        console.log("right neighbour free");
-        playerIndex = neighbourIds[1];
-      } 
-      
-      // if left is not part of a group
-      else if (!neighbourGroups.masters.includes(playerArray[neighbourIds[0]].id) 
-        && !Object.hasOwn(neighbourGroups.minions, playerArray[neighbourIds[0]].id)
-      ) {
-        console.log("left neighbour swapped");
-        playerIndex = neighbourIds[0];
-        [randomIndexes, playerArray] = createFreeSpace(randomIndexes, playerIndex, playerArray);
-      } 
-      
-      // if right is not part of a group
-      else if (!neighbourGroups.masters.includes(playerArray[neighbourIds[1]].id) 
-        && !Object.hasOwn(neighbourGroups.minions, playerArray[neighbourIds[1]].id)
-      ) {
-        console.log("right neighbour swapped");
-        playerIndex = neighbourIds[1];
-        [randomIndexes, playerArray] = createFreeSpace(randomIndexes, playerIndex, playerArray);
-      }
-
-      // else they are both taken and part of a group
-      else {
-        // could reorganise all players to create space, or move the master player to create space
-        playerIndex = randomIndexes.shift();
-        console.log("before shifting", JSON.stringify(runningCommands))
-        runningCommands.shift(); // admit defeat
-        console.log("cannot place neighbour of index", masterIndex, "commands left to process:", JSON.stringify(runningCommands));
-        // BUG here command queue is still running even when a place cannot be found
-        // should only run a setup command if the neighbour proprty can be verified?
-        /**
-found new player index. 8 indexes left (8) [5, 2, 3, 6, 8, 1, 7, 0]
-randomiser.js?t=1708140095483:364 adding player with role Serial Killer at index 4 who is Diligent
-randomiser.js?t=1708140095483:264 found new player index. 7 indexes left (7) [2, 3, 6, 8, 1, 7, 0]
-randomiser.js?t=1708140095483:126 running command Add Subversive
-randomiser.js?t=1708140095483:364 adding player with role Mayhem Killer at index 5 who is Humble
-randomiser.js?t=1708140095483:264 found new player index. 6 indexes left (6) [3, 6, 8, 1, 7, 0]
-randomiser.js?t=1708140095483:126 running command Add Close Killer
-randomiser.js?t=1708140095483:364 adding player with role Close Killer at index 2 who is Empathic
-randomiser.js?t=1708140095483:264 found new player index. 5 indexes left (5) [6, 8, 1, 7, 0]
-randomiser.js?t=1708140095483:126 running command Add Close Killer
-randomiser.js?t=1708140095483:364 adding player with role Close Killer at index 3 who is Temperate
-randomiser.js?t=1708140095483:210 left neighbour free
-randomiser.js?t=1708140095483:264 found new player index. 4 indexes left (4) [6, 8, 7, 0]
-randomiser.js?t=1708140095483:126 running command AddStrict Maniac Killer
-randomiser.js?t=1708140095483:364 adding player with role Maniac Killer at index 1 who is Patient
-randomiser.js?t=1708140095483:126 running command ShowAs Agent
-randomiser.js?t=1708140095483:242 before shifting [["AddStrict",1,"Maniac_Killer","Neighbour_1"],["AddStrict","2","Maniac_Killer","Neighbour_2"]]
-randomiser.js?t=1708140095483:244 cannot place neighbour of index 2 commands left to process: [["AddStrict","2","Maniac_Killer","Neighbour_2"]]
-randomiser.js?t=1708140095483:264 found new player index. 3 indexes left (3) [8, 7, 0]
-randomiser.js?t=1708140095483:126 running command AddStrict Maniac Killer
-randomiser.js?t=1708140095483:364 adding player with role Maniac Killer at index 6 who is Clairvoyant
-randomiser.js?t=1708140095483:126 running command ShowAs Agent
-randomiser.js?t=1708140095483:233 right neighbour swapped
-randomiser.js?t=1708140095483:293 swapped player at index 4 to index 8 with role Serial Killer
-randomiser.js?t=1708140095483:264 found new player index. 2 indexes left (2) [7, 0]
-randomiser.js?t=1708140095483:126 running command AddStrict Maniac Killer
-randomiser.js?t=1708140095483:364 adding player with role Maniac Killer at index 4 who is Lustful
-randomiser.js?t=1708140095483:126 running command ShowAs Agent
-randomiser.js?t=1708140095483:264 found new player index. 1 indexes left [0]
-randomiser.js?t=1708140095483:364 adding player with role Underachiever at index 7 who is Charitable
-randomiser.js?t=1708140095483:264 found new player index. 0 indexes left []
-randomiser.js?t=1708140095483:389 groups {masters: Array(2), minions: {…}}
-         */
-      }
-
-      if (randomIndexes.includes(playerIndex)) {
-        randomIndexes = randomIndexes.filter(index => index !== playerIndex);
-      }
-
-      // add to groups regardless of if it actually got placed as a neighbour or not
-      neighbourGroups.minions[playerArray[playerIndex].id] = masterId;
-
-    } else {
       playerIndex = randomIndexes.shift();
+      if (debug) console.log("found new player index early.", randomIndexes.length, "indexes left", randomIndexes);
+      return playerIndex;
     }
 
-    // if there are not 3 empty spaces available then do not choose a role with a neighbour setup command
-    // is next setup command has a neighbour command
-    // find where to place neighbour and place them
-    // if neighbour spot is taken then move that player to an open spot
-    // if there is no open spot do not run the setup command
+    let masterId = parseInt(runningCommands[0][3].split("_")[1]);
+    let masterIndex = playerArray.findIndex(player => player.id === masterId);
+    let neighbourIds = findNeighbourIds(masterIndex, playerArray);
+  
+    // if left is free
+    if (randomIndexes.includes(neighbourIds[0])) {
+      if (debug) console.log("left neighbour free");
+      playerIndex = neighbourIds[0];
+    } 
+    
+    // if right is free
+    else if (randomIndexes.includes(neighbourIds[1])) {
+      if (debug) console.log("right neighbour free");
+      playerIndex = neighbourIds[1];
+    } 
+    
+    // if left is not part of a group
+    else if (!neighbourGroups.masters.includes(playerArray[neighbourIds[0]].id) 
+      && !Object.hasOwn(neighbourGroups.minions, playerArray[neighbourIds[0]].id)
+    ) {
+      if (debug) console.log("swapping left neighbour");
+      playerIndex = neighbourIds[0];
+      createFreeSpace(randomIndexes, playerIndex, playerArray);
+    } 
+    
+    // if right is not part of a group
+    else if (!neighbourGroups.masters.includes(playerArray[neighbourIds[1]].id) 
+      && !Object.hasOwn(neighbourGroups.minions, playerArray[neighbourIds[1]].id)
+    ) {
+      if (debug) console.log("swapping right neighbour");
+      playerIndex = neighbourIds[1];
+      createFreeSpace(randomIndexes, playerIndex, playerArray);
+    }
 
-    console.log("found new player index.", randomIndexes.length, "indexes left", randomIndexes);
+    // else they are both taken and part of a group
+    else {
+      // could reorganise all players to create space, or move the master player to create space
+      playerIndex = null; // skip this attempt at player creation
+      runningCommands.shift(); // admit defeat
+      if (debug) console.log("cannot place neighbour of index", masterIndex, "and commands left to process:", JSON.stringify(runningCommands));
+      return playerIndex;
+    }
 
-    return [playerIndex, playerArray, runningCommands, randomIndexes, neighbourGroups];
+    // add to groups and remove index if it gets placed
+    if (randomIndexes.includes(playerIndex)) {
+      const deleteIndex = randomIndexes.indexOf(playerIndex);
+      randomIndexes.splice(deleteIndex, 1);
+      neighbourGroups.minions[playerArray[playerIndex].id] = masterId;
+    }
+
+    if (debug) console.log("found new player index.", randomIndexes.length, "indexes left", randomIndexes);
+
+    return playerIndex
 
   }
 
+  /**
+   * Swaps a players attributes from a given index to an unprocessed index
+   * @param {Array<number>} randomIndexes 
+   * @param {number} desiredIndex 
+   * @param {Array<Player>} playerArray 
+   */
   function createFreeSpace(randomIndexes, desiredIndex, playerArray) {
 
-    if (randomIndexes.length < 2) {
+    if (randomIndexes.length < 1) {
       throw Error("not enough free spaces for neighbours");
     }
 
@@ -321,26 +382,29 @@ randomiser.js?t=1708140095483:389 groups {masters: Array(2), minions: {…}}
 
     randomIndexes.push(desiredIndex);
 
-    console.log("swapped player at index", desiredIndex, "to index", newIndex, "with role", roleArray[playerArray[newIndex].role].name);
-
-    return [randomIndexes, playerArray];
+    if (debug) console.log("swapped player at index", desiredIndex, "to index", newIndex, "with role", roleArray[playerArray[newIndex].role].name);
 
   }
+
+  const debug = playerArray[0].id === 54321 ? true : false;
 
   // delcare vars
   const taken = {
     "chars": new Set(),
     "roles": new Set()
   }
+  const playerAmount = playerArray.filter(player => player.type !== 0).length;
+  const formula = Math.floor((0.5 * playerAmount) - 2);
   let targetAntags = 1;
-  let targetDetrimentals = 2;
-  let runningCommands = [];
-  let neighbourGroups = {masters: [], minions: {}};
+  let targetDetrimentals = formula > 0 ? formula : 0;
+  if (debug) console.log("detrimentals", targetDetrimentals);
+  const runningCommands = [];
+  const neighbourGroups = {masters: [], minions: {}};
 
-  let randomIndexes = playerArray.map((_, index) => index);
-  randomIndexes = shuffle(randomIndexes);
+  // remove any narrators from indexes to place
+  const randomIndexes = toShuffled(playerArray.map((_, index) => index).filter(playerIndex => playerArray[playerIndex].type !== 0));
 
-  let randomisedPlayers = [...playerArray];
+  const randomisedPlayers = [...playerArray];
 
   // loop through players to randomise
   while (randomIndexes.length > 0) {
@@ -348,26 +412,17 @@ randomiser.js?t=1708140095483:389 groups {masters: Array(2), minions: {…}}
     //priority setup command > antag > detrimentals > agents
     //priority setup command > antag > detrimentals > agents
 
-    // const playerIndex = randomIndexes.shift();
-    let playerIndex;
-    [playerIndex, randomisedPlayers, runningCommands, 
-      randomIndexes, neighbourGroups] 
-      = getNextPlayer(randomisedPlayers, randomIndexes, 
-        runningCommands, neighbourGroups);
+    let playerIndex = getNextPlayer(randomisedPlayers, randomIndexes, runningCommands, neighbourGroups);
+    if (playerIndex === null) continue; // if the player cannot be placed due to neighbour problems then skip this loop
+
     let player = playerArray[playerIndex];
     let isStrict; // strict flag from run command
-
-    // if narrator then ignore
-    if (player.type === 0) {
-      continue;
-    }
 
     // process any running setup commands
     if (runningCommands.length > 0) {
 
-      [player, runningCommands, isStrict] = updatePlayerFromCommand(
-        player, runningCommands, charArray, roleArray, taken
-      );
+      [player, isStrict] = updatePlayerFromCommand(
+        player, runningCommands, charArray, roleArray, taken);
 
     } else { // else randomise player
 
@@ -392,14 +447,12 @@ randomiser.js?t=1708140095483:389 groups {masters: Array(2), minions: {…}}
 
     }
 
-    console.log("adding player with role", roleArray[player.role].name, "at index", playerIndex, "who is", charArray[player.char].name);
+    if (debug) console.log("adding player with role", roleArray[player.role].name, "at index", playerIndex, "who is", charArray[player.char].name);
     
     // add commands if the role has any
     if (roleArray[player.role]["setup"].length > 0) {
 
-      let immediateCommands;
-
-      [runningCommands, immediateCommands, neighbourGroups] = addSetupCommand(player.role, runningCommands, isStrict, player, neighbourGroups);
+      let immediateCommands = addSetupCommand(player.role, runningCommands, isStrict, player, neighbourGroups);
 
       // run any commands that modify its own role
       if (immediateCommands.length > 0) {
@@ -417,7 +470,7 @@ randomiser.js?t=1708140095483:389 groups {masters: Array(2), minions: {…}}
 
   }
 
-  console.log("groups", neighbourGroups);
+  if (debug) console.log("groups", neighbourGroups);
 
   return randomisedPlayers;
       
