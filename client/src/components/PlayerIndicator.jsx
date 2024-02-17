@@ -73,7 +73,7 @@ function RegularPlayerIndicator({id, name, label, handleClick, vertical, rState}
 
 
 function NarratorPlayerIndicator({
-  chars, roles, rTeam,
+  chars, roles, team,
   id, name, state, role, char, status, 
   rState, rRole, rChar, rStatus, handleClick, vertical}) {
 
@@ -92,9 +92,9 @@ function NarratorPlayerIndicator({
         justifyContent: "flex-start",
         m: 0.8,
         overflow: "inherit",
-        background: rTeam === 2 ? "rgb(180, 30, 10)" : "rgb(25, 118, 210)",
+        background: team === 2 ? "rgb(180, 30, 10)" : "rgb(25, 118, 210)",
         ":hover": {
-          background: rTeam === 2 ? "rgb(150, 25, 5)" : "rgb(21, 101, 192)",
+          background: team === 2 ? "rgb(150, 25, 5)" : "rgb(21, 101, 192)",
         }
       }}>
         <Typography>{name}</Typography>
