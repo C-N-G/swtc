@@ -122,7 +122,7 @@
 			"Additional Text Placeholder Text AMONGUS"
 		],
 		"setup": [
-			["Three players are Cultists.", "AddStrict 2 Cultist"],
+			["test.", "AddStrict 2 Cultist"],
 			["General Description Placeholder Text"]
 		]
 	},
@@ -138,7 +138,7 @@
 			"Additional Text Placeholder"
 		],
 		"setup": [
-      ["Three players are Cultists.", "Add 1 Subversive"]
+      ["test.", "Add 1 Subversive"]
 		]
 	},
 
@@ -153,7 +153,52 @@
 			"Additional Text Placeholder"
 		],
 		"setup": [
-      ["Three players are Cultists.", "Convert 2 Subversive"]
+      ["test.", "Convert 2 Subversive"]
+		]
+	},
+
+  {
+		"name": "Maniac Killer",
+		"team": "Subversive",
+		"types": ["Antagonist"],
+		"description": "CHUNGUS",
+		"ability": "Each night, BIG CHUNGUSS",
+		"attributes": ["Human"],
+		"additional": [
+			"Additional Text Placeholder"
+		],
+		"setup": [
+      ["test.", "ShowAs Agent"]
+		]
+	},
+
+  {
+		"name": "Close Killer",
+		"team": "Subversive",
+		"types": ["Antagonist"],
+		"description": "CHUNGUS",
+		"ability": "Each night, BIG CHUNGUSS",
+		"attributes": ["Human"],
+		"additional": [
+			"Additional Text Placeholder"
+		],
+		"setup": [
+      ["test.", "AddStrict 2 Maniac_Killer Neighbour"]
+		]
+	},
+
+  {
+		"name": "Mayhem Killer",
+		"team": "Subversive",
+		"types": ["Antagonist"],
+		"description": "Kill them all slowly and painfully.",
+		"ability": "Each night, after the first, you must choose a player: that player dies.",
+		"attributes": ["Human"],
+		"additional": [
+			"Additional Text Placeholder"
+		],
+		"setup": [
+      ["test.", "Add 2 Close_Killer"]
 		]
 	}
 ]

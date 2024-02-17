@@ -144,7 +144,7 @@ function NarratorCharacter({session, setSession, players, setPlayers}) {
 
     setPlayers(prevPlayers => { 
       try {
-        return randomiser(prevPlayers, chars, roles) ;
+        return randomiser([...prevPlayers], chars, roles);
       } catch (error) {
         console.log("randomiser error: ", error);
         return prevPlayers;
