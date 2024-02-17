@@ -397,7 +397,11 @@ export default function randomiser(playerArray, charArray, roleArray) {
   const formula = Math.floor((0.5 * playerAmount) - 2);
   let targetAntags = 1;
   let targetDetrimentals = formula > 0 ? formula : 0;
+<<<<<<< HEAD
   if (debug) console.log("detrimentals", targetDetrimentals);
+=======
+  console.log("detrimentals", targetDetrimentals)
+>>>>>>> b47e19a0024c093f3b49d1f332a93d5ebab5e03c
   const runningCommands = [];
   const neighbourGroups = {masters: [], minions: {}};
 
