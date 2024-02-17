@@ -1,7 +1,7 @@
 import {useState, createContext, useEffect, useCallback} from "react";
 // eslint-disable-next-line no-unused-vars
 import { createTheme } from "@mui/material/styles";
-import {Button, Container, Grid} from "@mui/material";
+import {Box, Button, Container, Grid} from "@mui/material";
 import Board from "./components/Board.jsx";
 import Phase from "./components/Phase.jsx";
 import Options from "./components/Options.jsx";
@@ -164,18 +164,42 @@ function App() {
             players={players} setPlayers={setPlayers} />
           <Chat>
             CHAT W.I.P
-            {session.id ? "" :
-            <Button variant="contained" onClick={() => {
-              setUserId(54321);
-              setPlayers(somePlayers);
-              setSession(prevSession => ({
-                ...prevSession,
-                modules: [...GameData.modules.map(mod => mod.name)]
-              }));
-            }}>
-              Add Dummy Players
-            </Button>
-            }
+            {session.id ? "" : <>
+              <Button variant="contained" onClick={() => {
+                setUserId(54321);
+                setPlayers([...somePlayers]);
+                setSession(prevSession => ({
+                  ...prevSession,
+                  modules: [...GameData.modules.map(mod => mod.name)]
+                }));
+              }}>
+                Add Dummy Players
+              </Button>
+              {userId === 54321 ? <>
+                <Box>
+                  <Button size="small" variant="contained" onClick={() => {
+                    setPlayers(players => {
+                      const i = players.filter(player => player.type !== 0).length
+                      const player = new Player(i, "Player " + i);
+                      if (i >= 16) return players;
+                      players.push(player.data);
+                      return [...players];
+                    });
+                  }}>
+                    +1
+                  </Button>
+                  <Button size="small" variant="contained" onClick={() => {
+                     setPlayers(players => {
+                      if (players.length === 0) return players;
+                      players.pop();
+                      return [...players];
+                    });
+                  }}>
+                    -1
+                  </Button>
+                </Box>
+              </> : ""}
+            </>}
 
           </Chat>
         </Grid>
