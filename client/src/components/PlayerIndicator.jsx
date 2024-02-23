@@ -1,7 +1,8 @@
 import {useContext} from "react";
-import {Box, Button, Typography} from '@mui/material';
+import {Box, Button, Stack, Typography} from '@mui/material';
 import {UserContext} from "../App.jsx";
 import GameData from "../strings/_gameData.js"
+import Reminder from "./Reminder.jsx";
 
 function PlayerIndicator(props) {
 
@@ -86,6 +87,35 @@ function NarratorPlayerIndicator({
       display: "flex",
       overflow: "clip", 
     }}>
+      <Stack spacing={{xs: 0.4}} sx={{
+        position: "absolute",
+        zIndex: 1
+      }}>
+        <Reminder 
+          content={"A"}
+          colour={"#AFFFAF"}
+        />
+        <Reminder 
+          content={"B"}
+          colour={"#AAAAFF"}
+        />
+        <Reminder 
+          content={"B"}
+          colour={"#AAAAFF"}
+        />
+        <Reminder 
+          content={"B"}
+          colour={"#AAAAFF"}
+        />
+        <Reminder 
+          content={"B"}
+          colour={"#AAAAFF"}
+        />
+        <Reminder 
+          content={"B"}
+          colour={"#AAAAFF"}
+        />
+      </Stack>
       <Button variant="contained" onClick={() => {handleClick(id)}} sx={{
         flexGrow: 1, 
         flexDirection: "column",

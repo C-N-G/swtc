@@ -1,11 +1,12 @@
 import {useContext, useState, useMemo} from 'react'
 import {Card, Typography, Grid, Paper, Checkbox, FormGroup, FormControlLabel, Dialog, 
-        DialogActions, DialogContent, DialogTitle, Button, Box, CircularProgress, Switch, IconButton}from '@mui/material';
+        DialogActions, DialogContent, DialogTitle, Button, Box, CircularProgress, Switch, IconButton, Autocomplete, TextField}from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import {UserContext} from "../App.jsx";
 import GameData from "../strings/_gameData.js";
 import {socket} from "../helpers/socket.js";
 import randomiser from '../helpers/randomiser.js';
+import Reminder from './Reminder.jsx';
 
 function Character(props) {
 
@@ -108,9 +109,10 @@ function PlayerCharacter({user, session}) {
 function NarratorCharacter({session, setSession, players, setPlayers}) {
 
   const [modSelOpen, setModSelOpen] = useState(false);
+  const [selectedReminder, setSelectedReminder] = useState(null);
   const [sync, setSync] = useState({progress: false, error: false});
 
-  const [chars, roles] = useMemo(() => GameData.getFilteredValues(session.modules, true), [session.modules]);
+  const [chars, roles, reminders] = useMemo(() => GameData.getFilteredValues(session.modules, true), [session.modules]);
 
   function handleModuleSelection(e) {
 
@@ -228,9 +230,28 @@ function NarratorCharacter({session, setSession, players, setPlayers}) {
         {sync.progress ? <CircularProgress size={24} /> : sync.error ? "Error Syncing" : "Sync"}
       </Button>
     </Box>
-
-    
-
+    <Box sx={{display: "flex", alignItems: "center", my: 1}}>
+      {selectedReminder ? 
+        <Box sx={{mr: 1}}>
+          <Reminder 
+            content={selectedReminder.content}
+            colour={selectedReminder.colour}
+          />
+        </Box>
+      : ""}
+      <Autocomplete
+        disablePortal
+        fullWidth
+        id="narrator-reminder-input"
+        options={reminders}
+        groupBy={(option) => option.origin.name}
+        value={selectedReminder}
+        onChange={(_, newValue) => setSelectedReminder(newValue)}
+        getOptionLabel={(option) => option.description}
+        size="small"
+        renderInput={(params) => <TextField {...params} label="Add Reminder" />}
+      />
+    </Box>
 
     <Dialog open={modSelOpen} onClose={() => setModSelOpen(false)} >
       <DialogTitle>Select Modules</DialogTitle>
