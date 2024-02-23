@@ -2,6 +2,7 @@ import {useState, createContext, useEffect, useCallback} from "react";
 // eslint-disable-next-line no-unused-vars
 import { createTheme } from "@mui/material/styles";
 import {Box, Button, Container, Grid} from "@mui/material";
+import {DndContext} from "@dnd-kit/core";
 import Board from "./components/Board.jsx";
 import Phase from "./components/Phase.jsx";
 import Options from "./components/Options.jsx";
@@ -47,6 +48,46 @@ function App() {
 
   const user = players.find(player => player.id === userId); // the users player object
   const drawPlayers = players.filter(player => player.type === 1); // the players to draw on the board e.g. not the narrators
+
+  function handleDragEnd(event) {
+
+    const reminderId = Number(event.active.id.split("_")[1]);
+    const originId = Number(event.active.id.split("_")[0]);
+    const originIsPlayer = !Number.isNaN(originId);
+    const hasTarget = event.over !== null;
+    const maxReminders = 5;
+    let removeOrigin = false;
+    let placeReminder = true;
+    let playerId;
+
+    if (!hasTarget && !originIsPlayer) return;
+
+    if (originIsPlayer) removeOrigin = true;
+
+    if (!hasTarget && originIsPlayer) {
+      placeReminder = false;
+      playerId = originId;
+    } else if (hasTarget) {
+      playerId = Number(event.over.id.split("_")[1]);
+    }
+
+    setPlayers(prev => prev.map(player => {
+      if (placeReminder && player.id === playerId) {
+
+        // don't add reminder if the player already has that reminder
+        if (player.reminders.some(reminder => reminder.id === reminderId)) return player;
+        // don't add reminder if the player has the max reminders
+        if (player.reminders.length >= maxReminders) return player;
+
+        const reminder = GameData.reminders.find(reminder => reminder.id === reminderId);
+        player.reminders.push(reminder);
+      } else if (removeOrigin && player.id === originId) {
+        player.reminders = player.reminders.filter(reminder => reminder.id !== reminderId);
+      }
+      return player;
+    }))
+
+  }
 
   const handlePlayerDataChange = useCallback((targetId, targetProperty, targetValue, fromServer = false) => {
 
@@ -141,6 +182,7 @@ function App() {
   }, [handlePlayerDataChange]);
 
   return (
+    <DndContext onDragEnd={handleDragEnd}>
     <UserContext.Provider value={user}>
     <Container sx={{maxWidth: "1440px"}}>
       <Grid container spacing={2}>
@@ -207,6 +249,7 @@ function App() {
       
     </Container>
     </UserContext.Provider>
+    </DndContext>
   );
 }
 

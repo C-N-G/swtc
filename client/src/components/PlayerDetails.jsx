@@ -1,7 +1,8 @@
 import {useContext} from "react";
-import {Box, Typography, Button, Grid, TextField, Autocomplete, Stack} from '@mui/material';
+import {Box, Typography, Button, Grid, TextField, Autocomplete, Stack, Tooltip} from '@mui/material';
 import {UserContext} from "../App.jsx";
 import GameData from "../strings/_gameData.js"
+import Reminder from "./Reminder.jsx";
 
 function PlayerDetails(props) {
 
@@ -106,7 +107,7 @@ function RegularPlayerDetails({
 
 function NarratorDetails({
   id, name, handlePlayerDataChange, handleDismissalClick, chars, roles,
-  state, role, char, status, team,
+  state, role, char, status, team, reminders,
   rState, rRole, rChar, rStatus, rTeam }) {
 
   const leftVal = "Shown";
@@ -152,6 +153,15 @@ function NarratorDetails({
           {selectBuilder(id, "Team", false, GameData.teams, team)}
         </Stack>
       </Grid>
+      <Stack m={1} spacing={1} direction="row">
+      {reminders.map(reminder => {
+        return (
+          <Tooltip key={String(id) + String(reminder.id)} title={reminder.description}>
+            <Box> <Reminder reminder={reminder} /> </Box>
+          </Tooltip>
+        )
+      })}
+      </Stack>
     </Grid>
   );
 

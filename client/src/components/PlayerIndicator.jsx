@@ -1,8 +1,10 @@
 import {useContext} from "react";
 import {Box, Button, Stack, Typography} from '@mui/material';
 import {UserContext} from "../App.jsx";
+import {useDroppable} from "@dnd-kit/core";
 import GameData from "../strings/_gameData.js"
 import Reminder from "./Reminder.jsx";
+import Draggable from "./Draggable.jsx";
 
 function PlayerIndicator(props) {
 
@@ -74,9 +76,19 @@ function RegularPlayerIndicator({id, name, label, handleClick, vertical, rState}
 
 
 function NarratorPlayerIndicator({
-  chars, roles, team,
+  chars, roles, team, reminders,
   id, name, state, role, char, status, 
   rState, rRole, rChar, rStatus, handleClick, vertical}) {
+
+  const {isOver, setNodeRef} = useDroppable({
+    id: "droppable_" + id
+  });
+
+  const style = {
+    boxShadow: isOver ? "inset 0 0 20px rgba(0, 200, 0, 0.5)" : undefined,
+    transform: isOver ? "translate3d(0px, -5px, 0)" : undefined,
+    transition: "transform 0.2s",
+  };
 
   return (
     <Box sx={{
@@ -91,42 +103,31 @@ function NarratorPlayerIndicator({
         position: "absolute",
         zIndex: 1
       }}>
-        <Reminder 
-          content={"A"}
-          colour={"#AFFFAF"}
-        />
-        <Reminder 
-          content={"B"}
-          colour={"#AAAAFF"}
-        />
-        <Reminder 
-          content={"B"}
-          colour={"#AAAAFF"}
-        />
-        <Reminder 
-          content={"B"}
-          colour={"#AAAAFF"}
-        />
-        <Reminder 
-          content={"B"}
-          colour={"#AAAAFF"}
-        />
-        <Reminder 
-          content={"B"}
-          colour={"#AAAAFF"}
-        />
+        {reminders.map(reminder => {
+          return (
+            <Draggable key={String(id) + String(reminder.id)} draggableId={String(id) + "_" + String(reminder.id)}>
+            <Reminder reminder={reminder} />
+            </Draggable>
+          )
+        })}
       </Stack>
-      <Button variant="contained" onClick={() => {handleClick(id)}} sx={{
-        flexGrow: 1, 
-        flexDirection: "column",
-        justifyContent: "flex-start",
-        m: 0.8,
-        overflow: "inherit",
-        background: team === 2 ? "rgb(180, 30, 10)" : "rgb(25, 118, 210)",
-        ":hover": {
-          background: team === 2 ? "rgb(150, 25, 5)" : "rgb(21, 101, 192)",
-        }
-      }}>
+      <Button 
+        variant="contained" 
+        onClick={() => {handleClick(id)}} 
+        sx={{
+          flexGrow: 1, 
+          flexDirection: "column",
+          justifyContent: "flex-start",
+          m: 0.8,
+          overflow: "inherit",
+          background: team === 2 ? "rgb(180, 30, 10)" : "rgb(25, 118, 210)",
+          ":hover": {
+            background: team === 2 ? "rgb(150, 25, 5)" : "rgb(21, 101, 192)",
+          }
+        }}
+        ref={setNodeRef}
+        style={style}
+      >
         <Typography>{name}</Typography>
         <Box sx={{
           display: "flex", 

@@ -187,7 +187,7 @@
 		],
     "reminders": [
       ["A", "#AFFFAF", "Created by Close Killer"],
-      ["K", "#FFAFAF", "killed by Close Killer"]
+      ["K", "#FF05AA", "killed by Close Killer"]
     ]
 	},
 
@@ -206,7 +206,7 @@
 		],
     "reminders": [
       ["A", "#AFFFAF", "Created by Mayhem Killer"],
-      ["K", "#FFAFAF", "killed by Mayhem Killer"]
+      ["K", "#FFBB05", "killed by Mayhem Killer"]
     ]
 	}
 ]

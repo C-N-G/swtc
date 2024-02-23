@@ -18,7 +18,10 @@
     "ability": "You, or both of your neighbours, might be malfunctioning.",
     "attributes": ["Malfunctioning"],
     "additional": [],
-    "setup": []
+    "setup": [],
+    "reminders": [
+      ["😃", "#af4cb8", "Savaged by hunger"]
+    ]
   },
 
   {

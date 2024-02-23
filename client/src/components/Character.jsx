@@ -7,6 +7,7 @@ import GameData from "../strings/_gameData.js";
 import {socket} from "../helpers/socket.js";
 import randomiser from '../helpers/randomiser.js';
 import Reminder from './Reminder.jsx';
+import Draggable from './Draggable.jsx';
 
 function Character(props) {
 
@@ -230,15 +231,26 @@ function NarratorCharacter({session, setSession, players, setPlayers}) {
         {sync.progress ? <CircularProgress size={24} /> : sync.error ? "Error Syncing" : "Sync"}
       </Button>
     </Box>
-    <Box sx={{display: "flex", alignItems: "center", my: 1}}>
+    <Box sx={{display: "flex", alignItems: "stretch", my: 1}}>
+    <Box 
+      sx={{
+        mr: 1,
+        width: "3rem",
+        border: "1px solid rgba(0, 0, 0, 0.25)",
+        borderRadius: "4px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        ":hover": {borderColor: "rgba(0, 0, 0, 1)"}
+        }}>
       {selectedReminder ? 
-        <Box sx={{mr: 1}}>
-          <Reminder 
-            content={selectedReminder.content}
-            colour={selectedReminder.colour}
-          />
+        <Box sx={{position: "absolute"}}>
+          <Draggable draggableId={"new_" + selectedReminder.id}>
+          <Reminder reminder={selectedReminder} />
+          </Draggable>
         </Box>
       : ""}
+      </Box>
       <Autocomplete
         disablePortal
         fullWidth

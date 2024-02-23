@@ -1,20 +1,23 @@
-import { Box } from "@mui/material";
+import {Box} from "@mui/material";
 
-function Reminder({content, colour, description}) {
+function Reminder({reminder}) {
 
   return (
-    <Box sx={{
-      background: colour,
-      p: 0.1,
-      borderRadius: 1,
-      fontFamily: "monospace",
-      fontWeight: 800,
-      fontSize: "1rem",
-      width: "1rem",
-      userSelect: "none",
-      textAlign: "center"
-    }}>
-      {content}
+    <Box 
+      sx={{
+        background: reminder.colour,
+        p: 0.1,
+        borderRadius: 1,
+        fontFamily: "monospace",
+        fontWeight: 800,
+        fontSize: "1rem",
+        height: "1.4rem",
+        aspectRatio: "1/1",
+        userSelect: "none",
+        textAlign: "center",
+      }}
+    >
+      {reminder.content}
     </Box>
   );
 }
