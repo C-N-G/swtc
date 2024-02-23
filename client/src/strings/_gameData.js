@@ -2,13 +2,14 @@ import loader from "../helpers/gameDataLoader.js";
 
 const modules = import.meta.glob(["./*.json", "./modules/*/*.json"], {eager: true});
 
-let GameData = {
+const GameData = {
   chars: [],
   roles: [],
   states: [],
   statuses: [],
   teams: [],
   modules: {},
+  reminders: [],
 
   filterByModule(array, type, full) {
 
@@ -39,7 +40,7 @@ let GameData = {
 
 }
 
-GameData = loader(GameData, modules);
+loader(GameData, modules);
 
 console.log(GameData);
 

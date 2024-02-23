@@ -199,6 +199,9 @@
 		],
 		"setup": [
       ["test.", "Add 2 Close_Killer"]
-		]
+		],
+    "reminders": [
+      ["A", "#AFAFAF", "Created by Mayhem Killer"]
+    ]
 	}
 ]

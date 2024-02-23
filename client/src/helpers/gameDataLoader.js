@@ -1,3 +1,7 @@
+import Char from "../classes/char";
+import Reminder from "../classes/reminder";
+import Role from "../classes/role";
+
 export default function gameDataLoader(load_obj, modules) {
 
   function import_json(file_path, load_origin, load_target) {
@@ -19,7 +23,37 @@ export default function gameDataLoader(load_obj, modules) {
     }
 
     // add file contents to correct property array in game data
-    load_target[property] = load_target[property].concat(load_origin[file_path].default);
+    load_origin[file_path].default.forEach(eleObj => {
+
+      let newEle;
+      let eleId = load_target[property].length;
+
+      // handle stripping reminders from object and adding to reminder array
+      if (eleObj.reminders) {
+        eleObj.reminders.forEach(reminder => {
+          let reminderId = load_target.reminders.length;
+          let newReminder = new Reminder(reminderId, eleId, ...reminder);
+          load_target.reminders.push(newReminder);
+        })
+        delete eleObj.reminders;
+      }
+
+      switch (property) {
+        case "chars":
+          newEle = new Char(eleId, ...Object.values(eleObj));
+          break;
+        
+        case "roles":
+          newEle = new Role(eleId, ...Object.values(eleObj));
+          break;
+        
+        default:
+          load_target[property].push(eleObj);
+      }
+
+      if (newEle) load_target[property].push(newEle);
+
+    })
 
   }
 
@@ -74,7 +108,8 @@ export default function gameDataLoader(load_obj, modules) {
 
   }
 
-  Object.keys(modules).forEach((path) => import_json(path, modules, load_obj))
+  // sort modules by file path length so unknowns will be loaded first
+  Object.keys(modules).sort((a,b) => a.length - b.length).forEach((path) => import_json(path, modules, load_obj))
 
   convert_modules_to_array(load_obj);
 
@@ -82,5 +117,4 @@ export default function gameDataLoader(load_obj, modules) {
 
   remove_module_prefix(load_obj);
 
-  return load_obj;
 }
