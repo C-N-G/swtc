@@ -25,9 +25,9 @@ export default class Session {
             player = new Player(playerId, name);
         }
 
-        this.players.push(player.data);
+        this.players.push(player);
 
-        return player.data.id;
+        return player.id;
 
     }
 

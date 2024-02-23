@@ -14,12 +14,12 @@ import "./App.css"
 
 export const UserContext = createContext({});
 
-const PLAYER = new Player(54321, "Player " + 54321, 0).data;
+const PLAYER = new Player(54321, "Player " + 54321, 0);
 
 const somePlayers = [PLAYER];
 for (let i = 0; i < 8; i++) {
   let player = new Player(i, "Player " + i);
-  somePlayers.push(player.data);
+  somePlayers.push(player);
 }
 
 function App() {
@@ -182,7 +182,7 @@ function App() {
                       const i = players.filter(player => player.type !== 0).length
                       const player = new Player(i, "Player " + i);
                       if (i >= 16) return players;
-                      players.push(player.data);
+                      players.push(player);
                       return [...players];
                     });
                   }}>

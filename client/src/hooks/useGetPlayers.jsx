@@ -4,7 +4,7 @@ import Player from "../classes/player.js";
 const somePlayers = [];
 for (let i = 0; i < 16; i++) {
   let player = new Player(i, "Player " + i);
-  somePlayers.push(player.data);
+  somePlayers.push(player);
 }
 
 function useGetPlayers() {
