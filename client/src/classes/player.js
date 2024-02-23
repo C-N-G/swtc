@@ -1,22 +1,41 @@
 export default class Player {
 
+  /**
+   * Player object
+   * @param {number} id - unique user identifier
+   * @param {string} name - user name
+   * @param {number} type - type of user. 0 = narrator, 1 = player
+   * @param {string} label - quick label of targetted player
+   * @param {string} notes - notes of targetted player
+   * @param {number} char - player characteristic
+   * @param {number} role - player role
+   * @param {number} status - player status
+   * @param {number} state - player state. 0 = dead, 1 = alive
+   * @param {number} team - player team
+   * @param {number} rChar - real player characteristic shown to narrator
+   * @param {number} rRole - real player role shown to narrator
+   * @param {number} rStatus - real player status shown to narrator
+   * @param {number} rState - real player state shown to narrator
+   * @param {number} rTeam - real player team shown to narrator
+   * @param {Array<Reminder>} reminders - visual reminders tied to this player
+   */
   constructor(
-    id,             // unique user identifier 
-    name,           // user name
-    type = 1,       // type of user. 0 = narrator, 1 = player
-    label = "",     // quick label of targetted player
-    notes = "",     // notes of targetted player
-    char = 0,       // player characteristic
-    role = 0,       // player role
-    status = 0,     // player status
-    state = 1,      // player state. 0 = dead, 1 = alive
-    team = 0,       // player team
-    rChar = 0,      // real player characteristic shown to narrator
-    rRole = 0,      // real player role shown to narrator
-    rStatus = 0,    // real player status shown to narrator
-    rState = 1,     // real player state shown to narrator
-    rTeam = 0,      // real player team shown to narrator
-    reminders = []  // visual reminders tied to this player
+    id,
+    name,
+    type = 1,
+    label = "",
+    notes = "",
+    char = 0,
+    role = 0,
+    status = 0,
+    state = 1,
+    team = 0,
+    rChar = 0,
+    rRole = 0,
+    rStatus = 0,
+    rState = 1,
+    rTeam = 0,
+    reminders = []
   ) {
 
     this.id = id;
