@@ -1,3 +1,13 @@
+23/02/2024 v0.3.6
+- added reminders for the narrator
+  - reminders are tied any role or characistic with an ability
+  - reminders can be selected from the character window
+- added reminder dragging functionality
+  - reminders can be added to players by selecting reminder, then dragging it onto a player
+  - reminders can be dragged between players to rearrange
+  - reminders can be dragged off players to remove them
+  - in the player details widget reminders can be seen and clicked on for a detailed tooltip
+
 17/02/2024 v0.3.5
 - changed the player indicator for the narrator view to show the true team instead of the shown team
 - added "ShowAs" setup command support

@@ -1,8 +1,8 @@
 {
   "name": "swtc",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "Secrets Within the Compound Game",
-  "main": "./server/server.js",
+  "main": "./server/src/server.js",
   "scripts": {
     "start": "node ./server/src/server.js",
     "server": "cd server && nodemon ./src/server.js",
