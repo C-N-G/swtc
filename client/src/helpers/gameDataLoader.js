@@ -30,12 +30,13 @@ export default function gameDataLoader(load_obj, modules) {
 
       // handle stripping reminders from object and adding to reminder array
       if (eleObj.reminders) {
-        eleObj.reminders.forEach(reminder => {
+        // link the reminder refernces to the new object
+        eleObj.reminders = eleObj.reminders.map(reminder => {
           let reminderId = load_target.reminders.length;
-          let newReminder = new Reminder(reminderId, eleId, ...reminder);
+          let newReminder = new Reminder(reminderId, null, ...reminder);
           load_target.reminders.push(newReminder);
+          return newReminder;
         })
-        delete eleObj.reminders;
       }
 
       switch (property) {
@@ -52,6 +53,13 @@ export default function gameDataLoader(load_obj, modules) {
       }
 
       if (newEle) load_target[property].push(newEle);
+
+      // link the reminders to the new object reference
+      if (newEle?.reminders?.length > 0) {
+        eleObj.reminders.forEach(reminder => {
+          reminder.origin = newEle;
+        })
+      }
 
     })
 

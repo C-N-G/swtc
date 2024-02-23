@@ -11,14 +11,13 @@ const GameData = {
   modules: {},
   reminders: [],
 
-  filterByModule(array, type, full) {
+  filterByModule(moduleArray, type, full) {
 
     const enabledSet = new Set(
-      array.map(mod => {
+      moduleArray.map(mod => {
         return this.modules.find(ele => ele.name === mod)[type]
       }).flat()
     )
-
 
     const return_data = this[type] // hack - leave unknown out of the filtering
     .filter(ele => enabledSet.has(ele.name) || ele.name === "Unknown")
@@ -28,9 +27,27 @@ const GameData = {
     
   },
 
-  getFilteredValues(array, full = false) {
+  filterRemindersByModule(charArray, roleArray) {
 
-    return [this.filterByModule(array, "chars", full), this.filterByModule(array, "roles", full)]
+    const reminderArray = [];
+
+    charArray.concat(roleArray).forEach(ele => {
+      if (ele.reminders?.length > 0) {
+        reminderArray.push(...ele.reminders);
+      }
+    })
+
+    return reminderArray;
+
+  },
+
+  getFilteredValues(moduleArray, full = false) {
+
+    const charArray = this.filterByModule(moduleArray, "chars", full);
+    const roleArray = this.filterByModule(moduleArray, "roles", full);
+    const reminderArray = this.filterRemindersByModule(charArray, roleArray);
+
+    return [charArray, roleArray, reminderArray]
 
   },
 

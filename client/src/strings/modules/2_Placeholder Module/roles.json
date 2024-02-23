@@ -184,7 +184,11 @@
 		],
 		"setup": [
       ["test.", "AddStrict 2 Maniac_Killer Neighbour"]
-		]
+		],
+    "reminders": [
+      ["A", "#AFFFAF", "Created by Close Killer"],
+      ["K", "#FFAFAF", "killed by Close Killer"]
+    ]
 	},
 
   {
@@ -201,7 +205,8 @@
       ["test.", "Add 2 Close_Killer"]
 		],
     "reminders": [
-      ["A", "#AFAFAF", "Created by Mayhem Killer"]
+      ["A", "#AFFFAF", "Created by Mayhem Killer"],
+      ["K", "#FFAFAF", "killed by Mayhem Killer"]
     ]
 	}
 ]

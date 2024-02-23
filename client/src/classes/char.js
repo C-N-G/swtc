@@ -11,16 +11,18 @@ export default class Char {
    * @param {Array<string>} attributes 
    * @param {Array<string>} additional 
    * @param {Array<Array<string>>} setup 
+   * @param {Array<Reminder>} reminders
    */
   constructor(
-    id,               
-    name,             
+    id,
+    name,
     types = [],
     description = "",
     ability = "",
     attributes = [],
     additional = [],
     setup = [],
+    reminders = [],
   ) {
     this.id = id;
     this.name = name;
@@ -30,6 +32,7 @@ export default class Char {
     this.attributes = attributes;
     this.additional = additional;
     this.setup = setup;
+    this.reminders = reminders;
   }
 
 }

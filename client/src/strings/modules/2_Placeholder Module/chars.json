@@ -65,7 +65,10 @@
     "ability": "Once per game, during the night, you may choose a player: they learn your characteristic.",
     "attributes": ["Information"],
     "additional": [],
-    "setup": []
+    "setup": [],
+    "reminders": [
+      ["K", "#F0F0F0", "Shared Kindness"]
+    ]
   },
 
   {

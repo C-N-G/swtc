@@ -22,6 +22,7 @@ export default class Role {
     attributes = [],
     additional = [],
     setup = [],
+    reminders = [],
   ) {
     this.id = id;
     this.name = name;
@@ -32,6 +33,7 @@ export default class Role {
     this.attributes = attributes;
     this.additional = additional;
     this.setup = setup;
+    this.reminders = reminders;
   }
 
 }
