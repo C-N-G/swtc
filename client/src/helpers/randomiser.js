@@ -79,7 +79,7 @@ export default function randomiser(playerArray, charArray, roleArray) {
 
       // prevent infinte loop
       if (takenIdsSet.size === idArray.length || EveryFilteredIdTaken) {
-        if (debug) console.log(Array.from(takenIdsSet).map(id => roleArray[id].name), filteredIdArray)
+        if (debug) console.debug(Array.from(takenIdsSet).map(id => roleArray[id].name), filteredIdArray)
         throw Error("not enough options to uniquely randomise")
       }
 
@@ -203,7 +203,7 @@ export default function randomiser(playerArray, charArray, roleArray) {
       || role.types.includes(target) 
     )
 
-    if (debug) console.log("running setup command", command, target);
+    if (debug) console.debug("running setup command", command, target);
 
     // if command is Add or AddStrict
     if (command.includes("Add")) {
@@ -298,7 +298,7 @@ export default function randomiser(playerArray, charArray, roleArray) {
       || !runningCommands[0][3].startsWith("Neighbour")
       ) {
       playerIndex = randomIndexes.shift();
-      if (debug) console.log("found new player index early.", randomIndexes.length, "indexes left", randomIndexes);
+      if (debug) console.debug("found new player index early.", randomIndexes.length, "indexes left", randomIndexes);
       return playerIndex;
     }
 
@@ -308,13 +308,13 @@ export default function randomiser(playerArray, charArray, roleArray) {
   
     // if left is free
     if (randomIndexes.includes(neighbourIds[0])) {
-      if (debug) console.log("left neighbour free");
+      if (debug) console.debug("left neighbour free");
       playerIndex = neighbourIds[0];
     } 
     
     // if right is free
     else if (randomIndexes.includes(neighbourIds[1])) {
-      if (debug) console.log("right neighbour free");
+      if (debug) console.debug("right neighbour free");
       playerIndex = neighbourIds[1];
     } 
     
@@ -322,7 +322,7 @@ export default function randomiser(playerArray, charArray, roleArray) {
     else if (!neighbourGroups.masters.includes(playerArray[neighbourIds[0]].id) 
       && !Object.hasOwn(neighbourGroups.minions, playerArray[neighbourIds[0]].id)
     ) {
-      if (debug) console.log("swapping left neighbour");
+      if (debug) console.debug("swapping left neighbour");
       playerIndex = neighbourIds[0];
       createFreeSpace(randomIndexes, playerIndex, playerArray);
     } 
@@ -331,7 +331,7 @@ export default function randomiser(playerArray, charArray, roleArray) {
     else if (!neighbourGroups.masters.includes(playerArray[neighbourIds[1]].id) 
       && !Object.hasOwn(neighbourGroups.minions, playerArray[neighbourIds[1]].id)
     ) {
-      if (debug) console.log("swapping right neighbour");
+      if (debug) console.debug("swapping right neighbour");
       playerIndex = neighbourIds[1];
       createFreeSpace(randomIndexes, playerIndex, playerArray);
     }
@@ -341,7 +341,7 @@ export default function randomiser(playerArray, charArray, roleArray) {
       // could reorganise all players to create space, or move the master player to create space
       playerIndex = null; // skip this attempt at player creation
       runningCommands.shift(); // admit defeat
-      if (debug) console.log("cannot place neighbour of index", masterIndex, "and commands left to process:", JSON.stringify(runningCommands));
+      if (debug) console.debug("cannot place neighbour of index", masterIndex, "and commands left to process:", JSON.stringify(runningCommands));
       return playerIndex;
     }
 
@@ -352,7 +352,7 @@ export default function randomiser(playerArray, charArray, roleArray) {
       neighbourGroups.minions[playerArray[playerIndex].id] = masterId;
     }
 
-    if (debug) console.log("found new player index.", randomIndexes.length, "indexes left", randomIndexes);
+    if (debug) console.debug("found new player index.", randomIndexes.length, "indexes left", randomIndexes);
 
     return playerIndex
 
@@ -382,7 +382,7 @@ export default function randomiser(playerArray, charArray, roleArray) {
 
     randomIndexes.push(desiredIndex);
 
-    if (debug) console.log("swapped player at index", desiredIndex, "to index", newIndex, "with role", roleArray[playerArray[newIndex].role].name);
+    if (debug) console.debug("swapped player at index", desiredIndex, "to index", newIndex, "with role", roleArray[playerArray[newIndex].role].name);
 
   }
 
@@ -397,7 +397,7 @@ export default function randomiser(playerArray, charArray, roleArray) {
   const formula = Math.floor((0.5 * playerAmount) - 2);
   let targetAntags = 1;
   let targetDetrimentals = formula > 0 ? formula : 0;
-  if (debug) console.log("detrimentals", targetDetrimentals);
+  if (debug) console.debug("detrimentals", targetDetrimentals);
   const runningCommands = [];
   const neighbourGroups = {masters: [], minions: {}};
 
@@ -447,7 +447,7 @@ export default function randomiser(playerArray, charArray, roleArray) {
 
     }
 
-    if (debug) console.log("adding player with role", roleArray[player.role].name, "at index", playerIndex, "who is", charArray[player.char].name);
+    if (debug) console.debug("adding player with role", roleArray[player.role].name, "at index", playerIndex, "who is", charArray[player.char].name);
     
     // add commands if the role has any
     if (roleArray[player.role]["setup"].length > 0) {
@@ -470,7 +470,7 @@ export default function randomiser(playerArray, charArray, roleArray) {
 
   }
 
-  if (debug) console.log("groups", neighbourGroups);
+  if (debug) console.debug("groups", neighbourGroups);
 
   return randomisedPlayers;
       
