@@ -39,6 +39,7 @@ export default class SessionManager {
         session.removePlayer(playerId);
 
         if (session.isEmpty()) {
+            console.log("removing empty session", sessionId);
             this.removeSession(sessionId);
         }
 
