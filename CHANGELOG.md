@@ -1,3 +1,14 @@
+03/03/2024 v0.4.0
+- added first module named "Standard Procedure"
+- improved setup commands
+  - added new Neighbour setup command, this command will cause the player to neighbour a specific target
+  - added characteristic support for Add, AddStrict, ShowAs, and Neighbour setup commands
+- disallowed dead playesr from voting
+- changed the characteristic and role data format
+  - types has been changed from an array to a string, and renamed to type
+  - teams has been removed from roles, this is now derived from a roles type at load time
+
+
 23/02/2024 v0.3.6
 - added reminders for the narrator
   - reminders are tied any role or characistic with an ability
