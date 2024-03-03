@@ -1,19 +1,17 @@
 [
   {
-    "name": "Envious",
-    "types": [],
-    "description": "“PLACEHOLDER”",
-    "ability": "You are obsessed that you have a different in play Characteristic, if you are not then you might become malfunctioning.",
+    "name": "TestChar1",
+    "type": "",
+    "description": "test desc",
+    "ability": "test ability",
     "attributes": ["Malfunctioning"],
-    "additional": [
-      "If the Envious character is malfunctioning, then they might be given false information."
-    ],
+    "additional": [],
     "setup": []
   },
 
   {
     "name": "Gluttonous",
-    "types": [],
+    "type": "",
     "description": "“More! More! More!”",
     "ability": "You, or both of your neighbours, might be malfunctioning.",
     "attributes": ["Malfunctioning"],
@@ -26,7 +24,7 @@
 
   {
     "name": "Empathic",
-    "types": [],
+    "type": "",
     "description": "“Give them your attention, listen to them, but most importantly, care.”",
     "ability": "Each night, you learn your neighbour’s characteristics.",
     "attributes": ["Information", "Psychic"],
@@ -38,7 +36,7 @@
 
   {
     "name": "Telepathic",
-    "types": [],
+    "type": "",
     "description": "“An open mind is like a fortress with its gates unbarred and unguarded.”",
     "ability": "Each night, you may choose a player (not yourself): you learn one Loyalist role and one Subversive role, one of which they are.",
     "attributes": ["Information", "Psychic"],
@@ -50,7 +48,7 @@
 
   {
     "name": "Clairvoyant",
-    "types": [],
+    "type": "",
     "description": "“Open your eyes, and see where you are not.”",
     "ability": "Each night, you may choose a player (not yourself): you learn if they performed an ability on another player during that night and who their target was.",
     "attributes": ["Information", "Psychic"],
@@ -63,7 +61,7 @@
 
   {
     "name": "Kind",
-    "types": [],
+    "type": "",
     "description": "“PLACEHOLDER”",
     "ability": "Once per game, during the night, you may choose a player: they learn your characteristic.",
     "attributes": ["Information"],
@@ -76,7 +74,7 @@
 
   {
     "name": "Slothful",
-    "types": [],
+    "type": "",
     "description": "“PLACEHOLDER”",
     "ability": "Once per game, during the night, if you would wake up due to your ability, you might not.",
     "attributes": ["Waking"],
@@ -86,7 +84,7 @@
 
   {
     "name": "Prideful",
-    "types": [],
+    "type": "",
     "description": "“PLACEHOLDER”",
     "ability": "Each night*, if you were obsessed about being Prideful during the previous day, you might die.",
     "attributes": ["Suicidal"],
@@ -98,7 +96,7 @@
 
   {
     "name": "Wrathful",
-    "types": [],
+    "type": "",
     "description": "“PLACEHOLDER”",
     "ability": "Once per game, during the night*, one of your neighbours might die.",
     "attributes": ["Homicidal"],
@@ -110,7 +108,7 @@
 
   {
     "name": "Greedy",
-    "types": [],
+    "type": "",
     "description": "“Greed is good.”",
     "ability": "Your votes count for double, and all votes against you count for double.",
     "attributes": ["Voting"],
@@ -120,7 +118,7 @@
 
   {
     "name": "Patient",
-    "types": [],
+    "type": "",
     "description": "“PLACEHOLDER”",
     "ability": "Every day that you do not vote, increases the count of your vote by one.",
     "attributes": ["Voting"],
@@ -132,7 +130,7 @@
 
   {
     "name": "Charitable",
-    "types": [],
+    "type": "",
     "description": "“PLACEHOLDER”",
     "ability": "If you do not vote, your neighbours votes count for double.",
     "attributes": ["Voting"],
@@ -142,7 +140,7 @@
 
   {
     "name": "Diligent",
-    "types": [],
+    "type": "",
     "description": "“PLACEHOLDER”",
     "ability": "Your role ability works twice.",
     "attributes": ["Protection"],
@@ -152,7 +150,7 @@
 
   {
     "name": "Chaste",
-    "types": [],
+    "type": "",
     "description": "“PLACEHOLDER”",
     "ability": "You can not change role, team, or characteristic.",
     "attributes": ["Protection"],
@@ -162,7 +160,7 @@
 
   {
     "name": "Temperate",
-    "types": [],
+    "type": "",
     "description": "“PLACEHOLDER”",
     "ability": "You can not malfunction.",
     "attributes": ["Protection"],
@@ -172,7 +170,7 @@
 
   {
     "name": "Humble",
-    "types": [],
+    "type": "",
     "description": "“I am all I am, nothing more and nothing less.”",
     "ability": "You can not be obsessed, and will not suffer the consequences of any of your obsessions.",
     "attributes": ["Protection"],
@@ -182,7 +180,7 @@
 
   {
     "name": "Lustful",
-    "types": [],
+    "type": "",
     "description": "“PLACEHOLDER”",
     "ability": "Each night, you might join the team of a neighbour, or they might join your team.",
     "attributes": ["Conversion"],
@@ -192,7 +190,7 @@
 
   {
     "name": "Alcoholic",
-    "types": [],
+    "type": "",
     "description": "“I think it’s time you admitted it.”",
     "ability": "You do not know you are Alcoholic. You think you have a not in play characteristic, but you do not.",
     "attributes": ["Miscellaenous"],

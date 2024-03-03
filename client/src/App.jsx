@@ -212,7 +212,7 @@ function App() {
                 setPlayers([...somePlayers]);
                 setSession(prevSession => ({
                   ...prevSession,
-                  modules: [...GameData.modules.map(mod => mod.name)]
+                  modules: [GameData.modules[0].name]
                 }));
               }}>
                 Add Dummy Players

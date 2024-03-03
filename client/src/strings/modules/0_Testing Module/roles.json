@@ -1,0 +1,321 @@
+[
+	{
+		"name": "AgentRole1",
+		"team": "Loyalist",
+		"type": "Agent",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": []
+	},
+  
+  {
+		"name": "AgentRole2",
+		"team": "Loyalist",
+		"type": "Agent",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": []
+	},
+
+  {
+		"name": "AgentRole3",
+		"team": "Loyalist",
+		"type": "Agent",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": []
+	},
+
+  {
+		"name": "AgentRole4",
+		"team": "Loyalist",
+		"type": "Agent",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": []
+	},
+
+  {
+		"name": "AgentRole5",
+		"team": "Loyalist",
+		"type": "Agent",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": []
+	},
+
+  {
+		"name": "AgentRole6",
+		"team": "Loyalist",
+		"type": "Agent",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": []
+	},
+
+  {
+		"name": "AgentRole7",
+		"team": "Loyalist",
+		"type": "Agent",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": []
+	},
+
+  {
+		"name": "AgentRole8",
+		"team": "Loyalist",
+		"type": "Agent",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": []
+	},
+
+  {
+		"name": "AgentRole9",
+		"team": "Loyalist",
+		"type": "Agent",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": []
+	},
+
+  {
+		"name": "AgentRole10",
+		"team": "Loyalist",
+		"type": "Agent",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": []
+	},
+
+  {
+		"name": "AgentRole11",
+		"team": "Loyalist",
+		"type": "Agent",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": []
+	},
+
+  {
+		"name": "AgentRole12",
+		"team": "Loyalist",
+		"type": "Agent",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": []
+	},
+
+  {
+		"name": "AgentRole13",
+		"team": "Loyalist",
+		"type": "Agent",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": []
+	},
+
+  {
+		"name": "AgentRole14",
+		"team": "Loyalist",
+		"type": "Agent",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": []
+	},
+
+  {
+		"name": "AgentRole15",
+		"team": "Loyalist",
+		"type": "Agent",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": []
+	},
+
+	{
+		"name": "DetriRole1",
+		"team": "Loyalist",
+		"type": "Detrimental",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": []
+	},
+
+  {
+		"name": "DetriRole2",
+		"team": "Loyalist",
+		"type": "Detrimental",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": []
+	},
+
+  {
+		"name": "DetriRole3",
+		"team": "Loyalist",
+		"type": "Detrimental",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": []
+	},
+
+  {
+		"name": "DetriRole4",
+		"team": "Loyalist",
+		"type": "Detrimental",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": []
+	},
+
+  {
+		"name": "DetriRole5",
+		"team": "Loyalist",
+		"type": "Detrimental",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": []
+	},
+	
+	{
+		"name": "NeighbourAnt",
+		"team": "Loyalist",
+		"type": "Detrimental",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": [
+      ["test neighbour setup", "Neighbour Antagonist"]
+    ]
+	},
+	
+	{
+		"name": "AddStrict2",
+		"team": "Subversive",
+		"type": "Antagonist",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": [
+			["test.", "AddStrict 2 AddStrict2"],
+			["General Description Placeholder Text"]
+		]
+	},
+	
+	{
+		"name": "Add1Sub",
+		"team": "Subversive",
+		"type": "Antagonist",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": [
+      ["test.", "Add 1 Subversive"]
+		]
+	},
+
+  {
+		"name": "Conv2Sub",
+		"team": "Subversive",
+		"type": "Antagonist",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": [
+      ["test.", "Convert 2 Subversive"]
+		]
+	},
+
+  {
+		"name": "ShowAsAgent",
+		"team": "Subversive",
+		"type": "Antagonist",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": [
+      ["test.", "ShowAs Agent"]
+		]
+	},
+
+  {
+		"name": "AddStrict2N",
+		"team": "Subversive",
+		"type": "Antagonist",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": [
+      ["test.", "AddStrict 2 ShowAsAgent Neighbour"]
+		],
+    "reminders": [
+      ["A", "#AFFFAF", "Created by Close Killer"],
+      ["K", "#FF05AA", "killed by Close Killer"]
+    ]
+	},
+
+  {
+		"name": "Add2Recursiv",
+		"team": "Subversive",
+		"type": "Antagonist",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": [
+      ["test.", "Add 2 AddStrict2N"]
+		],
+    "reminders": [
+      ["A", "#AFFFAF", "Created by Mayhem Killer"],
+      ["K", "#FFBB05", "killed by Mayhem Killer"]
+    ]
+	}
+]
