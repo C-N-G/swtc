@@ -57,6 +57,8 @@ export default Vote
 
 function PlayerVote({nominatedPlayer, accusingPlayer, votes, handlePlayerDataChange, handleVote, user}) {
 
+  const playerIsDead = user.rState === 0
+
   return (
     <Stack sx={{flexGrow: 1, m: 4}} justifyContent="space-between">
       <Typography variant="h4">{nominatedPlayer.name}</Typography>
@@ -72,7 +74,7 @@ function PlayerVote({nominatedPlayer, accusingPlayer, votes, handlePlayerDataCha
       />
       <Stack direction="row" justifyContent="space-between">
         <Button 
-          disabled={votes.userVote[0] !== votes.userVote[1]} 
+          disabled={votes.userVote[0] !== votes.userVote[1] || playerIsDead} 
           sx={{...votes.userVote[1], transition: "transform 0.25s"}} 
           variant="contained" 
           onClick={() => {handleVote(user, 1)}}
@@ -80,7 +82,7 @@ function PlayerVote({nominatedPlayer, accusingPlayer, votes, handlePlayerDataCha
           vote for
         </Button>
         <Button 
-          disabled={votes.userVote[0] !== votes.userVote[1]} 
+          disabled={votes.userVote[0] !== votes.userVote[1] || playerIsDead} 
           sx={{...votes.userVote[0], transition: "transform 0.25s"}} 
           variant="contained" 
           onClick={() => {handleVote(user, 0)}}
