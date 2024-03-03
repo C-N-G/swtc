@@ -5,7 +5,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import {UserContext} from "../App.jsx";
 import GameData from "../strings/_gameData.js";
 import {socket} from "../helpers/socket.js";
-import randomiser from '../helpers/randomiser.js';
+import randomise from '../helpers/randomiser.js';
 import Reminder from './Reminder.jsx';
 import Draggable from './Draggable.jsx';
 
@@ -147,7 +147,7 @@ function NarratorCharacter({session, setSession, players, setPlayers}) {
 
     setPlayers(prevPlayers => { 
       try {
-        return randomiser([...prevPlayers], chars, roles);
+        return randomise(prevPlayers, chars, roles);
       } catch (error) {
         console.error("randomiser error: ", error);
         return prevPlayers;

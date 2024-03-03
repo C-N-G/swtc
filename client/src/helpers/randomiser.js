@@ -16,7 +16,7 @@ import GameData from "../strings/_gameData.js";
 /**
  * @typedef {Object} Char
  * @property {string} name
- * @property {Array<string>} types
+ * @property {string} type
  * @property {string} description
  * @property {string} ability
  * @property {Array<string>} attributes
@@ -27,13 +27,30 @@ import GameData from "../strings/_gameData.js";
 /**
  * @typedef {Object} Role
  * @property {string} name
- * @property {string} team
- * @property {Array<string>} types
+ * @property {string} type
  * @property {string} description
  * @property {string} ability
  * @property {Array<string>} attributes
  * @property {Array<string>} additional
  * @property {Array<Array<string>>} setup
+ */
+
+/**
+ * @typedef {Object} aPlayer
+ * @property {number} index 
+ * @property {Player} playerObj 
+ * @property {boolean} strict 
+ * @property {boolean} keepSame 
+ */
+
+/**
+ * setup commands:
+ * 
+ * Add [#] [type] [target] [neighbour]
+ * AddStrict [#] [type] [target] [neighbour]
+ * Convert [#] [target] [neighbour]
+ * ShowAs [type] [target]
+ * Neighbour [type] [target]
  */
 
 /**
@@ -44,7 +61,167 @@ import GameData from "../strings/_gameData.js";
  * @param {Array<Role>} roleArray 
  * @returns {Array<Player>} list of players with randomised attributes 
  */
-export default function randomiser(playerArray, charArray, roleArray) {
+export default function randomise(playerArray, charArray, roleArray) {
+
+  let debug = playerArray[0].id === 54321 ? true : false; // debug logging value
+
+  const randomiser = new Randomiser(playerArray, charArray, roleArray, debug)
+
+  return randomiser.assignPlayers();
+
+
+}
+
+export class Randomiser {
+
+  TYPE_TO_TEAM = {
+    "Agent": "Loyalist",
+    "Detrimental": "Loyalist",
+    "Antagonist": "Subversive"
+  }
+
+  /**
+   * Randomiser class used for setting up players
+   * @param {Array<Player>} playerArray 
+   * @param {Array<Char>} charArray 
+   * @param {Array<Role>} roleArray 
+   * @param {boolean} debug 
+   */
+  constructor(playerArray, charArray, roleArray, debug) {
+
+    this.debug = debug;
+
+    this.playerArray = playerArray;
+    this.charArray = charArray;
+    this.roleArray = roleArray;
+
+    this.commandQueue = [];
+    /** @type {{chars: Set<Char>, roles: Set<Role>}} */
+    this.takenSets = { "chars": new Set(), "roles": new Set() };
+    /** @type {{masters: Array<number>, minions: Object<number, number>}} */
+    this.neighbourGroups = {masters: [], minions: {}};
+    this.targetAntags = 1;
+
+    // remove any narrators from indexes to place
+    /** @type {Array<number>} */
+    this.randomIndexes = this.toShuffled(playerArray.map((_, index) => index).filter(playerIndex => playerArray[playerIndex].type !== 0));
+
+    // deep copy the player array so incomplete randomisation attemps to not return half finished
+    /** @type {Array<Player>} */
+    this.randomisedPlayers = JSON.parse(JSON.stringify(playerArray));
+
+    const playerAmount = playerArray.filter(player => player.type !== 0).length;
+    const formula = Math.floor((0.5 * playerAmount) - 2);
+    this.targetDetrimentals = formula > 0 ? formula : 0;
+    if (debug) console.debug("detrimentals", this.targetDetrimentals);
+
+  }
+
+  /**
+   * loops through all players and assigns their charactieristics, roles, and teams
+   * @returns {Array<Player>} - array of randomised players
+   */
+  assignPlayers() {
+
+    this.resetPlayers();
+
+    let aPlayer = {};
+
+    // loop through players to randomise
+    while (this.randomIndexes.length > 0) {
+
+      //priority setup command > antag > detrimentals > agents
+
+      aPlayer.index = this.getNextPosition();
+      aPlayer.playerObj = this.randomisedPlayers[aPlayer.index];
+      aPlayer.strict = false;
+      aPlayer.keepSame = false;
+
+      if (aPlayer.index === null) continue; // if the player cannot be placed due to neighbour problems then skip this loop
+
+      // process any running setup commands
+      this.updatePlayer(aPlayer);
+
+      if (this.debug) console.debug(
+        "adding player with role", 
+        this.roleArray[aPlayer.playerObj.role].name, 
+        "at index", 
+        aPlayer.index, 
+        "who is", 
+        this.charArray[aPlayer.playerObj.char].name
+      );
+
+      // add commands if the role has any
+      this.addSetupCommandsFromPlayer(aPlayer);
+
+      // return randomised player
+      this.randomisedPlayers[aPlayer.index] = aPlayer.playerObj;
+
+    }
+
+    if (this.debug) console.debug("groups", this.neighbourGroups);
+
+    return this.randomisedPlayers;
+
+  }
+
+  /**
+   * runs the update logic for a given player
+   * @param {aPlayer} aPlayer 
+   */
+  updatePlayer(aPlayer) {
+
+    if (this.commandQueue.length > 0) {
+
+      const commandArray = this.commandQueue[0];
+      const commandName = commandArray[0];
+      const commandQuantity = commandArray[1];
+      const commandType = commandArray[2];
+      const commandTarget = commandName === "Convert" ? commandArray[2] : commandArray[3];
+      const sendCommand = [commandName, commandType, commandTarget];
+  
+      this.runSetupCommand(aPlayer, sendCommand);
+  
+      // handle command quantity
+      if (commandQuantity > 1) {
+        commandArray[1]--;
+      } else {
+        this.commandQueue.shift();
+      }
+
+    } else { // else randomise player
+
+      aPlayer.strict = false;
+
+      // randomise player
+      aPlayer.playerObj.char = aPlayer.playerObj.rChar = this.getRandomId(this.charArray, this.takenSets.chars);
+      aPlayer.playerObj.role = aPlayer.playerObj.rRole = this.getRandomId(this.roleArray, this.takenSets.roles, this.getTargetRoles());
+      let playerRoleType = this.roleArray[aPlayer.playerObj.role].type
+      aPlayer.playerObj.team = aPlayer.playerObj.rTeam = GameData.teams.indexOf(this.TYPE_TO_TEAM[playerRoleType]);
+
+    }
+
+  }
+
+  /**
+   * gets a specific list of roles to pick from when assigning a player
+   * @returns an array of roles to choose from
+   */
+  getTargetRoles() {
+
+    let targetRoles
+    if (this.targetAntags > 0) {
+      targetRoles = this.roleArray.filter(role => role.type === "Antagonist");
+      this.targetAntags--;
+    } else if (this.targetDetrimentals > 0) {
+      targetRoles = this.roleArray.filter(role => role.type === "Detrimental");
+      this.targetDetrimentals--;
+    } else {
+      targetRoles = this.roleArray.filter(role => role.type === "Agent");
+    }
+    return targetRoles;
+
+  }
 
   /**
    * Gets a random id from a list and marks it as taken
@@ -53,7 +230,7 @@ export default function randomiser(playerArray, charArray, roleArray) {
    * @param {Array<Char|Role>=} filteredIdArray 
    * @returns {number} a random id
    */
-  function getRandomId(idArray, takenIdsSet, filteredIdArray) {
+  getRandomId(idArray, takenIdsSet, filteredIdArray) {
 
     const EveryFilteredIdTaken = filteredIdArray ? filteredIdArray
       .map(ele => idArray.findIndex(ele1 => ele.name === ele1.name))
@@ -65,7 +242,7 @@ export default function randomiser(playerArray, charArray, roleArray) {
       // generate a random id
       if (filteredIdArray) {
         randomNum = Math.floor(Math.random() * filteredIdArray.length);
-        randomNum = roleArray.findIndex(role => role.name === filteredIdArray[randomNum].name);
+        randomNum = idArray.findIndex(role => role.name === filteredIdArray[randomNum].name);
       } else {
         // skip out the first value which is unknown
         randomNum = Math.floor(Math.random() * (idArray.length - 1) + 1);
@@ -79,7 +256,7 @@ export default function randomiser(playerArray, charArray, roleArray) {
 
       // prevent infinte loop
       if (takenIdsSet.size === idArray.length || EveryFilteredIdTaken) {
-        if (debug) console.debug(Array.from(takenIdsSet).map(id => roleArray[id].name), filteredIdArray)
+        if (this.debug) console.debug(Array.from(takenIdsSet).map(id => idArray[id].name), filteredIdArray)
         throw Error("not enough options to uniquely randomise")
       }
 
@@ -89,40 +266,11 @@ export default function randomiser(playerArray, charArray, roleArray) {
   }
 
   /**
-   * Updates the selected player using the first command in the command queue
-   * @param {Player} player 
-   * @param {Array<string>} commandsArray 
-   * @param {Array<Char>} allChars 
-   * @param {Array<Role>} allRoles 
-   * @param {{chars: Set<char>, roles: Set<Role>}} takenObj 
-   * @returns {Array<Player|boolean>} updated player object and strict flag
-   */
-  function updatePlayerFromCommand(player, commandsArray, allChars, allRoles, takenObj) {
-
-    const commandArray = commandsArray[0];
-    const commandQuantity = commandArray[1];
-    const sendCommand = [commandArray[0], commandArray[2]];
-
-    let isStrict;
-    [player, isStrict] = runSetupCommand(player, sendCommand, allChars, allRoles, takenObj);
-
-    // handle command quantity
-    if (commandQuantity > 1) {
-      commandArray[1]--;
-    } else {
-      commandsArray.shift();
-    }
-
-    return [player, isStrict];
-
-  }
-
-  /**
    * Shuffles a given array out of place
    * @param {Array<number>} inputArray 
    * @returns {Array<number>}
    */
-  function toShuffled(inputArray) {
+  toShuffled(inputArray) {
 
     let array = [...inputArray];
     let currentIndex = array.length,  randomIndex;
@@ -137,117 +285,238 @@ export default function randomiser(playerArray, charArray, roleArray) {
 
   /**
    * Adds setup commands from a given role to commandArrays
-   * @param {number} roleId 
-   * @param {Array<string>} commandsArray 
-   * @param {boolean} isStrict 
-   * @param {Player} player 
-   * @param {{masters: Array<number>, minions: Object<number, number>}} neighbourGroups 
+   * @param {aPlayer} aPlayer 
    * @returns {Array<string>} command list to run immediately
    */
-  function addSetupCommand(roleId, commandsArray, isStrict, player, neighbourGroups) {
+  addSetupCommandsFromPlayer(aPlayer) {
 
-    let immediateCommandsArray = [];
+    let immediateCommandQueue = [];
+    let char = this.charArray[aPlayer.playerObj.char].setup;
+    let role = this.roleArray[aPlayer.playerObj.role].setup;
 
-    roleArray[roleId]["setup"].forEach(cmd => {
+    // return if no setup commands
+    if (char.length === 0 && role.length === 0) return;
+
+    char.concat(role).forEach(cmd => {
 
       // ignore if it is just text description and no command
       if (cmd.length < 2) return;
 
       const commandArray = cmd[1].split(" ");
+      if (commandArray[2] !== undefined) {
+        commandArray[2] = commandArray[2].replace("_", " ");// support underscores in target names
+      }
 
       // if the command doesn't have a quantity then run it immediately
       if (Number.isNaN(Number(commandArray[1]))) {
-        commandArray[1] = commandArray[1].replace("_", " "); // support underscores in target names
-        immediateCommandsArray.push(commandArray);
-      } else if (!isStrict) { // do not add commands if the command was strict
-        if (commandArray[3] === "Neighbour") {
-          commandArray[3] = `${commandArray[3]}_${player.id}`;
-          neighbourGroups.masters.push(player.id);
+
+        immediateCommandQueue.push(commandArray);
+
+      } else if (!aPlayer.strict) { // do not add commands if the command was strict
+
+        if (commandArray[4] === "Neighbour") {
+          commandArray[4] = `${commandArray[4]}_${aPlayer.playerObj.id}`;
+          this.neighbourGroups.masters.push(aPlayer.playerObj.id);
         }
-        commandArray[2] = commandArray[2].replace("_", " "); // support underscores in target names
-        commandsArray.push(commandArray);
+        this.commandQueue.push(commandArray);
+
       }
       
 
     })
 
-    return immediateCommandsArray
+    immediateCommandQueue.forEach(sendCommand => {
+      aPlayer.keepSame = true;
+      this.runSetupCommand(aPlayer, sendCommand);
+    })
 
   }
 
   /**
    * Applies a setup commnad to a given player
-   * @param {Player} player 
-   * @param {Array<string>} cmd 
-   * @param {Array<Char>} allChars 
-   * @param {Array<Role>} allRoles 
-   * @param {{chars: Set<Char>, roles: Set<Role>}} takenObj 
-   * @param {boolean} keepSame
-   * @returns {Array<Player|boolean>} updated player object and strict flag
+   * @param {aPlayer} aPlayer 
+   * @param {Array<string>} sendCommand 
    */
-  function runSetupCommand(player, cmd, allChars, allRoles, takenObj, keepSame = false) {
+  runSetupCommand(aPlayer, sendCommand) {
 
-    const [command, target] = [cmd[0], cmd[1]];
+    const [command, type, target] = [sendCommand[0], sendCommand[1], sendCommand[2]];
 
     // randomise player initially
-    if (!keepSame) {
-      player.char = getRandomId(allChars, takenObj.chars);
-      const agentRoles = allRoles.filter(role => role.types.includes("Agent"))
-      player.role = getRandomId(allRoles, takenObj.roles, agentRoles);
+    if (!aPlayer.keepSame) {
+      aPlayer.playerObj.char = this.getRandomId(this.charArray, this.takenSets.chars);
+      const agentRoles = this.roleArray.filter(role => role.type === "Agent")
+      aPlayer.playerObj.role = this.getRandomId(this.roleArray, this.takenSets.roles, agentRoles);
     }
 
-    // get all possible roles from the target
-    let possibleRoles = allRoles.filter(role => 
-      role.name === target 
-      || role.team === target 
-      || role.types.includes(target) 
-    )
+    // get all possible targets
+    let possibleRoles, possibleChars;
+    if (type === "Char") {
+      // if no target given then use anything
+      possibleChars = target === undefined ? this.charArray : this.charArray.filter(char => 
+        char.name === target 
+        || char.attributes.includes(target)
+      )
+    } else if (type === "Role") {
+      possibleRoles = target === undefined ? this.roleArray : this.roleArray.filter(role => 
+        role.name === target 
+        || role.type === target 
+        || this.TYPE_TO_TEAM[role.type] === target 
+        || role.attributes.includes(target)
+      )
+    } else if (command !== "Convert"){
+      throw new Error("unknown setup command target type:", type);
+    }
 
-    if (debug) console.debug("running setup command", command, target);
+    if (this.debug) console.debug("running setup command", command, type, target);
 
     // if command is Add or AddStrict
-    if (command.includes("Add")) {
+    if (command.includes("Add") && type === "Role") {
 
-      // delete initially ranomdise role from the taken roles
-      takenObj.roles.delete(player.role);
+      // delete initially randomised role from the taken roles
+      this.takenSets.roles.delete(aPlayer.playerObj.role);
 
       // take into account taken roles if there are multiple possible roles
       if (possibleRoles.length > 1) {
-        player.role = getRandomId(allRoles, takenObj.roles, possibleRoles);
+        aPlayer.playerObj.role = this.getRandomId(this.roleArray, this.takenSets.roles, possibleRoles);
       } else {
         // else if there is only one possible role the target must be specific so choose it anyway
-        player.role = allRoles.findIndex(role => role.name === possibleRoles[0].name);
-        takenObj.roles.add(player.role);
+        aPlayer.playerObj.role = this.roleArray.findIndex(role => role.id === possibleRoles[0].id);
+        this.takenSets.roles.add(aPlayer.playerObj.role);
       }
 
+    } else if (command.includes("Add") && type === "Char") {
+      this.takenSets.chars.delete(aPlayer.playerObj.char);
+      if (possibleChars.length > 1) {
+        aPlayer.playerObj.char = this.getRandomId(this.charArray, this.takenSets.chars, possibleChars);
+      } else {
+        aPlayer.playerObj.char = this.charArray.findIndex(char => char.id === possibleChars[0].id);
+        this.takenSets.chars.add(aPlayer.playerObj.char);
+      }
     }
 
-    let isStrict = command === "AddStrict" ? true : false
+    aPlayer.strict = command === "AddStrict" ? true : false;
 
-    if (command === "Convert") player.team = GameData.teams.indexOf(target);
-    else player.team = GameData.teams.indexOf(roleArray[player.role].team);
+    if (command === "Convert") aPlayer.playerObj.team = GameData.teams.indexOf(target);
+    else aPlayer.playerObj.team = GameData.teams.indexOf(this.TYPE_TO_TEAM[this.roleArray[aPlayer.playerObj.role].type]);
 
-    player.rChar = player.char;
-    player.rRole = player.role;
-    player.rTeam = player.team;
+    aPlayer.playerObj.rChar = aPlayer.playerObj.char;
+    aPlayer.playerObj.rRole = aPlayer.playerObj.role;
+    aPlayer.playerObj.rTeam = aPlayer.playerObj.team;
 
-    if (command === "ShowAs") {
+    if (command === "ShowAs" && type === "Role") {
 
       // take into account taken roles if there are multiple possible roles
       if (possibleRoles.length > 1) {
-        player.rRole = getRandomId(allRoles, takenObj.roles, possibleRoles);
+        aPlayer.playerObj.rRole = this.getRandomId(this.roleArray, this.takenSets.roles, possibleRoles);
       } else {
         // else if there is only one possible role the target must be specific so choose it anyway
-        player.rRole = allRoles.findIndex(role => role.name === possibleRoles[0].name);
-        takenObj.roles.add(player.rRole);
+        aPlayer.playerObj.rRole = this.roleArray.findIndex(role => role.id === possibleRoles[0].id);
+        this.takenSets.roles.add(aPlayer.playerObj.rRole);
       }
 
       // change player team to the role they appear as
-      player.rTeam = GameData.teams.indexOf(roleArray[player.rRole].team);
+      aPlayer.playerObj.rTeam = GameData.teams.indexOf(this.TYPE_TO_TEAM[this.roleArray[aPlayer.playerObj.rRole].type]);
 
+    } else if (command === "ShowAs" && type === "Char") {
+      if (possibleChars.length > 1) {
+        aPlayer.playerObj.rChar = this.getRandomId(this.charArray, this.takenSets.chars, possibleChars);
+      } else {
+        aPlayer.playerObj.rChar = this.charArray.findIndex(char => char.id === possibleChars[0].id);
+        this.takenSets.chars.add(aPlayer.playerObj.rChar);
+      }
     }
 
-    return [player, isStrict]
+    if (command === "Neighbour") {
+
+      // find targets
+      const playerIndexes = [];
+      if (type === "Role") {
+        possibleRoles.forEach(role => {
+        this.randomisedPlayers.forEach((player, index) => {
+          if (this.roleArray[player.role]?.id === role.id) playerIndexes.push(index);
+        })})
+      } else if (type === "Char") {
+        possibleChars.forEach(char => {
+        this.randomisedPlayers.forEach((player, index) => {
+          if (this.charArray[player.char]?.id === char.id) playerIndexes.push(index);
+        })})
+      }
+
+      if (playerIndexes.length === 0) {
+        throw new Error("Could not find the target to neighbour");
+      }
+
+      // does the player already neighbour a target?
+      const [leftIndex, rightIndex] = this.findNeighbourIndexes(aPlayer.index);
+      if (playerIndexes.some(index => index === leftIndex || index === rightIndex)) return;
+
+      // try and move the player to neighbour the target
+      let newIndex;
+      for (const index of playerIndexes) {
+        newIndex = this.getFreeNeighbourIndex(index);
+        if (newIndex === null) continue;
+        this.movePlayerToIndex(newIndex, aPlayer);
+        break;
+      }
+
+      if (newIndex === null) {
+        throw new Error("Could not place player next to target neighbour during setup command");
+      }
+      
+    }
+
+  }
+
+  /**
+   * moves a player from their current index to a new index
+   * does not change the player itself but instead moves their char/role/team to the player at the new index
+   * @param {number} newIndex 
+   * @param {aPlayer} aPlayer 
+   */
+  movePlayerToIndex(newIndex, aPlayer) {
+
+    if (this.debug) console.debug(
+      "moving player from", 
+      this.randomisedPlayers[aPlayer.index].name, 
+      "to", 
+      this.randomisedPlayers[newIndex].name)
+
+    this.randomisedPlayers[newIndex].char = aPlayer.playerObj.char;
+    this.randomisedPlayers[newIndex].rChar = aPlayer.playerObj.rChar;
+    this.randomisedPlayers[newIndex].role = aPlayer.playerObj.role;
+    this.randomisedPlayers[newIndex].rRole = aPlayer.playerObj.rRole;
+    this.randomisedPlayers[newIndex].team = aPlayer.playerObj.team;
+    this.randomisedPlayers[newIndex].rTeam = aPlayer.playerObj.rTeam;
+
+    this.randomisedPlayers[aPlayer.index].char = 0;
+    this.randomisedPlayers[aPlayer.index].rChar = 0;
+    this.randomisedPlayers[aPlayer.index].role = 0;
+    this.randomisedPlayers[aPlayer.index].rRole = 0;
+    this.randomisedPlayers[aPlayer.index].team = 0;
+    this.randomisedPlayers[aPlayer.index].rTeam = 0;
+
+    this.randomIndexes.push(aPlayer.index);
+    aPlayer.index = newIndex;
+    aPlayer.playerObj = this.randomisedPlayers[newIndex];
+    this.randomIndexes = this.randomIndexes.filter(index => index !== newIndex);
+
+  }
+
+  /**
+   * resets the char/role/team of all the players to create a blank slate to work on
+   * if they're not reset then the Neighbour setup command can get confused by the previous state
+   */
+  resetPlayers() {
+
+    this.randomisedPlayers = this.randomisedPlayers.map(player => {
+      player.char = 0;
+      player.rChar = 0;
+      player.role = 0;
+      player.rRole = 0;
+      player.team = 0;
+      player.rTeam = 0;
+      return player;
+    });
 
   }
 
@@ -255,223 +524,153 @@ export default function randomiser(playerArray, charArray, roleArray) {
    * Finds the neighbour indexes for a given index
    * Views the array as circular, and takes into account skipping narrator type players
    * @param {number} idIndex 
-   * @param {Array<Player>} playerArray 
    * @returns {Array<number>} left and right neighbour indexes
    */
-  function findNeighbourIds(idIndex, playerArray) {
+  findNeighbourIndexes(anIndex) {
 
-    let neighbourIds;
-    let idArray = playerArray.map((_, index) => index);
-  
+    let neighbourIndexes;
+    let idArray = this.randomisedPlayers.map((_, index) => index);
+
     // take into account skipping narrators
-    let left = idIndex-1, right = idIndex+1;
-    while ((typeof playerArray[left] === "undefined" || playerArray[left].type === 0)
-      || (typeof playerArray[right] === "undefined" || playerArray[right].type === 0)
+    let left = anIndex-1, right = anIndex+1;
+    while ((typeof this.randomisedPlayers[left] === "undefined" || this.randomisedPlayers[left].type === 0)
+      || (typeof this.randomisedPlayers[right] === "undefined" || this.randomisedPlayers[right].type === 0)
     ) {
       if (left < 0) left = idArray.length-1;
       if (right >= idArray.length) right = 0;
-      if (playerArray[left].type === 0) left--;
-      if (playerArray[right].type === 0) right++;
+      if (this.randomisedPlayers[left].type === 0) left--;
+      if (this.randomisedPlayers[right].type === 0) right++;
     }
-    neighbourIds = [left, right];
-  
-    return neighbourIds;
-  
+    neighbourIndexes = [left, right];
+
+    return neighbourIndexes;
+
   }
 
   /**
-   * Finds a position to place the next player
-   * Will take into account any neighbour setup commands currently in the queue
-   * @param {Array<Player>} playerArray 
-   * @param {Array<number>} randomIndexes 
-   * @param {Array<string>} runningCommands 
-   * @param {{masters: Array<number>, minions: Object<number, number>}} neighbourGroups 
-   * @returns {number} an index position for the next player
+   * tries to find or create a free neighbouring position for a given position
+   * if no free positions are available will try and swap players to open positions to create a free position
+   * @param {number} anIndex - the position to find a free neighbour for
+   * @returns {number} - the index of the free position
    */
-  function getNextPlayer(playerArray, randomIndexes, runningCommands, neighbourGroups) {
+  getFreeNeighbourIndex(anIndex) {
 
-    let playerIndex;
+    let returnIndex;
+    const [leftIndex, rightIndex] = this.findNeighbourIndexes(anIndex);
 
-    // if no neighbour property then just return a random index
-    if (runningCommands.length === 0 
-      || typeof runningCommands[0][3] === "undefined"
-      || !runningCommands[0][3].startsWith("Neighbour")
-      ) {
-      playerIndex = randomIndexes.shift();
-      if (debug) console.debug("found new player index early.", randomIndexes.length, "indexes left", randomIndexes);
-      return playerIndex;
-    }
-
-    let masterId = parseInt(runningCommands[0][3].split("_")[1]);
-    let masterIndex = playerArray.findIndex(player => player.id === masterId);
-    let neighbourIds = findNeighbourIds(masterIndex, playerArray);
-  
     // if left is free
-    if (randomIndexes.includes(neighbourIds[0])) {
-      if (debug) console.debug("left neighbour free");
-      playerIndex = neighbourIds[0];
+    if (this.randomIndexes.includes(leftIndex)) {
+      if (this.debug) console.debug("left neighbour free");
+      returnIndex = leftIndex;
     } 
     
     // if right is free
-    else if (randomIndexes.includes(neighbourIds[1])) {
-      if (debug) console.debug("right neighbour free");
-      playerIndex = neighbourIds[1];
+    else if (this.randomIndexes.includes(rightIndex)) {
+      if (this.debug) console.debug("right neighbour free");
+      returnIndex = rightIndex;
     } 
     
     // if left is not part of a group
-    else if (!neighbourGroups.masters.includes(playerArray[neighbourIds[0]].id) 
-      && !Object.hasOwn(neighbourGroups.minions, playerArray[neighbourIds[0]].id)
+    else if (!this.neighbourGroups.masters.includes(this.randomisedPlayers[leftIndex].id) 
+      && !Object.hasOwn(this.neighbourGroups.minions, this.randomisedPlayers[leftIndex].id)
     ) {
-      if (debug) console.debug("swapping left neighbour");
-      playerIndex = neighbourIds[0];
-      createFreeSpace(randomIndexes, playerIndex, playerArray);
+      if (this.debug) console.debug("swapping left neighbour");
+      returnIndex = leftIndex;
+      this.createFreeSpace(returnIndex);
     } 
     
     // if right is not part of a group
-    else if (!neighbourGroups.masters.includes(playerArray[neighbourIds[1]].id) 
-      && !Object.hasOwn(neighbourGroups.minions, playerArray[neighbourIds[1]].id)
+    else if (!this.neighbourGroups.masters.includes(this.randomisedPlayers[rightIndex].id) 
+      && !Object.hasOwn(this.neighbourGroups.minions, this.randomisedPlayers[rightIndex].id)
     ) {
-      if (debug) console.debug("swapping right neighbour");
-      playerIndex = neighbourIds[1];
-      createFreeSpace(randomIndexes, playerIndex, playerArray);
+      if (this.debug) console.debug("swapping right neighbour");
+      returnIndex = rightIndex;
+      this.createFreeSpace(returnIndex);
     }
 
     // else they are both taken and part of a group
     else {
       // could reorganise all players to create space, or move the master player to create space
-      playerIndex = null; // skip this attempt at player creation
-      runningCommands.shift(); // admit defeat
-      if (debug) console.debug("cannot place neighbour of index", masterIndex, "and commands left to process:", JSON.stringify(runningCommands));
-      return playerIndex;
+      returnIndex = null; // skip this attempt at player creation
+      this.commandQueue.shift(); // admit defeat
+      if (this.debug) console.debug(
+        "cannot place neighbour of player", 
+        this.randomisedPlayers[anIndex].name, 
+        "and commands left to process:", 
+        JSON.stringify(this.commandQueue)
+      );
     }
+
+    return returnIndex;
+
+  }
+
+  /**
+   * Finds a position to place the next player
+   * Will take into account any neighbour setup commands currently in the queue
+   * @returns {number} an index position for the next player
+   */
+  getNextPosition() {
+
+    let returnIndex;
+
+    // if no neighbour property then just return a random index
+    if (this.commandQueue.length === 0 
+      || typeof this.commandQueue[0][4] === "undefined"
+      || !this.commandQueue[0][4].startsWith("Neighbour")
+      ) {
+        returnIndex = this.randomIndexes.shift();
+      if (this.debug) console.debug("found new player index early.", this.randomIndexes.length, "indexes left", this.randomIndexes);
+      return returnIndex;
+    }
+
+    const masterId = parseInt(this.commandQueue[0][4].split("_")[1]);
+    const masterIndex = this.randomisedPlayers.findIndex(player => player.id === masterId);
+
+    returnIndex = this.getFreeNeighbourIndex(masterIndex);
 
     // add to groups and remove index if it gets placed
-    if (randomIndexes.includes(playerIndex)) {
-      const deleteIndex = randomIndexes.indexOf(playerIndex);
-      randomIndexes.splice(deleteIndex, 1);
-      neighbourGroups.minions[playerArray[playerIndex].id] = masterId;
+    if (returnIndex !== null) {
+      const deleteIndex = this.randomIndexes.indexOf(returnIndex);
+      this.randomIndexes.splice(deleteIndex, 1);
+      const minionId = this.randomisedPlayers[returnIndex].id
+      this.neighbourGroups.minions[minionId] = masterId;
     }
 
-    if (debug) console.debug("found new player index.", randomIndexes.length, "indexes left", randomIndexes);
+    if (this.debug) console.debug("found new player index.", this.randomIndexes.length, "indexes left", this.randomIndexes);
 
-    return playerIndex
+    return returnIndex;
 
   }
 
   /**
    * Swaps a players attributes from a given index to an unprocessed index
-   * @param {Array<number>} randomIndexes 
-   * @param {number} desiredIndex 
-   * @param {Array<Player>} playerArray 
+   * @param {number} desiredIndex  
    */
-  function createFreeSpace(randomIndexes, desiredIndex, playerArray) {
+  createFreeSpace(desiredIndex) {
 
-    if (randomIndexes.length < 1) {
+    if (this.randomIndexes.length < 1) {
       throw Error("not enough free spaces for neighbours");
     }
 
-    let newIndex = randomIndexes.shift();
+    let newIndex = this.randomIndexes.shift();
 
     // assume the player at the desired index has already been randomised
-    playerArray[newIndex].char = playerArray[desiredIndex].char
-    playerArray[newIndex].rChar = playerArray[desiredIndex].rChar
-    playerArray[newIndex].role = playerArray[desiredIndex].role
-    playerArray[newIndex].rRole = playerArray[desiredIndex].rRole
-    playerArray[newIndex].team = playerArray[desiredIndex].team
-    playerArray[newIndex].rTeam = playerArray[desiredIndex].rTeam
+    this.randomisedPlayers[newIndex].char = this.randomisedPlayers[desiredIndex].char
+    this.randomisedPlayers[newIndex].rChar = this.randomisedPlayers[desiredIndex].rChar
+    this.randomisedPlayers[newIndex].role = this.randomisedPlayers[desiredIndex].role
+    this.randomisedPlayers[newIndex].rRole = this.randomisedPlayers[desiredIndex].rRole
+    this.randomisedPlayers[newIndex].team = this.randomisedPlayers[desiredIndex].team
+    this.randomisedPlayers[newIndex].rTeam = this.randomisedPlayers[desiredIndex].rTeam
 
-    randomIndexes.push(desiredIndex);
+    this.randomIndexes.push(desiredIndex);
 
-    if (debug) console.debug("swapped player at index", desiredIndex, "to index", newIndex, "with role", roleArray[playerArray[newIndex].role].name);
-
-  }
-
-  const debug = playerArray[0].id === 54321 ? true : false;
-
-  // delcare vars
-  const taken = {
-    "chars": new Set(),
-    "roles": new Set()
-  }
-  const playerAmount = playerArray.filter(player => player.type !== 0).length;
-  const formula = Math.floor((0.5 * playerAmount) - 2);
-  let targetAntags = 1;
-  let targetDetrimentals = formula > 0 ? formula : 0;
-  if (debug) console.debug("detrimentals", targetDetrimentals);
-  const runningCommands = [];
-  const neighbourGroups = {masters: [], minions: {}};
-
-  // remove any narrators from indexes to place
-  const randomIndexes = toShuffled(playerArray.map((_, index) => index).filter(playerIndex => playerArray[playerIndex].type !== 0));
-
-  const randomisedPlayers = [...playerArray];
-
-  // loop through players to randomise
-  while (randomIndexes.length > 0) {
-
-    //priority setup command > antag > detrimentals > agents
-    //priority setup command > antag > detrimentals > agents
-
-    let playerIndex = getNextPlayer(randomisedPlayers, randomIndexes, runningCommands, neighbourGroups);
-    if (playerIndex === null) continue; // if the player cannot be placed due to neighbour problems then skip this loop
-
-    let player = playerArray[playerIndex];
-    let isStrict; // strict flag from run command
-
-    // process any running setup commands
-    if (runningCommands.length > 0) {
-
-      [player, isStrict] = updatePlayerFromCommand(
-        player, runningCommands, charArray, roleArray, taken);
-
-    } else { // else randomise player
-
-      isStrict = false;
-
-      // get role list to pick from
-      let targetRoles
-      if (targetAntags > 0) {
-        targetRoles = roleArray.filter(role => role.types.includes("Antagonist"));
-        targetAntags--;
-      } else if (targetDetrimentals > 0) {
-        targetRoles = roleArray.filter(role => role.types.includes("Detrimental"));
-        targetDetrimentals--;
-      } else {
-        targetRoles = roleArray.filter(role => role.types.includes("Agent"));
-      }
-
-      // randomise player
-      player.char = player.rChar = getRandomId(charArray, taken.chars);
-      player.role = player.rRole = getRandomId(roleArray, taken.roles, targetRoles);
-      player.team = player.rTeam = GameData.teams.indexOf(roleArray[player.role].team);
-
-    }
-
-    if (debug) console.debug("adding player with role", roleArray[player.role].name, "at index", playerIndex, "who is", charArray[player.char].name);
-    
-    // add commands if the role has any
-    if (roleArray[player.role]["setup"].length > 0) {
-
-      let immediateCommands = addSetupCommand(player.role, runningCommands, isStrict, player, neighbourGroups);
-
-      // run any commands that modify its own role
-      if (immediateCommands.length > 0) {
-        immediateCommands.forEach(command => {
-          runSetupCommand(player, command, charArray, roleArray, taken, true);
-        })
-        // rest array
-        immediateCommands.length = 0;
-      }
-
-    }
-
-    // return randomised player
-    randomisedPlayers[playerIndex] = player;
+    if (this.debug) console.debug("swapped player at index", desiredIndex, "to index", newIndex);
 
   }
 
-  if (debug) console.debug("groups", neighbourGroups);
+  // function reorganisePlayers() {
 
-  return randomisedPlayers;
-      
+  // }
+
 }
