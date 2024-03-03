@@ -41,11 +41,30 @@ export default function gameDataLoader(load_obj, modules) {
 
       switch (property) {
         case "chars":
-          newEle = new Char(eleId, ...Object.values(eleObj));
+          newEle = new Char(
+            eleId,
+            eleObj.name,
+            eleObj.description,
+            eleObj.ability,
+            eleObj.attributes,
+            eleObj.additional,
+            eleObj.setup,
+            eleObj.reminders,
+          );
           break;
         
         case "roles":
-          newEle = new Role(eleId, ...Object.values(eleObj));
+          newEle = new Role(
+            eleId,
+            eleObj.name,
+            eleObj.type,
+            eleObj.descriptio,
+            eleObj.ability,
+            eleObj.attributes,
+            eleObj.additional,
+            eleObj.setup,
+            eleObj.reminders,
+          );
           break;
         
         default:

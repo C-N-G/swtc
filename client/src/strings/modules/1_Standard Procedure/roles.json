@@ -1,7 +1,6 @@
 [	
 	{
 	  "name": "Analyst",
-	  "team": "Loyalist",
 	  "type": "Agent",
 	  "description": "Don’t blame me, I’m just presenting the data.",
 	  "ability": "Each night, you learn which team the narrator thinks is winning.",
@@ -13,7 +12,6 @@
 	
 	{
 	  "name": "Assistant",
-	  "team": "Loyalist",
 	  "type": "Agent",
 	  "description": "Can I get you a coffee, sir?",
 	  "ability": "You start knowing an Agent player and their role (not yourself)",
@@ -25,7 +23,6 @@
 	
 	{
 	  "name": "Bodyguard",
-	  "team": "Loyalist",
 	  "type": "Agent",
 	  "description": "Your service will be remembered.",
 	  "ability": "Each night, after the first, you must choose a player (not yourself): if that player is killed that night you are killed instead.",
@@ -37,7 +34,6 @@
 	
 	{
 	  "name": "Bureaucrat",
-	  "team": "Loyalist",
 	  "type": "Agent",
 	  "description": "PLACEHOLDER",
 	  "ability": "Each night, after the first, you learn how many players voted today.",
@@ -49,7 +45,6 @@
 	
 	{
 	  "name": "Clairvoyant",
-	  "team": "Loyalist",
 	  "type": "Agent",
 	  "description": "Open your eyes, and see where you are not.",
 	  "ability": "Each night, you must choose a player: you learn their team.",
@@ -61,7 +56,6 @@
 	
 	{
 	  "name": "Cook",
-	  "team": "Loyalist",
 	  "type": "Agent",
 	  "description": "First, we eat",
 	  "ability": "Your neighbours can not malfunction.",
@@ -73,7 +67,6 @@
 	
 	{
 	  "name": "Investigator",
-	  "team": "Loyalist",
 	  "type": "Agent",
 	  "description": "PLACEHOLDER",
 	  "ability": "Each night, you must choose a player: you learn a role they are not.",
@@ -85,7 +78,6 @@
 	
 	{
 	  "name": "Janitor",
-	  "team": "Loyalist",
 	  "type": "Agent",
 	  "description": "I’ve seen things in the dark hours of the night, things you people wouldn’t believe.",
 	  "ability": "Each night, you learn how many other players woke up that night due to their ability.",
@@ -97,7 +89,6 @@
 	
 	{
 	  "name": "Medic",
-	  "team": "Loyalist",
 	  "type": "Agent",
 	  "description": "You can’t save everyone.",
 	  "ability": "Each night, if any players have died tonight, you learn who, and may choose one to resurrect.",
@@ -109,7 +100,6 @@
 	
 	{
 	  "name": "Precog",
-	  "team": "Loyalist",
 	  "type": "Agent",
 	  "description": "PLACEHOLDER",
 	  "ability": "You start knowing the answer to a single yes or no question of your choice.",
@@ -121,7 +111,6 @@
 	
 	{
 	  "name": "Psychologist",
-	  "team": "Loyalist",
 	  "type": "Agent",
 	  "description": "PLACEHOLDER",
 	  "ability": "Each night, you must choose a player: you learn their characteristic.",
@@ -133,7 +122,6 @@
 
 	{
 	  "name": "Quartermaster",
-	  "team": "Loyalist",
 	  "type": "Agent",
 	  "description": "Form an orderly line! It’s important we ration our supplies!",
 	  "ability": "Each night, you learn a different Agent role (not yourself) that is in play.",
@@ -145,7 +133,6 @@
 	
 	{
 	  "name": "Supervisor",
-	  "team": "Loyalist",
 	  "type": "Agent",
 	  "description": "You have the power, now make them listen.",
 	  "ability": "All players know who you are.",
@@ -159,7 +146,6 @@
 	
 	{
 	  "name": "Telepath",
-	  "team": "Loyalist",
 	  "type": "Agent",
 	  "description": "I’d like to walk around in your mind.",
 	  "ability": "Each night, you learn the role of one of your living neighbours.",
@@ -171,7 +157,6 @@
 	
 	{
 	  "name": "Tracker",
-	  "team": "Loyalist",
 	  "type": "Agent",
 	  "description": "PLACEHOLDER",
 	  "ability": "Each night, you learn the direction to the closest Subversive player from you, or if they’re equidistant.",
@@ -183,7 +168,6 @@
 	
 	{
 	  "name": "Trainee",
-	  "team": "Loyalist",
 	  "type": "Agent",
 	  "description": "Don’t worry, the first twenty years are the worst.",
 	  "ability": "Once per game, during the night, you may choose any not in-play Loyalist role, you become that role. If the role is in-play, you don’t change role but think you do.",
@@ -197,7 +181,6 @@
 	
 	{
 	  "name": "Accomplice",
-	  "team": "Loyalist",
 	  "type": "Detrimental",
 	  "description": "PLACEHOLDER",
 	  "ability": "You start on the Subversive team. You do not know you are the Accomplice. You think you are a different Loyalist role, but you are not. The Antagonist knows who you are.",
@@ -209,7 +192,6 @@
 	
 	{
 	  "name": "Prisoner",
-	  "team": "Loyalist",
 	  "type": "Detrimental",
 	  "description": "How long will you keep me here? I beg you just let it end!",
 	  "ability": "You appear as a Subversive Antagonist to Loyalist players.",
@@ -221,7 +203,6 @@
 	
 	{
 	  "name": "Technician",
-	  "team": "Loyalist",
 	  "type": "Detrimental",
 	  "description": "I don’t think you’re aware of how much I do around here.",
 	  "ability": "When you die, 2 players on your team (not yourself) become malfunctioning.",
@@ -233,7 +214,6 @@
 	
 	{
 	  "name": "Underachiever",
-	  "team": "Loyalist",
 	  "type": "Detrimental",
 	  "description": "PLACEHOLDER",
 	  "ability": "You do not know you are the Underachiever. You think you are an Agent role, but you are not.",
@@ -245,7 +225,6 @@
 	
 	{
 	  "name": "VIP",
-	  "team": "Loyalist",
 	  "type": "Detrimental",
 	  "description": "PLACEHOLDER",
 	  "ability": "When you die, the Cohesion decreases by 3.",
@@ -257,7 +236,6 @@
 	
 	{
 	  "name": "Whistleblower",
-	  "team": "Loyalist",
 	  "type": "Detrimental",
 	  "description": "Give them some truth.",
 	  "ability": "Each night, you learn the current Cohesion and decrease it by 1. You win with the Subversive team if Cohesion reaches 0.",
@@ -269,7 +247,6 @@
 	
 	{
 	  "name": "Serial Killer",
-	  "team": "Subversive",
 	  "type": "Antagonist",
 	  "description": "Kill them all slowly and painfully.",
 	  "ability": "Each night, after the first, you must choose a player: that player dies.",

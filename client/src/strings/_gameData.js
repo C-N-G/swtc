@@ -59,6 +59,6 @@ const GameData = {
 
 loader(GameData, modules);
 
-console.log(GameData);
+console.log("GameData loaded", GameData);
 
 export default GameData;

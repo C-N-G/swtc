@@ -12,11 +12,11 @@ export default class Player {
    * @param {number} status - player status
    * @param {number} state - player state. 0 = dead, 1 = alive
    * @param {number} team - player team
-   * @param {number} rChar - real player characteristic shown to narrator
-   * @param {number} rRole - real player role shown to narrator
-   * @param {number} rStatus - real player status shown to narrator
-   * @param {number} rState - real player state shown to narrator
-   * @param {number} rTeam - real player team shown to narrator
+   * @param {number} rChar - real player characteristic that is networked by the narrator
+   * @param {number} rRole - real player role that is networked by the narrator
+   * @param {number} rStatus - real player status that is networked by the narrator
+   * @param {number} rState - real player state that is networked by the narrator
+   * @param {number} rTeam - real player team that is networked by the narrator
    * @param {Array<Reminder>} reminders - visual reminders tied to this player
    */
   constructor(

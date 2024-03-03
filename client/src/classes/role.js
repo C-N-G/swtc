@@ -4,19 +4,18 @@ export default class Role {
    * Role object for a player
    * @param {number} id 
    * @param {string} name 
-   * @param {string} team 
-   * @param {Array<string>} types 
+   * @param {string} type
    * @param {string} description 
    * @param {string} ability 
    * @param {Array<string>} attributes 
    * @param {Array<string>} additional 
    * @param {Array<Array<string>>} setup 
+   * @param {Array<Reminder>} reminders
    */
   constructor(
     id,               
     name,             
-    team = "", 
-    types = [],
+    type = "",
     description = "",
     ability = "",
     attributes = [],
@@ -26,8 +25,7 @@ export default class Role {
   ) {
     this.id = id;
     this.name = name;
-    this.team = team;
-    this.types = types;
+    this.type = type;
     this.description = description;
     this.ability = ability;
     this.attributes = attributes;

@@ -5,7 +5,6 @@ export default class Char {
    * Char == Characteristic
    * @param {number} id 
    * @param {string} name 
-   * @param {Array<string>} types 
    * @param {string} description 
    * @param {string} ability 
    * @param {Array<string>} attributes 
@@ -16,7 +15,6 @@ export default class Char {
   constructor(
     id,
     name,
-    types = [],
     description = "",
     ability = "",
     attributes = [],
@@ -26,7 +24,6 @@ export default class Char {
   ) {
     this.id = id;
     this.name = name;
-    this.types = types;
     this.description = description;
     this.ability = ability;
     this.attributes = attributes;
