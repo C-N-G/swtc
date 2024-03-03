@@ -1,7 +1,6 @@
 [
 	{
 		"name": "AgentRole1",
-		"team": "Loyalist",
 		"type": "Agent",
 		"description": "test desc",
 		"ability": "test ability",
@@ -12,7 +11,6 @@
   
   {
 		"name": "AgentRole2",
-		"team": "Loyalist",
 		"type": "Agent",
 		"description": "test desc",
 		"ability": "test ability",
@@ -23,7 +21,6 @@
 
   {
 		"name": "AgentRole3",
-		"team": "Loyalist",
 		"type": "Agent",
 		"description": "test desc",
 		"ability": "test ability",
@@ -34,7 +31,6 @@
 
   {
 		"name": "AgentRole4",
-		"team": "Loyalist",
 		"type": "Agent",
 		"description": "test desc",
 		"ability": "test ability",
@@ -45,7 +41,6 @@
 
   {
 		"name": "AgentRole5",
-		"team": "Loyalist",
 		"type": "Agent",
 		"description": "test desc",
 		"ability": "test ability",
@@ -56,7 +51,6 @@
 
   {
 		"name": "AgentRole6",
-		"team": "Loyalist",
 		"type": "Agent",
 		"description": "test desc",
 		"ability": "test ability",
@@ -67,7 +61,6 @@
 
   {
 		"name": "AgentRole7",
-		"team": "Loyalist",
 		"type": "Agent",
 		"description": "test desc",
 		"ability": "test ability",
@@ -78,7 +71,6 @@
 
   {
 		"name": "AgentRole8",
-		"team": "Loyalist",
 		"type": "Agent",
 		"description": "test desc",
 		"ability": "test ability",
@@ -89,7 +81,6 @@
 
   {
 		"name": "AgentRole9",
-		"team": "Loyalist",
 		"type": "Agent",
 		"description": "test desc",
 		"ability": "test ability",
@@ -100,7 +91,6 @@
 
   {
 		"name": "AgentRole10",
-		"team": "Loyalist",
 		"type": "Agent",
 		"description": "test desc",
 		"ability": "test ability",
@@ -111,7 +101,6 @@
 
   {
 		"name": "AgentRole11",
-		"team": "Loyalist",
 		"type": "Agent",
 		"description": "test desc",
 		"ability": "test ability",
@@ -122,7 +111,6 @@
 
   {
 		"name": "AgentRole12",
-		"team": "Loyalist",
 		"type": "Agent",
 		"description": "test desc",
 		"ability": "test ability",
@@ -133,7 +121,6 @@
 
   {
 		"name": "AgentRole13",
-		"team": "Loyalist",
 		"type": "Agent",
 		"description": "test desc",
 		"ability": "test ability",
@@ -144,7 +131,6 @@
 
   {
 		"name": "AgentRole14",
-		"team": "Loyalist",
 		"type": "Agent",
 		"description": "test desc",
 		"ability": "test ability",
@@ -155,7 +141,6 @@
 
   {
 		"name": "AgentRole15",
-		"team": "Loyalist",
 		"type": "Agent",
 		"description": "test desc",
 		"ability": "test ability",
@@ -166,7 +151,6 @@
 
 	{
 		"name": "DetriRole1",
-		"team": "Loyalist",
 		"type": "Detrimental",
 		"description": "test desc",
 		"ability": "test ability",
@@ -177,7 +161,6 @@
 
   {
 		"name": "DetriRole2",
-		"team": "Loyalist",
 		"type": "Detrimental",
 		"description": "test desc",
 		"ability": "test ability",
@@ -188,7 +171,6 @@
 
   {
 		"name": "DetriRole3",
-		"team": "Loyalist",
 		"type": "Detrimental",
 		"description": "test desc",
 		"ability": "test ability",
@@ -199,7 +181,6 @@
 
   {
 		"name": "DetriRole4",
-		"team": "Loyalist",
 		"type": "Detrimental",
 		"description": "test desc",
 		"ability": "test ability",
@@ -210,7 +191,6 @@
 
   {
 		"name": "DetriRole5",
-		"team": "Loyalist",
 		"type": "Detrimental",
 		"description": "test desc",
 		"ability": "test ability",
@@ -221,7 +201,6 @@
 	
 	{
 		"name": "NeighbourAnt",
-		"team": "Loyalist",
 		"type": "Detrimental",
 		"description": "test desc",
 		"ability": "test ability",
@@ -234,7 +213,6 @@
 	
 	{
 		"name": "AddStrict2",
-		"team": "Subversive",
 		"type": "Antagonist",
 		"description": "test desc",
 		"ability": "test ability",
@@ -248,7 +226,6 @@
 	
 	{
 		"name": "Add1Sub",
-		"team": "Subversive",
 		"type": "Antagonist",
 		"description": "test desc",
 		"ability": "test ability",
@@ -261,7 +238,6 @@
 
   {
 		"name": "Conv2Sub",
-		"team": "Subversive",
 		"type": "Antagonist",
 		"description": "test desc",
 		"ability": "test ability",
@@ -274,7 +250,6 @@
 
   {
 		"name": "ShowAsAgent",
-		"team": "Subversive",
 		"type": "Antagonist",
 		"description": "test desc",
 		"ability": "test ability",
@@ -287,7 +262,6 @@
 
   {
 		"name": "AddStrict2N",
-		"team": "Subversive",
 		"type": "Antagonist",
 		"description": "test desc",
 		"ability": "test ability",
@@ -304,7 +278,6 @@
 
   {
 		"name": "Add2Recursiv",
-		"team": "Subversive",
 		"type": "Antagonist",
 		"description": "test desc",
 		"ability": "test ability",

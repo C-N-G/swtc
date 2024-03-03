@@ -1,12 +1,12 @@
 [
   {
     "name": "Unknown",
-    "team": "",
-    "types": [],
+    "type": "",
     "description": "",
     "ability": "",
     "attributes": [],
     "additional": [],
-    "setup": []
+    "setup": [],
+    "reminders": []
   }
 ]
