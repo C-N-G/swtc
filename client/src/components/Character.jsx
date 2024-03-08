@@ -65,29 +65,33 @@ function PlayerCharacter({user, session}) {
       </Grid>
     </Grid>
     <Grid container justifyContent="left" mt={1} spacing={2} sx={{overflow: "auto"}}>
-      <Grid item xs textAlign="right">
+      <Grid item xs={6} textAlign="right">
         <Typography fontWeight={"Bold"}>Role</Typography>
         <Typography fontWeight={"Bold"}>Team</Typography>
       </Grid>
-      <Grid item xs textAlign="left">
+      <Grid item xs={6} textAlign="left">
         <Typography>{GameData.hackValue(roles[user.rRole])}</Typography>
         <Typography>{GameData.teams[user.rTeam]}</Typography> 
       </Grid>
+      {fullRole["name"] !== "Unknown" ? <>
       <Grid item xs={12}>
         <Typography variant="body2" gutterBottom>{fullRole["description"]}</Typography>
-        <Typography variant="body2"><Box component="span" fontWeight={"Bold"}>{fullRole["ability"] ? "Mechanics: " : ""}</Box>{fullRole["ability"]}</Typography>
+        <Typography variant="body2"><Box component="span" fontWeight={"Bold"}>{fullRole["ability"] ? "Ability: " : ""}</Box>{fullRole["ability"]}</Typography>
         {fullRole["additional"].map((ele, index) => <Typography variant="body2" key={fullRole["name"] + "additional" + index}>{ele}</Typography>)}
       </Grid>
       <Grid item xs={6} textAlign="right">
-        <Typography fontWeight={"Bold"}>Attributes</Typography> 
+        <Typography fontWeight={"Bold"}>{fullRole["attributes"].length > 0 ? "Attributes" : ""}</Typography> 
       </Grid>
       <Grid item xs={6} textAlign="left">
         <Typography>{fullRole.attributes.join(", ")}</Typography> 
       </Grid>
+      {fullRole["setup"].length > 0 ? 
       <Grid item xs={12}>
         <Typography variant="body2" fontWeight={"Bold"}>{fullRole["setup"].length > 0 ? "Role Setup" : ""}</Typography>
         {fullRole["setup"].map((ele, index) => <Typography variant="body2" key={fullRole["name"] + "setup" + index}>{index+1}: {ele[0]}</Typography>)}
       </Grid>
+       : ""}
+      </> : ""}
       <Grid item xs={6} textAlign="right">
         <Typography fontWeight={"Bold"}>Characteristic</Typography> 
       </Grid>
@@ -96,7 +100,7 @@ function PlayerCharacter({user, session}) {
       </Grid>
       <Grid item xs={12}>
         <Typography variant="body2" gutterBottom>{fullChar["description"]}</Typography>
-        <Typography variant="body2"><Box component="span" fontWeight={"Bold"}>{fullChar["ability"] ? "Mechanics: " : ""}</Box>{fullChar["ability"]}</Typography>
+        <Typography variant="body2"><Box component="span" fontWeight={"Bold"}>{fullChar["ability"] ? "Ability: " : ""}</Box>{fullChar["ability"]}</Typography>
         {fullChar["additional"].map((ele, index) => <Typography variant="body2" key={fullChar["name"] + index}>{ele}</Typography>)}
       </Grid>
     </Grid>
