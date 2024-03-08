@@ -52,19 +52,12 @@ function PlayerCharacter({user, session}) {
   const fullChar = GameData.chars.find(ele => ele.name === GameData.hackValue(chars[user.rChar]));
 
   return (<>
-    <Grid container justifyContent="left" spacing={2}>
-      <Grid item xs={6}>
+    <Grid container justifyContent="left" spacing={2} sx={{overflow: "auto"}}>
+      <Grid item xs={12}>
         <Paper elevation={2} sx={{backgroundColor: "lightgreen"}}>
-          <Typography variant="h6">State: {GameData.states[user.rState]}</Typography> 
+          <Typography variant="h6" px={3} ><Box component="span" fontWeight={"Bold"}>State: </Box>{GameData.states[user.rState]}</Typography> 
         </Paper>
       </Grid>
-      <Grid item xs={6}>
-        <Paper elevation={2} sx={{backgroundColor: "lightgreen"}}>
-          <Typography variant="h6">Status: {GameData.statuses[user.rStatus]}</Typography> 
-        </Paper>
-      </Grid>
-    </Grid>
-    <Grid container justifyContent="left" mt={1} spacing={2} sx={{overflow: "auto"}}>
       <Grid item xs={6} textAlign="right">
         <Typography fontWeight={"Bold"}>Role</Typography>
         <Typography fontWeight={"Bold"}>Team</Typography>
