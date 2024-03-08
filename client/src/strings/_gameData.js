@@ -20,7 +20,7 @@ const GameData = {
     )
 
     const return_data = this[type] // hack - leave unknown out of the filtering
-    .filter(ele => enabledSet.has(ele.name) || ele.name === "Unknown")
+    .filter(ele => enabledSet.has(ele.id) || ele.name === "Unknown")
 
     // full will include all the role and char data, instead of just the name
     return full ? return_data : return_data.map(role => role.name);

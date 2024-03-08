@@ -8,20 +8,6 @@ export default function gameDataLoader(load_obj, modules) {
 
     const property = file_path.split("/").pop().slice(0, -5);
 
-    // if the file is inside a module then also add just its property names to modules
-    if (file_path.includes("modules")) {
-
-      const module_name = file_path.split("/")[2];
-      const property_names = load_origin[file_path].default.map((ele) => ele.name);
-
-      if (!Object.hasOwn(load_target.modules, module_name)) {
-        load_target.modules[module_name] = {};
-      }
-
-      load_target.modules[module_name][property] = property_names;
-
-    }
-
     // add file contents to correct property array in game data
     load_origin[file_path].default.forEach(eleObj => {
 
@@ -78,6 +64,23 @@ export default function gameDataLoader(load_obj, modules) {
         eleObj.reminders.forEach(reminder => {
           reminder.origin = newEle;
         })
+      }
+
+      // if the file is inside a module then also add its id to the modules property
+      if (file_path.includes("modules")) {
+
+        const module_name = file_path.split("/")[2]
+
+        if (!Object.hasOwn(load_target.modules, module_name)) {
+          load_target.modules[module_name] = {};
+        }
+
+        if (!Object.hasOwn(load_target.modules[module_name], property)) {
+          load_target.modules[module_name][property] = [];
+        }
+
+        load_target.modules[module_name][property].push(eleId);
+
       }
 
     })
