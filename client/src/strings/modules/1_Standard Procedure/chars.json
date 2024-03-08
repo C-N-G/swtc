@@ -3,130 +3,101 @@
 	  "name": "Alert",
 	  "description": "PLACEHOLDER",
 	  "ability": "During the night, once per game, when you’re chosen by another player, you learn who they are, even if their ability would kill you.",
-	  "setup": [],
-	  "attributes": [],
-	  "additional": [],
-	  "reminders": []
+      "reminders": [
+        ["🚨", "#FFFF00", "Alert: Has used their ability."]
+      ]
 	},
 	
 	{
 	  "name": "Diligent",
 	  "description": "PLACEHOLDER",
-	  "ability": "You can't malfunction",
-	  "setup": [],
-	  "attributes": [],
-	  "additional": [],
-	  "reminders": []
+	  "ability": "You can't malfunction"
 	},
 	
 	{
 	  "name": "Empathetic",
 	  "description": "PLACEHOLDER",
 	  "ability": "You start knowing how many other players are Psychic.",
-	  "setup": [],
-	  "attributes": [],
-	  "additional": [],
-	  "reminders": []
+	  "attributes": ["Psychic"]
 	},
 	
 	{
 	  "name": "Forthright",
 	  "description": "PLACEHOLDER",
-	  "ability": "All players know who you are.",
-	  "setup": [],
-	  "attributes": [],
-	  "additional": [],
-	  "reminders": []
+	  "ability": "All players know who you are."
 	},
 	
 	{
 	  "name": "Intuitive",
 	  "description": "PLACEHOLDER",
 	  "ability": "Each night, you learn who the narrator thinks you should speak with the most.",
-	  "setup": [],
 	  "attributes": ["Psychic"],
-	  "additional": [],
-	  "reminders": []
+      "reminders": [
+        ["🧭", "#FFFF00", "Intuitive: Learnt this player."]
+      ]
 	},
 	
 	{
 	  "name": "Knowledgeable",
 	  "description": "PLACEHOLDER",
-	  "ability": "You start knowing whether a role of your choice is in play or not.",
-	  "setup": [],
-	  "attributes": [],
-	  "additional": [],
-	  "reminders": []
+	  "ability": "You start knowing whether a role of your choice is in play or not."
 	},
 	
 	{
 	  "name": "Meticulous",
 	  "description": "PLACEHOLDER",
-	  "ability": "You learn if you become malfunctioning. This ability can not malfunction.",
-	  "setup": [],
-	  "attributes": [],
-	  "additional": [],
-	  "reminders": []
+	  "ability": "You learn if you become malfunctioning. This ability can not malfunction."
 	},
 	
 	{
 	  "name": "Obnoxious",
 	  "description": "PLACEHOLDER",
 	  "ability": "The first person to choose you with an ability becomes malfunctioning.",
-	  "setup": [],
-	  "attributes": [],
-	  "additional": [],
-	  "reminders": []
+      "reminders": [
+        ["💩", "#FFFF00", "Obnoxious: This player is malfunctioning."]
+      ]
 	},
 	
 	{
 	  "name": "Observant",
 	  "description": "PLACEHOLDER",
-	  "ability": "You start knowing how many of your neighbours wake up due to an ability of theirs during the first night.",
-	  "setup": [],
-	  "attributes": [],
-	  "additional": [],
-	  "reminders": []
+	  "ability": "You start knowing how many of your neighbours wake up due to an ability of theirs during the first night."
 	},
 	
 	{
 	  "name": "Patient",
 	  "description": "PLACEHOLDER",
 	  "ability": "If you haven’t voted for two days, your votes count for +1.",
-	  "setup": [],
-	  "attributes": [],
-	  "additional": [],
-	  "reminders": []
+      "reminders": [
+        ["⏳", "#FFFF00", "Patient: This player's votes count for +1."]
+      ]
 	},
 	
 	{
 	  "name": "Persevering",
 	  "description": "PLACEHOLDER",
 	  "ability": "The first time you are killed by another player, you survive.",
-	  "setup": [],
-	  "attributes": [],
-	  "additional": [],
-	  "reminders": []
+      "reminders": [
+        ["🫀", "#FFFF00", "Persevering: Has used their ability."]
+      ]
 	},
 	
 	{
 	  "name": "Punctual",
 	  "description": "PLACEHOLDER",
 	  "ability": "If you nominate first, your vote counts for +1.",
-	  "setup": [],
-	  "attributes": [],
-	  "additional": [],
-	  "reminders": []
+      "reminders": [
+        ["⏱️", "#FFFF00", "Punctual: This player's votes count for +1."]
+      ]
 	},
 	
 	{
 	  "name": "Reflective",
 	  "description": "PLACEHOLDER",
 	  "ability": "Each night, you learn a player who voted on you during the previous day.",
-	  "setup": [],
-	  "attributes": [],
-	  "additional": [],
-	  "reminders": []
+      "reminders": [
+        ["🪞", "#FFFF00", "Reflective: This player voted."]
+      ]
 	},
 	
 	{
@@ -138,27 +109,21 @@
 	  "additional": [
 		"If the Resourceful player is a Loyalist, then in most cases, their ability should increase the Cohesion.",
 		"If the Resourceful player is a Subversive, then in most cases, their ability should decrease the Cohesion."
-	  ],
-	  "reminders": []
+	  ]
 	},
 	
 	{
 	  "name": "Secretive",
 	  "description": "PLACEHOLDER",
-	  "ability": "You appear as a different characteristic.",
-	  "setup": [],
-	  "attributes": [],
-	  "additional": [],
-	  "reminders": []
+	  "ability": "You appear as a different characteristic."
 	},
 	
 	{
 	  "name": "Trustworthy",
 	  "description": "PLACEHOLDER",
 	  "ability": "The first time you’re dismissed, you survive.",
-	  "setup": [],
-	  "attributes": [],
-	  "additional": [],
-	  "reminders": []
+      "reminders": [
+        ["🤝", "#FFFF00", "Trustworthy: Has used their ability."]
+      ]
 	}
 ]
