@@ -150,15 +150,15 @@ function NarratorDetails({
           {selectBuilder(id, "Team", false, GameData.teams, team)}
         </Stack>
       </Grid>
-      {reminders.map(reminder => {
+      {reminders.map(reminderId => {
         return (
           <Chip 
             sx={{borderRadius: 1, m: 0.3}}
             size="small"
             variant="contained"
-            key={String(id) + String(reminder.id)} 
-            icon={<Reminder reminder={reminder} />} 
-            label={reminder.description}/>
+            key={String(id) + String(reminderId)} 
+            icon={<Reminder reminder={GameData.reminders.find(reminder => reminder.id === reminderId)} />} 
+            label={GameData.reminders.find(reminder => reminder.id === reminderId).description}/>
         )
       })}
     </Grid>

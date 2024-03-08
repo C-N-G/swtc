@@ -75,7 +75,7 @@ function App() {
       if (placeReminder && player.id === playerId) {
 
         // don't add reminder if the player already has that reminder
-        if (player.reminders.some(reminder => reminder.id === reminderId)) return player;
+        if (player.reminders.some(aReminderId => aReminderId === reminderId)) return player;
         // don't add reminder if the player has the max reminders
         if (player.reminders.length >= maxReminders) return player;
 
