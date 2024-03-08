@@ -108,10 +108,10 @@ function NarratorPlayerIndicator({
         position: "absolute",
         zIndex: 1
       }}>
-        {reminders.map(reminder => {
+        {reminders.map(reminderId => {
           return (
-            <Draggable key={String(id) + String(reminder.id)} draggableId={String(id) + "-|-" + String(reminder.id)}>
-            <Reminder reminder={reminder} />
+            <Draggable key={String(id) + String(reminderId)} draggableId={String(id) + "-|-" + String(reminderId)}>
+            <Reminder reminder={GameData.reminders.find(reminder => reminder.id === reminderId)} />
             </Draggable>
           )
         })}

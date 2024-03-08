@@ -80,9 +80,9 @@ function App() {
         if (player.reminders.length >= maxReminders) return player;
 
         const reminder = GameData.reminders.find(reminder => reminder.id === reminderId);
-        player.reminders.push(reminder);
+        player.reminders.push(reminder.id);
       } else if (removeOrigin && player.id === originId) {
-        player.reminders = player.reminders.filter(reminder => reminder.id !== reminderId);
+        player.reminders = player.reminders.filter(id => id !== reminderId);
       }
       return player;
     }))
