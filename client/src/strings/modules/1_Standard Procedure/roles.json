@@ -142,7 +142,9 @@
 	  "description": "I’d like to walk around in your mind.",
 	  "ability": "Each night, you learn the role of one of your living neighbours.",
 	  "attributes": ["Human", "Psychic"],
-	  "reminders": []
+      "reminders": [
+        ["😶‍🌫️", "#0000FF", "Telepath: Learnt this player's role."]
+      ]
 	},
 	
 	{
@@ -150,8 +152,7 @@
 	  "type": "Agent",
 	  "description": "PLACEHOLDER",
 	  "ability": "Each night, you learn the direction to the closest Subversive player from you, or if they’re equidistant.",
-	  "attributes": ["Human"],
-	  "reminders": []
+	  "attributes": ["Human"]
 	},
 	
 	{
@@ -163,7 +164,9 @@
 	  "additional": [
 		"If the Trainee becomes a ‘you start’ role, they will act as if the night they become that role was their first night."
 	  ],
-	  "reminders": []
+      "reminders": [
+        ["🧑‍🎓", "#0000FF", "Trainee: Has used their ability."]
+      ]
 	},
 	
 	{
@@ -172,10 +175,13 @@
 	  "description": "PLACEHOLDER",
 	  "ability": "You start on the Subversive team. You do not know you are the Accomplice. You think you are a different Loyalist role, but you are not. The Antagonist knows who you are.",
       "setup": [
-        ["You think you are a Loyalist role.", "ShowAs Role Loyalist"]
+        ["You think you are a Loyalist role.", "ShowAs Role Loyalist"],
+		["You neighbour the Antagonist.", "Neighbour Role Antagonist"]
       ],
 	  "attributes": ["Human"],
-	  "reminders": []
+      "reminders": [
+        ["👣", "#702963", "Accomplice: Is the Accomplice."]
+      ]
 	},
 	
 	{
@@ -188,8 +194,7 @@
         "asTeam": "Subversive",
         "for": "Loyalist"
       },
-	  "attributes": ["Human"],
-	  "reminders": []
+	  "attributes": ["Human"]
 	},
 	
 	{
@@ -198,7 +203,9 @@
 	  "description": "I don’t think you’re aware of how much I do around here.",
 	  "ability": "When you die, 2 players on your team (not yourself) become malfunctioning.",
 	  "attributes": ["Human"],
-	  "reminders": []
+      "reminders": [
+        ["🔧", "#702963", "Technician: This player is malfunctioning."]
+      ]
 	},
 	
 	{
@@ -210,7 +217,9 @@
         ["You think you are an Agent role.", "ShowAs Role Agent"]
       ],
 	  "attributes": ["Human"],
-	  "reminders": []
+      "reminders": [
+        ["🙃", "#702963", "Underachiever: Is the Underachiever."]
+      ]
 	},
 	
 	{
@@ -218,8 +227,7 @@
 	  "type": "Detrimental",
 	  "description": "PLACEHOLDER",
 	  "ability": "When you die, the Cohesion decreases by 3.",
-	  "attributes": ["Human"],
-	  "reminders": []
+	  "attributes": ["Human"]
 	},
 	
 	{
@@ -227,8 +235,7 @@
 	  "type": "Detrimental",
 	  "description": "Give them some truth.",
 	  "ability": "Each night, you learn the current Cohesion and decrease it by 1. You win with the Subversive team if Cohesion reaches 0.",
-	  "attributes": ["Human"],
-	  "reminders": []
+	  "attributes": ["Human"]
 	},
 	
 	{
@@ -237,6 +244,8 @@
 	  "description": "Kill them all slowly and painfully.",
 	  "ability": "Each night, after the first, you must choose a player: that player dies.",
 	  "attributes": ["Human"],
-	  "reminders": []
+      "reminders": [
+        ["🗡️", "#FF0000", "Serial Killer: Chose this player."]
+      ]
 	}
 ]
