@@ -4,10 +4,7 @@
 	  "type": "Agent",
 	  "description": "Don’t blame me, I’m just presenting the data.",
 	  "ability": "Each night, you learn which team the narrator thinks is winning.",
-	  "setup": [],
-	  "attributes": ["Human"],
-	  "additional": [],
-	  "reminders": []
+	  "attributes": ["Human"]
 	},
 	
 	{
@@ -15,10 +12,10 @@
 	  "type": "Agent",
 	  "description": "Can I get you a coffee, sir?",
 	  "ability": "You start knowing an Agent player and their role (not yourself)",
-	  "setup": [],
 	  "attributes": ["Human"],
-	  "additional": [],
-	  "reminders": []
+      "reminders": [
+        ["☕", "#0000FF", "Assistant: Knows this player's role."]
+      ]
 	},
 	
 	{
@@ -26,10 +23,10 @@
 	  "type": "Agent",
 	  "description": "Your service will be remembered.",
 	  "ability": "Each night, after the first, you must choose a player (not yourself): if that player is killed that night you are killed instead.",
-	  "setup": [],
 	  "attributes": ["Human"],
-	  "additional": [],
-	  "reminders": []
+      "reminders": [
+        ["👮", "#0000FF", "Bodyguard: Protected this player."]
+      ]
 	},
 	
 	{
@@ -37,10 +34,10 @@
 	  "type": "Agent",
 	  "description": "PLACEHOLDER",
 	  "ability": "Each night, after the first, you learn how many players voted today.",
-	  "setup": [],
 	  "attributes": ["Human"],
-	  "additional": [],
-	  "reminders": []
+      "reminders": [
+        ["🗳️", "#0000FF", "Bureaucrat: This player voted."]
+      ]
 	},
 	
 	{
@@ -48,21 +45,21 @@
 	  "type": "Agent",
 	  "description": "Open your eyes, and see where you are not.",
 	  "ability": "Each night, you must choose a player: you learn their team.",
-	  "setup": [],
 	  "attributes": ["Human", "Psychic"],
-	  "additional": [],
-	  "reminders": []
+      "reminders": [
+        ["🔮", "#0000FF", "Clairvoyant: Chose this player."]
+      ]
 	},
 	
 	{
 	  "name": "Cook",
 	  "type": "Agent",
 	  "description": "First, we eat",
-	  "ability": "Your neighbours can not malfunction.",
-	  "setup": [],
+	  "ability": "Your neighbours cannot malfunction.",
 	  "attributes": ["Human"],
-	  "additional": [],
-	  "reminders": []
+      "reminders": [
+        ["🧑‍🍳", "#0000FF", "Cook: This player cannot malfunction."]
+      ]
 	},
 	
 	{
@@ -70,10 +67,10 @@
 	  "type": "Agent",
 	  "description": "PLACEHOLDER",
 	  "ability": "Each night, you must choose a player: you learn a role they are not.",
-	  "setup": [],
 	  "attributes": ["Human"],
-	  "additional": [],
-	  "reminders": []
+      "reminders": [
+        ["🕵️", "#0000FF", "Investigator: Chose this player."]
+      ]
 	},
 	
 	{
@@ -81,10 +78,10 @@
 	  "type": "Agent",
 	  "description": "I’ve seen things in the dark hours of the night, things you people wouldn’t believe.",
 	  "ability": "Each night, you learn how many other players woke up that night due to their ability.",
-	  "setup": [],
 	  "attributes": ["Human"],
-	  "additional": [],
-	  "reminders": []
+      "reminders": [
+        ["🧹", "#0000FF", "Janitor: This player woke due to their ability."]
+      ]
 	},
 	
 	{
@@ -92,10 +89,10 @@
 	  "type": "Agent",
 	  "description": "You can’t save everyone.",
 	  "ability": "Each night, if any players have died tonight, you learn who, and may choose one to resurrect.",
-	  "setup": [],
 	  "attributes": ["Human"],
-	  "additional": [],
-	  "reminders": []
+      "reminders": [
+        ["⛑️", "#0000FF", "Medic: Resurrected this player."]
+      ]
 	},
 	
 	{
@@ -103,10 +100,7 @@
 	  "type": "Agent",
 	  "description": "PLACEHOLDER",
 	  "ability": "You start knowing the answer to a single yes or no question of your choice.",
-	  "setup": [],
 	  "attributes": ["Human", "Psychic"],
-	  "additional": [],
-	  "reminders": []
 	},
 	
 	{
@@ -114,10 +108,10 @@
 	  "type": "Agent",
 	  "description": "PLACEHOLDER",
 	  "ability": "Each night, you must choose a player: you learn their characteristic.",
-	  "setup": [],
 	  "attributes": ["Human"],
-	  "additional": [],
-	  "reminders": []
+      "reminders": [
+        ["🧠️", "#0000FF", "Psychologist: Chose this player."]
+      ]
 	},
 
 	{
@@ -125,10 +119,10 @@
 	  "type": "Agent",
 	  "description": "Form an orderly line! It’s important we ration our supplies!",
 	  "ability": "Each night, you learn a different Agent role (not yourself) that is in play.",
-	  "setup": [],
 	  "attributes": ["Human"],
-	  "additional": [],
-	  "reminders": []
+      "reminders": [
+        ["📦", "#0000FF", "Quartermaster: Learnt this player's role."]
+      ]
 	},
 	
 	{
@@ -136,12 +130,10 @@
 	  "type": "Agent",
 	  "description": "You have the power, now make them listen.",
 	  "ability": "All players know who you are.",
-	  "setup": [],
 	  "attributes": ["Human"],
 	  "additional": [
 		"If a player becomes the Supervisor after the game’s start, then the other players will learn who they are on the first day in which that player is now the Supervisor."
 	  ],
-	  "reminders": []
 	},
 	
 	{
@@ -149,9 +141,7 @@
 	  "type": "Agent",
 	  "description": "I’d like to walk around in your mind.",
 	  "ability": "Each night, you learn the role of one of your living neighbours.",
-	  "setup": [],
 	  "attributes": ["Human", "Psychic"],
-	  "additional": [],
 	  "reminders": []
 	},
 	
@@ -160,9 +150,7 @@
 	  "type": "Agent",
 	  "description": "PLACEHOLDER",
 	  "ability": "Each night, you learn the direction to the closest Subversive player from you, or if they’re equidistant.",
-	  "setup": [],
 	  "attributes": ["Human"],
-	  "additional": [],
 	  "reminders": []
 	},
 	
@@ -171,7 +159,6 @@
 	  "type": "Agent",
 	  "description": "Don’t worry, the first twenty years are the worst.",
 	  "ability": "Once per game, during the night, you may choose any not in-play Loyalist role, you become that role. If the role is in-play, you don’t change role but think you do.",
-	  "setup": [],
 	  "attributes": ["Human"],
 	  "additional": [
 		"If the Trainee becomes a ‘you start’ role, they will act as if the night they become that role was their first night."
@@ -184,9 +171,10 @@
 	  "type": "Detrimental",
 	  "description": "PLACEHOLDER",
 	  "ability": "You start on the Subversive team. You do not know you are the Accomplice. You think you are a different Loyalist role, but you are not. The Antagonist knows who you are.",
-	  "setup": [],
+      "setup": [
+        ["You think you are a Loyalist role.", "ShowAs Role Loyalist"]
+      ],
 	  "attributes": ["Human"],
-	  "additional": [],
 	  "reminders": []
 	},
 	
@@ -195,9 +183,12 @@
 	  "type": "Detrimental",
 	  "description": "How long will you keep me here? I beg you just let it end!",
 	  "ability": "You appear as a Subversive Antagonist to Loyalist players.",
-	  "setup": [],
+      "appears": {
+        "asType": "Antagonist",
+        "asTeam": "Subversive",
+        "for": "Loyalist"
+      },
 	  "attributes": ["Human"],
-	  "additional": [],
 	  "reminders": []
 	},
 	
@@ -206,9 +197,7 @@
 	  "type": "Detrimental",
 	  "description": "I don’t think you’re aware of how much I do around here.",
 	  "ability": "When you die, 2 players on your team (not yourself) become malfunctioning.",
-	  "setup": [],
 	  "attributes": ["Human"],
-	  "additional": [],
 	  "reminders": []
 	},
 	
@@ -217,9 +206,10 @@
 	  "type": "Detrimental",
 	  "description": "PLACEHOLDER",
 	  "ability": "You do not know you are the Underachiever. You think you are an Agent role, but you are not.",
-	  "setup": [],
+      "setup": [
+        ["You think you are an Agent role.", "ShowAs Role Agent"]
+      ],
 	  "attributes": ["Human"],
-	  "additional": [],
 	  "reminders": []
 	},
 	
@@ -228,9 +218,7 @@
 	  "type": "Detrimental",
 	  "description": "PLACEHOLDER",
 	  "ability": "When you die, the Cohesion decreases by 3.",
-	  "setup": [],
 	  "attributes": ["Human"],
-	  "additional": [],
 	  "reminders": []
 	},
 	
@@ -239,9 +227,7 @@
 	  "type": "Detrimental",
 	  "description": "Give them some truth.",
 	  "ability": "Each night, you learn the current Cohesion and decrease it by 1. You win with the Subversive team if Cohesion reaches 0.",
-	  "setup": [],
 	  "attributes": ["Human"],
-	  "additional": [],
 	  "reminders": []
 	},
 	
@@ -250,9 +236,7 @@
 	  "type": "Antagonist",
 	  "description": "Kill them all slowly and painfully.",
 	  "ability": "Each night, after the first, you must choose a player: that player dies.",
-	  "setup": [],
 	  "attributes": ["Human"],
-	  "additional": [],
 	  "reminders": []
 	}
 ]
