@@ -112,10 +112,19 @@ function NarratorCharacter({session, setSession, players, setPlayers}) {
   const [selectedReminder, setSelectedReminder] = useState(null);
   const [sync, setSync] = useState({progress: false, error: false});
   const [cohesion, setCohesion] = useState(10);
+  const [oldSessionState, setOldSesionstate] = useState({players: [], modules: []});
 
   const [chars, roles, reminders] = useMemo(() => GameData.getFilteredValues(session.modules, true), [session.modules]);
 
+  function storeOldData() {
+    if (session.sync) {
+      setOldSesionstate({players: JSON.parse(JSON.stringify(players)), modules: [...session.modules]});
+    }
+  }
+
   function handleModuleSelection(e) {
+
+    storeOldData();
 
     const checked = e.target.checked;
     const targetMod = e.target.value;
@@ -139,6 +148,8 @@ function NarratorCharacter({session, setSession, players, setPlayers}) {
   }
 
   function randomisePlayers() {
+
+    storeOldData()
 
     setSession(prevSession => ({
       ...prevSession,
@@ -164,6 +175,9 @@ function NarratorCharacter({session, setSession, players, setPlayers}) {
     const sanitisedPlayers = players.map(({...player}) => {
       player.role = 0;
       player.char = 0;
+      player.team = 0;
+      player.state = 1;
+      player.status = 0;
       return player;
     });
 
@@ -189,6 +203,20 @@ function NarratorCharacter({session, setSession, players, setPlayers}) {
 
     })
 
+
+  }
+
+  function handleUndo() {
+
+    setPlayers(oldSessionState.players);
+
+    setSession(prevSession => ({
+      ...prevSession, 
+      sync: !prevSession.sync,
+      modules: oldSessionState.modules
+    }))
+
+    setOldSesionstate({players: [], modules: []});
 
   }
 
@@ -219,7 +247,10 @@ function NarratorCharacter({session, setSession, players, setPlayers}) {
       <Switch 
         color={sync.error ? "error" : "primary"} 
         checked={session.sync}
-        onChange={() => {setSession(prevSession => ({...prevSession, sync: !prevSession.sync}))}}
+        onChange={() => {
+          storeOldData();
+          setSession(prevSession => ({...prevSession, sync: !prevSession.sync}))
+        }}
         disabled={session.sync ? false : true}
         inputProps={{"aria-label": "autoSync control"}}/>
       <Button 
@@ -230,6 +261,13 @@ function NarratorCharacter({session, setSession, players, setPlayers}) {
       >
         {sync.progress ? <CircularProgress size={24} /> : sync.error ? "Error Syncing" : "Sync"}
       </Button>
+      {session.sync === false ? <Button 
+        variant="contained"
+        sx={{ml: 1}}
+        onClick={handleUndo}
+      >
+        Undo
+      </Button> : ""}
     </Box>
     <Box sx={{display: "flex", alignItems: "stretch", my: 1}}>
     <Box 
