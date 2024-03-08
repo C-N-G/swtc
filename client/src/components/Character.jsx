@@ -177,7 +177,6 @@ function NarratorCharacter({session, setSession, players, setPlayers}) {
       player.char = 0;
       player.team = 0;
       player.state = 1;
-      player.status = 0;
       return player;
     });
 

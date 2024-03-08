@@ -81,9 +81,9 @@ function RegularPlayerIndicator({id, name, team, label, handleClick, vertical, r
 
 
 function NarratorPlayerIndicator({
-  chars, roles, team, reminders,
-  id, name, state, role, char, status, 
-  rState, rRole, rChar, rStatus, handleClick, vertical}) {
+  chars, roles, team, rTeam, reminders,
+  id, name, state, role, char, 
+  rState, rRole, rChar, handleClick, vertical}) {
 
   const {isOver, setNodeRef} = useDroppable({
     id: "droppable-|-" + id
@@ -156,7 +156,7 @@ function NarratorPlayerIndicator({
               <br />
               {GameData.hackValue(chars[rChar])}{char !== rChar ? "*" : ""}
               <br />
-              {GameData.statuses[rStatus]}{status !== rStatus ? "*" : ""}
+              {GameData.teams[rTeam]}{team !== rTeam ? "*" : ""}
           </Typography>
         </Box>
       </Button>

@@ -31,7 +31,7 @@ export default PlayerDetails
 function RegularPlayerDetails({
   chars, roles, team,
   id, name, rState, label, role, 
-  char, status, notes, handlePlayerDataChange }) {
+  char, notes, handlePlayerDataChange }) {
 
   function selectBuilder(playerId, type, list, value) {
     return <Autocomplete
@@ -81,7 +81,6 @@ function RegularPlayerDetails({
         <Stack spacing={2} sx={{margin: "1rem"}}>
           {selectBuilder(id, "Role", roles, role)}
           {selectBuilder(id, "Char", chars, char)}
-          {selectBuilder(id, "Status", GameData.statuses, status)}
           {selectBuilder(id, "Team", GameData.teams, team)}
         </Stack>
       </Grid>
@@ -107,8 +106,8 @@ function RegularPlayerDetails({
 
 function NarratorDetails({
   id, name, handlePlayerDataChange, handleDismissalClick, chars, roles,
-  state, role, char, status, team, reminders,
-  rState, rRole, rChar, rStatus, rTeam }) {
+  state, role, char, team, reminders,
+  rState, rRole, rChar, rTeam }) {
 
   const leftVal = "Shown";
   const rightVal = "True"
@@ -140,7 +139,6 @@ function NarratorDetails({
           {selectBuilder(id, "State", true, GameData.states, rState)}
           {selectBuilder(id, "Role", true, roles, rRole)}
           {selectBuilder(id, "Char", true, chars, rChar)}
-          {selectBuilder(id, "Status", true, GameData.statuses, rStatus)}
           {selectBuilder(id, "Team", true, GameData.teams, rTeam)}
         </Stack>
       </Grid>
@@ -149,7 +147,6 @@ function NarratorDetails({
           {selectBuilder(id, "State", false, GameData.states, state)}
           {selectBuilder(id, "Role", false, roles, role)}
           {selectBuilder(id, "Char", false, chars, char)}
-          {selectBuilder(id, "Status", false, GameData.statuses, status)}
           {selectBuilder(id, "Team", false, GameData.teams, team)}
         </Stack>
       </Grid>

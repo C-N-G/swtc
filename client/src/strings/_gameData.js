@@ -6,7 +6,6 @@ const GameData = {
   chars: [],
   roles: [],
   states: [],
-  statuses: [],
   teams: [],
   modules: {},
   reminders: [],

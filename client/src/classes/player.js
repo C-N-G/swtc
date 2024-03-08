@@ -9,12 +9,10 @@ export default class Player {
    * @param {string} notes - notes of targetted player
    * @param {number} char - player characteristic
    * @param {number} role - player role
-   * @param {number} status - player status
    * @param {number} state - player state. 0 = dead, 1 = alive
    * @param {number} team - player team
    * @param {number} rChar - real player characteristic that is networked by the narrator
    * @param {number} rRole - real player role that is networked by the narrator
-   * @param {number} rStatus - real player status that is networked by the narrator
    * @param {number} rState - real player state that is networked by the narrator
    * @param {number} rTeam - real player team that is networked by the narrator
    * @param {Array<Reminder>} reminders - visual reminders tied to this player
@@ -27,12 +25,10 @@ export default class Player {
     notes = "",
     char = 0,
     role = 0,
-    status = 0,
     state = 1,
     team = 0,
     rChar = 0,
     rRole = 0,
-    rStatus = 0,
     rState = 1,
     rTeam = 0,
     reminders = []
@@ -45,12 +41,10 @@ export default class Player {
     this.notes = notes;
     this.char = char;
     this.role = role;
-    this.status = status;
     this.state = state;
     this.team = team;
     this.rChar = rChar;
     this.rRole = rRole;
-    this.rStatus = rStatus;
     this.rState = rState;
     this.rTeam = rTeam;
     this.reminders = reminders;
