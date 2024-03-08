@@ -68,7 +68,7 @@ function PlayerCharacter({user, session}) {
       </Grid>
       {fullRole["name"] !== "Unknown" ? <>
       <Grid item xs={12}>
-        <Typography variant="body2" gutterBottom>{fullRole["description"]}</Typography>
+        <Typography variant="body2" gutterBottom>{"“" + fullRole["description"] + "”"}</Typography>
         <Typography variant="body2"><Box component="span" fontWeight={"Bold"}>{fullRole["ability"] ? "Ability: " : ""}</Box>{fullRole["ability"]}</Typography>
         {fullRole["additional"].map((ele, index) => <Typography variant="body2" key={fullRole["name"] + "additional" + index}>{ele}</Typography>)}
       </Grid>
@@ -92,7 +92,7 @@ function PlayerCharacter({user, session}) {
         <Typography>{GameData.hackValue(chars[user.rChar])}</Typography> 
       </Grid>
       <Grid item xs={12}>
-        <Typography variant="body2" gutterBottom>{fullChar["description"]}</Typography>
+        <Typography variant="body2" gutterBottom>{"“" + fullChar["description"]  + "”"}</Typography>
         <Typography variant="body2"><Box component="span" fontWeight={"Bold"}>{fullChar["ability"] ? "Ability: " : ""}</Box>{fullChar["ability"]}</Typography>
         {fullChar["additional"].map((ele, index) => <Typography variant="body2" key={fullChar["name"] + index}>{ele}</Typography>)}
       </Grid>
