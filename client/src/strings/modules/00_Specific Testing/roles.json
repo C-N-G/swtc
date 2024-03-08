@@ -1,0 +1,78 @@
+[
+	{
+		"name": "AgentNeighbour",
+		"type": "Agent",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": [
+      ["test neighbour", "Neighbour Role Antagonist"]
+    ]
+	},
+  
+  {
+		"name": "AgentRole2",
+		"type": "Agent",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": []
+	},
+
+  {
+		"name": "AgentRole3",
+		"type": "Agent",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": []
+	},
+
+  {
+		"name": "AgentRole4",
+		"type": "Agent",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": []
+	},
+
+  {
+		"name": "AgentRole5",
+		"type": "Agent",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+		"additional": [],
+		"setup": []
+	},
+
+  {
+		"name": "Detri",
+		"type": "Detrimental",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"]
+	},
+	
+	{
+		"name": "DetriAppear",
+		"type": "Detrimental",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"],
+    "appears": {"asType": "Antagonist", "asTeam": "Subversive", "for": "Loyalist"}
+	},
+	
+	{
+		"name": "Antag",
+		"type": "Antagonist",
+		"description": "test desc",
+		"ability": "test ability",
+		"attributes": ["Human"]
+	}
+]

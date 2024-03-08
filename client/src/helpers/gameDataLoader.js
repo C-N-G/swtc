@@ -50,6 +50,7 @@ export default function gameDataLoader(load_obj, modules) {
             eleObj.additional,
             eleObj.setup,
             eleObj.reminders,
+            eleObj.appears,
           );
           break;
         

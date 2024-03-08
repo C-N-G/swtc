@@ -357,14 +357,20 @@ export class Randomiser {
         || char.attributes.includes(target)
       )
     } else if (type === "Role") {
-      possibleRoles = target === undefined ? this.roleArray : this.roleArray.filter(role => 
-        role.name === target 
+      possibleRoles = target === undefined ? this.roleArray : this.roleArray.filter(role => {
+        const searchAppears = (
+          command === "Neighbour" &&
+          this.TYPE_TO_TEAM[this.roleArray[aPlayer.playerObj.role].type] === role.appears.for) ? (
+            role.appears.asType === target || role.appears.asTeam === target
+        ) : false
+        return role.name === target 
         || role.type === target 
         || this.TYPE_TO_TEAM[role.type] === target 
         || role.attributes.includes(target)
-      )
+        || searchAppears
+      })
     } else if (command !== "Convert"){
-      throw new Error("unknown setup command target type:", type);
+      throw new Error(`unknown setup command target type: ${type}`);
     }
 
     if (this.debug) console.debug("running setup command", command, type, target);

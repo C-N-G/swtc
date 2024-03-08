@@ -22,6 +22,7 @@ export default class Role {
     additional = [],
     setup = [],
     reminders = [],
+    appears = {asType: "", asTeam: "", for: ""},
   ) {
     this.id = id;
     this.name = name;
@@ -32,6 +33,7 @@ export default class Role {
     this.additional = additional;
     this.setup = setup;
     this.reminders = reminders;
+    this.appears = appears;
   }
 
 }
