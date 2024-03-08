@@ -58,7 +58,7 @@ export default function gameDataLoader(load_obj, modules) {
             eleId,
             eleObj.name,
             eleObj.type,
-            eleObj.descriptio,
+            eleObj.description,
             eleObj.ability,
             eleObj.attributes,
             eleObj.additional,
