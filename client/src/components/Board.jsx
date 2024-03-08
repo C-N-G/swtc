@@ -148,7 +148,7 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerD
 
   function displayDynamicContent() {
 
-    if (selected !== null && display === 1) {
+    if (selected !== null && display === 1 && selectedPlayer) {
       return playerdetails;
     } else if (votes.voting && display === 2) {
       return voteWindow;
@@ -176,19 +176,19 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerD
           <Typography id="nominating-player-modal-description" sx={{ my: 2 }}>
             Please select the player who nominated this player
           </Typography>
-          <FormControl fullWidth>
+          <FormControl fullWidth> 
             <InputLabel id="nominating-player-select-label">Player</InputLabel>
             <Select
-              labelId="nominating-player-select-label"
+              labelId="nominating-player-select-label" 
               id="nominating-player-select"
               label="Player"
               value={votes.accusingPlayer ? votes.accusingPlayer : ""}
-              onChange={handlePlayerSelect}
+              onChange={handlePlayerSelect} 
             >
               {selectablePlayers}
             </Select>
           </FormControl>
-          <Button variant="contained" fullWidth sx={{my: 2}} onClick={handleBeginClick}>
+          <Button variant="contained" fullWidth sx={{my: 2}} onClick={handleBeginClick}> {/** TODO when pressing begin there is no check to make sure a player is selected */}
             Begin
           </Button>
         </Box>
