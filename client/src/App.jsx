@@ -168,6 +168,14 @@ function App() {
 
       },
 
+      joined(player) {
+        setPlayers(prevPlayers => [...prevPlayers, player]);
+      },
+
+      left(playerId) {
+        setPlayers(prevPlayers => prevPlayers.filter(player => player.id !== playerId));
+      }
+
     }
 
     for (const event in socketEvents) {

@@ -89,10 +89,10 @@ swtcNamespace.on("connection", (socket) => {
       connectedSessionId = sessionId;
       const session = sessionManager.getSession(sessionId);
       if (!session) return;
-      const userId = sessionManager.joinSession(sessionId, playerId, name);
+      const player = sessionManager.joinSession(sessionId, playerId, name);
       socket.join(sessionId);
-      socket.to(sessionId).emit("sync", session.getData());
-      socket.emit("sync", session.getData(), userId);
+      socket.to(sessionId).emit("joined", player);
+      socket.emit("sync", session.getData(), player.id);
       console.log("user joined session", sessionId, "with name", name);
     }
 
@@ -106,9 +106,9 @@ swtcNamespace.on("connection", (socket) => {
 
     const session = sessionManager.createSession();
     connectedSessionId = session.id;
-    const userId = sessionManager.joinSession(session.id, playerId, name);
+    const player = sessionManager.joinSession(session.id, playerId, name);
     socket.join(session.id);
-    socket.emit("sync", session.getData(), userId);
+    socket.emit("sync", session.getData(), player.id);
     console.log("user hosted session", session.id, "with name", name);
 
 
@@ -201,22 +201,27 @@ swtcNamespace.on("connection", (socket) => {
 
     if (sessionManager.sessionExists(connectedSessionId)) {
       const session = sessionManager.getSession(connectedSessionId);
-      swtcNamespace.to(connectedSessionId).emit("sync", session.getData());
+      swtcNamespace.to(connectedSessionId).emit("left", playerId);
     }
 
   })
 
   socket.on("leave", () => {
 
+    // leave the players current session and room
     sessionManager.leaveSession(connectedSessionId, playerId);
     socket.leave(connectedSessionId);
+
+    // tell the players in the left session player has left
+    swtcNamespace.to(connectedSessionId).emit("left", playerId);
     console.log("player", playerId, "left session", connectedSessionId);
     connectedSessionId = null;
+
+    // reset player session
     const blankSession = sessionManager.createSession();
     socket.emit("sync", {...blankSession.getData(), id: null}, null);
     sessionManager.removeSession(blankSession);
 
-    // RESET STATE TO DEFAULTS WHEN LEAVING
 
   })
 

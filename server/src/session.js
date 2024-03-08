@@ -27,7 +27,7 @@ export default class Session {
 
         this.players.push(player);
 
-        return player.id;
+        return player;
 
     }
 
