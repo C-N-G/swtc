@@ -2,6 +2,8 @@ import {useContext, useState, useMemo} from 'react'
 import {Card, Typography, Grid, Paper, Checkbox, FormGroup, FormControlLabel, Dialog, 
         DialogActions, DialogContent, DialogTitle, Button, Box, CircularProgress, Switch, IconButton, Autocomplete, TextField}from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 import {UserContext} from "../App.jsx";
 import GameData from "../strings/_gameData.js";
 import {socket} from "../helpers/socket.js";
@@ -109,6 +111,7 @@ function NarratorCharacter({session, setSession, players, setPlayers}) {
   const [modSelOpen, setModSelOpen] = useState(false);
   const [selectedReminder, setSelectedReminder] = useState(null);
   const [sync, setSync] = useState({progress: false, error: false});
+  const [cohesion, setCohesion] = useState(10);
 
   const [chars, roles, reminders] = useMemo(() => GameData.getFilteredValues(session.modules, true), [session.modules]);
 
@@ -260,6 +263,20 @@ function NarratorCharacter({session, setSession, players, setPlayers}) {
         size="small"
         renderInput={(params) => <TextField {...params} label="Add Reminder" />}
       />
+    </Box>
+    <Box sx={{display: "flex", alignItems: "stretch", justifyContent: "space-between", my: 1}}>
+      <Button variant="contained" onClick={() => {setCohesion(prev => prev + 1)}}><AddIcon /></Button>
+      <Paper elevation={2} sx={{
+        display: "flex", 
+        flexGrow: 1, 
+        justifyContent: "center", 
+        alignItems: "center",
+        backgroundColor: "rgb(25, 118, 210)",
+        mx: 1
+        }}>
+        <Typography variant="h6" color={"white"}>Cohesion: {cohesion}</Typography>
+      </Paper>
+      <Button variant="contained" onClick={() => {setCohesion(prev => prev - 1)}}><RemoveIcon /></Button>
     </Box>
 
     <Dialog open={modSelOpen} onClose={() => setModSelOpen(false)} >
