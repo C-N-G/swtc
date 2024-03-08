@@ -2,6 +2,8 @@ import {useContext, useState, useMemo} from 'react'
 import {Card, Typography, Grid, Paper, Checkbox, FormGroup, FormControlLabel, Dialog, 
         DialogActions, DialogContent, DialogTitle, Button, Box, CircularProgress, Switch, IconButton, Autocomplete, TextField}from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 import {UserContext} from "../App.jsx";
 import GameData from "../strings/_gameData.js";
 import {socket} from "../helpers/socket.js";
@@ -52,42 +54,39 @@ function PlayerCharacter({user, session}) {
   const fullChar = GameData.chars.find(ele => ele.name === GameData.hackValue(chars[user.rChar]));
 
   return (<>
-    <Grid container justifyContent="left" spacing={2}>
-      <Grid item xs={6}>
+    <Grid container justifyContent="left" spacing={2} sx={{overflow: "auto"}}>
+      <Grid item xs={12}>
         <Paper elevation={2} sx={{backgroundColor: "lightgreen"}}>
-          <Typography variant="h6">State: {GameData.states[user.rState]}</Typography> 
+          <Typography variant="h6" px={3} ><Box component="span" fontWeight={"Bold"}>State: </Box>{GameData.states[user.rState]}</Typography> 
         </Paper>
       </Grid>
-      <Grid item xs={6}>
-        <Paper elevation={2} sx={{backgroundColor: "lightgreen"}}>
-          <Typography variant="h6">Status: {GameData.statuses[user.rStatus]}</Typography> 
-        </Paper>
-      </Grid>
-    </Grid>
-    <Grid container justifyContent="left" mt={1} spacing={2} sx={{overflow: "auto"}}>
-      <Grid item xs textAlign="right">
+      <Grid item xs={6} textAlign="right">
         <Typography fontWeight={"Bold"}>Role</Typography>
         <Typography fontWeight={"Bold"}>Team</Typography>
       </Grid>
-      <Grid item xs textAlign="left">
+      <Grid item xs={6} textAlign="left">
         <Typography>{GameData.hackValue(roles[user.rRole])}</Typography>
         <Typography>{GameData.teams[user.rTeam]}</Typography> 
       </Grid>
+      {fullRole["name"] !== "Unknown" ? <>
       <Grid item xs={12}>
-        <Typography variant="body2" gutterBottom>{fullRole["description"]}</Typography>
-        <Typography variant="body2"><Box component="span" fontWeight={"Bold"}>{fullRole["ability"] ? "Mechanics: " : ""}</Box>{fullRole["ability"]}</Typography>
+        <Typography variant="body2" gutterBottom>{"“" + fullRole["description"] + "”"}</Typography>
+        <Typography variant="body2"><Box component="span" fontWeight={"Bold"}>{fullRole["ability"] ? "Ability: " : ""}</Box>{fullRole["ability"]}</Typography>
         {fullRole["additional"].map((ele, index) => <Typography variant="body2" key={fullRole["name"] + "additional" + index}>{ele}</Typography>)}
       </Grid>
       <Grid item xs={6} textAlign="right">
-        <Typography fontWeight={"Bold"}>Attributes</Typography> 
+        <Typography fontWeight={"Bold"}>{fullRole["attributes"].length > 0 ? "Attributes" : ""}</Typography> 
       </Grid>
       <Grid item xs={6} textAlign="left">
         <Typography>{fullRole.attributes.join(", ")}</Typography> 
       </Grid>
+      {fullRole["setup"].length > 0 ? 
       <Grid item xs={12}>
         <Typography variant="body2" fontWeight={"Bold"}>{fullRole["setup"].length > 0 ? "Role Setup" : ""}</Typography>
         {fullRole["setup"].map((ele, index) => <Typography variant="body2" key={fullRole["name"] + "setup" + index}>{index+1}: {ele[0]}</Typography>)}
       </Grid>
+       : ""}
+      </> : ""}
       <Grid item xs={6} textAlign="right">
         <Typography fontWeight={"Bold"}>Characteristic</Typography> 
       </Grid>
@@ -95,8 +94,8 @@ function PlayerCharacter({user, session}) {
         <Typography>{GameData.hackValue(chars[user.rChar])}</Typography> 
       </Grid>
       <Grid item xs={12}>
-        <Typography variant="body2" gutterBottom>{fullChar["description"]}</Typography>
-        <Typography variant="body2"><Box component="span" fontWeight={"Bold"}>{fullChar["ability"] ? "Mechanics: " : ""}</Box>{fullChar["ability"]}</Typography>
+        <Typography variant="body2" gutterBottom>{"“" + fullChar["description"]  + "”"}</Typography>
+        <Typography variant="body2"><Box component="span" fontWeight={"Bold"}>{fullChar["ability"] ? "Ability: " : ""}</Box>{fullChar["ability"]}</Typography>
         {fullChar["additional"].map((ele, index) => <Typography variant="body2" key={fullChar["name"] + index}>{ele}</Typography>)}
       </Grid>
     </Grid>
@@ -112,10 +111,20 @@ function NarratorCharacter({session, setSession, players, setPlayers}) {
   const [modSelOpen, setModSelOpen] = useState(false);
   const [selectedReminder, setSelectedReminder] = useState(null);
   const [sync, setSync] = useState({progress: false, error: false});
+  const [cohesion, setCohesion] = useState(10);
+  const [oldSessionState, setOldSesionstate] = useState({players: [], modules: []});
 
   const [chars, roles, reminders] = useMemo(() => GameData.getFilteredValues(session.modules, true), [session.modules]);
 
+  function storeOldData() {
+    if (session.sync) {
+      setOldSesionstate({players: JSON.parse(JSON.stringify(players)), modules: [...session.modules]});
+    }
+  }
+
   function handleModuleSelection(e) {
+
+    storeOldData();
 
     const checked = e.target.checked;
     const targetMod = e.target.value;
@@ -139,6 +148,8 @@ function NarratorCharacter({session, setSession, players, setPlayers}) {
   }
 
   function randomisePlayers() {
+
+    storeOldData()
 
     setSession(prevSession => ({
       ...prevSession,
@@ -164,6 +175,9 @@ function NarratorCharacter({session, setSession, players, setPlayers}) {
     const sanitisedPlayers = players.map(({...player}) => {
       player.role = 0;
       player.char = 0;
+      player.team = 0;
+      player.state = 1;
+      player.status = 0;
       return player;
     });
 
@@ -189,6 +203,20 @@ function NarratorCharacter({session, setSession, players, setPlayers}) {
 
     })
 
+
+  }
+
+  function handleUndo() {
+
+    setPlayers(oldSessionState.players);
+
+    setSession(prevSession => ({
+      ...prevSession, 
+      sync: !prevSession.sync,
+      modules: oldSessionState.modules
+    }))
+
+    setOldSesionstate({players: [], modules: []});
 
   }
 
@@ -219,7 +247,10 @@ function NarratorCharacter({session, setSession, players, setPlayers}) {
       <Switch 
         color={sync.error ? "error" : "primary"} 
         checked={session.sync}
-        onChange={() => {setSession(prevSession => ({...prevSession, sync: !prevSession.sync}))}}
+        onChange={() => {
+          storeOldData();
+          setSession(prevSession => ({...prevSession, sync: !prevSession.sync}))
+        }}
         disabled={session.sync ? false : true}
         inputProps={{"aria-label": "autoSync control"}}/>
       <Button 
@@ -230,6 +261,13 @@ function NarratorCharacter({session, setSession, players, setPlayers}) {
       >
         {sync.progress ? <CircularProgress size={24} /> : sync.error ? "Error Syncing" : "Sync"}
       </Button>
+      {session.sync === false ? <Button 
+        variant="contained"
+        sx={{ml: 1}}
+        onClick={handleUndo}
+      >
+        Undo
+      </Button> : ""}
     </Box>
     <Box sx={{display: "flex", alignItems: "stretch", my: 1}}>
     <Box 
@@ -245,7 +283,7 @@ function NarratorCharacter({session, setSession, players, setPlayers}) {
         }}>
       {selectedReminder ? 
         <Box sx={{position: "absolute"}}>
-          <Draggable draggableId={"new_" + selectedReminder.id}>
+          <Draggable draggableId={"new-|-" + selectedReminder.id}>
           <Reminder reminder={selectedReminder} />
           </Draggable>
         </Box>
@@ -263,6 +301,20 @@ function NarratorCharacter({session, setSession, players, setPlayers}) {
         size="small"
         renderInput={(params) => <TextField {...params} label="Add Reminder" />}
       />
+    </Box>
+    <Box sx={{display: "flex", alignItems: "stretch", justifyContent: "space-between", my: 1}}>
+      <Button variant="contained" onClick={() => {setCohesion(prev => prev + 1)}}><AddIcon /></Button>
+      <Paper elevation={2} sx={{
+        display: "flex", 
+        flexGrow: 1, 
+        justifyContent: "center", 
+        alignItems: "center",
+        backgroundColor: "rgb(25, 118, 210)",
+        mx: 1
+        }}>
+        <Typography variant="h6" color={"white"}>Cohesion: {cohesion}</Typography>
+      </Paper>
+      <Button variant="contained" onClick={() => {setCohesion(prev => prev - 1)}}><RemoveIcon /></Button>
     </Box>
 
     <Dialog open={modSelOpen} onClose={() => setModSelOpen(false)} >

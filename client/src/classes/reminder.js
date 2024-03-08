@@ -15,7 +15,7 @@ export default class Reminder {
     colour,
     description,
   ) {
-    this.id = id;
+    this.id = String(id);
     this.origin = origin;
     this.content = content;
     this.colour = colour;

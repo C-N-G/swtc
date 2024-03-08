@@ -51,9 +51,9 @@ function App() {
 
   function handleDragEnd(event) {
 
-    const reminderId = Number(event.active.id.split("_")[1]);
-    const originId = Number(event.active.id.split("_")[0]);
-    const originIsPlayer = !Number.isNaN(originId);
+    const reminderId = event.active.id.split("-|-")[1];
+    const originId = event.active.id.split("-|-")[0];
+    const originIsPlayer = originId !== "new";
     const hasTarget = event.over !== null;
     const maxReminders = 5;
     let removeOrigin = false;
@@ -68,7 +68,7 @@ function App() {
       placeReminder = false;
       playerId = originId;
     } else if (hasTarget) {
-      playerId = Number(event.over.id.split("_")[1]);
+      playerId = event.over.id.split("-|-")[1];
     }
 
     setPlayers(prev => prev.map(player => {
@@ -168,6 +168,14 @@ function App() {
 
       },
 
+      joined(player) {
+        setPlayers(prevPlayers => [...prevPlayers, player]);
+      },
+
+      left(playerId) {
+        setPlayers(prevPlayers => prevPlayers.filter(player => player.id !== playerId));
+      }
+
     }
 
     for (const event in socketEvents) {
@@ -208,7 +216,7 @@ function App() {
             CHAT W.I.P
             {session.id ? "" : <>
               <Button variant="contained" onClick={() => {
-                setUserId(54321);
+                setUserId("54321");
                 setPlayers([...somePlayers]);
                 setSession(prevSession => ({
                   ...prevSession,

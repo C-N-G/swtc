@@ -19,7 +19,7 @@ export default class Session {
 
         let player;
 
-        if (this.players.length === 0) { // if its the first player then make them the story teller
+        if (this.players.length === 0) { // if its the first player then make them the narrator
             player = new Player(playerId, name, 0);
         } else {
             player = new Player(playerId, name);
@@ -27,7 +27,7 @@ export default class Session {
 
         this.players.push(player);
 
-        return player.id;
+        return player;
 
     }
 

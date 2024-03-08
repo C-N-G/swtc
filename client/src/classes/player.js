@@ -38,7 +38,7 @@ export default class Player {
     reminders = []
   ) {
 
-    this.id = id;
+    this.id = String(id);
     this.name = name;
     this.type = type;
     this.label = label;
