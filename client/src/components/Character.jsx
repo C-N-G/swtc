@@ -242,7 +242,7 @@ function NarratorCharacter({session, setSession, players, setPlayers}) {
         }}>
       {selectedReminder ? 
         <Box sx={{position: "absolute"}}>
-          <Draggable draggableId={"new_" + selectedReminder.id}>
+          <Draggable draggableId={"new-|-" + selectedReminder.id}>
           <Reminder reminder={selectedReminder} />
           </Draggable>
         </Box>

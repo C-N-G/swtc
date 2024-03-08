@@ -30,7 +30,7 @@ export default PlayerIndicator
 
 
 
-function RegularPlayerIndicator({id, name, label, handleClick, vertical, rState}) {
+function RegularPlayerIndicator({id, name, team, label, handleClick, vertical, rState}) {
 
   return (
     <Box sx={{
@@ -47,7 +47,11 @@ function RegularPlayerIndicator({id, name, label, handleClick, vertical, rState}
         justifyContent: "flex-start",
         m: 0.8,
         overflow: "inherit",
-        backgroundImage: rState === 0 ? "linear-gradient(180deg, rgba(255,0,0,0), rgba(255,0,0,0.2), rgba(255,0,0,0.7))" : "" 
+        backgroundImage: rState === 0 ? "linear-gradient(180deg, rgba(255,0,0,0), rgba(255,0,0,0.2), rgba(255,0,0,0.7))" : "",
+        background: team === 2 ? "rgb(180, 30, 10)" : "rgb(25, 118, 210)",
+        ":hover": {
+          background: team === 2 ? "rgb(150, 25, 5)" : "rgb(21, 101, 192)",
+        }
       }}>
         <Typography>{name}</Typography>
         <Box sx={{
@@ -81,7 +85,7 @@ function NarratorPlayerIndicator({
   rState, rRole, rChar, rStatus, handleClick, vertical}) {
 
   const {isOver, setNodeRef} = useDroppable({
-    id: "droppable_" + id
+    id: "droppable-|-" + id
   });
 
   const style = {
@@ -105,7 +109,7 @@ function NarratorPlayerIndicator({
       }}>
         {reminders.map(reminder => {
           return (
-            <Draggable key={String(id) + String(reminder.id)} draggableId={String(id) + "_" + String(reminder.id)}>
+            <Draggable key={String(id) + String(reminder.id)} draggableId={String(id) + "-|-" + String(reminder.id)}>
             <Reminder reminder={reminder} />
             </Draggable>
           )
@@ -121,9 +125,11 @@ function NarratorPlayerIndicator({
           m: 0.8,
           overflow: "inherit",
           background: team === 2 ? "rgb(180, 30, 10)" : "rgb(25, 118, 210)",
+          backgroundImage: rState === 0 ? "linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,0.5), rgba(0,0,0,1))" : "",
           ":hover": {
             background: team === 2 ? "rgb(150, 25, 5)" : "rgb(21, 101, 192)",
-          }
+            backgroundImage: rState === 0 ? "linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.5), rgba(0,0,0,1))" : "",
+          },
         }}
         ref={setNodeRef}
         style={style}
@@ -157,3 +163,37 @@ function NarratorPlayerIndicator({
   );
 
 }
+
+// function IndicatorButton() {
+//   <Button variant="contained" onClick={() => {handleClick(id)}} sx={{
+//     flexGrow: 1, 
+//     flexDirection: "column",
+//     justifyContent: "flex-start",
+//     m: 0.8,
+//     overflow: "inherit",
+//     backgroundImage: rState === 0 ? "linear-gradient(180deg, rgba(255,0,0,0), rgba(255,0,0,0.2), rgba(255,0,0,0.7))" : "",
+//     background: team === 2 ? "rgb(180, 30, 10)" : "rgb(25, 118, 210)",
+//     ":hover": {
+//       background: team === 2 ? "rgb(150, 25, 5)" : "rgb(21, 101, 192)",
+//     }
+//   }}>
+//     <Button 
+//     variant="contained" 
+//     onClick={() => {handleClick(id)}} 
+//     sx={{
+//       flexGrow: 1, 
+//       flexDirection: "column",
+//       justifyContent: "flex-start",
+//       m: 0.8,
+//       overflow: "inherit",
+//       background: team === 2 ? "rgb(180, 30, 10)" : "rgb(25, 118, 210)",
+//       backgroundImage: rState === 0 ? "linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,0.5), rgba(0,0,0,1))" : "",
+//       ":hover": {
+//         background: team === 2 ? "rgb(150, 25, 5)" : "rgb(21, 101, 192)",
+//         backgroundImage: rState === 0 ? "linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.5), rgba(0,0,0,1))" : "",
+//       },
+//     }}
+//     ref={setNodeRef}
+//     style={style}
+//   ></Button>
+// }
