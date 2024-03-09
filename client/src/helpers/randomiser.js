@@ -2,7 +2,7 @@ import GameData from "../strings/_gameData.js";
 
 /**
  * @typedef {Object} Player
- * @property {number} id
+ * @property {string} id
  * @property {string} name
  * @property {number} type
  * @property {number} char
@@ -63,7 +63,7 @@ import GameData from "../strings/_gameData.js";
  */
 export default function randomise(playerArray, charArray, roleArray) {
 
-  let debug = playerArray[0].id === 54321 ? true : false; // debug logging value
+  let debug = playerArray[0].id === "54321" ? true : false; // debug logging value
 
   const randomiser = new Randomiser(playerArray, charArray, roleArray, debug)
 
@@ -194,8 +194,8 @@ export class Randomiser {
       aPlayer.strict = false;
 
       // randomise player
-      aPlayer.playerObj.char = aPlayer.playerObj.rChar = this.getRandomId(this.charArray, this.takenSets.chars);
-      aPlayer.playerObj.role = aPlayer.playerObj.rRole = this.getRandomId(this.roleArray, this.takenSets.roles, this.getTargetRoles());
+      aPlayer.playerObj.char = aPlayer.playerObj.rChar = this.getRandomIndex(this.charArray, this.takenSets.chars);
+      aPlayer.playerObj.role = aPlayer.playerObj.rRole = this.getRandomIndex(this.roleArray, this.takenSets.roles, this.getTargetRoles());
       let playerRoleType = this.roleArray[aPlayer.playerObj.role].type
       aPlayer.playerObj.team = aPlayer.playerObj.rTeam = GameData.teams.indexOf(this.TYPE_TO_TEAM[playerRoleType]);
 
@@ -224,44 +224,44 @@ export class Randomiser {
   }
 
   /**
-   * Gets a random id from a list and marks it as taken
-   * @param {Array<Char|Role>} idArray
-   * @param {Set<number>} takenIdsSet 
-   * @param {Array<Char|Role>=} filteredIdArray 
-   * @returns {number} a random id
+   * Gets a random index from a list and marks it as taken
+   * @param {Array<Char|Role>} indexArray
+   * @param {Set<number>} takenIndexSet 
+   * @param {Array<Char|Role>=} filteredIndexArray 
+   * @returns {number} a random index
    */
-  getRandomId(idArray, takenIdsSet, filteredIdArray) {
+  getRandomIndex(indexArray, takenIndexSet, filteredIndexArray) {
 
-    const EveryFilteredIdTaken = filteredIdArray ? filteredIdArray
-      .map(ele => idArray.findIndex(ele1 => ele.name === ele1.name))
-      .every(ele => takenIdsSet.has(ele)) : false;
+    const EveryFilteredIndexTaken = filteredIndexArray ? filteredIndexArray
+      .map(ele => indexArray.findIndex(ele1 => ele.name === ele1.name))
+      .every(ele => takenIndexSet.has(ele)) : false;
 
-    let id, randomNum;
-    while (typeof id === "undefined") {
+    let index, randomIndex;
+    while (typeof index === "undefined") {
 
-      // generate a random id
-      if (filteredIdArray) {
-        randomNum = Math.floor(Math.random() * filteredIdArray.length);
-        randomNum = idArray.findIndex(role => role.name === filteredIdArray[randomNum].name);
+      // generate a random index
+      if (filteredIndexArray) {
+        randomIndex = Math.floor(Math.random() * filteredIndexArray.length);
+        randomIndex = indexArray.findIndex(role => role.name === filteredIndexArray[randomIndex].name);
       } else {
         // skip out the first value which is unknown
-        randomNum = Math.floor(Math.random() * (idArray.length - 1) + 1);
+        randomIndex = Math.floor(Math.random() * (indexArray.length - 1) + 1);
       }
 
-      // assign id if it hasn't been taken
-      if (takenIdsSet.has(randomNum) === false) {
-        takenIdsSet.add(randomNum);
-        id = randomNum;
+      // assign index if it hasn't been taken
+      if (takenIndexSet.has(randomIndex) === false) {
+        takenIndexSet.add(randomIndex);
+        index = randomIndex;
       }
 
       // prevent infinte loop
-      if (takenIdsSet.size === idArray.length || EveryFilteredIdTaken) {
-        if (this.debug) console.debug(Array.from(takenIdsSet).map(id => idArray[id].name), filteredIdArray)
+      if (takenIndexSet.size === indexArray.length || EveryFilteredIndexTaken) {
+        if (this.debug) console.debug(Array.from(takenIndexSet).map(index => indexArray[index].name), filteredIndexArray)
         throw Error("not enough options to uniquely randomise")
       }
 
     }
-    return id
+    return index;
 
   }
 
@@ -343,9 +343,9 @@ export class Randomiser {
 
     // randomise player initially
     if (!aPlayer.keepSame) {
-      aPlayer.playerObj.char = this.getRandomId(this.charArray, this.takenSets.chars);
+      aPlayer.playerObj.char = this.getRandomIndex(this.charArray, this.takenSets.chars);
       const agentRoles = this.roleArray.filter(role => role.type === "Agent")
-      aPlayer.playerObj.role = this.getRandomId(this.roleArray, this.takenSets.roles, agentRoles);
+      aPlayer.playerObj.role = this.getRandomIndex(this.roleArray, this.takenSets.roles, agentRoles);
     }
 
     // get all possible targets
@@ -383,7 +383,7 @@ export class Randomiser {
 
       // take into account taken roles if there are multiple possible roles
       if (possibleRoles.length > 1) {
-        aPlayer.playerObj.role = this.getRandomId(this.roleArray, this.takenSets.roles, possibleRoles);
+        aPlayer.playerObj.role = this.getRandomIndex(this.roleArray, this.takenSets.roles, possibleRoles);
       } else {
         // else if there is only one possible role the target must be specific so choose it anyway
         aPlayer.playerObj.role = this.roleArray.findIndex(role => role.id === possibleRoles[0].id);
@@ -393,7 +393,7 @@ export class Randomiser {
     } else if (command.includes("Add") && type === "Char") {
       this.takenSets.chars.delete(aPlayer.playerObj.char);
       if (possibleChars.length > 1) {
-        aPlayer.playerObj.char = this.getRandomId(this.charArray, this.takenSets.chars, possibleChars);
+        aPlayer.playerObj.char = this.getRandomIndex(this.charArray, this.takenSets.chars, possibleChars);
       } else {
         aPlayer.playerObj.char = this.charArray.findIndex(char => char.id === possibleChars[0].id);
         this.takenSets.chars.add(aPlayer.playerObj.char);
@@ -405,15 +405,17 @@ export class Randomiser {
     if (command === "Convert") aPlayer.playerObj.team = GameData.teams.indexOf(target);
     else aPlayer.playerObj.team = GameData.teams.indexOf(this.TYPE_TO_TEAM[this.roleArray[aPlayer.playerObj.role].type]);
 
-    aPlayer.playerObj.rChar = aPlayer.playerObj.char;
-    aPlayer.playerObj.rRole = aPlayer.playerObj.role;
-    aPlayer.playerObj.rTeam = aPlayer.playerObj.team;
+    if (!aPlayer.keepSame) {
+      aPlayer.playerObj.rChar = aPlayer.playerObj.char;
+      aPlayer.playerObj.rRole = aPlayer.playerObj.role;
+      aPlayer.playerObj.rTeam = aPlayer.playerObj.team;
+    }
 
     if (command === "ShowAs" && type === "Role") {
 
       // take into account taken roles if there are multiple possible roles
       if (possibleRoles.length > 1) {
-        aPlayer.playerObj.rRole = this.getRandomId(this.roleArray, this.takenSets.roles, possibleRoles);
+        aPlayer.playerObj.rRole = this.getRandomIndex(this.roleArray, this.takenSets.roles, possibleRoles);
       } else {
         // else if there is only one possible role the target must be specific so choose it anyway
         aPlayer.playerObj.rRole = this.roleArray.findIndex(role => role.id === possibleRoles[0].id);
@@ -425,7 +427,7 @@ export class Randomiser {
 
     } else if (command === "ShowAs" && type === "Char") {
       if (possibleChars.length > 1) {
-        aPlayer.playerObj.rChar = this.getRandomId(this.charArray, this.takenSets.chars, possibleChars);
+        aPlayer.playerObj.rChar = this.getRandomIndex(this.charArray, this.takenSets.chars, possibleChars);
       } else {
         aPlayer.playerObj.rChar = this.charArray.findIndex(char => char.id === possibleChars[0].id);
         this.takenSets.chars.add(aPlayer.playerObj.rChar);
@@ -529,21 +531,21 @@ export class Randomiser {
   /**
    * Finds the neighbour indexes for a given index
    * Views the array as circular, and takes into account skipping narrator type players
-   * @param {number} idIndex 
+   * @param {number} anIndex 
    * @returns {Array<number>} left and right neighbour indexes
    */
   findNeighbourIndexes(anIndex) {
 
     let neighbourIndexes;
-    let idArray = this.randomisedPlayers.map((_, index) => index);
+    let indexArray = this.randomisedPlayers.map((_, index) => index);
 
     // take into account skipping narrators
     let left = anIndex-1, right = anIndex+1;
     while ((typeof this.randomisedPlayers[left] === "undefined" || this.randomisedPlayers[left].type === 0)
       || (typeof this.randomisedPlayers[right] === "undefined" || this.randomisedPlayers[right].type === 0)
     ) {
-      if (left < 0) left = idArray.length-1;
-      if (right >= idArray.length) right = 0;
+      if (left < 0) left = indexArray.length-1;
+      if (right >= indexArray.length) right = 0;
       if (this.randomisedPlayers[left].type === 0) left--;
       if (this.randomisedPlayers[right].type === 0) right++;
     }
@@ -630,7 +632,7 @@ export class Randomiser {
       return returnIndex;
     }
 
-    const masterId = parseInt(this.commandQueue[0][4].split("_")[1]);
+    const masterId = this.commandQueue[0][4].split("_")[1];
     const masterIndex = this.randomisedPlayers.findIndex(player => player.id === masterId);
 
     returnIndex = this.getFreeNeighbourIndex(masterIndex);
