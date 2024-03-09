@@ -77,9 +77,12 @@ swtcNamespace.on("connection", (socket) => {
   console.log("new socket connection");
 
   let connectedSessionId = null;
+  let playerName;
   const playerId = socket.id;
 
   socket.on("join", (sessionId, name) => {
+
+    console.log("user joining with id", playerId);
 
     if (connectedSessionId !== null) {
       return;
@@ -90,6 +93,7 @@ swtcNamespace.on("connection", (socket) => {
       const session = sessionManager.getSession(sessionId);
       if (!session) return;
       const player = sessionManager.joinSession(sessionId, playerId, name);
+      playerName = name;
       socket.join(sessionId);
       socket.to(sessionId).emit("joined", player);
       socket.emit("sync", session.getData(), player.id);
@@ -99,6 +103,8 @@ swtcNamespace.on("connection", (socket) => {
   })
 
   socket.on("host", (name) => {
+
+    console.log("user hosting with id", playerId);
 
     if (connectedSessionId !== null) {
       return;
@@ -126,6 +132,8 @@ swtcNamespace.on("connection", (socket) => {
 
   socket.on("attribute", (data) => {
 
+    console.log("updating attribute state from player", playerName);
+
     // TODO ONLY SEND UPDATES TO THE SPECIFIC PLAYER THAT IS BEING UPDATED
     const session = sessionManager.getSession(connectedSessionId);
     if (!session) return;
@@ -136,6 +144,8 @@ swtcNamespace.on("connection", (socket) => {
   })
 
   socket.on("vote", (data) => {
+
+    console.log("updating vote state from player", playerName);
 
     console.log("data", data);
     console.log("data", connectedSessionId);
@@ -157,6 +167,8 @@ swtcNamespace.on("connection", (socket) => {
 
   socket.on("module", (data) => {
 
+    console.log("updating module state from player", playerName);
+
     console.log("module change data", data);
 
     const session = sessionManager.getSession(connectedSessionId);
@@ -168,6 +180,8 @@ swtcNamespace.on("connection", (socket) => {
   })
 
   socket.on("sync", (data, callback) => {
+
+    console.log("syncing seeiong from player", playerName);
 
     console.log("syncing session data from client", Object.keys(data));
 
@@ -194,7 +208,10 @@ swtcNamespace.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
 
+    console.log(playerName, "has disconnected");
+
     if (connectedSessionId !== null) {
+      if (!sessionManager.sessionExists(connectedSessionId)) return;
       sessionManager.leaveSession(connectedSessionId, playerId);
       console.log("player", playerId, "disconnected from session", connectedSessionId);
     }
@@ -207,6 +224,10 @@ swtcNamespace.on("connection", (socket) => {
   })
 
   socket.on("leave", () => {
+
+    console.log(playerName, "has left");
+
+    if (!sessionManager.sessionExists(connectedSessionId)) return;
 
     // leave the players current session and room
     sessionManager.leaveSession(connectedSessionId, playerId);
