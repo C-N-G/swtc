@@ -28,46 +28,50 @@ function PlayerIndicator(props) {
 
 export default PlayerIndicator
 
+const BUTTON_STYLE = (team, rState) => ({
+  flexGrow: 1, 
+  flexDirection: "column",
+  justifyContent: "flex-start",
+  m: 0.8,
+  overflow: "inherit",
+  background: team === 2 ? "rgb(180, 30, 10)" : "rgb(25, 118, 210)",
+  backgroundImage: rState === 0 ? "linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,0.5), rgba(0,0,0,1))" : "",
+  ":hover": {
+    background: team === 2 ? "rgb(150, 25, 5)" : "rgb(21, 101, 192)",
+    backgroundImage: rState === 0 ? "linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.5), rgba(0,0,0,1))" : "",
+  },
+  textTransform: "none"
+})
 
+const BUTTON_CONTAINER_STYLE = (vertical) => ({
+  width: vertical ? "100%" : "20%",
+  aspectRatio: "1/1",
+  flexDirection: "column",
+  justifyContent: "flex-start",
+  display: "flex",
+  overflow: "clip", 
+})
+
+const BUTTON_TEXT_CONTAINER_STYLE = {
+  display: "flex", 
+  justifyContent: "center", 
+  flexDirection: "column",
+  flexGrow: 1,
+  overflow: "inherit" 
+}
 
 function RegularPlayerIndicator({id, name, team, label, handleClick, vertical, rState}) {
 
   return (
-    <Box sx={{
-      width: vertical ? "100%" : "20%",
-      aspectRatio: "1/1",
-      flexDirection: "column",
-      justifyContent: "flex-start",
-      display: "flex",
-      overflow: "clip", 
-    }}>
-      <Button variant="contained" onClick={() => {handleClick(id)}} sx={{
-        flexGrow: 1, 
-        flexDirection: "column",
-        justifyContent: "flex-start",
-        m: 0.8,
-        overflow: "inherit",
-        background: team === 2 ? "rgb(180, 30, 10)" : "rgb(25, 118, 210)",
-        backgroundImage: rState === 0 ? "linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,0.5), rgba(0,0,0,1))" : "",
-        ":hover": {
-          background: team === 2 ? "rgb(150, 25, 5)" : "rgb(21, 101, 192)",
-          backgroundImage: rState === 0 ? "linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.5), rgba(0,0,0,1))" : "",
-        }
-      }}>
+    <Box sx={BUTTON_CONTAINER_STYLE(vertical)}>
+      <Button variant="contained" onClick={() => {handleClick(id)}} sx={BUTTON_STYLE(team, rState)}>
         <Typography>{name}</Typography>
-        <Box sx={{
-          display: "flex", 
-          justifyContent: "center", 
-          flexDirection: "column",
-          flexGrow: 1,
-          overflow: "inherit" 
-        }}>
+        <Box sx={BUTTON_TEXT_CONTAINER_STYLE}>
           <Typography 
             variant="subtitle" 
             sx={{
               wordBreak: "break-word",
               overflow: "inherit",
-              textTransform: "none",
             }}>
               {label}
           </Typography>
@@ -96,14 +100,7 @@ function NarratorPlayerIndicator({
   };
 
   return (
-    <Box sx={{
-      width: vertical ? "100%" : "20%",
-      aspectRatio: "1/1",
-      flexDirection: "column",
-      justifyContent: "flex-start",
-      display: "flex",
-      overflow: "clip", 
-    }}>
+    <Box sx={BUTTON_CONTAINER_STYLE(vertical)}>
       <Stack spacing={{xs: 0.4}} sx={{
         position: "absolute",
         zIndex: 1
@@ -119,36 +116,17 @@ function NarratorPlayerIndicator({
       <Button 
         variant="contained" 
         onClick={() => {handleClick(id)}} 
-        sx={{
-          flexGrow: 1, 
-          flexDirection: "column",
-          justifyContent: "flex-start",
-          m: 0.8,
-          overflow: "inherit",
-          background: team === 2 ? "rgb(180, 30, 10)" : "rgb(25, 118, 210)",
-          backgroundImage: rState === 0 ? "linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,0.5), rgba(0,0,0,1))" : "",
-          ":hover": {
-            background: team === 2 ? "rgb(150, 25, 5)" : "rgb(21, 101, 192)",
-            backgroundImage: rState === 0 ? "linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.5), rgba(0,0,0,1))" : "",
-          },
-        }}
+        sx={BUTTON_STYLE(team, rState)}
         ref={setNodeRef}
         style={style}
       >
         <Typography>{name}</Typography>
-        <Box sx={{
-          display: "flex", 
-          justifyContent: "center", 
-          flexDirection: "column",
-          flexGrow: 1,
-          overflow: "inherit" 
-        }}>
+        <Box sx={BUTTON_TEXT_CONTAINER_STYLE}>
           <Typography 
             variant="subtitle" 
             sx={{
               wordBreak: "break-word",
               overflow: "inherit",
-              textTransform: "none",
             }}>
               {GameData.states[rState]}{state !== rState ? "*" : ""}
               <br />
