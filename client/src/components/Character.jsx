@@ -55,9 +55,14 @@ function PlayerCharacter({user, session}) {
 
   return (<>
     <Grid container justifyContent="left" spacing={2} sx={{overflow: "auto"}}>
-      <Grid item xs={12}>
+      <Grid item xs={6}>
         <Paper elevation={2} sx={{backgroundColor: "lightgreen"}}>
           <Typography variant="h6" px={3} ><Box component="span" fontWeight={"Bold"}>State: </Box>{GameData.states[user.rState]}</Typography> 
+        </Paper>
+      </Grid>
+      <Grid item xs={6}>
+        <Paper elevation={2} sx={{backgroundColor: "lightgreen"}}>
+          <Typography variant="h6" px={3}>{user?.name}</Typography> 
         </Paper>
       </Grid>
       <Grid item xs={6} textAlign="right">
