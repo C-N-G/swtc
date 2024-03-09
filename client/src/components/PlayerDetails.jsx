@@ -72,7 +72,10 @@ function RegularPlayerDetails({
             rows={4}
             size="small"
             value={label}
-            onChange={(event) => handlePlayerDataChange(id, "label", event.target.value)}
+            onChange={(event) => {
+              if (event.target.value.length > 100) return;
+              else return handlePlayerDataChange(id, "label", event.target.value);
+            }}
           />
           <Button variant="outlined" sx={{marginLeft: "1rem", marginRight: "1rem"}}>Talk (W.I.P)</Button>
         </Stack>
@@ -93,7 +96,10 @@ function RegularPlayerDetails({
               rows={6}
               fullWidth
               value={notes}
-              onChange={(event) => handlePlayerDataChange(id, "notes", event.target.value)}
+              onChange={(event) => {
+                if (event.target.value.length > 5000) return;
+                else return handlePlayerDataChange(id, "notes", event.target.value);
+              }}
             />
         </Box>
       </Grid>
