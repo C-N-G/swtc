@@ -225,7 +225,7 @@ function App() {
               }}>
                 Add Dummy Players
               </Button>
-              {userId === 54321 ? <>
+              {userId === "54321" ? <>
                 <Box>
                   <Button size="small" variant="contained" onClick={() => {
                     setPlayers(players => {
