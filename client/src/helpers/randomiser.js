@@ -349,15 +349,18 @@ export class Randomiser {
     }
 
     // get all possible targets
-    let possibleRoles, possibleChars;
+    let possibleTargets, targetName, targetShownName, targetArray;
     if (type === "Char") {
       // if no target given then use anything
-      possibleChars = target === undefined ? this.charArray : this.charArray.filter(char => 
+      possibleTargets = target === undefined ? this.charArray : this.charArray.filter(char => 
         char.name === target 
         || char.attributes.includes(target)
       )
+      targetName = "char";
+      targetShownName = "rChar";
+      targetArray = this.charArray;
     } else if (type === "Role") {
-      possibleRoles = target === undefined ? this.roleArray : this.roleArray.filter(role => {
+      possibleTargets = target === undefined ? this.roleArray : this.roleArray.filter(role => {
         const searchAppears = (
           command === "Neighbour" &&
           this.TYPE_TO_TEAM[this.roleArray[aPlayer.playerObj.role].type] === role.appears.for) ? (
@@ -369,6 +372,9 @@ export class Randomiser {
         || role.attributes.includes(target)
         || searchAppears
       })
+      targetName = "role";
+      targetShownName = "rRole";
+      targetArray = this.roleArray;
     } else if (command !== "Convert"){
       throw new Error(`unknown setup command target type: ${type}`);
     }
@@ -376,29 +382,21 @@ export class Randomiser {
     if (this.debug) console.debug("running setup command", command, type, target);
 
     // if command is Add or AddStrict
-    if (command.includes("Add") && type === "Role") {
+    if (command.includes("Add")) {
 
-      // delete initially randomised role from the taken roles
-      this.takenSets.roles.delete(aPlayer.playerObj.role);
+      // delete initially randomised target from the taken targets
+      this.takenSets[`${targetName}s`].delete(aPlayer.playerObj[targetName]);
 
-      // take into account taken roles if there are multiple possible roles
-      if (possibleRoles.length > 1) {
-        aPlayer.playerObj.role = this.getRandomIndex(this.roleArray, this.takenSets.roles, possibleRoles);
+      // take into account taken targets if there are multiple possible targets
+      if (possibleTargets.length > 1) {
+        aPlayer.playerObj[targetName] = this.getRandomIndex(targetArray, this.takenSets[`${targetName}s`], possibleTargets);
       } else {
-        // else if there is only one possible role the target must be specific so choose it anyway
-        aPlayer.playerObj.role = this.roleArray.findIndex(role => role.id === possibleRoles[0].id);
-        this.takenSets.roles.add(aPlayer.playerObj.role);
+        // else if there is only one possible target it must be specific so choose it anyway
+        aPlayer.playerObj[targetName] = targetArray.findIndex(target => target.id === possibleTargets[0].id);
+        this.takenSets[`${targetName}s`].add(aPlayer.playerObj[targetName]);
       }
 
-    } else if (command.includes("Add") && type === "Char") {
-      this.takenSets.chars.delete(aPlayer.playerObj.char);
-      if (possibleChars.length > 1) {
-        aPlayer.playerObj.char = this.getRandomIndex(this.charArray, this.takenSets.chars, possibleChars);
-      } else {
-        aPlayer.playerObj.char = this.charArray.findIndex(char => char.id === possibleChars[0].id);
-        this.takenSets.chars.add(aPlayer.playerObj.char);
-      }
-    }
+    } 
 
     aPlayer.strict = command === "AddStrict" ? true : false;
 
@@ -411,44 +409,30 @@ export class Randomiser {
       aPlayer.playerObj.rTeam = aPlayer.playerObj.team;
     }
 
-    if (command === "ShowAs" && type === "Role") {
+    if (command === "ShowAs") {
 
       // take into account taken roles if there are multiple possible roles
-      if (possibleRoles.length > 1) {
-        aPlayer.playerObj.rRole = this.getRandomIndex(this.roleArray, this.takenSets.roles, possibleRoles);
+      if (possibleTargets.length > 1) {
+        aPlayer.playerObj[targetShownName] = this.getRandomIndex(targetArray, this.takenSets[`${targetName}s`], possibleTargets);
       } else {
         // else if there is only one possible role the target must be specific so choose it anyway
-        aPlayer.playerObj.rRole = this.roleArray.findIndex(role => role.id === possibleRoles[0].id);
-        this.takenSets.roles.add(aPlayer.playerObj.rRole);
+        aPlayer.playerObj[targetShownName] = targetArray.findIndex(target => target.id === possibleTargets[0].id);
+        this.takenSets[`${targetName}s`].add(aPlayer.playerObj[targetShownName]);
       }
 
       // change player team to the role they appear as
       aPlayer.playerObj.rTeam = GameData.teams.indexOf(this.TYPE_TO_TEAM[this.roleArray[aPlayer.playerObj.rRole].type]);
 
-    } else if (command === "ShowAs" && type === "Char") {
-      if (possibleChars.length > 1) {
-        aPlayer.playerObj.rChar = this.getRandomIndex(this.charArray, this.takenSets.chars, possibleChars);
-      } else {
-        aPlayer.playerObj.rChar = this.charArray.findIndex(char => char.id === possibleChars[0].id);
-        this.takenSets.chars.add(aPlayer.playerObj.rChar);
-      }
-    }
+    } 
 
     if (command === "Neighbour") {
 
       // find targets
       const playerIndexes = [];
-      if (type === "Role") {
-        possibleRoles.forEach(role => {
-        this.randomisedPlayers.forEach((player, index) => {
-          if (this.roleArray[player.role]?.id === role.id) playerIndexes.push(index);
-        })})
-      } else if (type === "Char") {
-        possibleChars.forEach(char => {
-        this.randomisedPlayers.forEach((player, index) => {
-          if (this.charArray[player.char]?.id === char.id) playerIndexes.push(index);
-        })})
-      }
+      possibleTargets.forEach(target => {
+      this.randomisedPlayers.forEach((player, index) => {
+        if (targetArray[player[targetName]]?.id === target.id) playerIndexes.push(index);
+      })})
 
       if (playerIndexes.length === 0) {
         throw new Error("Could not find the target to neighbour");
