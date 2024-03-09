@@ -79,7 +79,7 @@ function PlayerVote({nominatedPlayer, accusingPlayer, votes, handlePlayerDataCha
           variant="contained" 
           onClick={() => {handleVote(user, 1)}}
         >
-          vote for
+          Vote
         </Button>
         <Button 
           disabled={votes.userVote[0] !== votes.userVote[1] || playerIsDead} 
@@ -87,7 +87,7 @@ function PlayerVote({nominatedPlayer, accusingPlayer, votes, handlePlayerDataCha
           variant="contained" 
           onClick={() => {handleVote(user, 0)}}
           >
-            vote against
+            Abstain
           </Button>
       </Stack>
     </Stack>
@@ -96,7 +96,7 @@ function PlayerVote({nominatedPlayer, accusingPlayer, votes, handlePlayerDataCha
 
 
 
-function NarratorVote({nominatedPlayer, accusingPlayer, votes, handleFinishClick}) {
+function NarratorVote({nominatedPlayer, accusingPlayer, votes, handleVoteFinishClick, handleVoteStartClick, time}) {
 
   const forVotes = votes.list?.filter(aVote => aVote.vote === 1).map((aVote, index) => {
     return (
@@ -116,11 +116,17 @@ function NarratorVote({nominatedPlayer, accusingPlayer, votes, handleFinishClick
 
   return (
     <Grid container sx={{flexGrow: 1, m: 1, position: "relative"}}>
-      <Button variant="contained" onClick={handleFinishClick} sx={{
+      <Button variant="contained" onClick={handleVoteFinishClick} sx={{
         position: "absolute",
         right: "0%"
       }}>
         Finish
+      </Button>
+      <Button variant="contained" onClick={handleVoteStartClick} sx={{
+        position: "absolute",
+        left: "0%"
+      }}>
+        {"Start"} {time}
       </Button>
       <Grid item xs={12} height="12%">
         <Typography variant="h4">{nominatedPlayer.name}</Typography>
@@ -129,7 +135,7 @@ function NarratorVote({nominatedPlayer, accusingPlayer, votes, handleFinishClick
         <Typography>Nominated by: {accusingPlayer.name}</Typography>
       </Grid>
       <Grid item xs={6} height="80%" sx={{display: "flex", flexDirection: "column", p: 1}}>
-        <Typography>{forVotes.length} Voted For</Typography>
+        <Typography>{forVotes.length} Voted</Typography>
         <Card sx={{flexGrow: "1", backgroundColor: "springgreen"}}>
           <List sx={{
             overflow: "auto",
@@ -141,7 +147,7 @@ function NarratorVote({nominatedPlayer, accusingPlayer, votes, handleFinishClick
         </Card>
       </Grid>
       <Grid item xs={6} height="80%" sx={{display: "flex", flexDirection: "column", p: 1}}>
-        <Typography>{againstVotes.length} Voted Against</Typography>
+        <Typography>{againstVotes.length} Abstained</Typography>
         <Card sx={{flexGrow: "1", backgroundColor: "indianred"}}>
           <List sx={{
             overflow: "auto",
@@ -155,3 +161,4 @@ function NarratorVote({nominatedPlayer, accusingPlayer, votes, handleFinishClick
     </Grid>
   );
 }
+

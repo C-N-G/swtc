@@ -6,6 +6,7 @@ import PlayerDetails from "./PlayerDetails.jsx";
 import Vote from "./Vote.jsx";
 import {socket} from "../helpers/socket.js";
 import GameData from "../strings/_gameData.js"
+import useCountDown from "../hooks/useCountDown.js";
 
 const BOARD_CONFIG = [
   [0,0,0], // top, sides, bottom - player count
@@ -51,6 +52,9 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerD
   const botNum = BOARD_CONFIG[playerNum][2];
   const [chars, roles] = useMemo(() => GameData.getFilteredValues(session.modules), [session.modules]);
 
+  const timerDuration = (Math.max(playerNum, 8)*2) - 1;
+  const [time, beginTimer] = useCountDown(timerDuration, handleVoteTimerEnd);
+
   function createIndicator(player, index, vertical) {
 
     return (<PlayerIndicator key={index} 
@@ -86,13 +90,24 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerD
   }
 
   function handleBeginClick() {
+    if (!votes.accusingPlayer) {
+      throw new Error("no player selected");
+    }
     setOpen(false);
     socket.emit("vote", {nominatedPlayer: votes.nominatedPlayer, accusingPlayer: votes.accusingPlayer, voting: true})
   }
 
-  function handleFinishClick() {
+  function handleVoteFinishClick() {
     socket.emit("vote", {list: [], voting: false, accusingPlayer: null, nominatedPlayer: null});
     setDisplay(0);
+  }
+
+  function handleVoteStartClick() {
+    beginTimer();
+  }
+
+  function handleVoteTimerEnd() {
+    console.log("done");
   }
 
   const top = drawPlayers
@@ -135,7 +150,9 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerD
       setVotes={setVotes}
       votes={votes}
       handlePlayerDataChange={handlePlayerDataChange}
-      handleFinishClick={handleFinishClick}/>
+      handleVoteFinishClick={handleVoteFinishClick}
+      handleVoteStartClick={handleVoteStartClick}
+      time={time}/>
     )
 
   const playerdetails = (
@@ -188,7 +205,7 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerD
               {selectablePlayers}
             </Select>
           </FormControl>
-          <Button variant="contained" fullWidth sx={{my: 2}} onClick={handleBeginClick}> {/** TODO when pressing begin there is no check to make sure a player is selected */}
+          <Button disabled={votes.accusingPlayer === null} variant="contained" fullWidth sx={{my: 2}} onClick={handleBeginClick}>
             Begin
           </Button>
         </Box>
@@ -215,3 +232,4 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerD
 }
 
 export default Board
+
