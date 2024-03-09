@@ -40,7 +40,8 @@ const BUTTON_STYLE = (team, rState) => ({
     background: team === 2 ? "rgb(150, 25, 5)" : "rgb(21, 101, 192)",
     backgroundImage: rState === 0 ? "linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.5), rgba(0,0,0,1))" : "",
   },
-  textTransform: "none"
+  textTransform: "none",
+  px: 0.5,
 })
 
 const BUTTON_CONTAINER_STYLE = (vertical) => ({
@@ -54,10 +55,12 @@ const BUTTON_CONTAINER_STYLE = (vertical) => ({
 
 const BUTTON_TEXT_CONTAINER_STYLE = {
   display: "flex", 
-  justifyContent: "center", 
+  justifyContent: "flex-start", 
   flexDirection: "column",
   flexGrow: 1,
-  overflow: "inherit" 
+  overflow: "inherit",
+  width: "100%",
+  whiteSpace: "break-spaces"
 }
 
 function RegularPlayerIndicator({id, name, team, label, handleClick, vertical, rState}) {
@@ -99,6 +102,22 @@ function NarratorPlayerIndicator({
     transition: "transform 0.2s",
   };
 
+  function captionBuilder(text) {
+    return(
+      <Typography variant="caption" sx={{
+        position: "absolute",
+        top: "110%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        wordBreak: "keep-all",
+        fontSize: "9px"
+        }}
+      >
+        ({text})
+      </Typography>
+    )
+  }
+
   return (
     <Box sx={BUTTON_CONTAINER_STYLE(vertical)}>
       <Stack spacing={{xs: 0.4}} sx={{
@@ -127,14 +146,29 @@ function NarratorPlayerIndicator({
             sx={{
               wordBreak: "break-word",
               overflow: "inherit",
+              width: "inherit",
+              pb: 1
             }}>
-              {GameData.states[rState]}{state !== rState ? "*" : ""}
+              <Box component={"span"} sx={{position: "relative"}}>
+                {GameData.states[rState]}{state !== rState ? "*" : ""}
+                {state !== rState ? captionBuilder(GameData.states[state]) : ""}
+              </Box>
               <br />
-              {GameData.hackValue(roles[rRole])}{role !== rRole ? "*" : ""}
+              <Box component={"span"} sx={{position: "relative"}}>
+                {GameData.hackValue(roles[rRole])}{role !== rRole ? "*" : ""}
+                {role !== rRole ? captionBuilder(GameData.hackValue(roles[role])) : ""}
+              </Box>
               <br />
-              {GameData.hackValue(chars[rChar])}{char !== rChar ? "*" : ""}
+              <Box component={"span"} sx={{position: "relative"}}>
+                {GameData.hackValue(chars[rChar])}{char !== rChar ? "*" : ""}
+                {char !== rChar ? captionBuilder(GameData.hackValue(chars[char])) : ""}
+              </Box>
               <br />
-              {GameData.teams[rTeam]}{team !== rTeam ? "*" : ""}
+              <Box component={"span"} sx={{position: "relative"}}>
+                {GameData.teams[rTeam]}{team !== rTeam? "*" : ""}
+                {team !== rTeam ? captionBuilder(GameData.teams[team]) : ""}
+                
+              </Box>
           </Typography>
         </Box>
       </Button>
