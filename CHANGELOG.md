@@ -1,3 +1,44 @@
+09/03/2024 v0.4.1
+- changed module filtering to now work off ids instead of names, so duplicate attributes/roles should now filter correctly
+- renamed "mechanic" to "ability" in the player view of the character window
+- removed status attributes from the game
+- added the current users name to appear in the character window where their status used to be
+- added team colour to the player view for player indicators
+- added state colour to the narrator view for player indicators
+- changed state colour from red to black
+- added automatic quoting for all description text for characteristics and roles
+- changed the reminder display inside the player details widget from a tooltip to a chip 
+- added a cohesion tracker for the narrator view
+  - this simply tracks the cohesion for the current session
+  - the cohesion must be update manually using the plus and minus buttons next to the tracker
+- added new player joining and leaving server events to prevent syncs from occuring
+- added support for the appears property on roles
+  - this is used during randomising the board
+  - this allows a role to appear as another type and team when viewed by specific teams
+  - this is used when a neighbour setup command is encounter
+- added an undo button do the narrator view
+  - this button only appears while unsynced from the current session
+  - pressing this button will revert the narrators state to just before it was unsynced and will turn syncing back on
+- updated standard procedure module
+  - added role setup commands
+  - added role reminders
+  - updated characteristic abilities and attributes
+  - added characteristic reminders
+- renamed "Unkown" state to "Unknown"
+- improved the player indicator styling
+  - more text can now appear on the player indicator
+  - spaces in the quick label box are now respected in the output shown on the player indicator
+- added character limits to the player details text input boxes for the player view
+- changed the player indicator in the narrator view to see both true and shown attributes if they differ
+- added rudementary vote timer to the vote widget for the narrator view
+- added improved server diagnostic logging
+- fixed role description text from not appearing
+- fixed reminder placement error by changing player and reminder ids from integers to strings
+- fixed crash that occured when a player left the session while another player was looking at their player details
+- fixed reminders from stopping player randomistion while placed
+- fixed crash when starting a dismissal vote without selecting a nominating player 
+- fixed crash related to player disconnects
+
 03/03/2024 v0.4.0
 - added first module named "Standard Procedure"
 - improved setup commands
