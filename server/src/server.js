@@ -208,7 +208,22 @@ swtcNamespace.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
 
+    // https://socket.io/docs/v4/troubleshooting-connection-issues/#usage-of-the-socketid-attribute
+    // https://socket.io/docs/v4/client-options/#auth
+
     console.log(playerName, "has disconnected");
+
+    // the reason of the disconnection, for example "transport error"
+    console.log("disconnect reason", reason);
+
+    // the low-level reason of the disconnection, for example "xhr post error"
+    console.log("disconnect message", details.message);
+
+    // some additional description, for example the status code of the HTTP response
+    console.log("disconnect description", details.description);
+
+    // some additional context, for example the XMLHttpRequest object
+    console.log("disconnect context", details.context);
 
     if (connectedSessionId !== null) {
       if (!sessionManager.sessionExists(connectedSessionId)) return;
