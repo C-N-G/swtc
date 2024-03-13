@@ -10,6 +10,13 @@
       "name": "Edge",
       "url": "http://localhost:5173/swtc/",
       "webRoot": "${workspaceFolder}/client/src"
+    },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Chrome",
+      "url": "http://localhost:5173/swtc/",
+      "webRoot": "${workspaceFolder}/client/src",
     }
   ]
 }
