@@ -130,7 +130,7 @@
 	  "name": "Supervisor",
 	  "type": "Agent",
 	  "description": "You have the power, now make them listen.",
-	  "ability": "All players know who you are.",
+	  "ability": "All players know your role.",
 	  "attributes": ["Human"],
 	  "additional": [
 		"If a player becomes the Supervisor after the game’s start, then the other players will learn who they are on the first day in which that player is now the Supervisor."
