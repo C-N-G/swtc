@@ -115,6 +115,13 @@ function App() {
 
       disconnect() {
         setIsConnected(false);
+        setSession({
+          id: null,
+          sync: false,
+          modules: []
+        })
+        setPlayers([])
+        setUserId(null);
       },
 
       phase(data) {
@@ -159,7 +166,23 @@ function App() {
 
       sync(session, userId) {
 
-        if (session.players) setPlayers(session.players);
+        if (session.players) setPlayers(prevPlayers => {
+          if (session.players.length === 0) return [];
+          const clientPlayerIds = new Set(prevPlayers.map(player => player.id));
+          session.players.forEach((player, index) => {
+            let clientHasPlayer = clientPlayerIds.has(player.id);
+            if (!clientHasPlayer) {
+              prevPlayers[index] = player;
+            } else if (clientHasPlayer) {
+              prevPlayers[index].rChar = player.rChar;
+              prevPlayers[index].rRole = player.rRole;
+              prevPlayers[index].rTeam = player.rTeam;
+              prevPlayers[index].rState = player.rState;
+            }
+
+          })
+          return [...prevPlayers];
+        });
         if (session.phase) setPhase(session.phase);
         if (session.votes) setVotes(prev => ({...prev, ...session.votes}));
         if (session.id || session.id === null) setSession(prevSession => ({...prevSession, id: session.id}));
