@@ -1,10 +1,28 @@
 [
 	{
+	  "name": "Adaptable",
+	  "description": "PLACEHOLDER",
+	  "ability": "Once per game, during the night, you may choose any characteristic, you become that characteristic.",
+      "reminders": [
+        ["🔄", "#FFFF00", "Adaptable: Has used their ability."]
+      ]
+	},
+
+	{
 	  "name": "Alert",
 	  "description": "PLACEHOLDER",
 	  "ability": "During the night, once per game, when you’re chosen by another player, you learn who they are, even if their ability would kill you.",
       "reminders": [
         ["🚨", "#FFFF00", "Alert: Has used their ability."]
+      ]
+	},
+	
+	{
+	  "name": "Approachable",
+	  "description": "PLACEHOLDER",
+	  "ability": "Once per game, during the night, you may choose any player: they learn your characteristic.",
+      "reminders": [
+        ["😊", "#FFFF00", "Approachable: Chose this player."]
       ]
 	},
 	
@@ -24,7 +42,7 @@
 	{
 	  "name": "Forthright",
 	  "description": "PLACEHOLDER",
-	  "ability": "All players know who you are."
+	  "ability": "All players know your characteristic."
 	},
 	
 	{
@@ -65,11 +83,11 @@
 	},
 	
 	{
-	  "name": "Patient",
+	  "name": "Perceptive",
 	  "description": "PLACEHOLDER",
-	  "ability": "If you haven’t voted for two days, your votes count for +1.",
+	  "ability": "You start knowing that 1 of 3 players (not yourself) is a specific characteristic.",
       "reminders": [
-        ["⏳", "#FFFF00", "Patient: This player's votes count for +1."]
+        ["🔍", "#FFFF00", "Perceptive: Learnt this player."]
       ]
 	},
 	
@@ -79,24 +97,6 @@
 	  "ability": "The first time you are killed by another player, you survive.",
       "reminders": [
         ["🫀", "#FFFF00", "Persevering: Has used their ability."]
-      ]
-	},
-	
-	{
-	  "name": "Punctual",
-	  "description": "PLACEHOLDER",
-	  "ability": "If you nominate first, your vote counts for +1.",
-      "reminders": [
-        ["⏱️", "#FFFF00", "Punctual: This player's votes count for +1."]
-      ]
-	},
-	
-	{
-	  "name": "Reflective",
-	  "description": "PLACEHOLDER",
-	  "ability": "Each night, you learn a player who voted on you during the previous day.",
-      "reminders": [
-        ["🪞", "#FFFF00", "Reflective: This player voted."]
       ]
 	},
 	

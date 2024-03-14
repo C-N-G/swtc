@@ -11,10 +11,11 @@
 	  "name": "Assistant",
 	  "type": "Agent",
 	  "description": "Can I get you a coffee, sir?",
-	  "ability": "You start knowing an Agent player and their role (not yourself)",
+	  "ability": "You start knowing an Agent player and their role (not yourself). If you die, they become malfunctioning.",
 	  "attributes": ["Human"],
       "reminders": [
-        ["☕", "#0000FF", "Assistant: Knows this player's role."]
+        ["☕", "#0000FF", "Assistant: Knows this player's role."],
+        ["☕", "#0000FF", "Assistant: This player is malfunctioning."]
       ]
 	},
 	
@@ -26,17 +27,6 @@
 	  "attributes": ["Human"],
       "reminders": [
         ["👮", "#0000FF", "Bodyguard: Protected this player."]
-      ]
-	},
-	
-	{
-	  "name": "Bureaucrat",
-	  "type": "Agent",
-	  "description": "PLACEHOLDER",
-	  "ability": "Each night, after the first, you learn how many players voted today.",
-	  "attributes": ["Human"],
-      "reminders": [
-        ["🗳️", "#0000FF", "Bureaucrat: This player voted."]
       ]
 	},
 	
@@ -59,6 +49,17 @@
 	  "attributes": ["Human"],
       "reminders": [
         ["🧑‍🍳", "#0000FF", "Cook: This player cannot malfunction."]
+      ]
+	},
+	
+	{
+	  "name": "Coordinator",
+	  "type": "Agent",
+	  "description": "Listen, I know your family just got eaten, but can you please explain why you’re underperforming in all key metrics?",
+	  "ability": "You start knowing that 1 of 3 players is a specific Detrimental role, or 0 are in-play.",
+	  "attributes": ["Human"],
+      "reminders": [
+        ["🧑‍💼", "#0000FF", "Coordinator: Learnt this player."]
       ]
 	},
 	
@@ -129,7 +130,7 @@
 	  "name": "Supervisor",
 	  "type": "Agent",
 	  "description": "You have the power, now make them listen.",
-	  "ability": "All players know who you are.",
+	  "ability": "All players know your role.",
 	  "attributes": ["Human"],
 	  "additional": [
 		"If a player becomes the Supervisor after the game’s start, then the other players will learn who they are on the first day in which that player is now the Supervisor."
