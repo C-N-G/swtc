@@ -113,6 +113,7 @@ swtcNamespace.on("connection", (socket) => {
     const session = sessionManager.createSession();
     connectedSessionId = session.id;
     const player = sessionManager.joinSession(session.id, playerId, name);
+    playerName = name;
     socket.join(session.id);
     socket.emit("sync", session.getData(), player.id);
     console.log("user hosted session", session.id, "with name", name);
