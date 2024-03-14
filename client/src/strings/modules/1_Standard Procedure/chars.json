@@ -83,6 +83,15 @@
 	},
 	
 	{
+	  "name": "Perceptive",
+	  "description": "PLACEHOLDER",
+	  "ability": "You start knowing that 1 of 3 players (not yourself) is a specific characteristic.",
+      "reminders": [
+        ["🔍", "#FFFF00", "Perceptive: Learnt this player."]
+      ]
+	},
+	
+	{
 	  "name": "Persevering",
 	  "description": "PLACEHOLDER",
 	  "ability": "The first time you are killed by another player, you survive.",
