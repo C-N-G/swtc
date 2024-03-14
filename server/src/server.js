@@ -181,7 +181,7 @@ swtcNamespace.on("connection", (socket) => {
 
   socket.on("sync", (data, callback) => {
 
-    console.log("syncing seeiong from player", playerName);
+    console.log("syncing session from player", playerName);
 
     console.log("syncing session data from client", Object.keys(data));
 
@@ -206,7 +206,7 @@ swtcNamespace.on("connection", (socket) => {
 
   })
 
-  socket.on("disconnect", () => {
+  socket.on("disconnect", (reason, details) => {
 
     // https://socket.io/docs/v4/troubleshooting-connection-issues/#usage-of-the-socketid-attribute
     // https://socket.io/docs/v4/client-options/#auth
@@ -216,14 +216,17 @@ swtcNamespace.on("connection", (socket) => {
     // the reason of the disconnection, for example "transport error"
     console.log("disconnect reason", reason);
 
-    // the low-level reason of the disconnection, for example "xhr post error"
-    console.log("disconnect message", details.message);
 
-    // some additional description, for example the status code of the HTTP response
-    console.log("disconnect description", details.description);
+    if (details) {
+      // the low-level reason of the disconnection, for example "xhr post error"
+      console.log("disconnect message", details.message);
 
-    // some additional context, for example the XMLHttpRequest object
-    console.log("disconnect context", details.context);
+      // some additional description, for example the status code of the HTTP response
+      console.log("disconnect description", details.description);
+
+      // some additional context, for example the XMLHttpRequest object
+      console.log("disconnect context", details.context);
+    }
 
     if (connectedSessionId !== null) {
       if (!sessionManager.sessionExists(connectedSessionId)) return;
