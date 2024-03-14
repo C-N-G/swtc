@@ -48,10 +48,10 @@ export default Character
 
 function PlayerCharacter({user, session}) {
 
-  const [chars, roles] = useMemo(() => GameData.getFilteredValues(session.modules), [session.modules]);
+  const [chars, roles] = useMemo(() => GameData.getFilteredValues(session.modules, true), [session.modules]);
 
-  const fullRole = GameData.roles.find(ele => ele.name === GameData.hackValue(roles[user.rRole]));
-  const fullChar = GameData.chars.find(ele => ele.name === GameData.hackValue(chars[user.rChar]));
+  const fullRole = roles[user.rRole] ? roles[user.rRole] : GameData.roles[0];
+  const fullChar = chars[user.rChar] ? chars[user.rChar] : GameData.chars[0];
 
   return (<>
     <Grid container justifyContent="left" spacing={2} sx={{overflow: "auto"}}>
@@ -70,7 +70,7 @@ function PlayerCharacter({user, session}) {
         <Typography fontWeight={"Bold"}>Team</Typography>
       </Grid>
       <Grid item xs={6} textAlign="left">
-        <Typography>{GameData.hackValue(roles[user.rRole])}</Typography>
+        <Typography>{fullRole["name"]}</Typography>
         <Typography>{GameData.teams[user.rTeam]}</Typography> 
       </Grid>
       {fullRole["name"] !== "Unknown" ? <>
@@ -96,13 +96,15 @@ function PlayerCharacter({user, session}) {
         <Typography fontWeight={"Bold"}>Characteristic</Typography> 
       </Grid>
       <Grid item xs={6} textAlign="left">
-        <Typography>{GameData.hackValue(chars[user.rChar])}</Typography> 
+        <Typography>{fullChar["name"]}</Typography> 
       </Grid>
+      {fullChar["name"] !== "Unknown" ?
       <Grid item xs={12}>
         <Typography variant="body2" gutterBottom>{"“" + fullChar["description"]  + "”"}</Typography>
         <Typography variant="body2"><Box component="span" fontWeight={"Bold"}>{fullChar["ability"] ? "Ability: " : ""}</Box>{fullChar["ability"]}</Typography>
         {fullChar["additional"].map((ele, index) => <Typography variant="body2" key={fullChar["name"] + index}>{ele}</Typography>)}
       </Grid>
+      : ""}
     </Grid>
     {/* <iframe src="https://drive.google.com/file/d/1BSgDm_VNXi-e2_0v5L5Xd781-kFyde7k/preview" style={{flexGrow: 1}} allow="autoplay"></iframe> */}
   </>)
