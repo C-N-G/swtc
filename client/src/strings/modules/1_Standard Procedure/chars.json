@@ -65,38 +65,11 @@
 	},
 	
 	{
-	  "name": "Patient",
-	  "description": "PLACEHOLDER",
-	  "ability": "If you haven’t voted for two days, your votes count for +1.",
-      "reminders": [
-        ["⏳", "#FFFF00", "Patient: This player's votes count for +1."]
-      ]
-	},
-	
-	{
 	  "name": "Persevering",
 	  "description": "PLACEHOLDER",
 	  "ability": "The first time you are killed by another player, you survive.",
       "reminders": [
         ["🫀", "#FFFF00", "Persevering: Has used their ability."]
-      ]
-	},
-	
-	{
-	  "name": "Punctual",
-	  "description": "PLACEHOLDER",
-	  "ability": "If you nominate first, your vote counts for +1.",
-      "reminders": [
-        ["⏱️", "#FFFF00", "Punctual: This player's votes count for +1."]
-      ]
-	},
-	
-	{
-	  "name": "Reflective",
-	  "description": "PLACEHOLDER",
-	  "ability": "Each night, you learn a player who voted on you during the previous day.",
-      "reminders": [
-        ["🪞", "#FFFF00", "Reflective: This player voted."]
       ]
 	},
 	
