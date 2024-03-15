@@ -34,10 +34,10 @@ const BUTTON_STYLE = (team, rState) => ({
   justifyContent: "flex-start",
   m: 0.8,
   overflow: "inherit",
-  background: team === 2 ? "rgb(180, 30, 10)" : "rgb(25, 118, 210)",
+  background: team === 2 ? "rgb(180, 30, 10)" : team === 1 ? "rgb(25, 118, 210)" : "rgb(128, 128, 128)",
   backgroundImage: rState === 0 ? "linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,0.5), rgba(0,0,0,1))" : "",
   ":hover": {
-    background: team === 2 ? "rgb(150, 25, 5)" : "rgb(21, 101, 192)",
+    background: team === 2 ? "rgb(150, 25, 5)" : team === 1 ? "rgb(21, 101, 192)" : "rgb(96, 96, 96)",
     backgroundImage: rState === 0 ? "linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.5), rgba(0,0,0,1))" : "",
   },
   textTransform: "none",
