@@ -79,16 +79,16 @@ function PlayerVote({nominatedPlayer, accusingPlayer, votes, handlePlayerDataCha
           variant="contained" 
           onClick={() => {handleVote(user, 1)}}
         >
-          Vote
+          Vote For
         </Button>
         <Button 
           disabled={votes.userVote[0] !== votes.userVote[1] || playerIsDead} 
           sx={{...votes.userVote[0], transition: "transform 0.25s"}} 
           variant="contained" 
           onClick={() => {handleVote(user, 0)}}
-          >
-            Abstain
-          </Button>
+        >
+          Abstain
+        </Button>
       </Stack>
     </Stack>
   );
