@@ -63,12 +63,12 @@ const BUTTON_TEXT_CONTAINER_STYLE = {
   whiteSpace: "break-spaces"
 }
 
-function RegularPlayerIndicator({id, name, team, label, handleClick, vertical, rState}) {
+function RegularPlayerIndicator({player, handleClick, vertical}) {
 
   return (
     <Box sx={BUTTON_CONTAINER_STYLE(vertical)}>
-      <Button variant="contained" onClick={() => {handleClick(id)}} sx={BUTTON_STYLE(team, rState)}>
-        <Typography>{name}</Typography>
+      <Button variant="contained" onClick={() => {handleClick(player.id)}} sx={BUTTON_STYLE(player.team, player.rState)}>
+        <Typography>{player.name}</Typography>
         <Box sx={BUTTON_TEXT_CONTAINER_STYLE}>
           <Typography 
             variant="subtitle" 
@@ -76,7 +76,7 @@ function RegularPlayerIndicator({id, name, team, label, handleClick, vertical, r
               wordBreak: "break-word",
               overflow: "inherit",
             }}>
-              {label}
+              {player.label}
           </Typography>
         </Box>
       </Button>
@@ -85,15 +85,10 @@ function RegularPlayerIndicator({id, name, team, label, handleClick, vertical, r
 
 }
 
-
-
-function NarratorPlayerIndicator({
-  chars, roles, team, rTeam, reminders,
-  id, name, state, role, char, 
-  rState, rRole, rChar, handleClick, vertical}) {
+function NarratorPlayerIndicator({player, handleClick, vertical, chars, roles}) {
 
   const {isOver, setNodeRef} = useDroppable({
-    id: "droppable-|-" + id
+    id: "droppable-|-" + player.id
   });
 
   const style = {
@@ -124,9 +119,9 @@ function NarratorPlayerIndicator({
         position: "absolute",
         zIndex: 1
       }}>
-        {reminders.map(reminderId => {
+        {player.reminders.map(reminderId => {
           return (
-            <Draggable key={String(id) + String(reminderId)} draggableId={String(id) + "-|-" + String(reminderId)}>
+            <Draggable key={String(player.id) + String(reminderId)} draggableId={String(player.id) + "-|-" + String(reminderId)}>
             <Reminder reminder={GameData.reminders.find(reminder => reminder.id === reminderId)} />
             </Draggable>
           )
@@ -134,12 +129,12 @@ function NarratorPlayerIndicator({
       </Stack>
       <Button 
         variant="contained" 
-        onClick={() => {handleClick(id)}} 
-        sx={BUTTON_STYLE(team, rState)}
+        onClick={() => {handleClick(player.id)}} 
+        sx={BUTTON_STYLE(player.team, player.rState)}
         ref={setNodeRef}
         style={style}
       >
-        <Typography>{name}</Typography>
+        <Typography>{player.name}</Typography>
         <Box sx={BUTTON_TEXT_CONTAINER_STYLE}>
           <Typography 
             variant="subtitle" 
@@ -150,23 +145,23 @@ function NarratorPlayerIndicator({
               pb: 1
             }}>
               <Box component={"span"} sx={{position: "relative"}}>
-                {GameData.states[rState]}{state !== rState ? "*" : ""}
-                {state !== rState ? captionBuilder(GameData.states[state]) : ""}
+                {GameData.states[player.rState]}{player.state !== player.rState ? "*" : ""}
+                {player.state !== player.rState ? captionBuilder(GameData.states[player.state]) : ""}
               </Box>
               <br />
               <Box component={"span"} sx={{position: "relative"}}>
-                {GameData.hackValue(roles[rRole])}{role !== rRole ? "*" : ""}
-                {role !== rRole ? captionBuilder(GameData.hackValue(roles[role])) : ""}
+                {GameData.hackValue(roles[player.rRole])}{player.role !== player.rRole ? "*" : ""}
+                {player.role !== player.rRole ? captionBuilder(GameData.hackValue(roles[player.role])) : ""}
               </Box>
               <br />
               <Box component={"span"} sx={{position: "relative"}}>
-                {GameData.hackValue(chars[rChar])}{char !== rChar ? "*" : ""}
-                {char !== rChar ? captionBuilder(GameData.hackValue(chars[char])) : ""}
+                {GameData.hackValue(chars[player.rChar])}{player.char !== player.rChar ? "*" : ""}
+                {player.char !== player.rChar ? captionBuilder(GameData.hackValue(chars[player.char])) : ""}
               </Box>
               <br />
               <Box component={"span"} sx={{position: "relative"}}>
-                {GameData.teams[rTeam]}{team !== rTeam? "*" : ""}
-                {team !== rTeam ? captionBuilder(GameData.teams[team]) : ""}
+                {GameData.teams[player.rTeam]}{player.team !== player.rTeam? "*" : ""}
+                {player.team !== player.rTeam ? captionBuilder(GameData.teams[player.team]) : ""}
                 
               </Box>
           </Typography>

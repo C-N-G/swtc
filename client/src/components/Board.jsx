@@ -58,7 +58,7 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerD
   function createIndicator(player, index, vertical) {
 
     return (<PlayerIndicator key={index} 
-    {...player}
+    player={player}
     handleClick={handlePlayerIndicatorClick}
     chars={chars}
     roles={roles}
