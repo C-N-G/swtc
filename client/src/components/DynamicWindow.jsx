@@ -16,7 +16,7 @@ function DynamicWindow({children, display}) {
         background: "lightpink",
         display: "flex",
         flexGrow: 1,
-        m: 0.8
+        margin: "5px"
         }}>
         <Fade 
         // onEntered={() => {console.log("started")}}

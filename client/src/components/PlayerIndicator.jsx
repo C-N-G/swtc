@@ -29,10 +29,11 @@ function PlayerIndicator(props) {
 export default PlayerIndicator
 
 const BUTTON_STYLE = (team, rState) => ({
-  flexGrow: 1, 
+  height: "calc(100% - 10px)",
+  margin: "5px",
+  px: "4px",
   flexDirection: "column",
   justifyContent: "flex-start",
-  m: 0.8,
   overflow: "inherit",
   background: team === 2 ? "rgb(180, 30, 10)" : team === 1 ? "rgb(25, 118, 210)" : "rgb(128, 128, 128)",
   backgroundImage: rState === 0 ? "linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,0.5), rgba(0,0,0,1))" : "",
@@ -41,7 +42,6 @@ const BUTTON_STYLE = (team, rState) => ({
     backgroundImage: rState === 0 ? "linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.5), rgba(0,0,0,1))" : "",
   },
   textTransform: "none",
-  px: 0.5,
 })
 
 const BUTTON_CONTAINER_STYLE = (vertical) => ({
@@ -50,7 +50,8 @@ const BUTTON_CONTAINER_STYLE = (vertical) => ({
   flexDirection: "column",
   justifyContent: "flex-start",
   display: "flex",
-  overflow: "clip", 
+  position: "relative",
+  // overflow: "clip", 
 })
 
 const BUTTON_TEXT_CONTAINER_STYLE = {
@@ -117,15 +118,25 @@ function NarratorPlayerIndicator({player, handleClick, vertical, chars, roles}) 
     <Box sx={BUTTON_CONTAINER_STYLE(vertical)}>
       <Stack spacing={{xs: 0.4}} sx={{
         position: "absolute",
+        top: "2px",
+        left: "2px",
         zIndex: 1
       }}>
         {player.reminders.map(reminderId => {
           return (
             <Draggable key={String(player.id) + String(reminderId)} draggableId={String(player.id) + "-|-" + String(reminderId)}>
-            <Reminder reminder={GameData.reminders.find(reminder => reminder.id === reminderId)} />
+              <Reminder reminder={GameData.reminders.find(reminder => reminder.id === reminderId)} />
             </Draggable>
           )
         })}
+      </Stack>
+      <Stack spacing={{xs: 0.4}} sx={{
+        position: "absolute",
+        top: "2px",
+        right: "2px",
+        zIndex: 1
+      }}>
+        {player.nightOrders.map(nightOrder => (<Reminder key={nightOrder} reminder={{colour: "white", content: nightOrder}}/>))}
       </Stack>
       <Button 
         variant="contained" 
@@ -150,13 +161,13 @@ function NarratorPlayerIndicator({player, handleClick, vertical, chars, roles}) 
               </Box>
               <br />
               <Box component={"span"} sx={{position: "relative"}}>
-                {GameData.hackValue(roles[player.rRole])}{player.role !== player.rRole ? "*" : ""}
-                {player.role !== player.rRole ? captionBuilder(GameData.hackValue(roles[player.role])) : ""}
+                {GameData.hackValue(roles[player.rRole].name)}{player.role !== player.rRole ? "*" : ""}
+                {player.role !== player.rRole ? captionBuilder(GameData.hackValue(roles[player.role].name)) : ""}
               </Box>
               <br />
               <Box component={"span"} sx={{position: "relative"}}>
-                {GameData.hackValue(chars[player.rChar])}{player.char !== player.rChar ? "*" : ""}
-                {player.char !== player.rChar ? captionBuilder(GameData.hackValue(chars[player.char])) : ""}
+                {GameData.hackValue(chars[player.rChar].name)}{player.char !== player.rChar ? "*" : ""}
+                {player.char !== player.rChar ? captionBuilder(GameData.hackValue(chars[player.char].name)) : ""}
               </Box>
               <br />
               <Box component={"span"} sx={{position: "relative"}}>

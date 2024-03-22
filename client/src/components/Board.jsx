@@ -39,6 +39,7 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerD
   const sideNum = BOARD_CONFIG[playerNum][1];
   const botNum = BOARD_CONFIG[playerNum][2];
   const [chars, roles] = useMemo(() => GameData.getFilteredValues(session.modules), [session.modules]);
+  const [fullChars, fullRoles] = useMemo(() => GameData.getFilteredValues(session.modules, true), [session.modules]);
 
   const timerDuration = (Math.max(playerNum, 8)*2) - 1;
   const [time, beginTimer] = useCountDown(timerDuration, handleVoteTimerEnd);
@@ -48,8 +49,8 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerD
     return (<PlayerIndicator key={index} 
     player={player}
     handleClick={handlePlayerIndicatorClick}
-    chars={chars}
-    roles={roles}
+    chars={fullChars}
+    roles={fullRoles}
     vertical={vertical} />)
 
   }

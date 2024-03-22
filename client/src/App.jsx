@@ -218,7 +218,12 @@ function App() {
     <Container sx={{maxWidth: "1440px"}}>
       <Grid container spacing={2}>
         <Grid item xs={8}>
-          <Phase phase={phase} setPhase={setPhase}/>
+          <Phase 
+            phase={phase} 
+            setPhase={setPhase}
+            players={players}
+            setPlayers={setPlayers}
+            session={session}/>
         </Grid>
         <Grid item xs={4}>
           <Options session={session}/>
