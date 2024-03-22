@@ -249,9 +249,9 @@ function DismissalDialog({openDialog, setOpenDialog,
 function ViewPlayerDialog({openDialog, setOpenDialog, player, session}) {
   return (
     <Dialog open={openDialog === 2} onClose={() => setOpenDialog(0)} maxWidth={"xs"}>
-      <DialogTitle>Player Select</DialogTitle>
+      <DialogTitle>View {player.name}</DialogTitle>
       <DialogContent>
-        <Character user={player} session={session} />
+        <Character user={player} session={session} useLocal={true}/>
       </DialogContent>
       <DialogActions>
         <Button onClick={() => setOpenDialog(0)}>Cancel</Button>

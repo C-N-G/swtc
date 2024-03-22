@@ -46,12 +46,18 @@ function Character(props) {
 export default Character
 
 
-function PlayerCharacter({user, session}) {
+function PlayerCharacter({user, session, useLocal}) {
 
   const [chars, roles] = useMemo(() => GameData.getFilteredValues(session.modules, true), [session.modules]);
 
-  const fullRole = roles[user.rRole] ? roles[user.rRole] : GameData.roles[0];
-  const fullChar = chars[user.rChar] ? chars[user.rChar] : GameData.chars[0];
+  let fullChar, fullRole;
+  if (useLocal) { // use local player state instead of real state
+    fullChar = chars[user.char] ? chars[user.char] : GameData.chars[0];
+    fullRole = roles[user.role] ? roles[user.role] : GameData.roles[0];
+  } else {
+    fullChar = chars[user.rChar] ? chars[user.rChar] : GameData.chars[0];
+    fullRole = roles[user.rRole] ? roles[user.rRole] : GameData.roles[0];
+  }
 
   return (<>
     <Grid container justifyContent="left" spacing={2} sx={{overflow: "auto"}}>
@@ -110,8 +116,6 @@ function PlayerCharacter({user, session}) {
   </>)
 
 }
-
-
 
 function NarratorCharacter({session, setSession, players, setPlayers}) {
 
