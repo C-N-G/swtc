@@ -28,7 +28,7 @@ export default PlayerDetails
 
 
 
-function RegularPlayerDetails({player, handlePlayerDataChange, chars, roles}) {
+function RegularPlayerDetails({player, handleViewPlayerClick, handlePlayerDataChange, chars, roles}) {
 
   function selectBuilder(playerId, type, list, value) {
     return <Autocomplete
@@ -78,10 +78,11 @@ function RegularPlayerDetails({player, handlePlayerDataChange, chars, roles}) {
         </Stack>
       </Grid>
       <Grid item xs={7}>
-        <Stack spacing={2} sx={{margin: "1rem"}}>
+        <Stack spacing={2} sx={{mx: "1rem", mb: "0", mt: "1.3rem"}}>
           {selectBuilder(player.id, "Role", roles, player.role)}
           {selectBuilder(player.id, "Char", chars, player.char)}
           {selectBuilder(player.id, "Team", GameData.teams, player.team)}
+          <Button variant="outlined" onClick={handleViewPlayerClick}>View Player</Button>
         </Stack>
       </Grid>
       <Grid item xs={12}>

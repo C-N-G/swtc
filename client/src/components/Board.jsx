@@ -7,6 +7,7 @@ import Vote from "./Vote.jsx";
 import {socket} from "../helpers/socket.js";
 import GameData from "../strings/_gameData.js"
 import useCountDown from "../hooks/useCountDown.js";
+import Character from "./Character.jsx";
 
 const BOARD_CONFIG = [
   [0,0,0], // top, sides, bottom - player count
@@ -31,7 +32,7 @@ const BOARD_CONFIG = [
 function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerDataChange, session}) {
 
   const [selected, setSelected] = useState(null);
-  const [openDialog, setOpenDialog] = useState(false); 
+  const [openDialog, setOpenDialog] = useState(0); 
 
   const playerNum = drawPlayers.length;
   const topNum = BOARD_CONFIG[playerNum][0];
@@ -69,7 +70,7 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerD
 
   function handleDismissalClick(nominatedPlayerId) {
     setVotes(prev => ({...prev, nominatedPlayer: nominatedPlayerId, accusingPlayer: null}));
-    setOpenDialog(true);
+    setOpenDialog(1);
   }
 
   function handlePlayerSelect(event) {
@@ -80,7 +81,7 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerD
     if (!votes.accusingPlayer) {
       throw new Error("no player selected");
     }
-    setOpenDialog(false);
+    setOpenDialog(0);
     socket.emit("vote", {nominatedPlayer: votes.nominatedPlayer, accusingPlayer: votes.accusingPlayer, voting: true})
   }
 
@@ -95,6 +96,10 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerD
 
   function handleVoteTimerEnd() {
     console.log("done");
+  }
+
+  function handleViewPlayerClick() {
+    setOpenDialog(2);
   }
 
   const top = drawPlayers
@@ -146,6 +151,7 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerD
     <PlayerDetails 
       player={selectedPlayer} 
       handleDismissalClick={handleDismissalClick}
+      handleViewPlayerClick={handleViewPlayerClick}
       handlePlayerDataChange={handlePlayerDataChange}
       chars={chars}
       roles={roles}/>
@@ -176,6 +182,12 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerD
         selectablePlayers={selectablePlayers} 
         handleBeginClick={handleBeginClick}
       />
+      <ViewPlayerDialog 
+        openDialog={openDialog} 
+        setOpenDialog={setOpenDialog}
+        player={selectedPlayer}
+        session={session}
+      />
       <Stack sx={{minHeight: "20%"}} direction="row" justifyContent="space-between">
         {top}
       </Stack>
@@ -202,7 +214,7 @@ export default Board
 function DismissalDialog({openDialog, setOpenDialog, 
   votes, handlePlayerSelect, selectablePlayers, handleBeginClick}) {
   return (
-    <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+    <Dialog open={openDialog === 1} onClose={() => setOpenDialog(0)}>
       <DialogTitle>Player Select</DialogTitle>
       <DialogContent>
         <DialogContentText>
@@ -228,7 +240,21 @@ function DismissalDialog({openDialog, setOpenDialog,
         >
           Begin
         </Button>
-        <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+        <Button onClick={() => setOpenDialog(0)}>Cancel</Button>
+      </DialogActions>
+    </Dialog>
+  )
+}
+
+function ViewPlayerDialog({openDialog, setOpenDialog, player, session}) {
+  return (
+    <Dialog open={openDialog === 2} onClose={() => setOpenDialog(0)} maxWidth={"xs"}>
+      <DialogTitle>Player Select</DialogTitle>
+      <DialogContent>
+        <Character user={player} session={session} />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setOpenDialog(0)}>Cancel</Button>
       </DialogActions>
     </Dialog>
   )
