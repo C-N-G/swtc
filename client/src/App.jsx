@@ -248,7 +248,7 @@ function App() {
               }}>
                 Add Dummy Players
               </Button>
-              {userId === "54321" ? <>
+              {userId === "54321" || userId === "0" ? <>
                 <Box>
                   <Button size="small" variant="contained" onClick={() => {
                     setPlayers(players => {
@@ -271,6 +271,12 @@ function App() {
                     -1
                   </Button>
                 </Box>
+                <Button size="small" variant="contained" onClick={() => {
+                    setUserId(prevId => prevId === "54321" ? "0" : "54321");
+                  }}
+                >
+                  Change Player Type
+                </Button>
               </> : ""}
             </>}
 
