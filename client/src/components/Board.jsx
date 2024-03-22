@@ -1,5 +1,5 @@
 import {useState, useMemo} from "react";
-import {Card, Stack, Typography, Box, Modal, FormControl, Select, InputLabel, MenuItem, Button} from "@mui/material";
+import {Card, Stack, FormControl, Select, InputLabel, MenuItem, Button, Dialog, DialogTitle, DialogContentText, DialogContent, DialogActions} from "@mui/material";
 import PlayerIndicator from "./PlayerIndicator.jsx";
 import DynamicWindow from "./DynamicWindow.jsx";
 import PlayerDetails from "./PlayerDetails.jsx";
@@ -28,23 +28,10 @@ const BOARD_CONFIG = [
   [5,3,5], // 16
 ]
 
-const modalStyle = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 250,
-  bgcolor: "white",
-  borderRadius: "4px",
-  boxShadow: 24,
-  py: 2,
-  px: 4,
-};
-
 function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerDataChange, session}) {
 
   const [selected, setSelected] = useState(null);
-  const [open, setOpen] = useState(false); 
+  const [openDialog, setOpenDialog] = useState(false); 
 
   const playerNum = drawPlayers.length;
   const topNum = BOARD_CONFIG[playerNum][0];
@@ -82,7 +69,7 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerD
 
   function handleDismissalClick(nominatedPlayerId) {
     setVotes(prev => ({...prev, nominatedPlayer: nominatedPlayerId, accusingPlayer: null}));
-    setOpen(true);
+    setOpenDialog(true);
   }
 
   function handlePlayerSelect(event) {
@@ -93,7 +80,7 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerD
     if (!votes.accusingPlayer) {
       throw new Error("no player selected");
     }
-    setOpen(false);
+    setOpenDialog(false);
     socket.emit("vote", {nominatedPlayer: votes.nominatedPlayer, accusingPlayer: votes.accusingPlayer, voting: true})
   }
 
@@ -181,36 +168,14 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerD
       aspectRatio: "1/1",
       background: "lightblue",
     }}>
-      <Modal
-        open={open}
-        onClose={() => setOpen(false)}
-        aria-labelledby="nominating-player-modal-title"
-        aria-describedby="nominating-player-modal-description"
-      >
-        <Box sx={modalStyle}>
-          <Typography id="nominating-player-modal-title" variant="h6" component="h2">
-            Player Select
-          </Typography>
-          <Typography id="nominating-player-modal-description" sx={{ my: 2 }}>
-            Please select the player who nominated this player
-          </Typography>
-          <FormControl fullWidth> 
-            <InputLabel id="nominating-player-select-label">Player</InputLabel>
-            <Select
-              labelId="nominating-player-select-label" 
-              id="nominating-player-select"
-              label="Player"
-              value={votes.accusingPlayer ? votes.accusingPlayer : ""}
-              onChange={handlePlayerSelect} 
-            >
-              {selectablePlayers}
-            </Select>
-          </FormControl>
-          <Button disabled={votes.accusingPlayer === null} variant="contained" fullWidth sx={{my: 2}} onClick={handleBeginClick}>
-            Begin
-          </Button>
-        </Box>
-      </Modal>
+      <DismissalDialog 
+        openDialog={openDialog} 
+        setOpenDialog={setOpenDialog} 
+        votes={votes} 
+        handlePlayerSelect={handlePlayerSelect} 
+        selectablePlayers={selectablePlayers} 
+        handleBeginClick={handleBeginClick}
+      />
       <Stack sx={{minHeight: "20%"}} direction="row" justifyContent="space-between">
         {top}
       </Stack>
@@ -234,3 +199,37 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerD
 
 export default Board
 
+function DismissalDialog({openDialog, setOpenDialog, 
+  votes, handlePlayerSelect, selectablePlayers, handleBeginClick}) {
+  return (
+    <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+      <DialogTitle>Player Select</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          Please select the player who nominated this player
+        </DialogContentText>
+        <FormControl fullWidth> 
+          <InputLabel id="nominating-player-select-label">Player</InputLabel>
+          <Select
+            labelId="nominating-player-select-label" 
+            id="nominating-player-select"
+            label="Player"
+            value={votes.accusingPlayer ? votes.accusingPlayer : ""}
+            onChange={handlePlayerSelect} 
+          >
+            {selectablePlayers}
+          </Select>
+        </FormControl>
+      </DialogContent>
+      <DialogActions>
+        <Button 
+          disabled={votes.accusingPlayer === null} 
+          onClick={handleBeginClick}
+        >
+          Begin
+        </Button>
+        <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+      </DialogActions>
+    </Dialog>
+  )
+}

@@ -4,6 +4,25 @@ import {Button, Menu, MenuItem, Box, Card, Typography, TextField, Dialog,
 import MenuIcon from "@mui/icons-material/Menu";
 import {socket} from "../helpers/socket.js";
 
+function textFieldBuilder(id, label, input, errorText, handleFunc, focus, setInputs, inputs) {
+
+  return <TextField
+    autoFocus={focus}
+    margin="dense"
+    id={id}
+    label={label}
+    type="text"
+    fullWidth
+    variant="standard"
+    error={inputs[input].error}
+    value={inputs[input].value}
+    onChange={(e) => {setInputs(prev => {return {...prev, [input]: {...prev[input], value: e.target.value}}})}}
+    onKeyDown={(e) => e.key === "Enter" ? handleFunc() : "" }
+    helperText={inputs[input].error ? errorText : ""}
+  />
+
+}
+
 function Options({session}) {
 
   const defaultInputs = {
@@ -13,14 +32,14 @@ function Options({session}) {
   };
 
   const [anchorEl, setAnchorEl] = useState(null);
-  const [openModal, setOpenModal] = useState(0);
+  const [openDialog, setOpenDialog] = useState(0);
   const [inputs, setInputs] = useState(defaultInputs);
 
   const open = Boolean(anchorEl);
   
   function handleClose() {
     setAnchorEl(null);
-    setOpenModal(0);
+    setOpenDialog(0);
     setInputs(defaultInputs);
   }
 
@@ -67,25 +86,6 @@ function Options({session}) {
 
   }
 
-  function textFieldBuilder(id, label, input, errorText, handleFunc, focus) {
-
-    return <TextField
-      autoFocus={focus}
-      margin="dense"
-      id={id}
-      label={label}
-      type="text"
-      fullWidth
-      variant="standard"
-      error={inputs[input].error}
-      value={inputs[input].value}
-      onChange={(e) => {setInputs(prev => {return {...prev, [input]: {...prev[input], value: e.target.value}}})}}
-      onKeyDown={(e) => e.key === "Enter" ? handleFunc() : "" }
-      helperText={inputs[input].error ? errorText : ""}
-    />
-
-  }
-
   return (
     <Card sx={{
       background: "lightcoral", 
@@ -119,43 +119,69 @@ function Options({session}) {
             "aria-labelledby": "basic-button",
           }}
         >
-          {session.id ? "" : <MenuItem onClick={() => {setOpenModal(1)}}>Host Session</MenuItem>}
-          {session.id ? "" : <MenuItem onClick={() => {setOpenModal(2)}}>Join Session</MenuItem>}
+          {session.id ? "" : <MenuItem onClick={() => {setOpenDialog(1)}}>Host Session</MenuItem>}
+          {session.id ? "" : <MenuItem onClick={() => {setOpenDialog(2)}}>Join Session</MenuItem>}
           {session.id ? <MenuItem onClick={handleLeave}>Leave Session</MenuItem> : ""}
         </Menu>
-
-        <Dialog disableRestoreFocus open={openModal === 1} onClose={handleClose}>
-          <DialogTitle>Host Session</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              To host a session, please enter your name below.
-            </DialogContentText>
-            {textFieldBuilder("host-name", "Name", "hostName", "Must be between 3 to 16 characters", handleHost, true)}
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleHost}>Host</Button>
-            <Button onClick={handleClose}>Cancel</Button>
-          </DialogActions>
-        </Dialog>        
-        
-        <Dialog disableRestoreFocus open={openModal === 2} onClose={handleClose}>
-          <DialogTitle>Join Session</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              To join a session, plase enter your display name.
-              And the ID of the session you wish to connect to.
-            </DialogContentText>
-            {textFieldBuilder("join-name", "Name", "joinName", "Must be between 3 to 16 characters", handleJoin, true)}
-            {textFieldBuilder("join-id", "Session ID", "joinId", "Must be 7 characters long", handleJoin, false)}
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleJoin}>Join</Button>
-            <Button onClick={handleClose}>Cancel</Button>
-          </DialogActions>
-        </Dialog>
+        <HostDialog 
+          openDialog={openDialog}
+          handleClose={handleClose}
+          handleHost={handleHost}
+          setInputs={setInputs}
+          inputs={inputs}
+        />
+        <JoinDialog 
+          openDialog={openDialog}
+          handleClose={handleClose}
+          handleJoin={handleJoin}
+          setInputs={setInputs}
+          inputs={inputs}
+        />
       </Box>
     </Card>
   );
 }
 
 export default Options
+
+function HostDialog({openDialog, handleClose, handleHost, setInputs, inputs}) {
+
+  return (
+    <Dialog disableRestoreFocus open={openDialog === 1} onClose={handleClose}>
+      <DialogTitle>Host Session</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          To host a session, please enter your name below.
+        </DialogContentText>
+        {textFieldBuilder("host-name", "Name", "hostName", "Must be between 3 to 16 characters", handleHost, true, setInputs, inputs)}
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleHost}>Host</Button>
+        <Button onClick={handleClose}>Cancel</Button>
+      </DialogActions>
+    </Dialog>  
+  )
+
+}
+
+function JoinDialog({openDialog, handleClose, handleJoin, setInputs, inputs}) {
+
+  return (
+    <Dialog disableRestoreFocus open={openDialog === 2} onClose={handleClose}>
+      <DialogTitle>Join Session</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          To join a session, plase enter your display name.
+          And the ID of the session you wish to connect to.
+        </DialogContentText>
+        {textFieldBuilder("join-name", "Name", "joinName", "Must be between 3 to 16 characters", handleJoin, true, setInputs, inputs)}
+        {textFieldBuilder("join-id", "Session ID", "joinId", "Must be 7 characters long", handleJoin, false, setInputs, inputs)}
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleJoin}>Join</Button>
+        <Button onClick={handleClose}>Cancel</Button>
+      </DialogActions>
+    </Dialog>
+  )
+
+}
