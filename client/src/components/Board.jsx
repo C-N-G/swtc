@@ -156,7 +156,8 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerD
     )
 
   const playerdetails = (
-    <PlayerDetails { ...selectedPlayer} 
+    <PlayerDetails 
+      player={selectedPlayer} 
       handleDismissalClick={handleDismissalClick}
       handlePlayerDataChange={handlePlayerDataChange}
       chars={chars}
