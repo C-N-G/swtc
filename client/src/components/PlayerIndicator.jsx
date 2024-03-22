@@ -161,13 +161,13 @@ function NarratorPlayerIndicator({player, handleClick, vertical, chars, roles}) 
               </Box>
               <br />
               <Box component={"span"} sx={{position: "relative"}}>
-                {GameData.hackValue(roles[player.rRole].name)}{player.role !== player.rRole ? "*" : ""}
-                {player.role !== player.rRole ? captionBuilder(GameData.hackValue(roles[player.role].name)) : ""}
+                {GameData.hackValue(roles[player.rRole]?.name)}{player.role !== player.rRole ? "*" : ""}
+                {player.role !== player.rRole ? captionBuilder(GameData.hackValue(roles[player.role]?.name)) : ""}
               </Box>
               <br />
               <Box component={"span"} sx={{position: "relative"}}>
-                {GameData.hackValue(chars[player.rChar].name)}{player.char !== player.rChar ? "*" : ""}
-                {player.char !== player.rChar ? captionBuilder(GameData.hackValue(chars[player.char].name)) : ""}
+                {GameData.hackValue(chars[player.rChar]?.name)}{player.char !== player.rChar ? "*" : ""}
+                {player.char !== player.rChar ? captionBuilder(GameData.hackValue(chars[player.char]?.name)) : ""}
               </Box>
               <br />
               <Box component={"span"} sx={{position: "relative"}}>

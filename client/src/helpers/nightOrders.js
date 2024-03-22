@@ -9,13 +9,13 @@ const NightOrders = {
     playerArray.forEach((player, index) => {
 
       const char = charArray[player.rChar]
-      if (char.orderType) {
+      if (char && char.orderType) {
         const order = GameData.nightOrder.indexOf(char.orderType);
         ordering.push({order: order, name: char.name, playerIndex: index, type: "char"});
       }
 
       const role = roleArray[player.rRole]
-      if (role.orderType) {
+      if (role && role.orderType) {
         const order = GameData.nightOrder.indexOf(role.orderType);
         ordering.push({order: order, name: role.name, playerIndex: index, type: "role"});
       }
