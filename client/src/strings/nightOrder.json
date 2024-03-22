@@ -1,0 +1,23 @@
+[
+  "role_causes_injury",
+  "role_causes_malfunction",
+  "role_removes_others_injury",
+  "role_removes_self_malfunction",
+  "role_removes_others_malfunction",
+  "role_protects_others_death",
+  "role_converts_self",
+  "char_converts_self",
+  "role_converts_self_or_others",
+  "role_converts_others",
+  "role_converts_others_or_kills",
+  "role_kills_others",
+  "role_kills_self",
+  "role_resurrects_others",
+  "role_with_starting_info",
+  "char_with_starting_info",
+  "role_with_recurring_info",
+  "char_with_recurring_info",
+  "role_with_late_info",
+  "role_misc_action",
+  "role_depends_on_others"
+]

@@ -4,7 +4,8 @@
 	  "type": "Agent",
 	  "description": "Don’t blame me, I’m just presenting the data.",
 	  "ability": "Each night, you learn which team the narrator thinks is winning.",
-	  "attributes": ["Human"]
+	  "orderType": "role_with_recurring_info",
+    "attributes": ["Human"]
 	},
 	
 	{
@@ -12,7 +13,8 @@
 	  "type": "Agent",
 	  "description": "Can I get you a coffee, sir?",
 	  "ability": "You start knowing an Agent player and their role (not yourself). If you die, they become malfunctioning.",
-	  "attributes": ["Human"],
+	  "orderType": "role_with_starting_info",
+    "attributes": ["Human"],
       "reminders": [
         ["☕", "#0000FF", "Assistant: Knows this player's role."],
         ["☕", "#0000FF", "Assistant: This player is malfunctioning."]
@@ -24,7 +26,8 @@
 	  "type": "Agent",
 	  "description": "Your service will be remembered.",
 	  "ability": "Each night, after the first, you must choose a player (not yourself): if that player is killed that night you are killed instead.",
-	  "attributes": ["Human"],
+	  "orderType": "role_protects_others_death",
+    "attributes": ["Human"],
       "reminders": [
         ["👮", "#0000FF", "Bodyguard: Protected this player."]
       ]
@@ -35,7 +38,8 @@
 	  "type": "Agent",
 	  "description": "Open your eyes, and see where you are not.",
 	  "ability": "Each night, you must choose a player: you learn their team.",
-	  "attributes": ["Human", "Psychic"],
+	  "orderType": "role_with_recurring_info",
+    "attributes": ["Human", "Psychic"],
       "reminders": [
         ["🔮", "#0000FF", "Clairvoyant: Chose this player."]
       ]
@@ -57,7 +61,8 @@
 	  "type": "Agent",
 	  "description": "Listen, I know your family just got eaten, but can you please explain why you’re underperforming in all key metrics?",
 	  "ability": "You start knowing that 1 of 3 players is a specific Detrimental role, or 0 are in-play.",
-	  "attributes": ["Human"],
+	  "orderType": "role_with_starting_info",
+    "attributes": ["Human"],
       "reminders": [
         ["🧑‍💼", "#0000FF", "Coordinator: Learnt this player."]
       ]
@@ -68,7 +73,8 @@
 	  "type": "Agent",
 	  "description": "PLACEHOLDER",
 	  "ability": "Each night, you must choose a player: you learn a role they are not.",
-	  "attributes": ["Human"],
+	  "orderType": "role_with_recurring_info",
+    "attributes": ["Human"],
       "reminders": [
         ["🕵️", "#0000FF", "Investigator: Chose this player."]
       ]
@@ -79,7 +85,8 @@
 	  "type": "Agent",
 	  "description": "I’ve seen things in the dark hours of the night, things you people wouldn’t believe.",
 	  "ability": "Each night, you learn how many other players woke up that night due to their ability.",
-	  "attributes": ["Human"],
+	  "orderType": "role_depends_on_others",
+    "attributes": ["Human"],
       "reminders": [
         ["🧹", "#0000FF", "Janitor: This player woke due to their ability."]
       ]
@@ -90,7 +97,8 @@
 	  "type": "Agent",
 	  "description": "You can’t save everyone.",
 	  "ability": "Each night, if any players have died tonight, you learn who, and may choose one to resurrect.",
-	  "attributes": ["Human"],
+	  "orderType": "role_resurrects_others",
+    "attributes": ["Human"],
       "reminders": [
         ["⛑️", "#0000FF", "Medic: Resurrected this player."]
       ]
@@ -101,7 +109,8 @@
 	  "type": "Agent",
 	  "description": "PLACEHOLDER",
 	  "ability": "You start knowing the answer to a single yes or no question of your choice.",
-	  "attributes": ["Human", "Psychic"]
+	  "orderType": "role_with_starting_info",
+    "attributes": ["Human", "Psychic"]
 	},
 	
 	{
@@ -109,7 +118,8 @@
 	  "type": "Agent",
 	  "description": "PLACEHOLDER",
 	  "ability": "Each night, you must choose a player: you learn their characteristic.",
-	  "attributes": ["Human"],
+	  "orderType": "role_with_recurring_info",
+    "attributes": ["Human"],
       "reminders": [
         ["🧠️", "#0000FF", "Psychologist: Chose this player."]
       ]
@@ -120,7 +130,8 @@
 	  "type": "Agent",
 	  "description": "Form an orderly line! It’s important we ration our supplies!",
 	  "ability": "Each night, you learn a different Agent role (not yourself) that is in play.",
-	  "attributes": ["Human"],
+	  "orderType": "role_with_recurring_info",
+    "attributes": ["Human"],
       "reminders": [
         ["📦", "#0000FF", "Quartermaster: Learnt this player's role."]
       ]
@@ -142,7 +153,8 @@
 	  "type": "Agent",
 	  "description": "I’d like to walk around in your mind.",
 	  "ability": "Each night, you learn the role of one of your living neighbours.",
-	  "attributes": ["Human", "Psychic"],
+	  "orderType": "role_with_recurring_info",
+    "attributes": ["Human", "Psychic"],
       "reminders": [
         ["😶‍🌫️", "#0000FF", "Telepath: Learnt this player's role."]
       ]
@@ -153,7 +165,8 @@
 	  "type": "Agent",
 	  "description": "PLACEHOLDER",
 	  "ability": "Each night, you learn the direction to the closest Subversive player from you, or if they’re equidistant.",
-	  "attributes": ["Human"]
+	  "orderType": "role_with_recurring_info",
+    "attributes": ["Human"]
 	},
 	
 	{
@@ -161,7 +174,8 @@
 	  "type": "Agent",
 	  "description": "Don’t worry, the first twenty years are the worst.",
 	  "ability": "Once per game, during the night, you may choose any not in-play Loyalist role, you become that role. If the role is in-play, you don’t change role but think you do.",
-	  "attributes": ["Human"],
+	  "orderType": "role_converts_self",
+    "attributes": ["Human"],
 	  "additional": [
 		"If the Trainee becomes a ‘you start’ role, they will act as if the night they become that role was their first night."
 	  ],
@@ -175,10 +189,10 @@
 	  "type": "Detrimental",
 	  "description": "PLACEHOLDER",
 	  "ability": "You start on the Subversive team. You do not know you are the Accomplice. You think you are a different Loyalist role, but you are not. The Antagonist knows who you are.",
-      "setup": [
-        ["You think you are a Loyalist role.", "ShowAs Role Loyalist"],
-		["You neighbour the Antagonist.", "Neighbour Role Antagonist"]
-      ],
+    "setup": [
+      ["You think you are a Loyalist role.", "ShowAs Role Loyalist"],
+		  ["You neighbour the Antagonist.", "Neighbour Role Antagonist"]
+    ],
 	  "attributes": ["Human"],
       "reminders": [
         ["👣", "#702963", "Accomplice: Is the Accomplice."]
@@ -236,7 +250,8 @@
 	  "type": "Detrimental",
 	  "description": "Give them some truth.",
 	  "ability": "Each night, you learn the current Cohesion and decrease it by 1. You win with the Subversive team if Cohesion reaches 0.",
-	  "attributes": ["Human"]
+	  "orderType": "role_with_recurring_info",
+    "attributes": ["Human"]
 	},
 	
 	{
@@ -244,7 +259,8 @@
 	  "type": "Antagonist",
 	  "description": "Kill them all slowly and painfully.",
 	  "ability": "Each night, after the first, you must choose a player: that player dies.",
-	  "attributes": ["Human"],
+	  "orderType": "role_kills_others",
+    "attributes": ["Human"],
       "reminders": [
         ["🗡️", "#FF0000", "Serial Killer: Chose this player."]
       ]

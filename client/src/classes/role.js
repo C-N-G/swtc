@@ -7,6 +7,7 @@ export default class Role {
    * @param {string} type
    * @param {string} description 
    * @param {string} ability 
+   * @param {string} orderType 
    * @param {Array<string>} attributes 
    * @param {Array<string>} additional 
    * @param {Array<Array<string>>} setup 
@@ -18,6 +19,7 @@ export default class Role {
     type = "",
     description = "",
     ability = "",
+    orderType = "",
     attributes = [],
     additional = [],
     setup = [],
@@ -29,6 +31,7 @@ export default class Role {
     this.type = type;
     this.description = description;
     this.ability = ability;
+    this.orderType = orderType;
     this.attributes = attributes;
     this.additional = additional;
     this.setup = setup;

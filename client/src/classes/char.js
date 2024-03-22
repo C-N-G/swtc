@@ -7,6 +7,7 @@ export default class Char {
    * @param {string} name 
    * @param {string} description 
    * @param {string} ability 
+   * @param {string} orderType 
    * @param {Array<string>} attributes 
    * @param {Array<string>} additional 
    * @param {Array<Array<string>>} setup 
@@ -17,6 +18,7 @@ export default class Char {
     name,
     description = "",
     ability = "",
+    orderType = "",
     attributes = [],
     additional = [],
     setup = [],
@@ -26,6 +28,7 @@ export default class Char {
     this.name = name;
     this.description = description;
     this.ability = ability;
+    this.orderType = orderType
     this.attributes = attributes;
     this.additional = additional;
     this.setup = setup;
@@ -33,16 +36,4 @@ export default class Char {
   }
 
 }
-
-[
-  {
-    "name": "Unknown",
-    "types": [],
-    "description": "",
-    "ability": "",
-    "attributes": [],
-    "additional": [],
-    "setup": []
-  }
-]
 

@@ -5,6 +5,7 @@ const modules = import.meta.glob(["./*.json", "./modules/*/*.json"], {eager: tru
 const GameData = {
   chars: [],
   roles: [],
+  nightOrder: [],
   states: [],
   teams: [],
   modules: {},
