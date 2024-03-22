@@ -122,6 +122,13 @@ function Options({session}) {
           {session.id ? "" : <MenuItem onClick={() => {setOpenDialog(1)}}>Host Session</MenuItem>}
           {session.id ? "" : <MenuItem onClick={() => {setOpenDialog(2)}}>Join Session</MenuItem>}
           {session.id ? <MenuItem onClick={handleLeave}>Leave Session</MenuItem> : ""}
+          <MenuItem 
+            component={"a"}
+            href="https://drive.google.com/file/d/1BSgDm_VNXi-e2_0v5L5Xd781-kFyde7k/preview" 
+            target="_blank"
+          >
+            Rulebook
+          </MenuItem>
         </Menu>
         <HostDialog 
           openDialog={openDialog}
