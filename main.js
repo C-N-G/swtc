@@ -1,2 +1,0 @@
-// start server
-// start client

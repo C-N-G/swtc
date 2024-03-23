@@ -1,5 +1,6 @@
 import http from "node:http";
 import path from "node:path";
+import process from "node:process";
 import { fileURLToPath } from 'url';
 import fs from "node:fs";
 import {Server} from "socket.io";
@@ -10,7 +11,7 @@ const __dirname = path.dirname(__filename);
 
 const hostname = "127.0.0.1";
 const port = 3001;
-const basePath = path.join(__dirname, "..", "..", "client", "dist");
+const basePath = path.join(__dirname, "..", "..", "dist");
 
 const httpserver = http.createServer((req, res) => {
   
@@ -235,7 +236,6 @@ swtcNamespace.on("connection", (socket) => {
     }
 
     if (sessionManager.sessionExists(connectedSessionId)) {
-      const session = sessionManager.getSession(connectedSessionId);
       swtcNamespace.to(connectedSessionId).emit("left", playerId);
     }
 
