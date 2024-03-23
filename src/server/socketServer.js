@@ -1,80 +1,9 @@
-import http from "node:http";
-import path from "node:path";
-import process from "node:process";
-import { fileURLToPath } from 'url';
-import fs from "node:fs";
-import {Server} from "socket.io";
 import SessionManager from "./sessionManager.js";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const hostname = "127.0.0.1";
-const port = 3001;
-const basePath = path.join(__dirname, "..", "..", "dist");
-
-const httpserver = http.createServer((req, res) => {
-  
-  console.log(req.url);
-  
-  res.setHeader('Access-Control-Allow-Origin', '*');
-
-  // set header for content type
-  if (req.url.endsWith("html")) {
-    res.setHeader('Content-Type', 'text/html');
-  } else if (req.url.endsWith("js")) {
-    res.setHeader('Content-Type', 'application/javascript');
-  } else if (req.url.endsWith("css")) {
-    res.setHeader('Content-Type', 'text/css');
-  }
-
-  // redirect url to work with nginx server
-  if (req.url === "/swtc") {
-    req.url = "/"
-  } else if (req.url.startsWith("/swtc")) {
-    req.url = req.url.slice(5)
-  }
-
-  let target;
-
-  // redirect base path to app
-  if (req.url === "/") {
-    target = "index.html";
-    res.setHeader('Content-Type', 'text/html');
-  } else {
-    target = req.url;
-  }
-
-  // try and read requested file
-  try {
-    const file = fs.readFileSync(path.join(basePath, target));
-    res.statusCode = 200;
-    res.write(file);
-  } catch (error) {
-    console.log(error);
-    res.statusCode = 404;
-    res.write("Error 404");
-  }
-
-  res.end();
-
-});
-
-const options = process.env.NODE_ENV === "production" ? {path: "/swtc/socket.io"} : {
-  cors: {
-    origin: "http://localhost:5173"
-  },
-  path: "/swtc/socket.io"
-}
-
-// create websocket server
-const io = new Server(httpserver, options);
 
 const sessionManager = new SessionManager();
 
-const swtcNamespace = io.of("/swtc")
+export default function swtcSocketServer(server, socket) {
 
-swtcNamespace.on("connection", (socket) => {
   console.log("new socket connection, id:", socket.id);
 
   let connectedSessionId = null;
@@ -88,7 +17,7 @@ swtcNamespace.on("connection", (socket) => {
     console.log(messageId, messageContent, messageData);
   }
 
-  socket.on("join", (sessionId, name) => {
+  function onJoin(sessionId, name) {
 
     log("joining");
 
@@ -108,9 +37,9 @@ swtcNamespace.on("connection", (socket) => {
       log(`joined session ${sessionId}`);
     }
 
-  })
+  }
 
-  socket.on("host", (name) => {
+  function onHost(name) {
 
     log("hosting session");
 
@@ -127,20 +56,21 @@ swtcNamespace.on("connection", (socket) => {
     log(`hosted session with id ${session.id}`);
 
 
-  })
+  }
 
-  socket.on("phase", (data) => {
+  function onPhase(data) {
+
     log("updating phase state")
 
     const session = sessionManager.getSession(connectedSessionId);
     if (!session) return;
     session.setPhase(data);
-    swtcNamespace.to(connectedSessionId).emit("phase", data);
+    server.to(connectedSessionId).emit("phase", data);
     log("updated phase state successfully", data);
 
-  })
+  }
 
-  socket.on("attribute", (data) => {
+  function onAttribute(data) {
 
     log("updating attribute state");
 
@@ -148,12 +78,12 @@ swtcNamespace.on("connection", (socket) => {
     const session = sessionManager.getSession(connectedSessionId);
     if (!session) return;
     session.updatePlayer(data.targetId, data.targetProperty, data.targetValue);
-    swtcNamespace.to(connectedSessionId).emit("attribute", data);
+    server.to(connectedSessionId).emit("attribute", data);
     log("updated attribute state successfully", data);
 
-  })
+  }
 
-  socket.on("vote", (data) => {
+  function onVote(data) {
 
     log("updating vote state");
 
@@ -165,24 +95,25 @@ swtcNamespace.on("connection", (socket) => {
       if (property === "nominatedPlayer") session.setNomPlayer(data[property]);
       if (property === "list") session.addVote(data[property]);
     })
-    swtcNamespace.to(connectedSessionId).emit("vote", data);
+    server.to(connectedSessionId).emit("vote", data);
     log("updated vote state successfully", data);
 
-  })
+  }
 
-  socket.on("module", (data) => {
+  function onModule(data) {
+
 
     log("updating module state");
 
     const session = sessionManager.getSession(connectedSessionId);
     if (!session) return;
     session.setModules(data);
-    swtcNamespace.to(connectedSessionId).emit("module", data);
+    server.to(connectedSessionId).emit("module", data);
     log("updated module state successfully", data);
 
-  })
+  }
 
-  socket.on("sync", (data, callback) => {
+  function onSync(data, callback) {
 
     log("syncing client state to server");
 
@@ -205,9 +136,9 @@ swtcNamespace.on("connection", (socket) => {
     log("synced state successfully");
     callback({status: "ok"})
 
-  })
+  }
 
-  socket.on("disconnect", (reason, details) => {
+  function onDisconnect(reason, details) {
 
     // https://socket.io/docs/v4/troubleshooting-connection-issues/#usage-of-the-socketid-attribute
     // https://socket.io/docs/v4/client-options/#auth
@@ -236,12 +167,12 @@ swtcNamespace.on("connection", (socket) => {
     }
 
     if (sessionManager.sessionExists(connectedSessionId)) {
-      swtcNamespace.to(connectedSessionId).emit("left", playerId);
+      server.to(connectedSessionId).emit("left", playerId);
     }
 
-  })
+  }
 
-  socket.on("leave", () => {
+  function onLeave() {
 
     log("leaving session");
 
@@ -252,7 +183,7 @@ swtcNamespace.on("connection", (socket) => {
     socket.leave(connectedSessionId);
 
     // tell the players in the left session player has left
-    swtcNamespace.to(connectedSessionId).emit("left", playerId);
+    server.to(connectedSessionId).emit("left", playerId);
     log(`left session ${connectedSessionId}`);
     connectedSessionId = null;
     playerName = undefined;
@@ -263,15 +194,16 @@ swtcNamespace.on("connection", (socket) => {
     sessionManager.removeSession(blankSession);
 
 
-  })
+  }
 
-});
+  socket.on("join", onJoin);
+  socket.on("host", onHost);
+  socket.on("phase", onPhase);
+  socket.on("attribute", onAttribute);
+  socket.on("vote", onVote);
+  socket.on("module", onModule);
+  socket.on("sync", onSync);
+  socket.on("disconnect", onDisconnect);
+  socket.on("leave", onLeave);
 
-
-httpserver.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/swtc`);
-}); 
-
-
-
-
+}
