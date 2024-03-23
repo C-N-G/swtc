@@ -18,7 +18,7 @@ Each night, after the first, you must choose a player: that player dies.
 
 # How to Play
 - Like all [[Subversive]] players being able to bluff and fit in with the group is key to winning the game. Try everything and anything to fit in, be careful though, if you're too active players might begin to suspect you. Sometimes being silent can work just as well.
-- You can only kill one player at night, so make it count! Try to work out the [[roles]] and [[characteristics]] of other players so you can target the players who are most valuable to their team.
+- You can only kill one player at night, so make it count! Try to work out the [[Role|roles]] and [[Characteristic|characteristics]] of other players so you can target the players who are most valuable to their team.
 - If you want to frame someone who has just died as the Serial Killer, you could choose already dead players with your ability so that nobody new dies.
 
 # How to Narrate
