@@ -5,6 +5,7 @@
 > | ---- | ---- |
 > | Team | Placeholder |
 > | Type | Placeholder |
+> | Module | Placeholder |
 >  “PLACEHOLDER FLAVOUR TEXT.”
 # Ability
 Placeholder ability text. This text here should be filled with the exact text of the ability.
@@ -23,4 +24,4 @@ Placeholder Strategy.
 Placeholder Narration.
 
 # Additional Information
-Placeholder Narration.
+Placeholder Additional Information.
