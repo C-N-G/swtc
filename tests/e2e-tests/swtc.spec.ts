@@ -89,7 +89,14 @@ test.describe("narrator tools", () => {
     await narrator.locator("#narrator-Shown-state-input").press("ArrowUp");
     await narrator.locator("#narrator-Shown-state-input").press("Enter");
     await narrator.getByRole("button", {name: /player1/i}).click();
-    await expect(player1.getByText(/State:/i)).toContainText(/Dead/i);
+    await expect(player1.getByRole("heading", {name: /State:/i})).toContainText(/Dead/i);
+
+    await narrator.getByText("player1").click();
+    await narrator.locator("#narrator-Shown-state-input").click();
+    await narrator.locator("#narrator-Shown-state-input").press("ArrowDown");
+    await narrator.locator("#narrator-Shown-state-input").press("Enter");
+    await narrator.getByRole("button", {name: /player1/i}).click();
+    await expect(player1.getByRole("heading", {name: /State:/i})).toContainText(/Alive/i);
 
   });
 
@@ -108,7 +115,7 @@ test.describe("dismissal voting", () => {
 
     await expect(player1.getByText(/Nominated by: player2/i)).toBeVisible();
     await expect(player2.getByText(/Nominated by: player2/i)).toBeVisible();
-    await expect(narrator.getByText(/0 Voted For/i)).toBeVisible();
+    await expect(narrator.getByText(/0 Voted/i)).toBeVisible();
 
   });
 
@@ -116,11 +123,11 @@ test.describe("dismissal voting", () => {
 
     await player1.getByRole("button", {name: /Vote For/i}).click();
     await expect(player1.getByRole("button", {name: /Vote For/i})).toBeDisabled();
-    await expect(narrator.getByText(/1 Voted For/i)).toBeVisible();
+    await expect(narrator.getByText(/1 Voted/i)).toBeVisible();
 
     await player2.getByRole("button", {name: /Vote For/i}).click();
     await expect(player2.getByRole("button", {name: /Vote For/i})).toBeDisabled();
-    await expect(narrator.getByText(/2 Voted For/i)).toBeVisible();
+    await expect(narrator.getByText(/2 Voted/i)).toBeVisible();
     
   });
 
