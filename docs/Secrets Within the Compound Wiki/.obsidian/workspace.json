@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Concepts/Agent.md",
+                "file": "Roles/Loyalist/Agent/Analyst.md",
                 "mode": "preview",
                 "source": true
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Concepts/Agent.md",
+                "file": "Roles/Loyalist/Agent/Analyst.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Concepts/Agent.md",
+                "file": "Roles/Loyalist/Agent/Analyst.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": false
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Concepts/Agent.md"
+                "file": "Roles/Loyalist/Agent/Analyst.md"
               }
             }
           }
@@ -148,19 +148,19 @@
   },
   "active": "5e839eac92cd82b0",
   "lastOpenFiles": [
+    "Roles/Subversive/Antagonist/Serial Killer.md",
+    "Concepts/Role.md",
+    "Concepts/Agent.md",
     "Concepts/Antagonist.md",
     "Concepts/Characteristic.md",
     "Concepts/Detrimental.md",
     "Concepts/Loyalist.md",
     "Concepts/Module.md",
-    "Concepts/Role.md",
     "Concepts/Subversive.md",
     "Templates/Role Template.md",
     "Templates/Module Template.md",
-    "Roles/Subversive/Antagonist/Serial Killer.md",
     "Roles/Loyalist/Agent/Analyst.md",
     "Modules/Standard Procedure.md",
-    "Concepts/Agent.md",
     "Characteristics/Characteristics.md",
     "Roles/Subversive/Antagonist/Antagonist.md",
     "Roles/Subversive/Subversive.md",
