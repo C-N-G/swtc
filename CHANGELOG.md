@@ -1,3 +1,13 @@
+15/03/2024 v0.4.2
+- updated standard procedure module
+  - changed assistant, supervisor, and forthright ability text
+  - removed bureaucrat, patient, punctual, and reflective
+  - added coordinator, adaptable, approachable, and perceptive
+- changed vote button text
+- added unknown team colour to player indicators
+- fixed syncing overwrites local data bug
+- fixed showing wrong char/role text bug 
+
 09/03/2024 v0.4.1
 - changed module filtering to now work off ids instead of names, so duplicate attributes/roles should now filter correctly
 - renamed "mechanic" to "ability" in the player view of the character window
