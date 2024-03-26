@@ -1,3 +1,21 @@
+23/03/2024 v0.4.3
+- added rulebook link under options
+- added view player button to the player details widget
+  - pressing this button will bring up the view player dialog
+  - this will show the selected players characteristic and role ability text
+- added orderType support for characteristics and roles
+  - this value corresponds to a placement in the night order
+- added night order indicators to player indicators 
+  - these only appear during the night phase
+  - the appear on the top right corner of the player indicator
+  - the number of the indicator represents the placement in the night order
+- added night order list dialog for the narrator
+  - this dialog can be accessed through the night order button in the phase window
+  - this dialog will show a list of players with their placement in the night order
+  - each player can be exapnded to show their corresponding ability text 
+  - players can be removed from this list through the remove button after expanding a player
+  - similarly players can be added back with the undo button under a player
+
 15/03/2024 v0.4.2
 - updated standard procedure module
   - changed assistant, supervisor, and forthright ability text
