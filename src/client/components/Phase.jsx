@@ -55,6 +55,7 @@ function NarratorPhase({phase, setPhase, players, setPlayers, session}) {
 
   const [chars, roles] = useMemo(() => GameData.getFilteredValues(session.modules, true), [session.modules]);
   const [openDialog, setOpenDialog] = useState(0);
+  const [purgedOrders, setPurgedOrders] = useState([]);
 
   function hanldeClick() {
 
@@ -72,7 +73,7 @@ function NarratorPhase({phase, setPhase, players, setPlayers, session}) {
       setPlayers(prevPlayers => {
         if (newCycle === "Night") {
           const ordering = NightOrders.calculateOrder(prevPlayers, chars, roles);
-          return NightOrders.addOrderIndicators(ordering, prevPlayers);
+          return NightOrders.addOrderIndicators(ordering, prevPlayers, purgedOrders);
         } else if (newCycle === "Day") {
           return prevPlayers.map(player => {
             player.nightOrders = [];
@@ -117,19 +118,21 @@ function NarratorPhase({phase, setPhase, players, setPlayers, session}) {
         openDialog={openDialog}
         handleClose={handleClose}
         players={players}
+        setPlayers={setPlayers}
         chars={chars}
         roles={roles}
+        purgedOrders={purgedOrders}
+        setPurgedOrders={setPurgedOrders}
       />
     </>
   )
 
 }
 
-function NightOrderDialog({openDialog, handleClose, players, chars, roles}) {
+function NightOrderDialog({openDialog, handleClose, players, setPlayers, chars, roles, purgedOrders, setPurgedOrders}) {
 
   const ordering = useMemo(() => NightOrders.calculateOrder(players, chars, roles), [players, chars, roles]);
   const [openState, setOpenState] = useState(ordering.map(() => false));
-  const [purgedOrders, setPurgedOrders] = useState([]);
 
   function handleOpenClick(index) {
     setOpenState(state => {
@@ -143,11 +146,20 @@ function NightOrderDialog({openDialog, handleClose, players, chars, roles}) {
   function handlePurgeClick(index, event) {
     const action = event.target.innerText
     const purgeString = JSON.stringify(ordering[index]);
+    let newPurgedOrders;
     if (action === "REMOVE") {
-      setPurgedOrders(prev => [...prev, purgeString]);
+      newPurgedOrders = [...purgedOrders, purgeString];
     } else if (action === "UNDO") {
-      setPurgedOrders(prev => prev.filter(s => s != purgeString));
+      newPurgedOrders = purgedOrders.filter(s => s !== purgeString)
     }
+    setPurgedOrders(newPurgedOrders);
+
+    setPlayers(prevPlayers => {
+      
+      const ordering = NightOrders.calculateOrder(prevPlayers, chars, roles);
+      return NightOrders.addOrderIndicators(ordering, prevPlayers, newPurgedOrders);
+
+    })
     
   }
 
@@ -155,6 +167,7 @@ function NightOrderDialog({openDialog, handleClose, players, chars, roles}) {
     setPurgedOrders([]);
   }
 
+  let placedIndex = 0;
   const playerList = ordering.map((nightOrder, index) => {
 
     let attrLong, attribute;
@@ -166,9 +179,14 @@ function NightOrderDialog({openDialog, handleClose, players, chars, roles}) {
       attribute = roles[players[nightOrder.playerIndex].rRole];
     }
 
-    const name = `#${index + 1} - ${players[nightOrder.playerIndex].name} - ${attribute.name}`;
-
     const removed = purgedOrders.includes(JSON.stringify(ordering[[index]])) ? true : false;
+
+    if (!removed) placedIndex++;
+
+    const displayIndex = removed ? "?" : placedIndex;
+
+    const name = `#${displayIndex} - ${players[nightOrder.playerIndex].name} - ${attribute.name}`;
+
 
     return (
       <Fragment key={"orderListKey" + index + nightOrder.name}>

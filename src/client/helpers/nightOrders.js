@@ -46,8 +46,17 @@ const NightOrders = {
 
   },
 
-  addOrderIndicators(ordering, playerArray) {
+  addOrderIndicators(ordering, playerArray, purgedOrders) {
 
+    playerArray = playerArray.map(player => {
+      player.nightOrders = [];
+      return player;
+    })
+
+    if (purgedOrders) {
+      ordering = ordering.filter(order => purgedOrders.includes(JSON.stringify(order)) === false);
+    }
+  
     ordering.forEach((nightOrder, index) => {
       playerArray[nightOrder.playerIndex].nightOrders.push(index + 1);
     })

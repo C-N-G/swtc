@@ -127,7 +127,6 @@ function NarratorCharacter({phase, session, setSession, players, setPlayers}) {
   const [oldSessionState, setOldSessionState] = useState({players: [], modules: []});
 
   const [chars, roles, reminders] = useMemo(() => GameData.getFilteredValues(session.modules, true), [session.modules]);
-  const ordering = useMemo(() => NightOrders.calculateOrder(players, chars, roles), [players, chars, roles]);
 
   function storeOldData() {
     if (session.sync) {
@@ -171,33 +170,23 @@ function NarratorCharacter({phase, session, setSession, players, setPlayers}) {
 
     setPlayers(prevPlayers => { 
 
+      let newPlayers = [];
+
       try {
-        prevPlayers = randomise(prevPlayers, chars, roles);
+        newPlayers = randomise(prevPlayers, chars, roles);
       } catch (error) {
         console.error("randomiser error: ", error);
         return prevPlayers;
       }
 
       if (phase.cycle === "Night") {
-        prevPlayers = NightOrders.addOrderIndicators(ordering, prevPlayers);
+        const ordering = NightOrders.calculateOrder(newPlayers, chars, roles);
+        newPlayers = NightOrders.addOrderIndicators(ordering, newPlayers);
       }
 
-      return prevPlayers;
+      return newPlayers;
 
     });
-
-    // setPlayers(prevPlayers => {
-    //   if (newCycle === "Night") {
-    //     const ordering = NightOrders.calculateOrder(prevPlayers, chars, roles);
-    //     return NightOrders.addOrderIndicators(ordering, prevPlayers);
-    //   } else if (newCycle === "Day") {
-    //     return prevPlayers.map(player => {
-    //       player.nightOrders = [];
-    //       return player;
-    //     });
-    //   }
-    // })
-
       
   }
 
