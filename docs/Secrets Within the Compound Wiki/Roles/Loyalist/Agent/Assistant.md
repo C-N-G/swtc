@@ -27,7 +27,8 @@ You start knowing an [[Agent]] player (not yourself) and their [[role]]. If you 
 - Be weary about immediately trusting the player you learnt! You might have learnt false information somehow. If you tell them the [[role]] you think they are before they tell you, then they can easily just lie to you by following your lead. If this happens, you won't know your information is false. Instead, tell them you're their Assistant, and that you'd like to know their [[role]].
 
 # How to Narrate
-- The first night that the Assistant is in play, wake up the Assistant. Tell them a player who has an [[Agent]] [[role]], and their specific [[role]]. Send them back to sleep. If the Assistant dies mark the player that they learnt as [[malfunctioning]].
+- The first night that the Assistant is in play, wake up the Assistant. Tell them a player who has an [[Agent]] [[role]], and their specific [[role]]. Send them back to sleep.
+- If the Assistant dies mark the player that they learnt as [[malfunctioning]].
 
 # Additional Information
 - If the Assistant is [[malfunctioning]] they can be told an incorrect player, or an incorrect [[role]]. If they cease to be [[malfunctioning]] they will not receive new information.
