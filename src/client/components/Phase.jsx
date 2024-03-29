@@ -154,16 +154,15 @@ function NightOrderDialog({openDialog, handleClose, players, setPlayers, chars, 
     setPurgedOrders(newPurgedOrders);
 
     setPlayers(prevPlayers => {
-      
       const ordering = NightOrders.calculateOrder(prevPlayers, chars, roles);
       return NightOrders.addOrderIndicators(ordering, prevPlayers, newPurgedOrders);
-
     })
     
   }
 
   function handleResetClick() {
     setPurgedOrders([]);
+    setPlayers(prevPlayers => NightOrders.addOrderIndicators(ordering, prevPlayers));
   }
 
   let placedIndex = 0;
