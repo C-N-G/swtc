@@ -26,7 +26,7 @@ Your neighbours cannot malfunction.
 - If you believe your neighbours aren't on your team, then it might be a good idea to get yourself dismissed so that you're no longer protecting your opponents.
 
 # How to Narrate
-- On the first night that the Cook is in play, mark their neighbours as immune to [[malfunctioning]].
+- The first night that the Cook is in play, mark their neighbours as immune to [[malfunctioning]].
 - If the Cook becomes [[malfunctioning]] remove the immunity from their neighbours.
 
 # Additional Information
