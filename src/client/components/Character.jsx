@@ -118,7 +118,7 @@ function PlayerCharacter({user, session, useLocal}) {
 
 }
 
-function NarratorCharacter({phase, session, setSession, players, setPlayers}) {
+function NarratorCharacter({phase, session, setSession, players, setPlayers, setPurgedOrders}) {
 
   const [modSelOpen, setModSelOpen] = useState(false);
   const [selectedReminder, setSelectedReminder] = useState(null);
@@ -178,6 +178,8 @@ function NarratorCharacter({phase, session, setSession, players, setPlayers}) {
         console.error("randomiser error: ", error);
         return prevPlayers;
       }
+
+      setPurgedOrders([]);
 
       if (phase.cycle === "Night") {
         const ordering = NightOrders.calculateOrder(newPlayers, chars, roles);

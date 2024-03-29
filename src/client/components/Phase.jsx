@@ -51,11 +51,10 @@ function PlayerPhase({phase}) {
 
 
 
-function NarratorPhase({phase, setPhase, players, setPlayers, session}) {
+function NarratorPhase({phase, setPhase, players, setPlayers, session, purgedOrders, setPurgedOrders}) {
 
   const [chars, roles] = useMemo(() => GameData.getFilteredValues(session.modules, true), [session.modules]);
   const [openDialog, setOpenDialog] = useState(0);
-  const [purgedOrders, setPurgedOrders] = useState([]);
 
   function hanldeClick() {
 

@@ -29,6 +29,7 @@ function App() {
   const [userId, setUserId] = useState(null);
 
   const [display, setDisplay] = useState(0);
+  const [purgedOrders, setPurgedOrders] = useState([]);
   const [phase, setPhase] = useState({
     cycle: "Night", 
     round: 1
@@ -222,11 +223,10 @@ function App() {
       <Grid container spacing={2}>
         <Grid item xs={8}>
           <Phase 
-            phase={phase} 
-            setPhase={setPhase}
-            players={players}
-            setPlayers={setPlayers}
-            session={session}/>
+            phase={phase} setPhase={setPhase}
+            players={players} setPlayers={setPlayers}
+            session={session}
+            purgedOrders={purgedOrders} setPurgedOrders={setPurgedOrders} />
         </Grid>
         <Grid item xs={4}>
           <Options session={session}/>
@@ -241,7 +241,7 @@ function App() {
         </Grid>
         <Grid item xs={4}>
           <Character 
-            phase={phase}
+            phase={phase} setPurgedOrders={setPurgedOrders}
             session={session} setSession={setSession}
             players={players} setPlayers={setPlayers} />
           <Chat>
