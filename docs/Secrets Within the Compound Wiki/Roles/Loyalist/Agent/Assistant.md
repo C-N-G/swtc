@@ -24,7 +24,7 @@ You start knowing an [[Agent]] player (not yourself) and their [[role]]. If you 
 
 # How to Play
 - As the Assistant you know one player who, besides [[malfunctioning]] or appearing shenanigans, is confirmed to be an [[Agent]]. Telling as many players this as possible is a great way to let other [[Loyalist|Loyalists]] know they can trust this player.
-- Be weary about immediately trusting the player you learnt! You might have learnt false information somehow. If you tell them the [[role]] you think they are before they tell you, then they can easily just lie to you by following your lead. If this happens, you won't know your information is false. Instead, tell them you're their Assistant, and that you'd like to know their [[role]].
+- Be wary about immediately trusting the player you learnt! You might have learnt false information somehow. If you tell them the [[role]] you think they are before they tell you, then they can easily just lie to you by following your lead. If this happens, you won't know your information is false. Instead, tell them you're their Assistant, and that you'd like to know their [[role]].
 
 # How to Narrate
 - The first night that the Assistant is in play, wake up the Assistant. Tell them a player who has an [[Agent]] [[role]], and their specific [[role]]. Send them back to sleep.
