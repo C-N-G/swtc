@@ -8,10 +8,10 @@ Standard Procedure is a simple [[Module]]. This [[Module]] has been designed to 
 # [[Agent|Agents]]
 - [[Analyst]]
 - [[Assistant]]
-- Bodyguard
-- Clairvoyant
-- Cook
-- Coordinator
+- [[Bodyguard]]
+- [[Clairvoyant]]
+- [[Cook]]
+- [[Coordinator]]
 - Investigator
 - Janitor
 - Medic
