@@ -28,7 +28,7 @@ You start knowing an [[Agent]] player (not yourself) and their [[role]]. If you 
 - While it can be very useful to share your information with other players, be careful because it might make you a target. If you die, the player that you learnt won't be able to trust their information as they'll be [[malfunctioning]] from now on.
 
 # How to Narrate
-- The first night that the Assistant is in play, wake up the Assistant. Tell them a player who has an [[Agent]] [[role]], and their specific [[role]]. Send them back to sleep.
+- The first night that the Assistant is in play wake up the Assistant. Tell them a player who has an [[Agent]] [[role]], and their specific [[role]]. Send them back to sleep.
 - If the Assistant dies mark the player that they learnt as [[malfunctioning]].
 
 # Additional Information
