@@ -10,6 +10,7 @@ import {socket} from "../helpers/socket.js";
 import randomise from '../helpers/randomiser.js';
 import Reminder from './Reminder.jsx';
 import Draggable from './Draggable.jsx';
+import NightOrders from '../helpers/nightOrders.js';
 
 function Character(props) {
 
@@ -117,19 +118,20 @@ function PlayerCharacter({user, session, useLocal}) {
 
 }
 
-function NarratorCharacter({session, setSession, players, setPlayers}) {
+function NarratorCharacter({phase, session, setSession, players, setPlayers}) {
 
   const [modSelOpen, setModSelOpen] = useState(false);
   const [selectedReminder, setSelectedReminder] = useState(null);
   const [sync, setSync] = useState({progress: false, error: false});
   const [cohesion, setCohesion] = useState(10);
-  const [oldSessionState, setOldSesionstate] = useState({players: [], modules: []});
+  const [oldSessionState, setOldSessionState] = useState({players: [], modules: []});
 
   const [chars, roles, reminders] = useMemo(() => GameData.getFilteredValues(session.modules, true), [session.modules]);
+  const ordering = useMemo(() => NightOrders.calculateOrder(players, chars, roles), [players, chars, roles]);
 
   function storeOldData() {
     if (session.sync) {
-      setOldSesionstate({players: JSON.parse(JSON.stringify(players)), modules: [...session.modules]});
+      setOldSessionState({players: JSON.parse(JSON.stringify(players)), modules: [...session.modules]});
     }
   }
 
@@ -168,13 +170,34 @@ function NarratorCharacter({session, setSession, players, setPlayers}) {
     }))
 
     setPlayers(prevPlayers => { 
+
       try {
-        return randomise(prevPlayers, chars, roles);
+        prevPlayers = randomise(prevPlayers, chars, roles);
       } catch (error) {
         console.error("randomiser error: ", error);
         return prevPlayers;
       }
+
+      if (phase.cycle === "Night") {
+        prevPlayers = NightOrders.addOrderIndicators(ordering, prevPlayers);
+      }
+
+      return prevPlayers;
+
     });
+
+    // setPlayers(prevPlayers => {
+    //   if (newCycle === "Night") {
+    //     const ordering = NightOrders.calculateOrder(prevPlayers, chars, roles);
+    //     return NightOrders.addOrderIndicators(ordering, prevPlayers);
+    //   } else if (newCycle === "Day") {
+    //     return prevPlayers.map(player => {
+    //       player.nightOrders = [];
+    //       return player;
+    //     });
+    //   }
+    // })
+
       
   }
 
@@ -226,7 +249,7 @@ function NarratorCharacter({session, setSession, players, setPlayers}) {
       modules: oldSessionState.modules
     }))
 
-    setOldSesionstate({players: [], modules: []});
+    setOldSessionState({players: [], modules: []});
 
   }
 

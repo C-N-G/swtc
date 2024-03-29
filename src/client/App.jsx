@@ -28,8 +28,11 @@ function App() {
   const [players, setPlayers] = useState([]);
   const [userId, setUserId] = useState(null);
 
-  const [phase, setPhase] = useState({cycle: "Night", round: 1});
   const [display, setDisplay] = useState(0);
+  const [phase, setPhase] = useState({
+    cycle: "Night", 
+    round: 1
+  });
   const [votes, setVotes] = useState({
     list: [], 
     voting: false, 
@@ -238,6 +241,7 @@ function App() {
         </Grid>
         <Grid item xs={4}>
           <Character 
+            phase={phase}
             session={session} setSession={setSession}
             players={players} setPlayers={setPlayers} />
           <Chat>
@@ -248,7 +252,7 @@ function App() {
                 setPlayers([...somePlayers]);
                 setSession(prevSession => ({
                   ...prevSession,
-                  modules: [GameData.modules[0].name]
+                  modules: [GameData.modules[2].name]
                 }));
               }}>
                 Add Dummy Players
