@@ -5,6 +5,7 @@
   "main": "./index.html",
   "type": "module",
   "scripts": {
+    "start": "node ./src/server/main.js",
     "client": "vite",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
