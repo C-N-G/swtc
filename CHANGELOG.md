@@ -1,4 +1,22 @@
-23/03/2024 v0.4.3
+### 29/03/2024 v0.4.4
+- changed night order indicators
+  - these indicators are now added to players when randomising if it is currently a night phase
+  - these indicators are updated to reflect player removed in the night order list
+- changed night order list
+  - moved the remove/undo button from inside the dropdown to the main list item
+  - added checkboxes next to the list items to signify completion
+  - these checkboxes are reset after each night phase
+  - made removed night orders unselectable
+- added the scenario viewer
+  - this shows all characteristics and roles currently selected for use by the narrator
+  - also shows ability text for each characteristc and role
+  - both the player and narrator can access this
+- redesigned the phase window
+  - resized the main phase display text and stacked it vertically
+  - restyled and organised the buttons in the phase window
+---
+
+### 23/03/2024 v0.4.3
 - added rulebook link under options
 - added view player button to the player details widget
   - pressing this button will bring up the view player dialog
@@ -15,8 +33,9 @@
   - each player can be exapnded to show their corresponding ability text 
   - players can be removed from this list through the remove button after expanding a player
   - similarly players can be added back with the undo button under a player
+---
 
-15/03/2024 v0.4.2
+### 15/03/2024 v0.4.2
 - updated standard procedure module
   - changed assistant, supervisor, and forthright ability text
   - removed bureaucrat, patient, punctual, and reflective
@@ -25,8 +44,9 @@
 - added unknown team colour to player indicators
 - fixed syncing overwrites local data bug
 - fixed showing wrong char/role text bug 
+---
 
-09/03/2024 v0.4.1
+### 09/03/2024 v0.4.1
 - changed module filtering to now work off ids instead of names, so duplicate attributes/roles should now filter correctly
 - renamed "mechanic" to "ability" in the player view of the character window
 - removed status attributes from the game
@@ -66,8 +86,9 @@
 - fixed reminders from stopping player randomistion while placed
 - fixed crash when starting a dismissal vote without selecting a nominating player 
 - fixed crash related to player disconnects
+---
 
-03/03/2024 v0.4.0
+### 03/03/2024 v0.4.0
 - added first module named "Standard Procedure"
 - improved setup commands
   - added new Neighbour setup command, this command will cause the player to neighbour a specific target
@@ -76,9 +97,9 @@
 - changed the characteristic and role data format
   - types has been changed from an array to a string, and renamed to type
   - teams has been removed from roles, this is now derived from a roles type at load time
+---
 
-
-23/02/2024 v0.3.6
+### 23/02/2024 v0.3.6
 - added reminders for the narrator
   - reminders are tied any role or characistic with an ability
   - reminders can be selected from the character window
@@ -87,18 +108,21 @@
   - reminders can be dragged between players to rearrange
   - reminders can be dragged off players to remove them
   - in the player details widget reminders can be seen and clicked on for a detailed tooltip
+---
 
-17/02/2024 v0.3.5
+### 17/02/2024 v0.3.5
 - changed the player indicator for the narrator view to show the true team instead of the shown team
 - added "ShowAs" setup command support
 - added partial support for the neighbour property of setup commands
+---
 
-10/02/2024 v0.3.4
+### 10/02/2024 v0.3.4
 - moved app end point from http://cormacgudge.xyz:3002 to https://cormacgudge.zyx/swtc
 - added https support
 - reimplemented clipboard copy button next to session id
+---
 
-09/02/2024 v0.3.3
+### 09/02/2024 v0.3.3
 - added partial setup commands support for roles
   - currently supports the quantity and target arguments
   - commands will not work in all situations e.g. if all players have already been given a role
@@ -110,8 +134,9 @@
 - refactored several core functions
 - changed the player indicator colour to reflect the players team for in narrator view
 - added end to end testing
+---
 
-02/02/2024 v0.3.2
+### 02/02/2024 v0.3.2
 - added sync button to the narrator view
   - the sync button contains two components, button itself, and the toggle to its left
   - the toggle indicates if the narrators changes to players will be synced live to other players
@@ -127,8 +152,9 @@
   - also in the players view of the same widget, the player state is now shown below the player name
 - improved the randomise players logic
   - the function will now choose exactly one antagonist role, and two detrimental roles
+---
 
-26/01/2023 v0.3.1
+### 26/01/2023 v0.3.1
 - created strings directory for storing game related data e.g. roles and characteristics
   - created data loading logic so future future data can be added easily
   - organised loading and storage directory to incorporate module functionality
@@ -157,8 +183,9 @@
 - fixed player order bug
 - fixed logical error in vote adding
 - fixed bug with session id not updating after leaving a session
+---
 
-23/12/2023 v0.3.0
+### 23/12/2023 v0.3.0
 - added state syncing when players join or leave
 - added host session menu item under options
   - an name will have to be input and submitted first
@@ -175,8 +202,9 @@
 - added narrator character window which currently only displays the session id
 - updated the hardcoded data to include the rest of the rule document
 - updated the detailed player view to correctly display the real player state
+---
 
-20/12/2023 v0.2.1
+### 20/12/2023 v0.2.1
 - added websocket server to http backend
 - added websocket client to spa
 - synced the phase changes
@@ -186,8 +214,9 @@
 - changed the real attributes to be the values shown to other players and on player indicators
 - added special effect to player indicators to show they are dead
 - after plays place their vote, the vote buttons will become disabled, disallowing them to vote again
+---
 
-12/12/2023 v0.2.0
+### 12/12/2023 v0.2.0
 - added phase control button for the story teller
 - updated the phase indicator to show which numbered day/night it is
 - added narrator version of the player details display
@@ -207,11 +236,13 @@
   - once the finish button is pressed the voting will end and the window will no longer be accessible until another vote begins
   - for testing purposes currently a player can vote multiple times
 - changed board player ordering to clockwise
+---
 
-09/12/2023 v0.1.3
+### 09/12/2023 v0.1.3
 - added dummy story teller debug changer
+---
 
-07/12/2023 v0.1.2
+### 07/12/2023 v0.1.2
 - added nodejs server for serving the SPA
 - synced voting window state with clientside players
 - improve general responsive design
@@ -219,13 +250,15 @@
   - board element has been made fully responsive
 - added player class
 - added initial server side socket boilerplate
+---
 
-06/12/2023 v0.1.1
+### 06/12/2023 v0.1.1
 - updated player indicator spacing and text
 - added consistent sizing to the dynamic window
 - added voting window
+---
 
-25/11/2023 v0.1.0
+### 25/11/2023 v0.1.0
 - changed repo licence to cc-by-nc-sa 4.0
 - added detailed player window
   - this window includes controls for:
@@ -238,15 +271,18 @@
   - this window also displays the player name and player state
   - this window will remember the entered information for each player
 - updated player indicator buttons
+---
 
-18/11/2023 v0.0.2
+### 18/11/2023 v0.0.2
 - renamed page title to SWTC
 - resized page components to fit together
 - removed page scroll bars
 - added text dummy text placements for phase, options, character and chat components
 - added iframe of rules to character component
+---
 
-6/11/2023 v0.0.1
+### 6/11/2023 v0.0.1
 - created main board area with auto sizing player 
 - blocked out phase, options, character and chat components
 - set up server and client project hireachy
+---
