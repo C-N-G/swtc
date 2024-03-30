@@ -1,5 +1,6 @@
 import {Fragment, useContext, useMemo, useState} from "react";
-import {Card, Button, Typography, Dialog, DialogTitle, DialogContent, DialogActions, List, ListItemButton, Collapse, ListItemText}from '@mui/material';
+import {Card, Button, Typography, Dialog, DialogTitle, DialogContent, DialogActions, List, 
+  ListItemButton, Collapse, ListItemText, ButtonGroup, Stack, Grid, ListItem, Divider, Checkbox}from '@mui/material';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import {UserContext} from "../App.jsx";
@@ -29,7 +30,7 @@ function Phase(props) {
     height: "10vh", 
     flexGrow: 1,
     display: "flex", 
-    justifyContent: "center",
+    justifyContent: "space-evenly",
     alignItems: "center",
   }}>
     {getUserTypeCheckedComponent()}
@@ -41,11 +42,35 @@ export default Phase
 
 
 
-function PlayerPhase({phase}) {
+function PlayerPhase({phase, session}) {
+
+  const [openDialog, setOpenDialog] = useState(null);
+  const [chars, roles] = useMemo(() => GameData.getFilteredValues(session.modules, true), [session.modules]);
+  const handleClose = () => setOpenDialog(null);
   
-  return (
-    <Typography variant="h4">Current Phase: {phase.cycle} {phase.round}</Typography>
-  )
+  return (<>
+    <Grid container alignItems="center">
+      <Grid item xs={4} container justifyContent="center">
+        <ButtonGroup size="small" orientation="vertical">
+          <Button onClick={() => setOpenDialog("scenario")}>Show Scenario</Button>
+        </ButtonGroup>
+      </Grid>
+      <Grid item xs={4} container justifyContent="center">
+        <Stack alignItems="center" spacing={-1}>
+          <Typography variant="h5">Current Phase</Typography>
+          <Typography variant="h3">{phase.cycle} {phase.round}</Typography>
+        </Stack>
+      </Grid>
+      <Grid item xs={4} container justifyContent="center">
+      </Grid>
+    </Grid>
+
+    <ScenarioDialog
+      openDialog={openDialog}
+      handleClose={handleClose}
+      chars={chars}
+      roles={roles} />
+  </>)
 
 }
 
@@ -54,7 +79,8 @@ function PlayerPhase({phase}) {
 function NarratorPhase({phase, setPhase, players, setPlayers, session, purgedOrders, setPurgedOrders}) {
 
   const [chars, roles] = useMemo(() => GameData.getFilteredValues(session.modules, true), [session.modules]);
-  const [openDialog, setOpenDialog] = useState(0);
+  const [checkedState, setCheckedState] = useState(Array(32).fill(false));
+  const [openDialog, setOpenDialog] = useState(null);
 
   function hanldeClick() {
 
@@ -87,58 +113,73 @@ function NarratorPhase({phase, setPhase, players, setPlayers, session, purgedOrd
         socket.emit("phase", {cycle: newCycle, round: newRound});
       }
 
+      setCheckedState(state => state.fill(false));
+
 
   }
 
   function handleClose() {
-    setOpenDialog(0);
+    setOpenDialog(null);
   }
 
   return (
     <>
-      <Typography variant="h4">Current Phase: {phase.cycle} {phase.round}</Typography>
-      <Button 
-        size="small" 
-        onClick={() => hanldeClick()}
-        variant="contained"
-        sx={{m: 1}}
-      >
-        Progress Phase
-      </Button>
-      <Button 
-        disabled={phase.cycle !== "Night"}
-        size="small"
-        variant="contained"
-        onClick={() => setOpenDialog(1)}
-      >
-        Night Order List
-      </Button>
+      <Grid container alignItems="center">
+        <Grid item xs={4} container justifyContent="center">
+          <ButtonGroup size="small" orientation="vertical">
+            <Button onClick={() => setOpenDialog("scenario")}>Show Scenario</Button>
+          </ButtonGroup>
+        </Grid>
+        <Grid item xs={4} container justifyContent="center">
+          <Stack alignItems="center" spacing={-1}>
+            <Typography variant="h5">Current Phase</Typography>
+            <Typography variant="h3">{phase.cycle} {phase.round}</Typography>
+          </Stack>
+        </Grid>
+        <Grid item xs={4} container justifyContent="center">
+          <ButtonGroup size="small" orientation="vertical">
+            <Button onClick={() => hanldeClick()}>&gt; Progress Phase &gt;</Button>
+            <Button disabled={phase.cycle !== "Night"} onClick={() => setOpenDialog("nightOrder")}>Night Order List</Button>
+          </ButtonGroup>
+        </Grid>
+      </Grid>
+
       <NightOrderDialog 
+        openDialog={openDialog} handleClose={handleClose}
+        players={players} setPlayers={setPlayers}
+        chars={chars} roles={roles}
+        purgedOrders={purgedOrders} setPurgedOrders={setPurgedOrders} 
+        checkedState={checkedState} setCheckedState={setCheckedState} />
+
+      <ScenarioDialog
         openDialog={openDialog}
         handleClose={handleClose}
-        players={players}
-        setPlayers={setPlayers}
         chars={chars}
-        roles={roles}
-        purgedOrders={purgedOrders}
-        setPurgedOrders={setPurgedOrders}
-      />
+        roles={roles} />
     </>
   )
 
 }
 
-function NightOrderDialog({openDialog, handleClose, players, setPlayers, chars, roles, purgedOrders, setPurgedOrders}) {
+function NightOrderDialog({openDialog, handleClose, players, setPlayers, 
+  chars, roles, purgedOrders, setPurgedOrders, checkedState, setCheckedState}) {
 
   const ordering = useMemo(() => NightOrders.calculateOrder(players, chars, roles), [players, chars, roles]);
-  const [openState, setOpenState] = useState(ordering.map(() => false));
+  const [openState, setOpenState] = useState(Array(32).fill(false));
 
   function handleOpenClick(index) {
     setOpenState(state => {
       const newState = !state[index];
-      state = state.map(() => false);
+      state = state.fill(false);
       state[index] = newState;
-      return state;
+      return [...state];
+    })
+  }
+
+  function handleCheckClick(index) {
+    setCheckedState(state => {
+      state[index] = !state[index]
+      return [...state];
     })
   }
 
@@ -157,13 +198,19 @@ function NightOrderDialog({openDialog, handleClose, players, setPlayers, chars, 
       const ordering = NightOrders.calculateOrder(prevPlayers, chars, roles);
       return NightOrders.addOrderIndicators(ordering, prevPlayers, newPurgedOrders);
     })
+
+    if (openState[index] === true) {
+      setOpenState(state => state.fill(false));
+    }
     
   }
 
   function handleResetClick() {
     setPurgedOrders([]);
+    setCheckedState(state => state.fill(false));
     setPlayers(prevPlayers => NightOrders.addOrderIndicators(ordering, prevPlayers));
   }
+
 
   let placedIndex = 0;
   const playerList = ordering.map((nightOrder, index) => {
@@ -185,23 +232,31 @@ function NightOrderDialog({openDialog, handleClose, players, setPlayers, chars, 
 
     const name = `#${displayIndex} - ${players[nightOrder.playerIndex].name} - ${attribute.name}`;
 
+    const button = (
+      <Button
+        component={"span"} 
+        variant="text" 
+        size="small" 
+        sx={{mr: 1}}
+        onClick={(event) => handlePurgeClick(index, event)}
+      >
+        {removed ? "undo" : "remove"}
+      </Button>
+    )
 
     return (
       <Fragment key={"orderListKey" + index + nightOrder.name}>
-        <ListItemButton onClick={() => handleOpenClick(index)}>
-          <ListItemText primary={name} sx={removed ? {textDecoration: "line-through", color: "rgb(255, 200, 200)"} : {}}/>
-          {openState[index] ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
+        <ListItem secondaryAction={button} disablePadding >
+          <Checkbox 
+            checked={checkedState[index] || removed}
+            onChange={() => handleCheckClick(index)}
+            disabled={removed}/>
+          <ListItemButton disabled={removed} onClick={() => handleOpenClick(index)}>
+            {openState[index] ? <ExpandLess /> : <ExpandMore />}
+            <ListItemText primary={name} sx={removed ? {textDecoration: "line-through", color: "rgb(255, 0, 0)"} : {}}/>
+          </ListItemButton>
+        </ListItem>
         <Collapse in={openState[index]} timeout="auto" unmountOnExit>
-          <Button 
-            component={"span"} 
-            variant="outlined" 
-            size="small" 
-            sx={{mr: 1}}
-            onClick={(event) => handlePurgeClick(index, event)}
-          >
-            {removed ? "undo" : "remove"}
-          </Button>
           <Typography component={"span"}>{attrLong} Ability: {attribute.ability}</Typography>
         </Collapse>
       </Fragment>
@@ -209,7 +264,7 @@ function NightOrderDialog({openDialog, handleClose, players, setPlayers, chars, 
   })
 
   return (
-    <Dialog open={openDialog === 1} onClose={handleClose} fullWidth>
+    <Dialog open={openDialog === "nightOrder"} onClose={handleClose} fullWidth>
       <DialogTitle>Night Order List</DialogTitle>
       <DialogContent>
         <List>
@@ -222,4 +277,37 @@ function NightOrderDialog({openDialog, handleClose, players, setPlayers, chars, 
       </DialogActions>
     </Dialog>
   )
+}
+
+function ScenarioDialog({openDialog, handleClose, chars, roles}) {
+
+  const listMaker = (ele, index) => {
+    return (
+      <ListItem disablePadding key={index}>
+        <ListItemText primary={ele.name} secondary={ele.ability}/>
+      </ListItem>
+    )
+  }
+
+  const filter = (ele) => ele.name !== "Unknown";
+
+  const charList = chars ? chars.filter(filter).map(listMaker) : [];
+  const roleList = roles ? roles.filter(filter).map(listMaker) : [];
+
+  return (
+    <Dialog open={openDialog === "scenario"} onClose={handleClose} fullWidth>
+      <DialogTitle>Current Scenario</DialogTitle>
+      <DialogContent>
+        <Typography variant="h5">Roles: {roleList.length}</Typography>
+        <List>{roleList}</List>
+        <Divider sx={{my: 4}} />
+        <Typography variant="h5">Characteristics: {charList.length}</Typography>
+        <List>{charList}</List>
+      </DialogContent>
+      <DialogActions>
+        <Button onClose={handleClose}>Close</Button>
+      </DialogActions>
+    </Dialog>
+  )
+
 }

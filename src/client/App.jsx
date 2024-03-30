@@ -221,6 +221,7 @@ function App() {
     <UserContext.Provider value={user}>
     <Container sx={{maxWidth: "1440px"}}>
       <Grid container spacing={2}>
+
         <Grid item xs={8}>
           <Phase 
             phase={phase} setPhase={setPhase}
