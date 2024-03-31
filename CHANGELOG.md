@@ -1,3 +1,12 @@
+### 31/03/2024 v0.4.5
+- updated scenario viewer
+  - added char/role attributes
+  - sorted roles by category e.g. agent/detrimental/antagonist
+  - added night order list
+  - the night order only shows sections that have active elements
+  - added tabs for switching between the active element list and the night order
+---
+
 ### 29/03/2024 v0.4.4
 - changed night order indicators
   - these indicators are now added to players when randomising if it is currently a night phase
