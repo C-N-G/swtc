@@ -3,6 +3,7 @@ import {Box, Typography, Button, Grid, TextField, Autocomplete, Stack, Chip} fro
 import {UserContext} from "../App.jsx";
 import GameData from "../strings/_gameData.js"
 import Reminder from "./Reminder.jsx";
+import useStore from "../hooks/useStore.js";
 
 function PlayerDetails(props) {
 
@@ -28,7 +29,9 @@ export default PlayerDetails
 
 
 
-function RegularPlayerDetails({player, handleViewPlayerClick, handlePlayerDataChange, chars, roles}) {
+function RegularPlayerDetails({player, handleViewPlayerClick, chars, roles}) {
+
+  const handlePlayerDataChange = useStore(state => state.changePlayerAttribute);
 
   function selectBuilder(playerId, type, list, value) {
     return <Autocomplete
@@ -108,7 +111,9 @@ function RegularPlayerDetails({player, handleViewPlayerClick, handlePlayerDataCh
 
 
 
-function NarratorDetails({player, handlePlayerDataChange, handleDismissalClick, chars, roles}) {
+function NarratorDetails({player, handleDismissalClick, chars, roles}) {
+
+  const handlePlayerDataChange = useStore(state => state.changePlayerAttribute);
 
   const leftVal = "Shown";
   const rightVal = "True"

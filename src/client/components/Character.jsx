@@ -7,10 +7,9 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import {UserContext} from "../App.jsx";
 import GameData from "../strings/_gameData.js";
 import {socket} from "../helpers/socket.js";
-import randomise from '../helpers/randomiser.js';
 import Reminder from './Reminder.jsx';
 import Draggable from './Draggable.jsx';
-import NightOrders from '../helpers/nightOrders.js';
+import useStore from '../hooks/useStore.js';
 
 function Character(props) {
 
@@ -47,9 +46,10 @@ function Character(props) {
 export default Character
 
 
-function PlayerCharacter({user, session, useLocal}) {
+function PlayerCharacter({user, useLocal}) {
 
-  const [chars, roles] = useMemo(() => GameData.getFilteredValues(session.modules, true), [session.modules]);
+  const modules = useStore(state => state.session.modules);
+  const [chars, roles] = useMemo(() => GameData.getFilteredValues(modules, true), [modules]);
 
   let fullChar, fullRole;
   if (useLocal) { // use local player state instead of real state
@@ -118,19 +118,29 @@ function PlayerCharacter({user, session, useLocal}) {
 
 }
 
-function NarratorCharacter({phase, session, setSession, players, setPlayers, setPurgedOrders}) {
+function NarratorCharacter() {
 
   const [modSelOpen, setModSelOpen] = useState(false);
   const [selectedReminder, setSelectedReminder] = useState(null);
   const [sync, setSync] = useState({progress: false, error: false});
   const [cohesion, setCohesion] = useState(10);
   const [oldSessionState, setOldSessionState] = useState({players: [], modules: []});
+  const randomisePlayers = useStore(state => state.randomisePlayers);
+  const players = useStore(state => state.players);
+  const setPlayers = useStore(state => state.setPlayers);
 
-  const [chars, roles, reminders] = useMemo(() => GameData.getFilteredValues(session.modules, true), [session.modules]);
+  const modules = useStore(state => state.session.modules);
+  const sessionId = useStore(state => state.session.id);
+  const sessionSync = useStore(state => state.session.sync);
+  const [chars, roles, reminders] = useMemo(() => GameData.getFilteredValues(modules, true), [modules]);
+  const syncOff = useStore(state => state.syncOff);
+  const syncOn = useStore(state => state.syncOn);
+  const setModules = useStore(state => state.setModules);
+
 
   function storeOldData() {
-    if (session.sync) {
-      setOldSessionState({players: JSON.parse(JSON.stringify(players)), modules: [...session.modules]});
+    if (sessionSync) {
+      setOldSessionState({players: JSON.parse(JSON.stringify(players)), modules: [...modules]});
     }
   }
 
@@ -144,51 +154,25 @@ function NarratorCharacter({phase, session, setSession, players, setPlayers, set
     let data;
 
     if (checked === true) {
-      data = [...session.modules, targetMod];
+      data = [...modules, targetMod];
     }
 
     if (checked === false) {
-      data = session.modules.filter((mod) => mod !== targetMod);
+      data = modules.filter((mod) => mod !== targetMod);
     }
 
-    setSession(prevSession => ({
-      ...prevSession,
-      sync: false,
-      modules: data
-    }))
+    setModules(data, false);
 
   }
 
-  function randomisePlayers() {
+  function handleRandomise() {
 
     storeOldData()
 
-    setSession(prevSession => ({
-      ...prevSession,
-      sync: false,
-    }))
+    syncOff();
 
-    setPlayers(prevPlayers => { 
+    randomisePlayers(chars, roles);
 
-      let newPlayers = [];
-
-      try {
-        newPlayers = randomise(prevPlayers, chars, roles);
-      } catch (error) {
-        console.error("randomiser error: ", error);
-        return prevPlayers;
-      }
-
-      setPurgedOrders([]);
-
-      if (phase.cycle === "Night") {
-        const ordering = NightOrders.calculateOrder(newPlayers, chars, roles);
-        newPlayers = NightOrders.addOrderIndicators(ordering, newPlayers);
-      }
-
-      return newPlayers;
-
-    });
       
   }
 
@@ -205,7 +189,7 @@ function NarratorCharacter({phase, session, setSession, players, setPlayers, set
       return player;
     });
 
-    let syncData = {"players": sanitisedPlayers, "modules": session.modules};
+    let syncData = {"players": sanitisedPlayers, "modules": modules};
 
     socket.timeout(5000).emit("sync", syncData, (error, response) => {
 
@@ -219,10 +203,7 @@ function NarratorCharacter({phase, session, setSession, players, setPlayers, set
       }
 
       if (response.status === "ok") {
-        setSession(prevSession => ({
-          ...prevSession,
-          sync: true,
-        }))
+        syncOn();
       }
 
     })
@@ -234,11 +215,7 @@ function NarratorCharacter({phase, session, setSession, players, setPlayers, set
 
     setPlayers(oldSessionState.players);
 
-    setSession(prevSession => ({
-      ...prevSession, 
-      sync: !prevSession.sync,
-      modules: oldSessionState.modules
-    }))
+    setModules(oldSessionState.modules, true);
 
     setOldSessionState({players: [], modules: []});
 
@@ -247,7 +224,7 @@ function NarratorCharacter({phase, session, setSession, players, setPlayers, set
   const allMods = GameData.modules.map(mod => {
     const title = `${mod.name} - ${mod.roles.length} roles - ${mod.chars.length} chars`;
     const checkbox = <Checkbox 
-      checked={session.modules.includes(mod.name)} 
+      checked={modules.includes(mod.name)} 
       onChange={handleModuleSelection} 
       value={mod.name} />
     return <FormControlLabel key={mod.name} control={checkbox} label={title} />
@@ -255,27 +232,27 @@ function NarratorCharacter({phase, session, setSession, players, setPlayers, set
 
   return (<>
     <Typography variant="h6">
-      Session ID: {session.id}
+      Session ID: {sessionId}
       {/* this doesn't work without https */}
-      <IconButton onClick={() => {navigator.clipboard.writeText(session.id)}}>
+      <IconButton onClick={() => {navigator.clipboard.writeText(sessionId)}}>
         <ContentCopyIcon />
       </IconButton>
     </Typography>
     <Button variant="contained" sx={{my: 1}} onClick={() => setModSelOpen(true)}>
-      Select Modules ({session.modules.length})
+      Select Modules ({modules.length})
     </Button>
-    <Button variant="contained" sx={{my: 1}} onClick={randomisePlayers}>
+    <Button variant="contained" sx={{my: 1}} onClick={handleRandomise}>
       Randomise Players
     </Button>
     <Box sx={{display: "flex", alignItems: "center"}}>
       <Switch 
         color={sync.error ? "error" : "primary"} 
-        checked={session.sync}
+        checked={sessionSync}
         onChange={() => {
           storeOldData();
-          setSession(prevSession => ({...prevSession, sync: !prevSession.sync}))
+          syncOff();
         }}
-        disabled={session.sync ? false : true}
+        disabled={sessionSync ? false : true}
         inputProps={{"aria-label": "autoSync control"}}/>
       <Button 
         variant={sync.progress ? "outlined" : "contained"} 
@@ -285,7 +262,7 @@ function NarratorCharacter({phase, session, setSession, players, setPlayers, set
       >
         {sync.progress ? <CircularProgress size={24} /> : sync.error ? "Error Syncing" : "Sync"}
       </Button>
-      {session.sync === false ? <Button 
+      {sessionSync === false ? <Button 
         variant="contained"
         sx={{ml: 1}}
         onClick={handleUndo}

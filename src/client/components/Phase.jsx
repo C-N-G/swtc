@@ -7,6 +7,7 @@ import {UserContext} from "../App.jsx";
 import {socket} from "../helpers/socket.js";
 import GameData from "../strings/_gameData.js";
 import NightOrders from "../helpers/nightOrders.js";
+import useStore from "../hooks/useStore.js";
 
 function Phase(props) {
 
@@ -42,11 +43,13 @@ export default Phase
 
 
 
-function PlayerPhase({phase, session}) {
+function PlayerPhase() {
 
+  const modules = useStore(state => state.session.modules);
   const [openDialog, setOpenDialog] = useState(null);
-  const [chars, roles] = useMemo(() => GameData.getFilteredValues(session.modules, true), [session.modules]);
+  const [chars, roles] = useMemo(() => GameData.getFilteredValues(modules, true), [modules]);
   const handleClose = () => setOpenDialog(null);
+  const phase = useStore(state => state.phase);
   
   return (<>
     <Grid container alignItems="center">
@@ -76,11 +79,18 @@ function PlayerPhase({phase, session}) {
 
 
 
-function NarratorPhase({phase, setPhase, players, setPlayers, session, purgedOrders, setPurgedOrders}) {
+function NarratorPhase() {
 
-  const [chars, roles] = useMemo(() => GameData.getFilteredValues(session.modules, true), [session.modules]);
+  const modules = useStore(state => state.session.modules);
+  const [chars, roles] = useMemo(() => GameData.getFilteredValues(modules, true), [modules]);
   const [checkedState, setCheckedState] = useState(Array(32).fill(false));
   const [openDialog, setOpenDialog] = useState(null);
+  const phase = useStore(state => state.phase);
+  const nextPhase = useStore(state => state.nextPhase);
+  const addPlayerNightIndicators = useStore(state => state.addPlayerNightIndicators);
+  const players = useStore(state => state.players);
+  const purgedOrders = useStore(state => state.purgedOrders);
+
 
   function hanldeClick() {
 
@@ -95,20 +105,10 @@ function NarratorPhase({phase, setPhase, players, setPlayers, session, purgedOrd
         newRound = phase.round + 1;
       }
 
-      setPlayers(prevPlayers => {
-        if (newCycle === "Night") {
-          const ordering = NightOrders.calculateOrder(prevPlayers, chars, roles);
-          return NightOrders.addOrderIndicators(ordering, prevPlayers, purgedOrders);
-        } else if (newCycle === "Day") {
-          return prevPlayers.map(player => {
-            player.nightOrders = [];
-            return player;
-          });
-        }
-      })
+      addPlayerNightIndicators(newCycle, chars, roles, purgedOrders);
 
       if (players[0].id === "54321") {
-        setPhase({cycle: newCycle, round: newRound});
+        nextPhase({cycle: newCycle, round: newRound});
       } else {
         socket.emit("phase", {cycle: newCycle, round: newRound});
       }
@@ -146,9 +146,7 @@ function NarratorPhase({phase, setPhase, players, setPlayers, session, purgedOrd
 
       <NightOrderDialog 
         openDialog={openDialog} handleClose={handleClose}
-        players={players} setPlayers={setPlayers}
         chars={chars} roles={roles}
-        purgedOrders={purgedOrders} setPurgedOrders={setPurgedOrders} 
         checkedState={checkedState} setCheckedState={setCheckedState} />
 
       <ScenarioDialog
@@ -161,11 +159,15 @@ function NarratorPhase({phase, setPhase, players, setPlayers, session, purgedOrd
 
 }
 
-function NightOrderDialog({openDialog, handleClose, players, setPlayers, 
-  chars, roles, purgedOrders, setPurgedOrders, checkedState, setCheckedState}) {
+function NightOrderDialog({openDialog, handleClose, chars, roles, checkedState, setCheckedState}) {
 
+  const players = useStore(state => state.players);
   const ordering = useMemo(() => NightOrders.calculateOrder(players, chars, roles), [players, chars, roles]);
   const [openState, setOpenState] = useState(Array(32).fill(false));
+  const addPurgedOrder = useStore(state => state.addPurgedOrder);
+  const removePurgedOrders = useStore(state => state.removePurgedOrders);
+  const purgedOrders = useStore(state => state.purgedOrders);
+  
 
   function handleOpenClick(index) {
     setOpenState(state => {
@@ -184,20 +186,8 @@ function NightOrderDialog({openDialog, handleClose, players, setPlayers,
   }
 
   function handlePurgeClick(index, event) {
-    const action = event.target.innerText
-    const purgeString = JSON.stringify(ordering[index]);
-    let newPurgedOrders;
-    if (action === "REMOVE") {
-      newPurgedOrders = [...purgedOrders, purgeString];
-    } else if (action === "UNDO") {
-      newPurgedOrders = purgedOrders.filter(s => s !== purgeString)
-    }
-    setPurgedOrders(newPurgedOrders);
 
-    setPlayers(prevPlayers => {
-      const ordering = NightOrders.calculateOrder(prevPlayers, chars, roles);
-      return NightOrders.addOrderIndicators(ordering, prevPlayers, newPurgedOrders);
-    })
+    addPurgedOrder(event, index, ordering, chars, roles);
 
     if (openState[index] === true) {
       setOpenState(state => state.fill(false));
@@ -206,9 +196,8 @@ function NightOrderDialog({openDialog, handleClose, players, setPlayers,
   }
 
   function handleResetClick() {
-    setPurgedOrders([]);
+    removePurgedOrders(chars, roles, ordering);
     setCheckedState(state => state.fill(false));
-    setPlayers(prevPlayers => NightOrders.addOrderIndicators(ordering, prevPlayers));
   }
 
 

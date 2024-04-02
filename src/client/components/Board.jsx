@@ -8,6 +8,7 @@ import {socket} from "../helpers/socket.js";
 import GameData from "../strings/_gameData.js"
 import useCountDown from "../hooks/useCountDown.js";
 import Character from "./Character.jsx";
+import useStore from "../hooks/useStore.js";
 
 const BOARD_CONFIG = [
   [0,0,0], // top, sides, bottom - player count
@@ -29,20 +30,33 @@ const BOARD_CONFIG = [
   [5,3,5], // 16
 ]
 
-function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerDataChange, session}) {
+function Board() {
 
   const [selected, setSelected] = useState(null);
   const [openDialog, setOpenDialog] = useState(0); 
 
+  const drawPlayers = useStore(state => state.getDrawPlayers());
   const playerNum = drawPlayers.length;
   const topNum = BOARD_CONFIG[playerNum][0];
   const sideNum = BOARD_CONFIG[playerNum][1];
   const botNum = BOARD_CONFIG[playerNum][2];
-  const [chars, roles] = useMemo(() => GameData.getFilteredValues(session.modules), [session.modules]);
-  const [fullChars, fullRoles] = useMemo(() => GameData.getFilteredValues(session.modules, true), [session.modules]);
+  const modules = useStore(state => state.session.modules);
+  const [chars, roles] = useMemo(() => GameData.getFilteredValues(modules), [modules]);
+  const [fullChars, fullRoles] = useMemo(() => GameData.getFilteredValues(modules, true), [modules]);
 
   const timerDuration = (Math.max(playerNum, 8)*2) - 1;
   const [time, beginTimer] = useCountDown(timerDuration, handleVoteTimerEnd);
+
+  const display = useStore(state => state.display);
+  const displayNone = useStore(state => state.displayNone);
+  const displayDetails = useStore(state => state.displayDetails);
+  const displayVote = useStore(state => state.displayVote);
+
+  const voting = useStore(state => state.votes.voting);
+  const accusingPlayerId = useStore(state => state.votes.accusingPlayer);
+  const nominatedPlayerId = useStore(state => state.votes.nominatedPlayer);
+  const setAccuser = useStore(state => state.setAccuser);
+  const setNominated = useStore(state => state.setNominated);
 
   function createIndicator(player, index, vertical) {
 
@@ -59,36 +73,36 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerD
 
     if (display === 1 && targetId === selected) {
       setSelected(null);
-      if (votes.voting) {
-        setDisplay(2);
+      if (voting) {
+        displayVote();
       }
     } else {
-      setDisplay(1);
+      displayDetails();
       setSelected(targetId)
     }
 
   }
 
   function handleDismissalClick(nominatedPlayerId) {
-    setVotes(prev => ({...prev, nominatedPlayer: nominatedPlayerId, accusingPlayer: null}));
+    setNominated(nominatedPlayerId, null);
     setOpenDialog(1);
   }
 
   function handlePlayerSelect(event) {
-    setVotes(prev => ({...prev, accusingPlayer: event.target.value}));
+    setAccuser(event.target.value);
   }
 
   function handleBeginClick() {
-    if (!votes.accusingPlayer) {
+    if (!accusingPlayerId) {
       throw new Error("no player selected");
     }
     setOpenDialog(0);
-    socket.emit("vote", {nominatedPlayer: votes.nominatedPlayer, accusingPlayer: votes.accusingPlayer, voting: true})
+    socket.emit("vote", {nominatedPlayer: nominatedPlayerId, accusingPlayer: accusingPlayerId, voting: true})
   }
 
   function handleVoteFinishClick() {
     socket.emit("vote", {list: [], voting: false, accusingPlayer: null, nominatedPlayer: null});
-    setDisplay(0);
+    displayNone();
   }
 
   function handleVoteStartClick() {
@@ -129,20 +143,17 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerD
     createIndicator(player, index, true)
   ));
 
-  const selectablePlayers = drawPlayers.filter(player => player.id !== votes.nominatedPlayer).map((player, index) => {
+  const selectablePlayers = drawPlayers.filter(player => player.id !== nominatedPlayerId).map((player, index) => {
     return (<MenuItem key={index} value={player.id}>{player.name}</MenuItem>)
   })
 
-  const nominatedPlayer = drawPlayers.find(player => player.id === votes.nominatedPlayer);
-  const accusingPlayer = drawPlayers.find(player => player.id === votes.accusingPlayer);
+  const nominatedPlayer = drawPlayers.find(player => player.id === nominatedPlayerId);
+  const accusingPlayer = drawPlayers.find(player => player.id === accusingPlayerId);
   const selectedPlayer = drawPlayers.find(player => player.id === selected);
 
   const voteWindow = (
     <Vote nominatedPlayer={nominatedPlayer} 
       accusingPlayer={accusingPlayer} 
-      setVotes={setVotes}
-      votes={votes}
-      handlePlayerDataChange={handlePlayerDataChange}
       handleVoteFinishClick={handleVoteFinishClick}
       handleVoteStartClick={handleVoteStartClick}
       time={time}/>
@@ -153,7 +164,6 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerD
       player={selectedPlayer} 
       handleDismissalClick={handleDismissalClick}
       handleViewPlayerClick={handleViewPlayerClick}
-      handlePlayerDataChange={handlePlayerDataChange}
       chars={chars}
       roles={roles}/>
   )
@@ -162,7 +172,7 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerD
 
     if (selected !== null && display === 1 && selectedPlayer) {
       return playerdetails;
-    } else if (votes.voting && display === 2) {
+    } else if (voting && display === 2) {
       return voteWindow;
     } else {
       return false;
@@ -178,7 +188,6 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerD
       <DismissalDialog 
         openDialog={openDialog} 
         setOpenDialog={setOpenDialog} 
-        votes={votes} 
         handlePlayerSelect={handlePlayerSelect} 
         selectablePlayers={selectablePlayers} 
         handleBeginClick={handleBeginClick}
@@ -187,7 +196,6 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerD
         openDialog={openDialog} 
         setOpenDialog={setOpenDialog}
         player={selectedPlayer}
-        session={session}
       />
       <Stack sx={{minHeight: "20%"}} direction="row" justifyContent="space-between">
         {top}
@@ -213,7 +221,10 @@ function Board({drawPlayers, display, setDisplay, votes, setVotes, handlePlayerD
 export default Board
 
 function DismissalDialog({openDialog, setOpenDialog, 
-  votes, handlePlayerSelect, selectablePlayers, handleBeginClick}) {
+  handlePlayerSelect, selectablePlayers, handleBeginClick}) {
+
+    const accusingPlayerId = useStore(state => state.votes.accusingPlayer);
+
   return (
     <Dialog open={openDialog === 1} onClose={() => setOpenDialog(0)}>
       <DialogTitle>Player Select</DialogTitle>
@@ -227,7 +238,7 @@ function DismissalDialog({openDialog, setOpenDialog,
             labelId="nominating-player-select-label" 
             id="nominating-player-select"
             label="Player"
-            value={votes.accusingPlayer ? votes.accusingPlayer : ""}
+            value={accusingPlayerId ? accusingPlayerId : ""}
             onChange={handlePlayerSelect} 
           >
             {selectablePlayers}
@@ -236,7 +247,7 @@ function DismissalDialog({openDialog, setOpenDialog,
       </DialogContent>
       <DialogActions>
         <Button 
-          disabled={votes.accusingPlayer === null} 
+          disabled={accusingPlayerId === null} 
           onClick={handleBeginClick}
         >
           Begin
@@ -247,12 +258,12 @@ function DismissalDialog({openDialog, setOpenDialog,
   )
 }
 
-function ViewPlayerDialog({openDialog, setOpenDialog, player, session}) {
+function ViewPlayerDialog({openDialog, setOpenDialog, player}) {
   return (
     <Dialog open={openDialog === 2} onClose={() => setOpenDialog(0)} maxWidth={"xs"}>
       <DialogTitle>View Player</DialogTitle>
       <DialogContent>
-        <Character user={player} session={session} useLocal={true}/>
+        <Character user={player} useLocal={true}/>
       </DialogContent>
       <DialogActions>
         <Button onClick={() => setOpenDialog(0)}>Cancel</Button>

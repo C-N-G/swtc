@@ -1,4 +1,4 @@
-import {useState, createContext, useEffect, useCallback} from "react";
+import {createContext, useEffect} from "react";
 // eslint-disable-next-line no-unused-vars
 import { createTheme } from "@mui/material/styles";
 import {Box, Button, Container, Grid} from "@mui/material";
@@ -11,7 +11,9 @@ import Chat from "./components/Chat.jsx";
 import Player from "./classes/player.js";
 import { socket } from "./helpers/socket.js";
 import GameData from "./strings/_gameData.js";
+import useStore from "./hooks/useStore.js";
 import "./App.css"
+
 
 export const UserContext = createContext({});
 
@@ -25,111 +27,68 @@ for (let i = 0; i < 8; i++) {
 
 function App() {
 
-  const [players, setPlayers] = useState([]);
-  const [userId, setUserId] = useState(null);
+  const handlePlayerDataChange = useStore(state => state.changePlayerAttribute);
+  const setPlayers = useStore(state => state.setPlayers);
+  const syncPlayers = useStore(state => state.syncPlayers);
+  const addPlayer = useStore(state => state.addPlayer);
+  const removePlayer = useStore(state => state.removePlayer);
+  const pushPlayer = useStore(state => state.pushPlayer);
+  const popPlayer = useStore(state => state.popPlayer);
+  const addPlayerReminders = useStore(state => state.addPlayerReminders);
+  const handleDragEnd = (event) => addPlayerReminders(event);
 
-  const [display, setDisplay] = useState(0);
-  const [purgedOrders, setPurgedOrders] = useState([]);
-  const [phase, setPhase] = useState({
-    cycle: "Night", 
-    round: 1
-  });
-  const [votes, setVotes] = useState({
-    list: [], 
-    voting: false, 
-    accusingPlayer: null, 
-    nominatedPlayer: null,
-    userVote: [null, null]
-  });
-  const [session, setSession] = useState({
-    id: null,
-    sync: false,
-    modules: []
+  const userId = useStore(state => state.userId);
+  const setUserId = useStore(state => state.setUserId);
+  const toggleDebugUser = useStore(state => state.toggleDebugUser);
 
-  });
+  const displayVote = useStore(state => state.displayVote);
+  const nextPhase = useStore(state => state.nextPhase);
+
+  const resetSession = useStore(state => state.resetSession);
+  const setModules = useStore(state => state.setModules);
+  const syncSession = useStore(state => state.syncSession);
+  const sessionId = useStore(state => state.session.id);
+
+  // const [votes, setVotes] = useState({
+  //   list: [], 
+  //   voting: false, 
+  //   accusingPlayer: null, 
+  //   nominatedPlayer: null,
+  //   userVote: [null, null]
+  // });
+  const setVoting = useStore(state => state.setVoting);
+  const resetUserVotes = useStore(state => state.resetUserVotes);
+  const addVoteToList = useStore(state => state.addVoteToList);
+  const setAccuser = useStore(state => state.setAccuser);
+  const setNominated = useStore(state => state.setNominated);
+  const setVotes = useStore(state => state.setVotes);
+
   
-  const [isConnected, setIsConnected] = useState(socket.connected);
+  // const [isConnected, setIsConnected] = useState(socket.connected);
 
-  const user = players.find(player => player.id === userId); // the users player object
-  const drawPlayers = players.filter(player => player.type === 1); // the players to draw on the board e.g. not the narrators
+  const user = useStore(state => state.getUser()); // the users player object
 
-  function handleDragEnd(event) {
 
-    const reminderId = event.active.id.split("-|-")[1];
-    const originId = event.active.id.split("-|-")[0];
-    const originIsPlayer = originId !== "new";
-    const hasTarget = event.over !== null;
-    const maxReminders = 5;
-    let removeOrigin = false;
-    let placeReminder = true;
-    let playerId;
 
-    if (!hasTarget && !originIsPlayer) return;
-
-    if (originIsPlayer) removeOrigin = true;
-
-    if (!hasTarget && originIsPlayer) {
-      placeReminder = false;
-      playerId = originId;
-    } else if (hasTarget) {
-      playerId = event.over.id.split("-|-")[1];
-    }
-
-    setPlayers(prev => prev.map(player => {
-      if (placeReminder && player.id === playerId) {
-
-        // don't add reminder if the player already has that reminder
-        if (player.reminders.some(aReminderId => aReminderId === reminderId)) return player;
-        // don't add reminder if the player has the max reminders
-        if (player.reminders.length >= maxReminders) return player;
-
-        const reminder = GameData.reminders.find(reminder => reminder.id === reminderId);
-        player.reminders.push(reminder.id);
-      } else if (removeOrigin && player.id === originId) {
-        player.reminders = player.reminders.filter(id => id !== reminderId);
-      }
-      return player;
-    }))
-
-  }
-
-  const handlePlayerDataChange = useCallback((targetId, targetProperty, targetValue, fromServer = false) => {
-
-    if (["rRole", "rChar", "rState", "rStatus", "rTeam"].includes(targetProperty) && fromServer === false && session.sync === true) {
-      return socket.emit("attribute", {targetId: targetId, targetProperty: targetProperty, targetValue: targetValue});
-    }
-
-    setPlayers((prev) => prev.map((player) => {
-      if (player.id === targetId) {
-        return {...player, [targetProperty]: targetValue};
-      } else {
-        return player;
-      }
-    }))
-
-  }, [session])
+  
 
   useEffect(() => {
 
     const socketEvents = {
 
       connect() {
-        setIsConnected(true);
+        // setIsConnected(true);
       },
 
       disconnect() {
-        setIsConnected(false);
-        setSession({
-          id: null,
-          sync: false,
-          modules: []
-        })
+        // setIsConnected(false);
+        resetSession();
         setPlayers([])
         setUserId(null);
       },
 
-      phase(data) {
-        setPhase(data);
+      phase() {
+        nextPhase();
       },
 
       attribute(data) {
@@ -137,70 +96,46 @@ function App() {
       },
 
       module(data) {
-        setSession(session => ({
-          ...session,
-          modules: data
-        }))
+        setModules(data);
       },
 
       vote(data) {
         if (Object.hasOwn(data, "voting")) {
-          setVotes(prev => ({...prev, voting: data.voting}));
-          if (data.voting === true) setDisplay(2);
-          else setVotes(prev => ({...prev, userVote: [null, null]}));
+          setVoting(data.voting);
+          if (data.voting === true) displayVote();
+          else resetUserVotes();
         }
         
         if (Object.hasOwn(data, "list")){
-          if (Array.isArray(data.list)) {
-            setVotes(prev => ({...prev, list: data.list, userVote: [null, null]}));
-          } else {
-            setVotes(prev => ({...prev, list: [...prev.list, data.list]}));
-          }
+          addVoteToList(data.list);
         }
         
         if (Object.hasOwn(data, "accusingPlayer")){
-          setVotes(prev => ({...prev, accusingPlayer: data.accusingPlayer}));
+          setAccuser(data.accusingPlayer);
         }
         
         if (Object.hasOwn(data, "nominatedPlayer")){
-          setVotes(prev => ({...prev, nominatedPlayer: data.nominatedPlayer}));
+          setNominated(data.nominatedPlayer);
         }
         
       },
 
       sync(session, userId) {
 
-        if (session.players) setPlayers(prevPlayers => {
-          if (session.players.length === 0) return [];
-          const clientPlayerIds = new Set(prevPlayers.map(player => player.id));
-          session.players.forEach((player, index) => {
-            let clientHasPlayer = clientPlayerIds.has(player.id);
-            if (!clientHasPlayer) {
-              prevPlayers[index] = player;
-            } else if (clientHasPlayer) {
-              prevPlayers[index].rChar = player.rChar;
-              prevPlayers[index].rRole = player.rRole;
-              prevPlayers[index].rTeam = player.rTeam;
-              prevPlayers[index].rState = player.rState;
-            }
-
-          })
-          return [...prevPlayers];
-        });
-        if (session.phase) setPhase(session.phase);
-        if (session.votes) setVotes(prev => ({...prev, ...session.votes}));
-        if (session.id || session.id === null) setSession(prevSession => ({...prevSession, id: session.id}));
-        if (session.modules) setSession(prevSession => ({...prevSession, modules: session.modules}));
+        if (session.players) syncPlayers(session);
+        if (session.phase) nextPhase();
+        if (session.votes) setVotes(session.votes);
+        syncSession(session);
         if (userId) setUserId(userId);
 
       },
 
       joined(player) {
-        setPlayers(prevPlayers => [...prevPlayers, player]);
+        addPlayer(player);
       },
 
       left(playerId) {
-        setPlayers(prevPlayers => prevPlayers.filter(player => player.id !== playerId));
+        removePlayer(playerId);
       }
 
     }
@@ -214,77 +149,46 @@ function App() {
         socket.off(event, socketEvents[event])
       }
     };
-  }, [handlePlayerDataChange]);
+  }, [handlePlayerDataChange, setPlayers, syncPlayers, addPlayer, removePlayer, 
+    nextPhase, setUserId, displayVote, resetSession, setModules, syncSession, 
+    setVoting, resetUserVotes, addVoteToList, setAccuser, setNominated, setVotes]);
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
     <UserContext.Provider value={user}>
     <Container sx={{maxWidth: "1440px"}}>
       <Grid container spacing={2}>
-
         <Grid item xs={8}>
-          <Phase 
-            phase={phase} setPhase={setPhase}
-            players={players} setPlayers={setPlayers}
-            session={session}
-            purgedOrders={purgedOrders} setPurgedOrders={setPurgedOrders} />
+          <Phase />
         </Grid>
         <Grid item xs={4}>
-          <Options session={session}/>
+          <Options />
         </Grid>
         <Grid item xs={8}>
-          <Board 
-            drawPlayers={drawPlayers} 
-            display={display} setDisplay={setDisplay}
-            votes={votes} setVotes={setVotes} 
-            handlePlayerDataChange={handlePlayerDataChange}
-            session={session} />
+          <Board />
         </Grid>
         <Grid item xs={4}>
-          <Character 
-            phase={phase} setPurgedOrders={setPurgedOrders}
-            session={session} setSession={setSession}
-            players={players} setPlayers={setPlayers} />
+          <Character />
           <Chat>
             CHAT W.I.P
-            {session.id ? "" : <>
+            {sessionId ? "" : <>
               <Button variant="contained" onClick={() => {
                 setUserId("54321");
                 setPlayers([...somePlayers]);
-                setSession(prevSession => ({
-                  ...prevSession,
-                  modules: [GameData.modules[2].name]
-                }));
+                setModules([GameData.modules[2].name]);
               }}>
                 Add Dummy Players
               </Button>
               {userId === "54321" || userId === "0" ? <>
                 <Box>
-                  <Button size="small" variant="contained" onClick={() => {
-                    setPlayers(players => {
-                      const i = players.filter(player => player.type !== 0).length
-                      const player = new Player(i, "Player " + i);
-                      if (i >= 16) return players;
-                      players.push(player);
-                      return [...players];
-                    });
-                  }}>
+                  <Button size="small" variant="contained" onClick={() => pushPlayer()}>
                     +1
                   </Button>
-                  <Button size="small" variant="contained" onClick={() => {
-                     setPlayers(players => {
-                      if (players.length === 0) return players;
-                      players.pop();
-                      return [...players];
-                    });
-                  }}>
+                  <Button size="small" variant="contained" onClick={() => popPlayer()}>
                     -1
                   </Button>
                 </Box>
-                <Button size="small" variant="contained" onClick={() => {
-                    setUserId(prevId => prevId === "54321" ? "0" : "54321");
-                  }}
-                >
+                <Button size="small" variant="contained" onClick={() => toggleDebugUser()}>
                   Change Player Type
                 </Button>
               </> : ""}

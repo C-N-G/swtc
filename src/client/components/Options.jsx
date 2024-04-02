@@ -3,6 +3,7 @@ import {Button, Menu, MenuItem, Box, Card, Typography, TextField, Dialog,
   DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import {socket} from "../helpers/socket.js";
+import useStore from "../hooks/useStore.js";
 
 function textFieldBuilder(id, label, input, errorText, handleFunc, focus, setInputs, inputs) {
 
@@ -23,7 +24,9 @@ function textFieldBuilder(id, label, input, errorText, handleFunc, focus, setInp
 
 }
 
-function Options({session}) {
+function Options() {
+
+  const sessionId = useStore(state => state.session.id);
 
   const defaultInputs = {
     hostName: {value: "", error: false}, 
@@ -119,9 +122,9 @@ function Options({session}) {
             "aria-labelledby": "basic-button",
           }}
         >
-          {session.id ? "" : <MenuItem onClick={() => {setOpenDialog(1)}}>Host Session</MenuItem>}
-          {session.id ? "" : <MenuItem onClick={() => {setOpenDialog(2)}}>Join Session</MenuItem>}
-          {session.id ? <MenuItem onClick={handleLeave}>Leave Session</MenuItem> : ""}
+          {sessionId ? "" : <MenuItem onClick={() => {setOpenDialog(1)}}>Host Session</MenuItem>}
+          {sessionId ? "" : <MenuItem onClick={() => {setOpenDialog(2)}}>Join Session</MenuItem>}
+          {sessionId ? <MenuItem onClick={handleLeave}>Leave Session</MenuItem> : ""}
           <MenuItem 
             component={"a"}
             href="https://drive.google.com/file/d/1BSgDm_VNXi-e2_0v5L5Xd781-kFyde7k/preview" 
