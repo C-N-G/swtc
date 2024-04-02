@@ -32,7 +32,8 @@ Standard Procedure is a simple [[Module]]. This [[Module]] has been designed to 
 - Whistleblower
 
 # [[Antagonist|Antagonists]]
-- [[Serial Killer]]
+- [[Traitor]]
+- Vessel
 
 # [[Characteristic|Characteristics]]
 - Adaptable
