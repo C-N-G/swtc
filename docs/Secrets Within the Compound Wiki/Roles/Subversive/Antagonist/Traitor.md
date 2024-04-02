@@ -12,7 +12,7 @@ tags:
 > | Team | [[Subversive]] |
 > | Type | [[Antagonist]] |
 > | [[Module]] | [[Standard Procedure]] |
->  “Kill them all slowly and painfully.”
+>  “It’s time for a change around here.”
 # Ability
 You start knowing 3 not in-play [[Role|roles]]. Each night, after the first, you must choose a player: that player dies.
 
