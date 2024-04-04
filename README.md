@@ -1,3 +1,27 @@
-This is a Single Page Application built with React using real time communication handled via web sockets and powered by a Node backend.
+# Secrets Within the Compound (swtc)
+Social deception game intended for 6 to 16 players and 1 or more narrators.
+Average game length targetted to be 90 minutes.
+Designed to be played in person using mobile devices or played remotely using your Desktop/Laptop.
+Currently requires a third party tool to fascilitate voice communication such as Discord.
 
-Currently still in the game design phase, Secrets Within the Compound (SWTC) is a social deception game supporting up to 16 players.
+## Current Features:
+- Synced online multiplayer
+- Session creation and joining
+- Game assisting narrator tools
+- Local note taking for all players
+- Voting system
+- Quick game setup using randomisation
+  
+## Planned Features:
+- Event display
+- Mobile support
+- Text chat
+- Voice chat
+- Local server hosting
+
+
+## Narrator perspective
+![Narrator View](https://i.imgur.com/NFBahit.png)
+
+## Player perspective
+![Player View](https://i.imgur.com/ivnFfuj.png)
