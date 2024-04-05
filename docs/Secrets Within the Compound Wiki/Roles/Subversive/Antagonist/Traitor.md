@@ -25,9 +25,9 @@ You start knowing 3 not in-play [[Role|roles]]. Each night, after the first, you
 
 # How to Play
 - You should attempt to bluff as 1 of the 3 not in-play [[Role|roles]] you learnt at the start of the game, this means you won't accidentally claim someone else's [[role]].
--  Like all [[Subversive]] players being able to bluff and fit in with the group is key to winning the game. Try everything and anything to fit in, be careful though, if you're too active players might begin to suspect you. Sometimes being silent can work just as well.
+- Like all [[Subversive]] players being able to bluff and fit in with the group is key to winning the game. Try everything and anything to fit in, be careful though, if you're too active players might begin to suspect you. Sometimes being silent can work just as well.
 - You can only kill one player at night, so make it count! Try to work out the [[Role|roles]] and [[Characteristic|characteristics]] of other players so you can target the players who are most valuable to their team.
-- If you want to frame someone who has just died as the Traitor you could choose already dead players with your ability so that nobody new dies.
+- If you want to frame someone who has just died as an [[Antagonist]] you could choose already dead players with your ability so that nobody new dies.
 
 # How to Narrate
 - The first night that the Traitor is in play wake up the Traitor. Tell them 3 [[Role|roles]] that are not in-play. Send them back to sleep.
