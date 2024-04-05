@@ -14,7 +14,7 @@ tags:
 > | Type | [[Antagonist]] |
 > | [[Module]] | [[Standard Procedure]] |
 > | [[Attributes]] | Human, Psychic |
->  “For I am merely a ship for you to sail, a cup to drink out of, a vessel for a higher power.”
+>  “For I am merely a ship to sail, a cup to drink out of, a vessel for a higher power.”
 # Ability
 Each night, after the first, you must choose a player: that player dies. The first time this game that a Vessel is killed by their own ability, a player of their choice becomes a Vessel on their team.
 
