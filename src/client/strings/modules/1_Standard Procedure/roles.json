@@ -356,7 +356,7 @@
   {
     "name": "VIP",
     "type": "Detrimental",
-    "description": "PLACEHOLDER",
+    "description": "Special? No, no, no. Special is your lover bringing you flowers. Me? I’m important.",
     "ability": "When you die, the Cohesion decreases by 3.",
     "attributes": [
       "Human"
