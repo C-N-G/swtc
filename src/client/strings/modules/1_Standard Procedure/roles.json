@@ -399,7 +399,8 @@
     "ability": "Each night, after the first, you must choose a player: that player dies. The first time this game that a Vessel is killed by their own ability, a player of their choice becomes a Vessel on their team.",
     "orderType": "role_kills_others",
     "attributes": [
-      "Human"
+      "Human",
+      "Psychic"
     ],
     "reminders": [
       [
