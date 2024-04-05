@@ -15,18 +15,21 @@ tags:
 # Ability
 Placeholder ability text. This text here should be filled with the exact text of the ability.
 
+# Starting Effects
+Placeholder starting effects. This text here should be filled with the exact text of the starting effects.
+
 # Examples
-Placeholder Example.
+- Placeholder Example.
 
-Placeholder Example.
+- Placeholder Example.
 
-Placeholder Example.
+- Placeholder Example.
 
 # How to Play
-Placeholder Strategy.
+- Placeholder Strategy.
 
 # How to Narrate
-Placeholder Narration.
+- Placeholder Narration.
 
 # Additional Information
-Placeholder Additional Information.
+- Placeholder Additional Information.
