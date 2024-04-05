@@ -377,7 +377,7 @@
   {
     "name": "Traitor",
     "type": "Antagonist",
-    "description": "It’s time for a change around here.",
+    "description": "What?! It’s not me!",
     "ability": "You start knowing 3 not in-play roles. Each night, after the first, you must choose a player: that player dies.",
     "orderType": "role_kills_others",
     "attributes": [
