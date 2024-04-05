@@ -15,12 +15,13 @@ const timerExists = (timerObj, timerName) => {
 
 export const createTimersSlice = (set) => ({
   timers: {
-    voteTimer: {time: 0, duration: 0, state: "stopped", intervalId: null, type: "down"}
+    voteTimer: {time: 0, duration: 0, state: "stopped", intervalId: null, type: "down"},
+    phaseTimer: {time: 0, duration: false, state: "stopped", intervalId: null, type: "up"}
   },
 
   setTimer: (timer, aDuration) => set(state => {
 
-    if (!timerExists(state.timers, timer)) return;
+    if (!timerExists(state.timers, timer)) return {timers: {...state.timers}};
 
     const curType = state.timers[timer].type;
     const newTime = curType === "down" ? aDuration : 0
@@ -40,7 +41,7 @@ export const createTimersSlice = (set) => ({
 
   startTimer: (timer, aDuration, aTime) => set(state => {
 
-    if (!timerExists(state.timers, timer)) return;
+    if (!timerExists(state.timers, timer)) return {timers: {...state.timers}};
 
     if (state.timers[timer].intervalId) {
       clearInterval(state.timers[timer].intervalId);
@@ -61,7 +62,7 @@ export const createTimersSlice = (set) => ({
           newState = "stopped";
           newTime = 0;
           clearInterval(curInterval);
-        } else if (curType === "up" && newTime > curDuration) {
+        } else if (curDuration && curType === "up" && newTime > curDuration) {
           newState = "stopped";
           newTime = curDuration;
           clearInterval(curInterval);
@@ -97,7 +98,7 @@ export const createTimersSlice = (set) => ({
 
   stopTimer: (timer) => set(state => {
 
-    if (!timerExists(state.timers, timer)) return;
+    if (!timerExists(state.timers, timer)) return {timers: {...state.timers}};
 
     clearInterval(state.timers[timer].intervalId);
 
@@ -108,7 +109,6 @@ export const createTimersSlice = (set) => ({
           ...state.timers[timer], 
           intervalId: null, 
           state: "stopped",
-          time : 0
         }
       }
     };
@@ -117,9 +117,11 @@ export const createTimersSlice = (set) => ({
 
   resetTimer: (timer) => set(state => {
 
-    if (!timerExists(state.timers, timer)) return;
+    if (!timerExists(state.timers, timer)) return {timers: {...state.timers}};
 
     clearInterval(state.timers[timer].intervalId);
+
+    const duration = state.timers[timer].duration 
 
     return {
       timers: {
@@ -128,7 +130,7 @@ export const createTimersSlice = (set) => ({
           ...state.timers[timer], 
           intervalId: null, 
           state: "stopped",
-          time: state.timers[timer].duration
+          time: duration ? duration : 0
         }
       }
     };

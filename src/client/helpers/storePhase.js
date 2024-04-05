@@ -1,4 +1,4 @@
-export const createPhaseSlice = (set) => ({
+export const createPhaseSlice = (set, get) => ({
   phase: {
     cycle: "Night",
     round: 1,
@@ -14,6 +14,7 @@ export const createPhaseSlice = (set) => ({
       newCycle = "Night";
       newRound = state.phase.round + 1;
     }
+    get().calculateVoteHistory(newRound);
     return {phase: {cycle: newCycle, round: newRound}};
   }),
 })

@@ -12,9 +12,9 @@ function PlayerDetails(props) {
 
   const getUserTypeCheckedComponent = () => {
 
-    if (user.type === 0) {
+    if (user?.type === 0) {
       return <NarratorDetails {...props}/>
-    } else if (user.type === 1) {
+    } else if (user?.type === 1) {
       return <RegularPlayerDetails {...props} />
     } else {
       return false

@@ -12,7 +12,8 @@ export const createPlayerSlice = (set, get) => ({
   changePlayerAttribute: (targetId, targetProperty, targetValue, fromServer = false) => set(state => {
 
     if (["rRole", "rChar", "rState", "rTeam", "rVotePower"].includes(targetProperty) && fromServer === false && state.session.sync === true) {
-      return socket.emit("attribute", {targetId: targetId, targetProperty: targetProperty, targetValue: targetValue});
+      socket.emit("attribute", {targetId: targetId, targetProperty: targetProperty, targetValue: targetValue});
+      return {players: state.players};
     }
 
     const newPlayers = state.players.map((player) => {
@@ -38,7 +39,7 @@ export const createPlayerSlice = (set, get) => ({
     let placeReminder = true;
     let playerId;
 
-    if (!hasTarget && !originIsPlayer) return;
+    if (!hasTarget && !originIsPlayer) return {players: state.players};
 
     if (originIsPlayer) removeOrigin = true;
 
@@ -69,13 +70,14 @@ export const createPlayerSlice = (set, get) => ({
 
   syncPlayers: (session) => set(state => {
     const newPlayers = state.players
-    if (session.players.length === 0) return [];
+    if (session.players.length === 0) return {players: []};
     const clientPlayerIds = new Set(newPlayers.map(player => player.id));
     session.players.forEach((player, index) => {
       let clientHasPlayer = clientPlayerIds.has(player.id);
       if (!clientHasPlayer) {
         newPlayers[index] = player;
       } else if (clientHasPlayer) {
+        // potential bug here
         newPlayers[index].rChar = player.rChar;
         newPlayers[index].rRole = player.rRole;
         newPlayers[index].rTeam = player.rTeam;
@@ -94,7 +96,7 @@ export const createPlayerSlice = (set, get) => ({
       newPlayers = randomise(newPlayers, chars, roles);
     } catch (error) {
       console.error("randomiser error: ", error);
-      return;
+      return {players: state.players};
     }
 
     if (state.phase.cycle === "Night") {
@@ -129,14 +131,14 @@ export const createPlayerSlice = (set, get) => ({
     const newPlayers = state.players;
     const i = newPlayers.filter(player => player.type !== 0).length
     const player = new Player(i, "Player " + i);
-    if (i >= 16) return newPlayers;
+    if (i >= 16) return {players: newPlayers};
     newPlayers.push(player);
     return {player: newPlayers};
   }),
 
   popPlayer: () => set(state => {
     const newPlayers = state.players;
-    if (newPlayers.length === 0) return newPlayers;
+    if (newPlayers.length === 0) return {players: newPlayers};
     newPlayers.pop();
     return {player: newPlayers};
   }),

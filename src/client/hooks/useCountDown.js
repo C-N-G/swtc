@@ -12,11 +12,12 @@ function useCountDown(duration, activationFunc) {
 
   function resetTimer() {
     setTime(duration);
+    setTimerState("stopped");
   }
 
   if (timerState === "activate") {
     activationFunc();
-    setTimerState("finished");
+    setTimerState("stopped");
   } 
 
   useEffect(() => {

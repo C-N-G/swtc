@@ -12,9 +12,9 @@ const PlayerIndicator = memo(function PlayerIndicator(props) {
 
   const getUserTypeCheckedComponent = () => {
 
-    if (user.type === 0) {
+    if (user?.type === 0) {
       return <NarratorPlayerIndicator {...props}/>
-    } else if (user.type === 1) {
+    } else if (user?.type === 1) {
       return <RegularPlayerIndicator {...props} />
     } else {
       return false

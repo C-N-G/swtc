@@ -11,6 +11,14 @@ export const createVotesSlice = (set) => ({
     nominatedPlayer: null,
     userVote: [false, false],
   },
+  // voteHistory: {
+  //   pastVotes: [],
+  //   VotersToday: 0,
+  //   mostVoted: null,
+  //   accusers: [],
+  //   nominated: []
+  // },
+  voteHistory: [],
 
   setVoting: (newVoting) => set(state => ({
     votes: {
@@ -77,6 +85,34 @@ export const createVotesSlice = (set) => ({
         })
       }
     }
-  })
+  }),
+
+  addVotesToHistory: () => set(state => {
+
+    const players = state.players;
+
+    const newVoteHistoryItem = {
+      day: state.phase.round,
+      accuser: players.find(player => player.id === state.votes.accusingPlayer).name,
+      nominated: players.find(player => player.id === state.votes.nominatedPlayer).name,
+      votes: state.votes.list,
+      voterTotal: state.votes.list.filter(aVote => aVote.vote === 1).reduce((acc, cur) => acc + cur.power, 0),
+      abstainerTotal: state.votes.list.filter(aVote => aVote.vote === 0).reduce((acc, cur) => acc + cur.power, 0),
+    }
+
+    return {
+      voteHistory: [
+        newVoteHistoryItem,
+        ...state.voteHistory.filter(item => item.day > state.phase.round - 2),
+      ]
+    }
+
+  }),
+
+  calculateVoteHistory: (round) => set(state => ({
+    voteHistory: {
+      ...state.voteHistory.filter(item => item.day > round - 2)
+    }
+  }))
 
 })

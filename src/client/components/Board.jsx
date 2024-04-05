@@ -59,6 +59,7 @@ function Board() {
   const nominatedPlayerId = useStore(state => state.votes.nominatedPlayer);
   const setAccuser = useStore(state => state.setAccuser);
   const setNominated = useStore(state => state.setNominated);
+  const addVotesToHistory = useStore(state => state.addVotesToHistory);
 
   function createIndicator(player, index, vertical) {
 
@@ -113,6 +114,11 @@ function Board() {
   }
 
   function handleVoteFinishClick() {
+    addVotesToHistory();
+    socket.timeout(5000).emit("timer", {name: "voteTimer", action: "stop"}, (error, response) => {
+      if (error) console.log("Timer Error: server timeout");
+      if (response?.error) console.log("Timer Error:", response.error);
+    });
     socket.emit("vote", {list: [], voting: false, accusingPlayer: null, nominatedPlayer: null});
     displayNone();
     resetTimer();

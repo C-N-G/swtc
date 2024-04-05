@@ -11,9 +11,9 @@ function Vote(props) {
 
   const getUserTypeCheckedComponent = () => {
 
-    if (user.type === 0) {
+    if (user?.type === 0) {
       return <NarratorVote {...props}/>
-    } else if (user.type === 1) {
+    } else if (user?.type === 1) {
       return <PlayerVote {...props} user={user}/>
     } else {
       return false

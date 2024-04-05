@@ -64,9 +64,6 @@ function App() {
   // const [isConnected, setIsConnected] = useState(socket.connected);
 
   const user = useStore(state => state.getUser()); // the users player object
-
-
-
   
 
   useEffect(() => {
@@ -135,11 +132,11 @@ function App() {
 
       sync(session, userId) {
 
-        if (session.players) syncPlayers(session);
-        if (session.phase) nextPhase();
-        if (session.votes) setVotes(session.votes);
+        if (userId !== undefined) setUserId(userId);
+        if (session.players !== undefined) syncPlayers(session);
+        if (session.phase !== undefined) nextPhase(session.phase);
+        if (session.votes !== undefined) setVotes(session.votes);
         syncSession(session);
-        if (userId) setUserId(userId);
 
       },
 
