@@ -18,8 +18,8 @@ tags:
 Each night, after the first, you must choose a player (not yourself): if that player is killed that night you are killed instead.
 
 # Examples
-- The Bodyguard chooses to protect the [[Analyst]]. The [[Analyst]] is chosen during the night by the [[Serial Killer]]. The Bodyguard dies instead of the [[Analyst]].
-- The Bodyguard chooses to protect the [[Analyst]]. The Bodyguard is [[malfunctioning]]. The [[Analyst]] is chosen during the night by the [[Serial Killer]]. The [[Analyst]] dies.
+- The Bodyguard chooses to protect the [[Analyst]]. The [[Analyst]] is chosen during the night by the [[Traitor]]. The Bodyguard dies instead of the [[Analyst]].
+- The Bodyguard chooses to protect the [[Analyst]]. The Bodyguard is [[malfunctioning]]. The [[Analyst]] is chosen during the night by the [[Traitor]]. The [[Analyst]] dies.
 
 # How to Play
 - Try to find a player who has a useful ability to your team, and protect them every night. It's better that you die instead of them.
