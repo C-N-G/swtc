@@ -1,6 +1,8 @@
 ---
 tags:
-Human
+- Loyalist
+- Detrimental
+- Human
 ---
 > [!infobox]
 > # Technician
