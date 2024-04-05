@@ -375,10 +375,10 @@
   },
   
   {
-    "name": "Serial Killer",
+    "name": "Traitor",
     "type": "Antagonist",
-    "description": "Kill them all slowly and painfully.",
-    "ability": "Each night, after the first, you must choose a player: that player dies.",
+    "description": "It’s time for a change around here.",
+    "ability": "You start knowing 3 not in-play roles. Each night, after the first, you must choose a player: that player dies.",
     "orderType": "role_kills_others",
     "attributes": [
       "Human"
@@ -387,8 +387,27 @@
       [
         "🗡️",
         "#FF0000",
-        "Serial Killer: Chose this player."
+        "Traitor: Chose this player."
+      ]
+    ]
+  },
+  
+   {
+    "name": "Vessel",
+    "type": "Antagonist",
+    "description": "For I am merely a ship for you to sail, a cup to drink out of, a vessel for a higher power.",
+    "ability": "Each night, after the first, you must choose a player: that player dies. The first time this game that a Vessel is killed by their own ability, a player of their choice becomes a Vessel on their team.",
+    "orderType": "role_kills_others",
+    "attributes": [
+      "Human"
+    ],
+    "reminders": [
+      [
+        "😈",
+        "#FF0000",
+        "Vessel: Chose this player."
       ]
     ]
   }
+  
 ]
