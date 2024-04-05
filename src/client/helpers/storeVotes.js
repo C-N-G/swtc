@@ -9,7 +9,7 @@ export const createVotesSlice = (set) => ({
     voting: false,
     accusingPlayer: null,
     nominatedPlayer: null,
-    userVote: [large, false],
+    userVote: [false, false],
   },
 
   setVoting: (newVoting) => set(state => ({
@@ -22,7 +22,7 @@ export const createVotesSlice = (set) => ({
   resetUserVotes: () => set(state => ({
     votes: {
       ...state.votes,
-      userVote: [large, false]
+      userVote: [false, false]
     }
   })),
 
@@ -32,7 +32,7 @@ export const createVotesSlice = (set) => ({
         votes: {
           ...state.votes,
           list: newVote,
-          userVote: [large, false]
+          userVote: [false, false]
         }
       }
     } else {

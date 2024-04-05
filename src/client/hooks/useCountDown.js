@@ -10,6 +10,10 @@ function useCountDown(duration, activationFunc) {
     setTimerState("started");
   }
 
+  function resetTimer() {
+    setTime(duration);
+  }
+
   if (timerState === "activate") {
     activationFunc();
     setTimerState("finished");
@@ -35,7 +39,7 @@ function useCountDown(duration, activationFunc) {
 
   }, [timerState]);
 
-  return [time, beginTimer];
+  return [time, beginTimer, resetTimer];
 
 }
 
