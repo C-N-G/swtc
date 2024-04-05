@@ -26,8 +26,8 @@ Standard Procedure is a simple [[Module]]. This [[Module]] has been designed to 
 # [[Detrimental|Detrimentals]]
 - [[Accomplice]]
 - [[Prisoner]]
-- Technician
-- Underachiever
+- [[Technician]]
+- [[Underachiever]]
 - VIP
 - Whistleblower
 
