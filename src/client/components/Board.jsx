@@ -32,7 +32,6 @@ const BOARD_CONFIG = [
 
 function Board() {
 
-  const [selected, setSelected] = useState(null);
   const [openDialog, setOpenDialog] = useState(0); 
 
   const drawPlayers = useStore(state => state.getDrawPlayers());
@@ -45,12 +44,15 @@ function Board() {
   const [fullChars, fullRoles] = useMemo(() => GameData.getFilteredValues(modules, true), [modules]);
 
   const timerDuration = (Math.max(playerNum, 8)*2) - 1;
-  const [time, beginTimer] = useCountDown(timerDuration, handleVoteTimerEnd);
+  const [time, beginTimer, resetTimer] = useCountDown(timerDuration, handleVoteTimerEnd);
 
   const display = useStore(state => state.display);
   const displayNone = useStore(state => state.displayNone);
   const displayDetails = useStore(state => state.displayDetails);
   const displayVote = useStore(state => state.displayVote);
+
+  const selected = useStore(state => state.selected);
+  const selectPlayer = useStore(state => state.selectPlayer);
 
   const voting = useStore(state => state.votes.voting);
   const accusingPlayerId = useStore(state => state.votes.accusingPlayer);
@@ -60,25 +62,28 @@ function Board() {
 
   function createIndicator(player, index, vertical) {
 
-    return (<PlayerIndicator key={index} 
+    return <PlayerIndicator key={index} 
+    display={display}
+    selected={selected}
     player={player}
     handleClick={handlePlayerIndicatorClick}
     chars={fullChars}
     roles={fullRoles}
-    vertical={vertical} />)
+    vertical={vertical} />
 
   }
 
   function handlePlayerIndicatorClick(targetId) {
 
     if (display === 1 && targetId === selected) {
-      setSelected(null);
       if (voting) {
         displayVote();
+      } else {
+        displayNone()
       }
     } else {
       displayDetails();
-      setSelected(targetId)
+      selectPlayer(targetId);
     }
 
   }
@@ -99,7 +104,7 @@ function Board() {
     setOpenDialog(0);
     const votes = drawPlayers
     .filter(player => player.rState === 1)
-    .map(player => ({id: player.id, vote: 0, name: player.name}))
+    .map(player => ({id: player.id, vote: 0, name: player.name, power: player.rVotePower}))
     socket.emit("vote", {list: votes, nominatedPlayer: nominatedPlayerId, accusingPlayer: accusingPlayerId, voting: true})
     socket.timeout(5000).emit("timer", {name: "voteTimer", action: "set", duration: timerDuration}, (error, response) => {
       if (error) console.log("Timer Error: server timeout");
@@ -110,6 +115,7 @@ function Board() {
   function handleVoteFinishClick() {
     socket.emit("vote", {list: [], voting: false, accusingPlayer: null, nominatedPlayer: null});
     displayNone();
+    resetTimer();
   }
 
   function handleVoteTimerEnd() {

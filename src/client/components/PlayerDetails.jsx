@@ -1,5 +1,6 @@
-import {useContext} from "react";
-import {Box, Typography, Button, Grid, TextField, Autocomplete, Stack, Chip} from '@mui/material';
+import {useContext, useState} from "react";
+import {Box, Typography, Button, Grid, TextField, Autocomplete, Stack, Chip, 
+  Select, MenuItem, InputLabel, FormControl, FormControlLabel, Switch} from '@mui/material';
 import {UserContext} from "../App.jsx";
 import GameData from "../strings/_gameData.js"
 import Reminder from "./Reminder.jsx";
@@ -113,12 +114,14 @@ function RegularPlayerDetails({player, handleViewPlayerClick, chars, roles}) {
 
 function NarratorDetails({player, handleDismissalClick, chars, roles}) {
 
-  const handlePlayerDataChange = useStore(state => state.changePlayerAttribute);
+  const [showTrueState, setShowTrueState] = useState(false);
+
+  const handleChange = useStore(state => state.changePlayerAttribute);
 
   const leftVal = "Shown";
   const rightVal = "True"
 
-  function selectBuilder(playerId, type, real, list, value) {
+  function selectBuilder(playerId, type, real, list, value, handleChange) {
     return <Autocomplete
       disablePortal
       disableClearable
@@ -127,10 +130,23 @@ function NarratorDetails({player, handleDismissalClick, chars, roles}) {
       options={list}
       renderInput={(params) => <TextField {...params} label={`${real ? leftVal : rightVal} ${type}`} />}
       value={list[value] ? list[value] : list[0]} // hack - this is for when the modules change and the current value no longer exists
-      onChange={(_, newValue) => handlePlayerDataChange(playerId, `${real ? "r" : ""}${real ? type : type.toLowerCase()}`, list.indexOf(newValue))}
+      onChange={(_, newValue) => handleChange(playerId, `${real ? "r" : ""}${real ? type : type.toLowerCase()}`, list.indexOf(newValue))}
     />
   }
 
+  const shownInputs = [
+    selectBuilder(player.id, "State", true, GameData.states, player.rState, handleChange),
+    selectBuilder(player.id, "Role", true, roles, player.rRole, handleChange),
+    selectBuilder(player.id, "Char", true, chars, player.rChar, handleChange),
+    selectBuilder(player.id, "Team", true, GameData.teams, player.rTeam, handleChange)
+  ]
+
+  const trueInputs = [
+    selectBuilder(player.id, "State", false, GameData.states, player.state),
+    selectBuilder(player.id, "Role", false, roles, player.role),
+    selectBuilder(player.id, "Char", false, chars, player.char),
+    selectBuilder(player.id, "Team", false, GameData.teams, player.team)
+  ]
 
   return (
     <Grid container alignContent="flex-start" sx={{m: 1}} rowSpacing={1}>
@@ -142,18 +158,32 @@ function NarratorDetails({player, handleDismissalClick, chars, roles}) {
       </Grid>
       <Grid item xs={6}>
         <Stack spacing={2} sx={{m: 1}}>
-          {selectBuilder(player.id, "State", true, GameData.states, player.rState)}
-          {selectBuilder(player.id, "Role", true, roles, player.rRole)}
-          {selectBuilder(player.id, "Char", true, chars, player.rChar)}
-          {selectBuilder(player.id, "Team", true, GameData.teams, player.rTeam)}
+          {!showTrueState ? shownInputs[0] : trueInputs[0]}
+          {!showTrueState ? shownInputs[1] : trueInputs[1]}
+          {!showTrueState ? shownInputs[2] : trueInputs[2]}
         </Stack>
       </Grid>
       <Grid item xs={6}>
         <Stack spacing={2} sx={{m: 1}}>
-          {selectBuilder(player.id, "State", false, GameData.states, player.state)}
-          {selectBuilder(player.id, "Role", false, roles, player.role)}
-          {selectBuilder(player.id, "Char", false, chars, player.char)}
-          {selectBuilder(player.id, "Team", false, GameData.teams, player.team)}
+          {!showTrueState ? shownInputs[3] : trueInputs[3]}
+          <FormControl fullWidth>
+            <InputLabel id="narrator-rVotePower-input-label">Vote Power</InputLabel>
+            <Select
+              labelId="narrator-rVotePower-input-label"
+              size="small"
+              id="narrator-rVotePower-input"
+              value={player.rVotePower}
+              label="Vote Power"
+              onChange={(_, newValue) => handleChange(player.id, "rVotePower", newValue.props.value)}
+            >
+              <MenuItem value={0}>0 vote power</MenuItem>
+              <MenuItem value={1}>1 vote power</MenuItem>
+              <MenuItem value={2}>2 vote power</MenuItem>
+              <MenuItem value={3}>3 vote power</MenuItem>
+              <MenuItem value={4}>4 vote power</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControlLabel control={<Switch checked={showTrueState} onChange={() => setShowTrueState(state => !state)}/>} label="True State" />
         </Stack>
       </Grid>
       {player.reminders.map(reminderId => {

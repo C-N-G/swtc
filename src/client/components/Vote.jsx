@@ -1,5 +1,5 @@
 import {useContext} from "react";
-import {Button, Typography, TextField, Stack, Grid, Card, List, ListItem, ListItemText} from '@mui/material';
+import {Button, Typography, TextField, Stack, Grid, Card, List, ListItem, ListItemText, Paper} from '@mui/material';
 import {UserContext} from "../App.jsx";
 import {socket} from "../helpers/socket";
 import useStore from "../hooks/useStore.js";
@@ -39,8 +39,6 @@ function PlayerVote({nominatedPlayer, accusingPlayer, user}) {
 
   const playerIsDead = user.rState === 0
 
-  console.log(voteTimer);
-
   function handleVote(player, aVote) {
 
     // disallow voting if user has already voted
@@ -50,7 +48,7 @@ function PlayerVote({nominatedPlayer, accusingPlayer, user}) {
 
     setUserVote(aVote);
 
-    const data = {id: player.id, vote: aVote, name: player.name};
+    const data = {id: player.id, vote: aVote, name: player.name, power: player.rVotePower};
 
     socket.emit("vote", {list: data});
     
@@ -60,10 +58,7 @@ function PlayerVote({nominatedPlayer, accusingPlayer, user}) {
   const accusingName = accusingPlayer?.name ? accusingPlayer.name : "Unknown";
 
   return (
-    <Stack sx={{flexGrow: 1, m: 4, position: "relative"}} justifyContent="space-between">
-      <Typography  sx={{position: "absolute", left: "-5%", top: "-5%"}}>
-        {"Vote Timer:"} {voteTimer.time}
-      </Typography>
+    <Stack sx={{flexGrow: 1, m: 4}} justifyContent="space-between">
       <Typography variant="h4">{nominatedName}</Typography>
       <Typography>Nominated by: {accusingName}</Typography>
       <TextField 
@@ -75,7 +70,7 @@ function PlayerVote({nominatedPlayer, accusingPlayer, user}) {
         value={nominatedPlayer?.notes}
         onChange={(event) => handlePlayerDataChange(nominatedPlayer?.id, "notes", event.target.value)}
       />
-      <Stack direction="row" justifyContent="space-between">
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Button 
           disabled={voteTimer.state === "stopped" || playerIsDead} 
           sx={{...userVote[1], transition: "transform 0.25s"}} 
@@ -84,6 +79,13 @@ function PlayerVote({nominatedPlayer, accusingPlayer, user}) {
         >
           Vote For
         </Button>
+        <Paper sx={{
+          background: voteTimer.state === "stopped" ? "rgb(200,100,100)" : "rgb(100,200,100)", 
+          p:1,
+          minWidth: "3rem"
+        }}>
+          <Typography variant="h5">{voteTimer.time}</Typography>
+        </Paper>
         <Button 
           disabled={voteTimer.state === "stopped" || playerIsDead} 
           sx={{...userVote[0], transition: "transform 0.25s"}} 
@@ -111,18 +113,22 @@ function NarratorVote({nominatedPlayer, accusingPlayer, handleVoteFinishClick, t
 
   const list = useStore(state => state.votes.list);
 
-  const forVotes = list.filter(aVote => aVote.vote === 1).map((aVote, index) => {
+  const voters = list.filter(aVote => aVote.vote === 1);
+  const voterTotal = voters.reduce((acc, cur) => acc + cur.power, 0)
+  const voterList = voters.map((aVote, index) => {
     return (
       <ListItem sx={{py: 0}} key={index}>
-        <ListItemText primary={aVote.name}/>
+        <ListItemText primary={`${aVote.name} ${aVote.power !== 1 ? "x" + String(aVote.power) : ""}`}/>
       </ListItem>
     )
   })
 
-  const againstVotes = list.filter(aVote => aVote.vote === 0).map((aVote, index) => {
+  const abstainers = list.filter(aVote => aVote.vote === 0);
+  const abstainerTotal = abstainers.reduce((acc, cur) => acc + cur.power, 0)
+  const abstainerList = abstainers.map((aVote, index) => {
     return (
       <ListItem sx={{py: 0}} key={index}>
-        <ListItemText primary={aVote.name}/>
+        <ListItemText primary={`${aVote.name} ${aVote.power !== 1 ? "x" + String(aVote.power) : ""}`}/>
       </ListItem>
     )
   })
@@ -151,26 +157,26 @@ function NarratorVote({nominatedPlayer, accusingPlayer, handleVoteFinishClick, t
         <Typography>Nominated by: {accusingName}</Typography>
       </Grid>
       <Grid item xs={6} height="80%" sx={{display: "flex", flexDirection: "column", p: 1}}>
-        <Typography>{forVotes.length} Voted</Typography>
+        <Typography>{voterTotal} Voted</Typography>
         <Card sx={{flexGrow: "1", backgroundColor: "springgreen"}}>
           <List sx={{
             overflow: "auto",
             maxHeight: "100%",
             p: 0
           }}>
-            {forVotes}
+            {voterList}
           </List>
         </Card>
       </Grid>
       <Grid item xs={6} height="80%" sx={{display: "flex", flexDirection: "column", p: 1}}>
-        <Typography>{againstVotes.length} Abstained</Typography>
+        <Typography>{abstainerTotal} Abstained</Typography>
         <Card sx={{flexGrow: "1", backgroundColor: "indianred"}}>
           <List sx={{
             overflow: "auto",
             maxHeight: "100%",
             p: 0
           }}>
-            {againstVotes}
+            {abstainerList}
           </List>
         </Card>
       </Grid>

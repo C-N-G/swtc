@@ -1,4 +1,4 @@
-import {useContext} from "react";
+import {memo, useContext} from "react";
 import {Box, Button, Stack, Typography} from '@mui/material';
 import {UserContext} from "../App.jsx";
 import {useDroppable} from "@dnd-kit/core";
@@ -6,7 +6,7 @@ import GameData from "../strings/_gameData.js"
 import Reminder from "./Reminder.jsx";
 import Draggable from "./Draggable.jsx";
 
-function PlayerIndicator(props) {
+const PlayerIndicator = memo(function PlayerIndicator(props) {
 
   const user = useContext(UserContext);
 
@@ -24,7 +24,14 @@ function PlayerIndicator(props) {
 
   return getUserTypeCheckedComponent();
 
-}
+}, (oldProps, newProps) => {
+
+  const result = oldProps.player === newProps.player
+   && oldProps.display === newProps.display
+   && oldProps.selected === newProps.selected
+  
+  return result;
+})
 
 export default PlayerIndicator
 

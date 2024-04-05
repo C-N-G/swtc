@@ -15,6 +15,7 @@ export default class Player {
    * @param {number} rRole - real player role that is networked by the narrator
    * @param {number} rState - real player state that is networked by the narrator
    * @param {number} rTeam - real player team that is networked by the narrator
+   * @param {number} rVotePower - the Voting power for this player
    * @param {Array<Reminder>} reminders - visual reminders tied to this player
    * @param {Array<number>} nightOrders - the night orders for this players chars and roles
    */
@@ -32,8 +33,9 @@ export default class Player {
     rRole = 0,
     rState = 1,
     rTeam = 0,
+    rVotePower = 1,
     reminders = [],
-    nightOrders = []
+    nightOrders = [],
   ) {
 
     this.id = String(id);
@@ -49,6 +51,7 @@ export default class Player {
     this.rRole = rRole;
     this.rState = rState;
     this.rTeam = rTeam;
+    this.rVotePower = rVotePower
     this.reminders = reminders;
     this.nightOrders = nightOrders;
     
