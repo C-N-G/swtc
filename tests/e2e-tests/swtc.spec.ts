@@ -121,13 +121,24 @@ test.describe("dismissal voting", () => {
 
   test("player voting", async () => {
 
-    await player1.getByRole("button", {name: /Vote For/i}).click();
     await expect(player1.getByRole("button", {name: /Vote For/i})).toBeDisabled();
+    await expect(player2.getByRole("button", {name: /Vote For/i})).toBeDisabled();
+
+    await narrator.getByRole("button", {name: /Start 15/i}).click();
+
+    await expect(player1.getByRole("button", {name: /Vote For/i})).toBeEnabled();
+    await expect(player2.getByRole("button", {name: /Vote For/i})).toBeEnabled();
+
+    await expect(narrator.getByText(/2 Abstained/i)).toBeVisible();
+
+    await player1.getByRole("button", {name: /Vote For/i}).click();
     await expect(narrator.getByText(/1 Voted/i)).toBeVisible();
+    await expect(narrator.getByText(/1 Abstained/i)).toBeVisible();
 
     await player2.getByRole("button", {name: /Vote For/i}).click();
-    await expect(player2.getByRole("button", {name: /Vote For/i})).toBeDisabled();
+
     await expect(narrator.getByText(/2 Voted/i)).toBeVisible();
+    await expect(narrator.getByText(/0 Abstained/i)).toBeVisible();
     
   });
 
