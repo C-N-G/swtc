@@ -31,6 +31,6 @@ You start knowing 3 not in-play [[Role|roles]]. Each night, after the first, you
 
 # How to Narrate
 - The first night that the Traitor is in play wake up the Traitor. Tell them 3 [[Role|roles]] that are not in-play. Send them back to sleep.
-- Each night, after the first, wake up the Traitor. Ask them to choose a player. Send them back to sleep. Mark their choice as dead. At the start of the following day announce which player died at night.
+- Each night, after the first, wake up the Traitor. Ask them to choose a player. Send them back to sleep. Mark their choice as dead. At the start of the following day, announce which player died at night.
 
 # Additional Information
