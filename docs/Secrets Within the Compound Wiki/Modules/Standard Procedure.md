@@ -24,8 +24,8 @@ Standard Procedure is a simple [[Module]]. This [[Module]] has been designed to 
 - Trainee
 
 # [[Detrimental|Detrimentals]]
-- Accomplice
-- Prisoner
+- [[Accomplice]]
+- [[Prisoner]]
 - Technician
 - Underachiever
 - VIP
@@ -33,7 +33,7 @@ Standard Procedure is a simple [[Module]]. This [[Module]] has been designed to 
 
 # [[Antagonist|Antagonists]]
 - [[Traitor]]
-- Vessel
+- [[Vessel]]
 
 # [[Characteristic|Characteristics]]
 - Adaptable
