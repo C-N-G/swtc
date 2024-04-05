@@ -333,7 +333,7 @@
   {
     "name": "Underachiever",
     "type": "Detrimental",
-    "description": "PLACEHOLDER",
+    "description": "Almost.",
     "ability": "You do not know you are the Underachiever. You think you are an Agent role, but you are not.",
     "setup": [
       [
