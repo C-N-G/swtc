@@ -1,10 +1,15 @@
+const large = {
+  "backgroundColor": "#2f8bf3",
+  "transform": "scale(1.15)"
+}
+
 export const createVotesSlice = (set) => ({
   votes: {
     list: [],
     voting: false,
     accusingPlayer: null,
     nominatedPlayer: null,
-    userVote: [null, null],
+    userVote: [large, false],
   },
 
   setVoting: (newVoting) => set(state => ({
@@ -17,7 +22,7 @@ export const createVotesSlice = (set) => ({
   resetUserVotes: () => set(state => ({
     votes: {
       ...state.votes,
-      userVote: [null, null]
+      userVote: [large, false]
     }
   })),
 
@@ -27,14 +32,20 @@ export const createVotesSlice = (set) => ({
         votes: {
           ...state.votes,
           list: newVote,
-          userVote: [null, null]
+          userVote: [large, false]
         }
       }
     } else {
+      const votes = [...state.votes.list];
+      const existingVote = votes.find(vote => vote.id === newVote.id)
+      if (existingVote) {
+        const removeIndex = votes.indexOf(existingVote);
+        votes.splice(removeIndex, 1);
+      }
       return {
         votes: {
           ...state.votes,
-          list: [...state.votes.list, newVote]
+          list: [...votes, newVote]
         }
       }
     }
@@ -55,19 +66,14 @@ export const createVotesSlice = (set) => ({
     }
   })),
 
-  setVotes: (newVotes) => set(() => ({votes: newVotes})),
+  setVotes: (newVotes) => set((state) => ({votes: {...state.votes, ...newVotes}})),
 
   setUserVote: (aVote) => set(state => {
-    const large = {
-      "backgroundColor": "#2f8bf3",
-      "transform": "scale(1.15)"
-    }
-
     return {
       votes: {
         ...state.votes,
         userVote: state.votes.userVote.map((_, index) => {
-          return index === aVote ? large : null
+          return index === aVote ? large : false
         })
       }
     }

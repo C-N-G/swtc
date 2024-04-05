@@ -49,19 +49,16 @@ function App() {
   const syncSession = useStore(state => state.syncSession);
   const sessionId = useStore(state => state.session.id);
 
-  // const [votes, setVotes] = useState({
-  //   list: [], 
-  //   voting: false, 
-  //   accusingPlayer: null, 
-  //   nominatedPlayer: null,
-  //   userVote: [null, null]
-  // });
   const setVoting = useStore(state => state.setVoting);
   const resetUserVotes = useStore(state => state.resetUserVotes);
   const addVoteToList = useStore(state => state.addVoteToList);
   const setAccuser = useStore(state => state.setAccuser);
   const setNominated = useStore(state => state.setNominated);
   const setVotes = useStore(state => state.setVotes);
+
+  const setTimer = useStore(state => state.setTimer);
+  const startTimer = useStore(state => state.startTimer);
+  const stopTimer = useStore(state => state.stopTimer);
 
   
   // const [isConnected, setIsConnected] = useState(socket.connected);
@@ -100,6 +97,11 @@ function App() {
       },
 
       vote(data) {
+
+        if (data.onlyPlayer && user.type === 0) {
+          return;
+        }
+
         if (Object.hasOwn(data, "voting")) {
           setVoting(data.voting);
           if (data.voting === true) displayVote();
@@ -116,6 +118,17 @@ function App() {
         
         if (Object.hasOwn(data, "nominatedPlayer")){
           setNominated(data.nominatedPlayer);
+        }
+        
+      },
+
+      timer(data) {
+        if (data.action === "set") {
+          setTimer(data.name, data.duration);
+        } else if (data.action === "start") {
+          startTimer(data.name);
+        } else if (data.action === "stop") {
+          stopTimer(data.name);
         }
         
       },
@@ -151,7 +164,8 @@ function App() {
     };
   }, [handlePlayerDataChange, setPlayers, syncPlayers, addPlayer, removePlayer, 
     nextPhase, setUserId, displayVote, resetSession, setModules, syncSession, 
-    setVoting, resetUserVotes, addVoteToList, setAccuser, setNominated, setVotes]);
+    setVoting, resetUserVotes, addVoteToList, setAccuser, setNominated, setVotes, 
+    startTimer, stopTimer, setTimer, user]);
 
   return (
     <DndContext onDragEnd={handleDragEnd}>

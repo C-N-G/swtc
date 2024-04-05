@@ -113,6 +113,20 @@ export default function swtcSocketServer(server, socket) {
 
   }
 
+  function onTimer(data, callback) {
+
+    log("updating timer from client");
+
+    const session = sessionManager.getSession(connectedSessionId);
+    if (!session) return callback({status: "error", error: "no session found"});
+
+    socket.to(connectedSessionId).emit("timer", data);
+
+    log("updated timer successfully");
+    callback({status: "ok"});
+
+  }
+
   function onSync(data, callback) {
 
     log("syncing client state to server");
@@ -134,7 +148,7 @@ export default function swtcSocketServer(server, socket) {
 
     socket.to(connectedSessionId).emit("sync", returnData); // won't send to sender
     log("synced state successfully");
-    callback({status: "ok"})
+    callback({status: "ok"});
 
   }
 
@@ -205,5 +219,6 @@ export default function swtcSocketServer(server, socket) {
   socket.on("sync", onSync);
   socket.on("disconnect", onDisconnect);
   socket.on("leave", onLeave);
+  socket.on("timer", onTimer);
 
 }

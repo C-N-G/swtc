@@ -97,7 +97,14 @@ function Board() {
       throw new Error("no player selected");
     }
     setOpenDialog(0);
-    socket.emit("vote", {nominatedPlayer: nominatedPlayerId, accusingPlayer: accusingPlayerId, voting: true})
+    const votes = drawPlayers
+    .filter(player => player.rState === 1)
+    .map(player => ({id: player.id, vote: 0, name: player.name}))
+    socket.emit("vote", {list: votes, nominatedPlayer: nominatedPlayerId, accusingPlayer: accusingPlayerId, voting: true})
+    socket.timeout(5000).emit("timer", {name: "voteTimer", action: "set", duration: timerDuration}, (error, response) => {
+      if (error) console.log("Timer Error: server timeout");
+      if (response?.error) console.log("Timer Error:", response.error);
+    });
   }
 
   function handleVoteFinishClick() {
@@ -105,12 +112,12 @@ function Board() {
     displayNone();
   }
 
-  function handleVoteStartClick() {
-    beginTimer();
-  }
-
   function handleVoteTimerEnd() {
-    console.log("done");
+    socket.timeout(5000).emit("timer", {name: "voteTimer", action: "stop"}, (error, response) => {
+      if (error) console.log("Timer Error: server timeout");
+      if (response?.error) console.log("Timer Error:", response.error);
+    });
+    socket.emit("vote", {list: [], voting: false, accusingPlayer: null, nominatedPlayer: null, onlyPlayer: true});
   }
 
   function handleViewPlayerClick() {
@@ -143,8 +150,10 @@ function Board() {
     createIndicator(player, index, true)
   ));
 
-  const selectablePlayers = drawPlayers.filter(player => player.id !== nominatedPlayerId).map((player, index) => {
-    return (<MenuItem key={index} value={player.id}>{player.name}</MenuItem>)
+  const selectablePlayers = drawPlayers.map((player, index) => {
+    const nominated = player.id === nominatedPlayerId;
+    const name = nominated ? `${player.name} < nominated player` : player.name;
+    return (<MenuItem key={index} value={player.id}>{name}</MenuItem>);
   })
 
   const nominatedPlayer = drawPlayers.find(player => player.id === nominatedPlayerId);
@@ -155,8 +164,7 @@ function Board() {
     <Vote nominatedPlayer={nominatedPlayer} 
       accusingPlayer={accusingPlayer} 
       handleVoteFinishClick={handleVoteFinishClick}
-      handleVoteStartClick={handleVoteStartClick}
-      time={time}/>
+      time={time} beginTimer={beginTimer}/>
     )
 
   const playerdetails = (

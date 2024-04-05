@@ -60,6 +60,11 @@ export default class Session {
         if (voteObj.length === 0) {
             this.votes = []
         } else {
+            const existingVote = this.votes.find(vote => vote.id === voteObj.id)
+            if (existingVote) {
+              const removeIndex = this.votes.indexOf(existingVote);
+              this.votes.splice(removeIndex, 1);
+            }
             this.votes.push(voteObj);
         }
 
