@@ -20,7 +20,8 @@ You start knowing that 1 of 3 players is a specific [[Detrimental]] [[role]] or 
 # Examples
 - The Coordinator wakes up on the first night, and learns that John, Jane, or Adam is the Underachiever. Adam is the Underachiever.
 - The Coordinator wakes up on the first night, and learns that there are 0 [[Detrimental|Detrimentals]] in play.
-- The Coordinator is [[malfunctioning]]. The Coordinator wakes up on the first night, and falsely learns that John, Jane, or Eve is the Underachiever.
+- The Coordinator wakes up on the first night. There is 1 [[Detrimental]] in play, but they are the [[Prisoner]]. The Coordinator incorrectly learns that there are 0 [[Detrimental|Detrimentals]] in play.
+- The Coordinator is [[malfunctioning]]. The Coordinator wakes up on the first night, and incorrectly learns that John, Jane, or Eve is the Underachiever.
 
 # How to Play
 - You should try to correlate your information with other player's information to try and work out who is the [[Detrimental]] [[role]] that you learnt.
