@@ -274,7 +274,7 @@
   {
     "name": "Accomplice",
     "type": "Detrimental",
-    "description": "PLACEHOLDER",
+    "description": "My fingerprints? No, you must be mistaken.",
     "ability": "You start on the Subversive team. You do not know you are the Accomplice. You think you are a different Loyalist role, but you are not. The Antagonist knows who you are.",
     "setup": [
       [
