@@ -1,6 +1,6 @@
 import loader from "../helpers/gameDataLoader.js";
 
-const modules = import.meta.glob(["./*.json", "./modules/*/*.json"], {eager: true});
+let modules = import.meta.glob(["./*.json", "./modules/*/*.json"], {eager: true});
 
 const GameData = {
   chars: [],
@@ -58,6 +58,8 @@ const GameData = {
 }
 
 loader(GameData, modules);
+
+modules = undefined;
 
 console.log("GameData loaded", GameData);
 
