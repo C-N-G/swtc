@@ -1,5 +1,9 @@
 ---
 tags:
+- Subversive
+- Antagonist
+- Human
+- Psychic
 ---
 > [!infobox]
 > # Vessel
