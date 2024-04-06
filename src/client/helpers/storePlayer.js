@@ -82,6 +82,7 @@ export const createPlayerSlice = (set, get) => ({
         newPlayers[index].rRole = player.rRole;
         newPlayers[index].rTeam = player.rTeam;
         newPlayers[index].rState = player.rState;
+        newPlayers[index].rVotePower = player.rVotePower;
       }
 
     })
