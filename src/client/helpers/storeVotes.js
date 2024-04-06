@@ -110,9 +110,9 @@ export const createVotesSlice = (set) => ({
   }),
 
   calculateVoteHistory: (round) => set(state => ({
-    voteHistory: {
+    voteHistory: [
       ...state.voteHistory.filter(item => item.day > round - 2)
-    }
+    ]
   }))
 
 })
