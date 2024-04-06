@@ -1,3 +1,41 @@
+### 05/04/2024 v0.5
+- added vote timer
+  - synchronised the narrators vote timer with the player
+  - players can now only begin voting when the vote timer starts counting down
+  - after the vote timer has completed the vote screen is hidden from players
+  - the vote screen is only hidden from the narrator after pressing the finish button
+  - the narrator can press finish before the vote timer has completed to finish a vote early
+- added vote power
+  - each player now has a voting power attribute ranging from 0 to 4
+  - each player will default to 1 unless changed by the narrator
+  - when a player casts a vote, it will count as x times their vote power
+- changed voting behaviour
+  - players can now change their vote as much as they want while the vote timer is counting down
+  - all players start out as abstaining from the narrators perspective
+  - when a player changes their vote, their previous vote will be discarded
+- added vote history dialog in the narrators character window
+  - the vote history gets updated each time a narrator presses the finish button on a vote
+  - this dialog will show voting information about the current day and previous day
+  - this dialog will show:
+    - if there is a most voted player it will show their name
+    - in addition if there is a most voted player, it will show if they have garnerd enough votes for dismissal
+    - all players that casted a vote
+    - all previous votes, including who nominated who, and who voted which way in each voting session
+  - once a day is progressed, the history for the day before yesterday will be lost
+- changed the player widget for the narrator view
+  - added vote power select menu
+  - added show true state toggle
+    - when toggled this will switch all the state inputs from shown to true
+  - hid all true state inputs unless enabled via the toggle
+  - this changes has mean the number of inputs has been reduced from 6 to 8 at any one time, leaving more room for reminders
+- added narrator stopwatch to the narrators character window
+  - it has a simple start/stop button and a reset button
+  - this stopwatch will simply count up by the seconds until stopped/reset
+  - has automatic time formatting for seconds/minutes/hours
+  - due to how javascript handles timing, there is currently no guarantee of it being accurate 
+- fixed players disconnecting during voting crash
+---
+
 ### 31/03/2024 v0.4.5
 - updated scenario viewer
   - added char/role attributes
