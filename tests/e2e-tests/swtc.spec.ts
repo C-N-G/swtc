@@ -59,7 +59,6 @@ test.afterAll(async () => {
 
 });
 
-
 test.describe("narrator tools", () => {
 
   test("module selection", async () => {
@@ -149,5 +148,102 @@ test.describe("dismissal voting", () => {
     await expect(player2.getByText(/Nominated by: player2/i)).toBeHidden();
 
   });
+
+})
+
+test.describe("voting power", () => {
+
+  test("changing vote power", async () => {
+
+    await narrator.getByRole("button", {name: /player1/i}).click();
+    await narrator.locator("#narrator-rVotePower-input").click();
+    await narrator.getByRole("option", {name: "2 vote power"}).click();
+    await narrator.getByRole("button", {name: /player1/i}).click();
+    await narrator.getByRole("button", {name: /Sync/i}).click();
+
+  });
+
+  test("vote power reflecting during dismissal", async () => {
+
+    await narrator.getByRole("button", {name: /player1/i}).click();
+    await expect(narrator.getByRole("button", {name: "Start Dismissal"})).toBeVisible();
+    await narrator.getByRole("button", {name: "Start Dismissal"}).click();
+    await narrator.locator("#nominating-player-select").click();
+    await narrator.getByRole("option", {name: "player2"}).click();
+    await narrator.getByRole("button", {name: "Begin"}).click();
+
+    await narrator.getByRole("button", {name: /start 15/i}).click();
+    await player1.getByRole("button", {name: /vote for/i}).click();
+    await expect(narrator.getByText(/2 voted/i)).toBeVisible();
+    await expect(narrator.getByText(/1 abstained/i)).toBeVisible();
+
+    await narrator.getByRole("button", {name: /finish/i}).click();
+
+  });
+
+})
+
+test.describe("voting history", () => {
+
+  test("viewing vote history dialog", async () => {
+
+    await narrator.getByRole("button", {name: /vote history/i}).click();
+    await expect(narrator.getByText(/voting history/i)).toBeVisible();
+    await expect(narrator.getByText(/most voted player/i).first()).toBeVisible();
+    await expect(narrator.getByText(/most voted player/i).nth(1)).toBeHidden();
+
+    await narrator.getByRole("tab", {name: /yesterday/i}).click();
+    await expect(narrator.getByText(/most voted player/i).first()).toBeHidden();
+    await expect(narrator.getByText(/most voted player/i).nth(1)).toBeVisible();
+
+    await narrator.getByRole("button", {name: /close/i}).click();
+    await expect(narrator.getByText(/voting history/i)).toBeHidden();
+
+  })
+
+
+})
+
+test.describe("phase functionality", () => {
+
+  test("progressing phase", async () => {
+
+    await expect(narrator.getByText(/night 1/i)).toBeVisible();
+    await expect(player1.getByText(/night 1/i)).toBeVisible();
+
+    await narrator.getByRole("button", {name: /progress phase/i}).click();
+
+    await expect(narrator.getByText(/day 1/i)).toBeVisible();
+    await expect(player1.getByText(/day 1/i)).toBeVisible();
+
+    await narrator.getByRole("button", {name: /progress phase/i}).click();
+
+    await expect(narrator.getByText(/night 2/i)).toBeVisible();
+    await expect(player1.getByText(/night 2/i)).toBeVisible();
+
+  });
+
+  test("scenario dialog", async () => {
+
+    await narrator.getByRole("button", {name: /show scenario/i}).click();
+    await expect(narrator.getByText(/current scenario/i)).toBeVisible();
+
+    await narrator.getByRole("tab", {name: /night order/i}).click();
+    await expect(narrator.getByText(/ability type/i)).toBeVisible();
+
+    await narrator.getByRole("button", {name: /close/i}).click();
+    await expect(narrator.getByText(/current scenario/i)).toBeHidden();
+
+  })
+
+  test("night order dialog", async () => {
+
+    await narrator.getByRole("button", {name: /night order list/i}).click();
+    await expect(narrator.getByRole("button", {name: /close/i})).toBeVisible();
+
+    await narrator.getByRole("button", {name: /close/i}).click();
+    await expect(narrator.getByRole("button", {name: /close/i})).toBeHidden();
+
+  })
 
 })
