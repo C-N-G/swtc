@@ -10,7 +10,7 @@ export default class Session {
         this.isVoting = false;
         this.accusingPlayer = null;
         this.nominatedPlayer = null;
-        this.phase = {cycle: "Night", round: 1};
+        this.phase = {cycle: "Day", round: 1};
         this.modules = [];
 
     }
