@@ -142,10 +142,10 @@ function NarratorDetails({player, handleDismissalClick, chars, roles}) {
   ]
 
   const trueInputs = [
-    selectBuilder(player.id, "State", false, GameData.states, player.state),
-    selectBuilder(player.id, "Role", false, roles, player.role),
-    selectBuilder(player.id, "Char", false, chars, player.char),
-    selectBuilder(player.id, "Team", false, GameData.teams, player.team)
+    selectBuilder(player.id, "State", false, GameData.states, player.state, handleChange),
+    selectBuilder(player.id, "Role", false, roles, player.role, handleChange),
+    selectBuilder(player.id, "Char", false, chars, player.char, handleChange),
+    selectBuilder(player.id, "Team", false, GameData.teams, player.team, handleChange)
   ]
 
   return (
