@@ -1,4 +1,11 @@
-### 05/04/2024 v0.5
+### 05/04/2024 v0.5.1
+changed starting phase from night 1 to day 1
+changed phase progression:
+- from: night 1 > day 1 > night 2 > day 2 > night 3 > ect
+- to: day 1 > night 1 > day 2 > night 2 > day 3 > ect
+---
+
+### 05/04/2024 v0.5.0
 - added vote timer
   - synchronised the narrators vote timer with the player
   - players can now only begin voting when the vote timer starts counting down
