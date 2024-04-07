@@ -208,18 +208,18 @@ test.describe("phase functionality", () => {
 
   test("progressing phase", async () => {
 
-    await expect(narrator.getByText(/night 1/i)).toBeVisible();
-    await expect(player1.getByText(/night 1/i)).toBeVisible();
-
-    await narrator.getByRole("button", {name: /progress phase/i}).click();
-
     await expect(narrator.getByText(/day 1/i)).toBeVisible();
     await expect(player1.getByText(/day 1/i)).toBeVisible();
 
     await narrator.getByRole("button", {name: /progress phase/i}).click();
 
-    await expect(narrator.getByText(/night 2/i)).toBeVisible();
-    await expect(player1.getByText(/night 2/i)).toBeVisible();
+    await expect(narrator.getByText(/night 1/i)).toBeVisible();
+    await expect(player1.getByText(/night 1/i)).toBeVisible();
+
+    await narrator.getByRole("button", {name: /progress phase/i}).click();
+
+    await expect(narrator.getByText(/day 2/i)).toBeVisible();
+    await expect(player1.getByText(/day 2/i)).toBeVisible();
 
   });
 
@@ -237,6 +237,10 @@ test.describe("phase functionality", () => {
   })
 
   test("night order dialog", async () => {
+
+    if ((await narrator.getByRole("heading", {name: /night|day/i}).innerText()).includes("Day")) {
+      await narrator.getByRole("button", {name: /progress phase/i}).click();
+    }
 
     await narrator.getByRole("button", {name: /night order list/i}).click();
     await expect(narrator.getByRole("button", {name: /close/i})).toBeVisible();
