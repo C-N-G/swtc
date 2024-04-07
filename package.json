@@ -13,7 +13,8 @@
     "server": "nodemon --watch src ./src/server/main.js",
     "test": "npx playwright test",
     "uitest": "npx playwright test --ui",
-    "report": "npx playwright show-report"
+    "report": "npx playwright show-report",
+    "bundleSize": "npx vite-bundle-visualizer"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
@@ -21,7 +22,6 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.18",
     "@mui/material": "^5.14.13",
-    "js-yaml": "^4.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "socket.io": "^4.7.2",
@@ -40,7 +40,8 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
     "nodemon": "^3.0.2",
-    "vite": "^4.4.5"
+    "vite": "^4.4.5",
+    "vite-bundle-visualizer": "^1.1.0"
   },
   "repository": {
     "type": "git",
