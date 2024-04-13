@@ -2,7 +2,7 @@
   {
     "name": "Adaptable",
     "description": "PLACEHOLDER",
-    "ability": "Once per game, during the night, you may choose any characteristic, you become that characteristic.",
+    "ability": "Once per game, during the night, you may choose any not in-play characteristic, you become that characteristic. If that characteristic is in-play, you don’t change characteristic but think you do.",
     "orderType": "char_converts_self",
     "reminders": [
       ["🔄", "#FFFF00", "Adaptable: Has used their ability."]
