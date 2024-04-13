@@ -254,7 +254,7 @@
     "name": "Trainee",
     "type": "Agent",
     "description": "Don’t worry, the first twenty years are the worst.",
-    "ability": "Once per game, during the night, you may choose any not in-play Loyalist role, you become that role. If the role is in-play, you don’t change role but think you do.",
+    "ability": "Once per game, during the night, you may choose any not in-play Loyalist role, you become that role. If that role is in-play, you don’t change role but think you do.",
     "orderType": "role_converts_self",
     "attributes": [
       "Human"
