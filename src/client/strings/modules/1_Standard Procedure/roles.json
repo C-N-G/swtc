@@ -278,6 +278,9 @@
     "ability": "You do not know you are the Accomplice. You think you are a different Loyalist role, but you are not. The Antagonist knows who you are.",
     "setup": [
       [
+        "You start on the Subversive team."
+      ],
+      [
         "You think you are a Loyalist role.",
         "ShowAs Role Loyalist"
       ],
