@@ -224,7 +224,7 @@
     "name": "Telepath",
     "type": "Agent",
     "description": "I’d like to walk around in your mind.",
-    "ability": "Each night, you learn the role of one of your living neighbours.",
+    "ability": "Each night, you learn a role. One of your living neighbours is this role.",
     "orderType": "role_with_recurring_info",
     "attributes": [
       "Human",
