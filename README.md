@@ -62,3 +62,6 @@ If the game results in a draw or stalemate then the Loyalist team win.
 
 This software, Secrets Within the Compound, is licensed under AGPLv3. Copyright (C) 2023-2024 Cormac Gudge & Isaac Poulton.
 All artistic media, including but not limited to writing, concepts, rules, and documentation, provided by Isaac Poulton, is licensed under CC BY-NC-SA 4.0. Copyright (C) 2023-2024 Isaac Poulton.
+
+## Contributing
+To contribute to this project you must agree to the CLA found in CONTRIBUTING.md
