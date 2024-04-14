@@ -55,13 +55,15 @@ function PlayerCharacter({user, useLocal}) {
   const modules = useStore(state => state.session.modules);
   const [chars, roles] = useMemo(() => GameData.getFilteredValues(modules, true), [modules]);
 
-  let fullChar, fullRole;
+  let fullChar, fullRole, team;
   if (useLocal) { // use local player state instead of real state
     fullChar = chars[user.char] ? chars[user.char] : GameData.chars[0];
     fullRole = roles[user.role] ? roles[user.role] : GameData.roles[0];
+    team = GameData.teams[user.team];
   } else {
     fullChar = chars[user.rChar] ? chars[user.rChar] : GameData.chars[0];
     fullRole = roles[user.rRole] ? roles[user.rRole] : GameData.roles[0];
+    team = GameData.teams[user.rTeam];
   }
 
   return (<>
@@ -82,7 +84,7 @@ function PlayerCharacter({user, useLocal}) {
       </Grid>
       <Grid item xs={6} textAlign="left">
         <Typography>{fullRole["name"]}</Typography>
-        <Typography>{GameData.teams[user.rTeam]}</Typography> 
+        <Typography>{team}</Typography> 
       </Grid>
       {fullRole["name"] !== "Unknown" ? <>
       <Grid item xs={12}>
