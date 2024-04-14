@@ -224,7 +224,7 @@
     "name": "Telepath",
     "type": "Agent",
     "description": "I’d like to walk around in your mind.",
-    "ability": "Each night, you learn the role of one of your living neighbours.",
+    "ability": "Each night, you learn a role. One of your living neighbours is this role.",
     "orderType": "role_with_recurring_info",
     "attributes": [
       "Human",
@@ -254,7 +254,7 @@
     "name": "Trainee",
     "type": "Agent",
     "description": "Don’t worry, the first twenty years are the worst.",
-    "ability": "Once per game, during the night, you may choose any not in-play Loyalist role, you become that role. If the role is in-play, you don’t change role but think you do.",
+    "ability": "Once per game, during the night, you may choose any not in-play Agent role, you become that role. If that role is in-play, you don’t change role but think you do.",
     "orderType": "role_converts_self",
     "attributes": [
       "Human"
@@ -275,8 +275,11 @@
     "name": "Accomplice",
     "type": "Detrimental",
     "description": "My fingerprints? No, you must be mistaken.",
-    "ability": "You start on the Subversive team. You do not know you are the Accomplice. You think you are a different Loyalist role, but you are not. The Antagonist knows who you are.",
+    "ability": "You do not know you are the Accomplice. You think you are a different Loyalist role, but you are not. The Antagonist knows who you are.",
     "setup": [
+      [
+        "You start on the Subversive team."
+      ],
       [
         "You think you are a Loyalist role.",
         "ShowAs Role Loyalist"

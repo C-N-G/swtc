@@ -21,7 +21,7 @@ energy has rippled through the compound, and the usualAgency safeguards have mal
 now the ghosts of the fallen walk the corridors once again.
 
 ## Goals
-Secrets Within the Compound is a social deduction game for 8-16 players, and one
+Secrets Within the Compound is a social deduction game for 6-16 players, and one
 narrator. One person assumes the role of the narrator, whilst the other players receive a secret role
 and a secret characteristic at the start of the game, this determines what team they’re on and grants
 them powerful game altering abilities. The players are divided into two teams, the Loyalist team, and
@@ -57,3 +57,8 @@ If the game results in a draw or stalemate then the Loyalist team win.
 
 ## Player perspective
 ![Player View](https://i.imgur.com/ivnFfuj.png)
+
+## Copyright
+
+This software, Secrets Within the Compound, is licensed under AGPLv3. Copyright (C) 2023-2024 Cormac Gudge & Isaac Poulton.
+All artistic media, including but not limited to writing, concepts, rules, and documentation, provided by Isaac Poulton, is licensed under CC BY-NC-SA 4.0. Copyright (C) 2023-2024 Isaac Poulton.
