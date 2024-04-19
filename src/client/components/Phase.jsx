@@ -50,12 +50,16 @@ function PlayerPhase() {
   const [chars, roles] = useMemo(() => GameData.getFilteredValues(modules, true), [modules]);
   const handleClose = () => setOpenDialog(null);
   const phase = useStore(state => state.phase);
+  const voting = useStore(state => state.votes.voting);
+  const voteTimer = useStore(state => state.timers.voteTimer);
+  const displayVote = useStore(state => state.displayVote);
   
   return (<>
     <Grid container alignItems="center">
       <Grid item xs={4} container justifyContent="center">
         <ButtonGroup size="small" orientation="vertical">
           <Button onClick={() => setOpenDialog("scenario")}>Show Scenario</Button>
+          {voting ? <Button onClick={() => displayVote()}>Show Vote ({voteTimer.time})</Button> : ""}
         </ButtonGroup>
       </Grid>
       <Grid item xs={4} container justifyContent="center">
@@ -90,9 +94,11 @@ function NarratorPhase() {
   const addPlayerNightIndicators = useStore(state => state.addPlayerNightIndicators);
   const players = useStore(state => state.players);
   const purgedOrders = useStore(state => state.purgedOrders);
+  const voting = useStore(state => state.votes.voting);
+  const displayVote = useStore(state => state.displayVote);
 
 
-  function hanldeClick() {
+  function handleClick() {
 
       let newCycle;
       let newRound;
@@ -128,6 +134,7 @@ function NarratorPhase() {
         <Grid item xs={4} container justifyContent="center">
           <ButtonGroup size="small" orientation="vertical">
             <Button onClick={() => setOpenDialog("scenario")}>Show Scenario</Button>
+            {voting ? <Button onClick={() => displayVote()}>Show Vote</Button> : ""}
           </ButtonGroup>
         </Grid>
         <Grid item xs={4} container justifyContent="center">
@@ -138,7 +145,7 @@ function NarratorPhase() {
         </Grid>
         <Grid item xs={4} container justifyContent="center">
           <ButtonGroup size="small" orientation="vertical">
-            <Button onClick={() => hanldeClick()}>&gt; Progress Phase &gt;</Button>
+            <Button onClick={() => handleClick()}>&gt; Progress Phase &gt;</Button>
             <Button disabled={phase.cycle !== "Night"} onClick={() => setOpenDialog("nightOrder")}>Night Order List</Button>
           </ButtonGroup>
         </Grid>
