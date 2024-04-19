@@ -6,7 +6,7 @@ export const createDisplaySlice = (set) => ({
 
   displayDetails: () => set(() => ({display: 1})),
   
-  displayVote: () => set(() => ({display: 2})),
+  displayVote: () => set(() => ({display: 2, selected: null})),
 
   selectPlayer: (playerId) => set(() => {
     return {display: 1, selected: playerId};
