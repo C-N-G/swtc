@@ -1,4 +1,5 @@
 import SessionManager from "./sessionManager.js";
+import config from "../appConfig.js";
 
 const sessionManager = new SessionManager();
 
@@ -29,19 +30,43 @@ export default function swtcSocketServer(server, socket) {
       return callback({status: "error", error: "no session found"});
     }
 
-    connectedSessionId = sessionId;
-    const session = sessionManager.getSession(sessionId).getData();
+    const session = sessionManager.getSession(sessionId);
     const nameTaken = session.players.some(player => player.name === name);
+    const playerIsDisconnecting = Object.hasOwn(session.disconnectTimers, name);
 
-    if (nameTaken) {
+    if (nameTaken && !playerIsDisconnecting) {
       return callback({status: "error", error: "name taken"});
+    } else if (playerIsDisconnecting) {
+
+      clearTimeout(session.disconnectTimers[name]);
+      delete session.disconnectTimers[name];
+
+      // get disconncted player
+      const player = session.players.find(player => player.name === name);
+      // save their id
+      const oldId = player.id;
+      // update player id on the server
+      player.id = playerId;
+      // sync session to resuming player
+      socket.join(sessionId);
+      socket.emit("sync", session.getData(), playerId);
+      // update player id for all players
+      socket.to(sessionId).emit("attribute", {targetId: oldId, targetProperty: "id", targetValue: playerId});
+
+      playerName = name;
+      connectedSessionId = sessionId;
+      callback({status: "ok"});
+      log(`resumed session ${sessionId}`);
+      return;
+
     }
 
     const player = sessionManager.joinSession(sessionId, playerId, name);
     playerName = name;
     socket.join(sessionId);
+    connectedSessionId = sessionId;
     socket.to(sessionId).emit("joined", player);
-    socket.emit("sync", session, player.id);
+    socket.emit("sync", session.getData(), player.id);
     callback({status: "ok"});
     log(`joined session ${sessionId}`);
 
@@ -183,13 +208,26 @@ export default function swtcSocketServer(server, socket) {
     }
 
     if (connectedSessionId !== null) {
-      if (!sessionManager.sessionExists(connectedSessionId)) return;
-      sessionManager.leaveSession(connectedSessionId, playerId);
-      log(`disconnected from session ${connectedSessionId}`);
-    }
 
-    if (sessionManager.sessionExists(connectedSessionId)) {
-      server.to(connectedSessionId).emit("left", playerId);
+      if (!sessionManager.sessionExists(connectedSessionId)) return;
+
+      const session = sessionManager.getSession(connectedSessionId);
+      const player = session.players.find(player => player.id === playerId);
+
+      // start dc timer
+      session.disconnectTimers[player.name] = setTimeout(() => {
+
+        // remove player after timer
+        sessionManager.leaveSession(connectedSessionId, playerId);
+        if (sessionManager.sessionExists(connectedSessionId)) {
+          server.to(connectedSessionId).emit("left", playerId);
+        }
+        log(`removed from session ${connectedSessionId}`);
+
+      }, config.dc_timeout_seconds*1000);
+
+      log(`disconnected from session ${connectedSessionId}`);
+
     }
 
   }

@@ -12,6 +12,7 @@ export default class Session {
         this.nominatedPlayer = null;
         this.phase = {cycle: "Day", round: 1};
         this.modules = [];
+        this.disconnectTimers = {};
 
     }
 
