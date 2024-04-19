@@ -17,7 +17,7 @@ export default class Player {
    * @param {number} rTeam - real player team that is networked by the narrator
    * @param {number} rVotePower - the Voting power for this player
    * @param {Array<Reminder>} reminders - visual reminders tied to this player
-   * @param {Array<number>} nightOrders - the night orders for this players chars and roles
+   * @param {Array<Reminder>} nightOrders - the night orders for this players chars and roles
    */
   constructor(
     id,
