@@ -35,20 +35,22 @@ const PlayerIndicator = memo(function PlayerIndicator(props) {
 
 export default PlayerIndicator
 
-const BUTTON_STYLE = (team, rState) => ({
-  height: "calc(100% - 10px)",
+const BUTTON_STYLE = (team, rState, isSelected) => ({
+  aspectRatio: "1/1",
   margin: "5px",
   px: "4px",
   flexDirection: "column",
   justifyContent: "flex-start",
-  overflow: "inherit",
+  overflow: "clip",
   background: team === 2 ? "rgb(180, 30, 10)" : team === 1 ? "rgb(25, 118, 210)" : "rgb(128, 128, 128)",
   backgroundImage: rState === 0 ? "linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,0.5), rgba(0,0,0,1))" : "",
   ":hover": {
     background: team === 2 ? "rgb(150, 25, 5)" : team === 1 ? "rgb(21, 101, 192)" : "rgb(96, 96, 96)",
     backgroundImage: rState === 0 ? "linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.5), rgba(0,0,0,1))" : "",
+    boxShadow: isSelected ? "inset 0 0 15px 12px rgba(0,0,0,1)" : "",
   },
   textTransform: "none",
+  boxShadow: isSelected ? "inset 0 0 15px 12px rgba(0,0,0,0.8)" : "",
 })
 
 const BUTTON_CONTAINER_STYLE = (vertical) => ({
@@ -71,11 +73,13 @@ const BUTTON_TEXT_CONTAINER_STYLE = {
   whiteSpace: "break-spaces"
 }
 
-function RegularPlayerIndicator({player, handleClick, vertical}) {
+function RegularPlayerIndicator({player, handleClick, vertical, selected}) {
+
+  const thisPlayerSelected = selected === player.id;
 
   return (
     <Box sx={BUTTON_CONTAINER_STYLE(vertical)}>
-      <Button variant="contained" onClick={() => {handleClick(player.id)}} sx={BUTTON_STYLE(player.team, player.rState)}>
+      <Button variant="contained" onClick={() => {handleClick(player.id)}} sx={BUTTON_STYLE(player.team, player.rState, thisPlayerSelected)}>
         <Typography>{player.name}</Typography>
         <Box sx={BUTTON_TEXT_CONTAINER_STYLE}>
           <Typography 
@@ -93,7 +97,7 @@ function RegularPlayerIndicator({player, handleClick, vertical}) {
 
 }
 
-function NarratorPlayerIndicator({player, handleClick, vertical, chars, roles}) {
+function NarratorPlayerIndicator({player, handleClick, vertical, chars, roles, selected}) {
 
   const {isOver, setNodeRef} = useDroppable({
     id: "droppable-|-" + player.id
@@ -104,6 +108,8 @@ function NarratorPlayerIndicator({player, handleClick, vertical, chars, roles}) 
     transform: isOver ? "translate3d(0px, -5px, 0)" : undefined,
     transition: "transform 0.2s",
   };
+
+  const thisPlayerSelected = selected === player.id;
 
   function captionBuilder(text) {
     return(
@@ -148,7 +154,7 @@ function NarratorPlayerIndicator({player, handleClick, vertical, chars, roles}) 
       <Button 
         variant="contained" 
         onClick={() => {handleClick(player.id)}} 
-        sx={BUTTON_STYLE(player.team, player.rState)}
+        sx={BUTTON_STYLE(player.team, player.rState, thisPlayerSelected)}
         ref={setNodeRef}
         style={style}
       >
