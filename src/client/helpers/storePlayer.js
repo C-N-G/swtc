@@ -63,7 +63,7 @@ export const createPlayerSlice = (set, get) => ({
       } else if (removeOrigin && player.id === originId) {
         player.reminders = player.reminders.filter(id => id !== reminderId);
       }
-      return player;
+      return {...player};
     })
     return {players: newPlayers};
   }),
@@ -118,7 +118,7 @@ export const createPlayerSlice = (set, get) => ({
     } else if (newCycle === "Day") {
       newPlayers = newPlayers.map(player => {
         player.nightOrders = [];
-        return player;
+        return {...player};
       });
     }
     return {players: newPlayers};

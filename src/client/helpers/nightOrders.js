@@ -55,7 +55,7 @@ const NightOrders = {
 
     playerArray = playerArray.map(player => {
       player.nightOrders = [];
-      return player;
+      return {...player};
     })
 
     if (purgedOrders) {
