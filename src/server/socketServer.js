@@ -17,25 +17,33 @@ export default function swtcSocketServer(server, socket) {
     console.log(messageId, messageContent, messageData);
   }
 
-  function onJoin(sessionId, name) {
+  function onJoin(sessionId, name, callback) {
 
     log("joining");
 
     if (connectedSessionId !== null) {
-      return;
+      return callback({status: "error", error: "already in session"});
     }
 
-    if (sessionManager.sessionExists(sessionId)) {
-      connectedSessionId = sessionId;
-      const session = sessionManager.getSession(sessionId);
-      if (!session) return;
-      const player = sessionManager.joinSession(sessionId, playerId, name);
-      playerName = name;
-      socket.join(sessionId);
-      socket.to(sessionId).emit("joined", player);
-      socket.emit("sync", session.getData(), player.id);
-      log(`joined session ${sessionId}`);
+    if (!sessionManager.sessionExists(sessionId)) {
+      return callback({status: "error", error: "no session found"});
     }
+
+    connectedSessionId = sessionId;
+    const session = sessionManager.getSession(sessionId).getData();
+    const nameTaken = session.players.some(player => player.name === name);
+
+    if (nameTaken) {
+      return callback({status: "error", error: "name taken"});
+    }
+
+    const player = sessionManager.joinSession(sessionId, playerId, name);
+    playerName = name;
+    socket.join(sessionId);
+    socket.to(sessionId).emit("joined", player);
+    socket.emit("sync", session, player.id);
+    callback({status: "ok"});
+    log(`joined session ${sessionId}`);
 
   }
 

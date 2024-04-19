@@ -5,7 +5,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import {socket} from "../helpers/socket.js";
 import useStore from "../hooks/useStore.js";
 
-function textFieldBuilder(id, label, input, errorText, handleFunc, focus, setInputs, inputs) {
+function textFieldBuilder(id, label, input, handleFunc, focus, setInputs, inputs) {
 
   return <TextField
     autoFocus={focus}
@@ -19,7 +19,7 @@ function textFieldBuilder(id, label, input, errorText, handleFunc, focus, setInp
     value={inputs[input].value}
     onChange={(e) => {setInputs(prev => {return {...prev, [input]: {...prev[input], value: e.target.value}}})}}
     onKeyDown={(e) => e.key === "Enter" ? handleFunc() : "" }
-    helperText={inputs[input].error ? errorText : ""}
+    helperText={inputs[input].error ? inputs[input].errorText : ""}
   />
 
 }
@@ -29,9 +29,9 @@ function Options() {
   const sessionId = useStore(state => state.session.id);
 
   const defaultInputs = {
-    hostName: {value: "", error: false}, 
-    joinName: {value: "", error: false}, 
-    joinId: {value: "", error: false}
+    hostName: {value: "", error: false, errorText: ""}, 
+    joinName: {value: "", error: false, errorText: ""}, 
+    joinId: {value: "", error: false, errorText: ""}
   };
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -54,7 +54,7 @@ function Options() {
       handleClose();
     } else {
       setInputs(prev => { 
-        return {...prev, hostName: {...prev.hostName, error: true}} 
+        return {...prev, hostName: {...prev.hostName, error: true, errorText: "Must be between 3 to 16 characters"}} 
       })
     }
 
@@ -70,13 +70,46 @@ function Options() {
     
     setInputs(prev => { 
       return {...prev, 
-        joinName: {...prev.joinName, error: !nameValidated},
-        joinId: {...prev.joinId, error: !idValidated}} 
+        joinName: {...prev.joinName, error: !nameValidated, errorText: "Must be between 3 to 16 characters"},
+        joinId: {...prev.joinId, error: !idValidated, errorText: "Must be 7 characters long"}} 
     })
     
     if (nameValidated && idValidated) {
-      socket.emit("join", id, name);
-      handleClose();
+
+      socket.timeout(5000).emit("join", id, name, (error, response) => {
+
+        if (error) {
+          console.log("Join Error: server timeout");
+          setInputs(prev => ({...prev, joinId: {...prev.joinId, error: true, errorText: "Server timeout"}}));
+          return;
+        }
+
+        if (response.status === "error") {
+
+          console.log("Join Error:", response.error);
+
+          switch (response.error) {
+            case "already in session":
+              break;
+
+            case "no session found":
+              setInputs(prev => ({...prev, joinId: {...prev.joinId, error: true, errorText: "Session not found"}}));
+              break;
+
+            case "name taken":
+              setInputs(prev => ({...prev, joinName: {...prev.joinName, error: true, errorText: "Name already taken"}}));
+              break;
+
+            default:
+              break;
+          }
+
+        } else if (response.status === "ok") {
+          handleClose();
+        }
+
+      });
+
     }
 
 
@@ -163,7 +196,7 @@ function HostDialog({openDialog, handleClose, handleHost, setInputs, inputs}) {
         <DialogContentText>
           To host a session, please enter your name below.
         </DialogContentText>
-        {textFieldBuilder("host-name", "Name", "hostName", "Must be between 3 to 16 characters", handleHost, true, setInputs, inputs)}
+        {textFieldBuilder("host-name", "Name", "hostName", handleHost, true, setInputs, inputs)}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleHost}>Host</Button>
@@ -184,8 +217,8 @@ function JoinDialog({openDialog, handleClose, handleJoin, setInputs, inputs}) {
           To join a session, plase enter your display name.
           And the ID of the session you wish to connect to.
         </DialogContentText>
-        {textFieldBuilder("join-name", "Name", "joinName", "Must be between 3 to 16 characters", handleJoin, true, setInputs, inputs)}
-        {textFieldBuilder("join-id", "Session ID", "joinId", "Must be 7 characters long", handleJoin, false, setInputs, inputs)}
+        {textFieldBuilder("join-name", "Name", "joinName", handleJoin, true, setInputs, inputs)}
+        {textFieldBuilder("join-id", "Session ID", "joinId", handleJoin, false, setInputs, inputs)}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleJoin}>Join</Button>
