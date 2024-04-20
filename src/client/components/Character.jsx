@@ -22,7 +22,7 @@ function Character(props) {
   const getUserTypeCheckedComponent = () => {
 
     if (user?.type === 0) {
-      return <NarratorCharacter {...props} />
+      return <NarratorCharacter user={user} {...props} />
     } else if (user?.type === 1) {
       return <PlayerCharacter user={user} {...props} />
     } else {
@@ -124,7 +124,7 @@ function PlayerCharacter({user, useLocal}) {
 
 }
 
-function NarratorCharacter() {
+function NarratorCharacter({user}) {
 
   const [openDialog, setOpenDialog] = useState(null);
   const [selectedReminder, setSelectedReminder] = useState(null);
@@ -215,6 +215,11 @@ function NarratorCharacter() {
 
       if (response.status === "ok") {
         syncOn();
+        localStorage.setItem("lastSession", JSON.stringify({
+          players: players,
+          sessionId: sessionId,
+          playerName: players.find(player => player.id === user.id).name
+        }));
       }
 
     })
