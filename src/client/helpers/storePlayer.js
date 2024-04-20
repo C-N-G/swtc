@@ -24,6 +24,14 @@ export const createPlayerSlice = (set, get) => ({
       }
     })
 
+    if (fromServer === false) {
+      localStorage.setItem("lastSession", JSON.stringify({
+        players: newPlayers,
+        sessionId: get().session.id,
+        playerName: newPlayers.find(player => player.id === get().userId).name
+      }));
+    }
+
     return {players: newPlayers};
 
   }),
@@ -70,12 +78,18 @@ export const createPlayerSlice = (set, get) => ({
 
   syncPlayers: (session) => set(state => {
     const newPlayers = state.players
+    // if syncing a session with no players then just remove them all
     if (session.players.length === 0) return {players: []};
     const clientPlayerIds = new Set(newPlayers.map(player => player.id));
+
+    // loop through all the players sent from the server
     session.players.forEach((player, index) => {
       let clientHasPlayer = clientPlayerIds.has(player.id);
+      // if the client does not have player then put them at their index
       if (!clientHasPlayer) {
         newPlayers[index] = player;
+
+      // if the client does have the player then take their synced values
       } else if (clientHasPlayer) {
         // potential bug here
         newPlayers[index].rChar = player.rChar;
@@ -86,7 +100,15 @@ export const createPlayerSlice = (set, get) => ({
       }
 
     })
+
+    localStorage.setItem("lastSession", JSON.stringify({
+      players: newPlayers,
+      sessionId: state.session.id,
+      playerName: newPlayers.find(player => player.id === state.userId).name
+    }));
+
     return {players: newPlayers};
+
   }),
 
   randomisePlayers: (chars, roles) => set(state => {

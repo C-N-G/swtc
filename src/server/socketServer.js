@@ -9,13 +9,38 @@ export default function swtcSocketServer(server, socket) {
 
   let connectedSessionId = null;
   let playerName;
-  const playerId = socket.id;
+  let playerId = socket.id;
 
   function log(msg, data) {
     const messageId = `${playerId}:${playerName ? playerName : "UnKnown"}`;
     const messageContent = `- ${msg}`;
     const messageData = data ? `- ${JSON.stringify(data)}` : "";
     console.log(messageId, messageContent, messageData);
+  }
+
+  function onResumeTest(sessionId, name, callback) {
+
+    log("testing resume");
+
+    if (!sessionManager.sessionExists(sessionId)) {
+      return callback({status: "error", error: "no session found"});
+    }
+
+    const session = sessionManager.getSession(sessionId);
+    const nameTaken = session.players.some(player => player.name === name);
+    const playerIsDisconnecting = Object.hasOwn(session.disconnectTimers, name);
+
+    if (!nameTaken) {
+      return callback({status: "error", error: "name not in session"});
+    }
+
+    if (nameTaken && !playerIsDisconnecting) {
+      return callback({status: "error", error: "name taken"});
+    } else if (playerIsDisconnecting) {
+      callback({status: "ok"});
+      log(`can resume session ${sessionId}`);
+    }
+
   }
 
   function onJoin(sessionId, name, callback) {
@@ -36,22 +61,18 @@ export default function swtcSocketServer(server, socket) {
 
     if (nameTaken && !playerIsDisconnecting) {
       return callback({status: "error", error: "name taken"});
-    } else if (playerIsDisconnecting) {
+    } else if (playerIsDisconnecting) { // join by resuming
 
       clearTimeout(session.disconnectTimers[name]);
       delete session.disconnectTimers[name];
 
       // get disconncted player
       const player = session.players.find(player => player.name === name);
-      // save their id
-      const oldId = player.id;
       // update player id on the server
-      player.id = playerId;
+      playerId = player.id;
       // sync session to resuming player
       socket.join(sessionId);
       socket.emit("sync", session.getData(), playerId);
-      // update player id for all players
-      socket.to(sessionId).emit("attribute", {targetId: oldId, targetProperty: "id", targetValue: playerId});
 
       playerName = name;
       connectedSessionId = sessionId;
@@ -61,6 +82,7 @@ export default function swtcSocketServer(server, socket) {
 
     }
 
+    // nomral join
     const player = sessionManager.joinSession(sessionId, playerId, name);
     playerName = name;
     socket.join(sessionId);
@@ -214,6 +236,10 @@ export default function swtcSocketServer(server, socket) {
       const session = sessionManager.getSession(connectedSessionId);
       const player = session.players.find(player => player.id === playerId);
 
+      if (Object.hasOwn(session.disconnectTimers, player.name)) {
+        clearTimeout(session.disconnectTimers[player.name]);
+      }
+
       // start dc timer
       session.disconnectTimers[player.name] = setTimeout(() => {
 
@@ -222,6 +248,7 @@ export default function swtcSocketServer(server, socket) {
         if (sessionManager.sessionExists(connectedSessionId)) {
           server.to(connectedSessionId).emit("left", playerId);
         }
+        delete session.disconnectTimers[player.name];
         log(`removed from session ${connectedSessionId}`);
 
       }, config.dc_timeout_seconds*1000);
@@ -266,5 +293,6 @@ export default function swtcSocketServer(server, socket) {
   socket.on("disconnect", onDisconnect);
   socket.on("leave", onLeave);
   socket.on("timer", onTimer);
+  socket.on("resume", onResumeTest);
 
 }

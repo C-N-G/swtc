@@ -60,22 +60,51 @@ function App() {
   const startTimer = useStore(state => state.startTimer);
   const stopTimer = useStore(state => state.stopTimer);
 
-  
-  // const [isConnected, setIsConnected] = useState(socket.connected);
-
   const user = useStore(state => state.getUser()); // the users player object
   
 
   useEffect(() => {
 
+    const resumeCallback = (error, res) => {
+
+      if (error) return console.log("ResumeTest Error: server timeout");
+      if (res.status === "error") {
+        console.log("ResumeTest:", res.error);
+        if (res.error === "no session found") localStorage.removeItem("lastSession");
+        else if (res.error === "name not in session") localStorage.removeItem("lastSession");
+        // else if (res.error === "name taken") 
+      }
+
+      if (res.status === "ok") {
+        const lastSession = JSON.parse(localStorage.getItem("lastSession"));
+        setPlayers(lastSession.players);
+        socket.timeout(5000).emit("join", lastSession.sessionId, lastSession.playerName, joinCallback);
+      }
+
+    };
+
+    const joinCallback = (error, res) => {
+
+      if (error || res.error) setPlayers([]);
+
+      if (error) return console.log("Resume Error: server timeout");
+      if (res.status === "error") return console.log("Resume Error:", res.error);
+
+    };
+
     const socketEvents = {
 
       connect() {
-        // setIsConnected(true);
+
+        if (localStorage.getItem("lastSession") === null) return;
+
+        const lastSession = JSON.parse(localStorage.getItem("lastSession"));
+
+        socket.timeout(20000).emit("resume", lastSession.sessionId, lastSession.playerName, resumeCallback);
+
       },
 
       disconnect() {
-        // setIsConnected(false);
         resetSession();
         setPlayers([])
         setUserId(null);
@@ -133,10 +162,10 @@ function App() {
       sync(session, userId) {
 
         if (userId !== undefined) setUserId(userId);
+        syncSession(session);
         if (session.players !== undefined) syncPlayers(session);
         if (session.phase !== undefined) nextPhase(session.phase);
         if (session.votes !== undefined) setVotes(session.votes);
-        syncSession(session);
 
       },
 

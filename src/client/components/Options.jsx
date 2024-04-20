@@ -117,6 +117,7 @@ function Options() {
 
   function handleLeave() {
 
+    localStorage.removeItem("lastSession");
     socket.emit("leave");
     handleClose();
 
