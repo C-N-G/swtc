@@ -149,6 +149,7 @@ function App() {
       },
 
       timer(data) {
+
         if (data.action === "set") {
           setTimer(data.name, data.duration);
         } else if (data.action === "start") {
@@ -166,6 +167,7 @@ function App() {
         if (session.players !== undefined) syncPlayers(session);
         if (session.phase !== undefined) nextPhase(session.phase);
         if (session.votes !== undefined) setVotes(session.votes);
+        if (session.timers !== undefined) for (const timerData in session.timers) socketEvents.timer(session.timers[timerData]);
 
       },
 

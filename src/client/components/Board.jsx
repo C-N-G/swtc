@@ -99,25 +99,30 @@ function Board() {
   }
 
   function handleBeginClick() {
+
     if (!accusingPlayerId) {
       throw new Error("no player selected");
     }
     setOpenDialog(0);
+    // make all players abstain my default
     const votes = drawPlayers
     .filter(player => player.rState === 1)
     .map(player => ({id: player.id, vote: 0, name: player.name, power: player.rVotePower}))
     socket.emit("vote", {list: votes, nominatedPlayer: nominatedPlayerId, accusingPlayer: accusingPlayerId, voting: true})
+
+    // set vote timer
     socket.timeout(5000).emit("timer", {name: "voteTimer", action: "set", duration: timerDuration}, (error, response) => {
-      if (error) console.log("Timer Error: server timeout");
-      if (response?.error) console.log("Timer Error:", response.error);
+      if (error) return console.log("Timer Error: server timeout");
+      if (response?.error) return console.log("Timer Error:", response.error);
     });
+
   }
 
   function handleVoteFinishClick() {
     addVotesToHistory();
     socket.timeout(5000).emit("timer", {name: "voteTimer", action: "stop"}, (error, response) => {
-      if (error) console.log("Timer Error: server timeout");
-      if (response?.error) console.log("Timer Error:", response.error);
+      if (error) return console.log("Timer Error: server timeout");
+      if (response?.error) return console.log("Timer Error:", response.error);
     });
     socket.emit("vote", {list: [], voting: false, accusingPlayer: null, nominatedPlayer: null});
     displayNone();
@@ -126,8 +131,8 @@ function Board() {
 
   function handleVoteTimerEnd() {
     socket.timeout(5000).emit("timer", {name: "voteTimer", action: "stop"}, (error, response) => {
-      if (error) console.log("Timer Error: server timeout");
-      if (response?.error) console.log("Timer Error:", response.error);
+      if (error) return console.log("Timer Error: server timeout");
+      if (response?.error) return console.log("Timer Error:", response.error);
     });
     socket.emit("vote", {list: [], voting: false, accusingPlayer: null, nominatedPlayer: null, onlyPlayer: true});
   }

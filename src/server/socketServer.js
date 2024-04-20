@@ -175,6 +175,8 @@ export default function swtcSocketServer(server, socket) {
     const session = sessionManager.getSession(connectedSessionId);
     if (!session) return callback({status: "error", error: "no session found"});
 
+    session.setTimers(data);
+
     socket.to(connectedSessionId).emit("timer", data);
 
     log("updated timer successfully");

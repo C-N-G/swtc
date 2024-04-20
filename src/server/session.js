@@ -12,6 +12,7 @@ export default class Session {
         this.nominatedPlayer = null;
         this.phase = {cycle: "Day", round: 1};
         this.modules = [];
+        this.timers = {};
         this.disconnectTimers = {};
 
     }
@@ -116,6 +117,16 @@ export default class Session {
 
     }
 
+    setTimers(newTimer) {
+
+      if (newTimer.action === "set" || newTimer.action === "start") {
+        this.timers = {...this.timers, newTimer};
+      } else if (newTimer.action === "stop") {
+        this.timers = {...Object.values(this.timers).filter(timer => timer.name !== newTimer.name)};
+      }
+
+    }
+
     getData() {
 
         return {
@@ -127,7 +138,8 @@ export default class Session {
                 nominatedPlayer: this.nominatedPlayer, 
                 voting: this.isVoting },
             phase: this.phase,
-            modules: this.modules
+            modules: this.modules,
+            timers: this.timers
         }
 
     }
