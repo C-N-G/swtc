@@ -1,3 +1,20 @@
+### 20/04/2024 v0.5.2
+- added selected player ui 
+- added show vote button to phase window
+- added better verification when joining 
+  - join dialog will now display if the session does not exist
+  - can no longer join if someone in the session is using your name
+- added session resuming functionality
+  - added dc timeout which at default has a length of 30 seconds
+  - if a player disconnects from a session then the dc timeout will start ticking down
+  - when this timeout reaches 0 then the player will be removed from the session
+  - if a player joins the session with the name of a player that is timing out, they will join as that player
+- added last session local saving
+  - when a player performs and attribute update or syncs from the server, they will save a local snapshop of their session
+  - when the app connects to the server, such as during a reconnect, it will use this local snapshot to attempt to resume automatically
+- fxied night order indicators dispaly bug
+---
+
 ### 05/04/2024 v0.5.1
 - changed starting phase from night 1 to day 1
 - changed phase progression:
