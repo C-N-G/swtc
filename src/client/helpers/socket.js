@@ -5,6 +5,6 @@ import config from "../../appConfig";
 // const URL = process.env.NODE_ENV === "production" ? undefined : "http://127.0.0.1:3001";
 const URL = process.env.NODE_ENV === "production" ? window.location.host + "/swtc" : config.dev_socket_addr;
 
-console.log("connectiong websocket to", URL);
+console.log("connecting websocket to", URL);
 
 export const socket = io(URL, {path: config.socket_addr});
