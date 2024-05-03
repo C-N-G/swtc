@@ -41,14 +41,18 @@ function Phase(props) {
 
 export default Phase
 
-
+const dialog = Object.freeze({
+  hide: 0,
+  scenario: 1,
+  nightOrder: 2
+})
 
 function PlayerPhase() {
 
   const modules = useStore(state => state.session.modules);
-  const [openDialog, setOpenDialog] = useState(null);
+  const [openDialog, setOpenDialog] = useState(dialog.hide);
   const [chars, roles] = useMemo(() => GameData.getFilteredValues(modules, true), [modules]);
-  const handleClose = () => setOpenDialog(null);
+  const handleClose = () => setOpenDialog(dialog.hide);
   const phase = useStore(state => state.phase);
   const voting = useStore(state => state.votes.voting);
   const voteTimer = useStore(state => state.timers.voteTimer);
@@ -58,7 +62,7 @@ function PlayerPhase() {
     <Grid container alignItems="center">
       <Grid item xs={4} container justifyContent="center">
         <ButtonGroup size="small" orientation="vertical">
-          <Button onClick={() => setOpenDialog("scenario")}>Show Scenario</Button>
+          <Button onClick={() => setOpenDialog(dialog.scenario)}>Show Scenario</Button>
           {voting ? <Button onClick={() => displayVote()}>Show Vote ({voteTimer.time})</Button> : ""}
         </ButtonGroup>
       </Grid>
@@ -88,7 +92,7 @@ function NarratorPhase() {
   const modules = useStore(state => state.session.modules);
   const [chars, roles] = useMemo(() => GameData.getFilteredValues(modules, true), [modules]);
   const [checkedState, setCheckedState] = useState(Array(32).fill(false));
-  const [openDialog, setOpenDialog] = useState(null);
+  const [openDialog, setOpenDialog] = useState(dialog.hide);
   const phase = useStore(state => state.phase);
   const nextPhase = useStore(state => state.nextPhase);
   const addPlayerNightIndicators = useStore(state => state.addPlayerNightIndicators);
@@ -125,7 +129,7 @@ function NarratorPhase() {
   }
 
   function handleClose() {
-    setOpenDialog(null);
+    setOpenDialog(dialog.hide);
   }
 
   return (
@@ -133,7 +137,7 @@ function NarratorPhase() {
       <Grid container alignItems="center">
         <Grid item xs={4} container justifyContent="center">
           <ButtonGroup size="small" orientation="vertical">
-            <Button onClick={() => setOpenDialog("scenario")}>Show Scenario</Button>
+            <Button onClick={() => setOpenDialog(dialog.scenario)}>Show Scenario</Button>
             {voting ? <Button onClick={() => displayVote()}>Show Vote</Button> : ""}
           </ButtonGroup>
         </Grid>
@@ -146,7 +150,7 @@ function NarratorPhase() {
         <Grid item xs={4} container justifyContent="center">
           <ButtonGroup size="small" orientation="vertical">
             <Button onClick={() => handleClick()}>&gt; Progress Phase &gt;</Button>
-            <Button disabled={phase.cycle !== "Night"} onClick={() => setOpenDialog("nightOrder")}>Night Order List</Button>
+            <Button disabled={phase.cycle !== "Night"} onClick={() => setOpenDialog(dialog.scenario)}>Night Order List</Button>
           </ButtonGroup>
         </Grid>
       </Grid>
@@ -260,7 +264,7 @@ function NightOrderDialog({openDialog, handleClose, chars, roles, checkedState, 
   })
 
   return (
-    <Dialog open={openDialog === "nightOrder"} onClose={handleClose} fullWidth>
+    <Dialog open={openDialog === dialog.nightOrder} onClose={handleClose} fullWidth>
       <DialogTitle>Night Order List</DialogTitle>
       <DialogContent>
         <List>
@@ -363,7 +367,7 @@ function ScenarioDialog({openDialog, handleClose, chars, roles}) {
   const antagRoleList = usableRoles ? usableRoles.filter(antagFilter).map(listMaker) : [];
 
   return (
-    <Dialog open={openDialog === "scenario"} onClose={handleClose} fullWidth>
+    <Dialog open={openDialog === dialog.scenario} onClose={handleClose} fullWidth>
       <DialogTitle>Current Scenario</DialogTitle>
       <DialogContent>
         <Box sx={tabStyle}>
