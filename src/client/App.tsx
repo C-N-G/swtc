@@ -3,7 +3,7 @@ import {createContext, useEffect} from "react";
 import { createTheme } from "@mui/material/styles";
 import {Box, Button, Container, Grid} from "@mui/material";
 import {DndContext} from "@dnd-kit/core";
-import Board from "./components/Board.jsx";
+import Board from "./components/Board.tsx;
 import Phase from "./components/Phase.jsx";
 import Options from "./components/Options.jsx";
 import Character from "./components/Character.jsx";

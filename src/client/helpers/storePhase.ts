@@ -89,8 +89,24 @@
 
 // isaac believes disjointed > wrong day grouping
 // mac believes wrong day grouping > disjointed
+import { StateCreator } from "zustand";
 
-export const createPhaseSlice = (set, get) => ({
+type Phase = {
+  cycle: "Day" | "Night",
+  round: number
+}
+
+interface PhaseSlice {
+  phase: Phase,
+  nextPhase: (newPhase: Phase) => void
+}
+
+export const createPhaseSlice: StateCreator<
+  PhaseSlice,
+  [],
+  [],
+  PhaseSlice
+> = (set, get) => ({
   phase: {
     cycle: "Day",
     round: 1,

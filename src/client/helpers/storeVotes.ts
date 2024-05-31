@@ -1,6 +1,12 @@
+import { StateCreator } from "zustand";
+
 const large = {
   "backgroundColor": "#2f8bf3",
   "transform": "scale(1.15)"
+}
+
+interface VotesSlice {
+  
 }
 
 export const createVotesSlice = (set) => ({
