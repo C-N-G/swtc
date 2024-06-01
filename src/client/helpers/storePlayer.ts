@@ -3,8 +3,92 @@ import GameData from "../strings/_gameData";
 import NightOrders from "./nightOrders";
 import randomise from "./randomiser";
 import { socket } from "./socket";
+import { StateCreator } from "zustand";
+import { DragEndEvent } from "@dnd-kit/core";
 
-export const createPlayerSlice = (set, get) => ({
+type Char = {
+  id: string;
+  name: string;
+  description: string;
+  ability: string;
+  orderType: string;
+  attributes: Array<string>;
+  additional: Array<string>;
+  setup: Array<Array<string>>;
+  reminders: Array<Reminder>;
+}
+
+type Role = {
+  id: string;
+  name: string;
+  type: string;
+  description: string;
+  ability: string;
+  orderType: string;
+  attributes: Array<string>;
+  additional: Array<string>;
+  setup: Array<Array<string>>;
+  reminders: Array<Reminder>;
+}
+
+type Reminder = {
+    id: number;
+    origin: Role | Char;
+    content: string;
+    colour: string;
+    description: string;
+}
+
+type Player = {
+  id: string;
+  name: string;
+  type: number;
+  label: string;
+  notes: string;
+  char: number;
+  role: number;
+  state: number;
+  team: number;
+  rChar: number;
+  rRole: number;
+  rState: number;
+  rTeam: number;
+  rVotePower: number;
+  reminders: Array<Reminder>;
+  nightOrders: Array<Reminder>;
+}
+
+type Session = {
+  id: null | string;
+  sync: boolean;
+  modules: Array<string>;
+}
+
+
+
+interface PlayerSlice {
+  players: Array<Player>;
+  setPlayers: (newPlayers: Array<Player>) => void;
+  changePlayerAttribute: (targetId: string, targetProperty: string, targetValue: string, fromServer?: boolean) => void;
+  addPlayerReminders: (event: DragEndEvent) => void;
+  syncPlayers: (session) => void;
+  randomisePlayers: (chars, roles) => void;
+  addPlayerNightIndicators: (cycle, chars, roles, purgedOrders, ordering) => void;
+  addPlayer: (player) => void;
+  removePlayer: (playerId) => void;
+  pushPlayer: () => void;
+  popPlayer: () => void;
+  getUser: () => void;
+  getDrawPlayers: () => void;
+
+}
+
+export const createPlayerSlice: StateCreator<
+  PlayerSlice,
+  [],
+  [],
+  PlayerSlice
+> = (set, get) => ({
   players: [],
 
   setPlayers: (newPlayers) => set(() => ({players: newPlayers})),

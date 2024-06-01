@@ -1,12 +1,12 @@
 import { StateCreator } from "zustand";
 
 interface DisplaySlice {
-  display: number,
-  selected: string | null,
-  displayNone: () => void,
-  displayDetails: () => void,
-  displayVote: () => void,
-  selectPlayer: (playerId: string) => void
+  display: number;
+  selected: string | null;
+  displayNone: () => void;
+  displayDetails: () => void;
+  displayVote: () => void;
+  selectPlayer: (playerId: string) => void;
 }
 
 export const createDisplaySlice: StateCreator<

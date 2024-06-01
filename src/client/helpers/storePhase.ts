@@ -92,13 +92,13 @@
 import { StateCreator } from "zustand";
 
 type Phase = {
-  cycle: "Day" | "Night",
-  round: number
+  cycle: "Day" | "Night";
+  round: number;
 }
 
 interface PhaseSlice {
-  phase: Phase,
-  nextPhase: (newPhase: Phase) => void
+  phase: Phase;
+  nextPhase: (newPhase: Phase) => void;
 }
 
 export const createPhaseSlice: StateCreator<

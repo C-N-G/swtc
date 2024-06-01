@@ -5,8 +5,22 @@ const large = {
   "transform": "scale(1.15)"
 }
 
+type Vote = {
+  id: string;
+  vote: number;
+  name: string; 
+  power: number;
+
+}
+
+
+
 interface VotesSlice {
-  
+  list: Array<Vote>
+  voting: boolean
+  accusingPlayer: string //player id
+  nominatedPlayer: string //player id
+  userVote: Array<boolean | number>
 }
 
 export const createVotesSlice = (set) => ({
