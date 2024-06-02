@@ -1,9 +1,19 @@
 import GameData from "../strings/_gameData";
+import { CharType, PlayerType, RoleType } from "./types";
+
+type nightOrderObject = {
+  order: number;
+  name: string;
+  playerIndex: number;
+  type: "char" | "role";
+}
+
+
 
 const NightOrders = {
 
   // sorts by order number and then name
-  sortOrder(a ,b) {
+  sortOrder(a: nightOrderObject, b: nightOrderObject) {
 
     if (a.order > b.order) {
       return 1;
@@ -23,9 +33,9 @@ const NightOrders = {
 
   },
 
-  calculateOrder(playerArray, charArray, roleArray) {
+  calculateOrder(playerArray: Array<PlayerType>, charArray: Array<CharType>, roleArray: Array<RoleType>) {
 
-    const ordering = [];
+    const ordering: Array<nightOrderObject> = [];
 
     playerArray.forEach((player, index) => {
 

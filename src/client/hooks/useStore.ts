@@ -1,10 +1,10 @@
 import {create} from "zustand";
-import { createPlayerSlice } from "../helpers/storePlayer.js";
+import { createPlayerSlice } from "../helpers/storePlayer.ts";
 import { createUserIdSlice } from "../helpers/storeUserId.js";
 import { createPurgedOrdersSlice } from "../helpers/storePurgedOrders.js";
-import { createPhaseSlice } from "../helpers/storePhase.js";
-import { createDisplaySlice } from "../helpers/storeDisplay.js";
-import { createVotesSlice } from "../helpers/storeVotes.js";
+import { createPhaseSlice } from "../helpers/storePhase.ts";
+import { createDisplaySlice } from "../helpers/storeDisplay.ts";
+import { createVotesSlice } from "../helpers/storeVotes.ts";
 import { createSessionSlice } from "../helpers/storeSession.js";
 import { createTimersSlice } from "../helpers/storeTimers.js";
 
