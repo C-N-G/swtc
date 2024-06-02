@@ -58,12 +58,6 @@ type Player = {
   nightOrders: Array<Reminder>;
 }
 
-type Session = {
-  id: null | string;
-  sync: boolean;
-  modules: Array<string>;
-}
-
 
 
 interface PlayerSlice {

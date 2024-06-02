@@ -1,4 +1,13 @@
-export const createSessionSlice = (set) => ({
+import { StateCreator } from "zustand";
+import { SessionSlice } from "./types.ts";
+
+
+export const createSessionSlice: StateCreator<
+  SessionSlice,
+  [],
+  [],
+  SessionSlice
+> = (set) => ({
   session: {
     id: null,
     sync: false,
@@ -25,7 +34,7 @@ export const createSessionSlice = (set) => ({
       session: {
         ...state.session,
         id: (newSession.id || newSession.id === null) ? newSession.id : state.session.id,
-        modules: newSession.modules ? newSession.modules : state.modules
+        modules: newSession.modules ? newSession.modules : state.session.modules
       }
   })),
 
