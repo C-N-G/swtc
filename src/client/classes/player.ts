@@ -22,7 +22,7 @@ export default class Player {
    * @param nightOrders - the night orders for this players chars and roles
    */
   constructor(
-    public id: string, 
+    public readonly id: string, 
     public name: string,
     public type = 1,
     public label = "",

@@ -1,6 +1,19 @@
 import Reminder from "./reminder";
 
-export default class Role {
+export interface RoleData {
+  name: string;
+  type: string;
+  description: string;
+  ability: string;
+  orderType: string;
+  attributes: Array<string>;
+  additional: Array<string>;
+  setup: Array<Array<string>>;
+  reminders: Array<Reminder>;
+  appears: {asType: string, asTeam: string, for: string};
+}
+
+export default class Role implements RoleData {
 
   constructor(
     public readonly id: string,

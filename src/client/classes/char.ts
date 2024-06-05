@@ -1,6 +1,17 @@
 import Reminder from "./reminder";
 
-export default class Char { 
+export interface CharData {
+  name: string;
+  description: string;
+  ability: string;
+  orderType: string;
+  attributes: Array<string>;
+  additional: Array<string>;
+  setup: Array<Array<string>>;
+  reminders: Array<Reminder>;
+}
+
+export default class Char implements CharData { 
 
   constructor(
     public readonly id: string,
