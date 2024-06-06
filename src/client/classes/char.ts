@@ -5,10 +5,10 @@ export interface CharData {
   description: string;
   ability: string;
   orderType: string;
-  attributes: Array<string>;
-  additional: Array<string>;
-  setup: Array<Array<string>>;
-  reminders: Array<Reminder>;
+  attributes: string[];
+  additional: string[];
+  setup: string[][];
+  reminders: Reminder[];
 }
 
 export default class Char implements CharData { 
@@ -19,10 +19,10 @@ export default class Char implements CharData {
     public description = "",
     public ability = "",
     public orderType = "",
-    public attributes: Array<string> = [],
-    public additional: Array<string> = [],
-    public setup: Array<Array<string>> = [],
-    public reminders: Array<Reminder> = [],
+    public attributes: string[] = [],
+    public additional: string[] = [],
+    public setup: string[][] = [],
+    public reminders: Reminder[] = [],
   ) {
 
   }

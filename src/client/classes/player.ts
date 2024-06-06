@@ -36,7 +36,7 @@ export default class Player {
     public rState = 1,
     public rTeam = 0,
     public rVotePower = 1,
-    public reminders: Array<Reminder> = [],
+    public reminders: Reminder[] = [],
     public nightOrders: number[] = [],
   ) {
     

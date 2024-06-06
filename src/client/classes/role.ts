@@ -6,10 +6,10 @@ export interface RoleData {
   description: string;
   ability: string;
   orderType: string;
-  attributes: Array<string>;
-  additional: Array<string>;
-  setup: Array<Array<string>>;
-  reminders: Array<Reminder>;
+  attributes: string[];
+  additional: string[];
+  setup: string[][];
+  reminders: Reminder[];
   appears: {asType: string, asTeam: string, for: string};
 }
 
@@ -22,10 +22,10 @@ export default class Role implements RoleData {
     public description = "",
     public ability = "",
     public orderType = "",
-    public attributes: Array<string> = [],
-    public additional: Array<string> = [],
-    public setup: Array<Array<string>> = [],
-    public reminders: Array<Reminder> = [],
+    public attributes: string[] = [],
+    public additional: string[] = [],
+    public setup: string[][] = [],
+    public reminders: Reminder[] = [],
     public appears = {asType: "", asTeam: "", for: ""},
   ) {
     
