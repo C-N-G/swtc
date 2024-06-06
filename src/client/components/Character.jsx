@@ -86,47 +86,51 @@ function PlayerCharacter({user, useLocal}) {
         <Typography>{fullRole["name"]}</Typography>
         <Typography>{team}</Typography> 
       </Grid>
-      {fullRole["name"] !== "Unknown" ? <>
-      <Grid item xs={12}>
-        <Typography variant="body2" gutterBottom>{"“" + fullRole["description"] + "”"}</Typography>
-        <Typography variant="body2"><Box component="span" fontWeight={"Bold"}>{fullRole["ability"] ? "Ability: " : ""}</Box>{fullRole["ability"]}</Typography>
-        {fullRole["additional"].map((ele, index) => <Typography variant="body2" key={fullRole["name"] + "additional" + index}>{ele}</Typography>)}
-      </Grid>
-      <Grid item xs={6} textAlign="right">
-        <Typography fontWeight={"Bold"}>{fullRole["attributes"].length > 0 ? "Attributes" : ""}</Typography> 
-      </Grid>
-      <Grid item xs={6} textAlign="left">
-        <Typography>{fullRole.attributes.join(", ")}</Typography> 
-      </Grid>
-      {fullRole["setup"].length > 0 ? 
-      <Grid item xs={12}>
-        <Typography variant="body2" fontWeight={"Bold"}>{fullRole["setup"].length > 0 ? "Role Setup" : ""}</Typography>
-        {fullRole["setup"].map((ele, index) => <Typography variant="body2" key={fullRole["name"] + "setup" + index}>{index+1}: {ele[0]}</Typography>)}
-      </Grid>
-       : ""}
-      </> : ""}
+      {fullRole["name"] !== "Unknown" && <>
+        <Grid item xs={12}>
+          <Typography variant="body2" gutterBottom>{"“" + fullRole["description"] + "”"}</Typography>
+          <Typography variant="body2"><Box component="span" fontWeight={"Bold"}>{fullRole["ability"] ? "Ability: " : ""}</Box>{fullRole["ability"]}</Typography>
+          {fullRole["additional"].map((ele, index) => <Typography variant="body2" key={fullRole["name"] + "additional" + index}>{ele}</Typography>)}
+        </Grid>
+        <Grid item xs={6} textAlign="right">
+          <Typography fontWeight={"Bold"}>{fullRole["attributes"].length > 0 ? "Attributes" : ""}</Typography> 
+        </Grid>
+        <Grid item xs={6} textAlign="left">
+          <Typography>{fullRole.attributes.join(", ")}</Typography> 
+        </Grid>
+        {fullRole["setup"].length > 0 &&
+        <Grid item xs={12}>
+          <Typography variant="body2" fontWeight={"Bold"}>{fullRole["setup"].length > 0 ? "Role Setup" : ""}</Typography>
+          {fullRole["setup"].map((ele, index) => <Typography variant="body2" key={fullRole["name"] + "setup" + index}>{index+1}: {ele[0]}</Typography>)}
+        </Grid>}
+      </>}
       <Grid item xs={6} textAlign="right">
         <Typography fontWeight={"Bold"}>Characteristic</Typography> 
       </Grid>
       <Grid item xs={6} textAlign="left">
         <Typography>{fullChar["name"]}</Typography> 
       </Grid>
-      {fullChar["name"] !== "Unknown" ?
+      {fullChar["name"] !== "Unknown" &&
       <Grid item xs={12}>
         <Typography variant="body2" gutterBottom>{"“" + fullChar["description"]  + "”"}</Typography>
         <Typography variant="body2"><Box component="span" fontWeight={"Bold"}>{fullChar["ability"] ? "Ability: " : ""}</Box>{fullChar["ability"]}</Typography>
         {fullChar["additional"].map((ele, index) => <Typography variant="body2" key={fullChar["name"] + index}>{ele}</Typography>)}
-      </Grid>
-      : ""}
+      </Grid>}
     </Grid>
     {/* <iframe src="https://drive.google.com/file/d/1BSgDm_VNXi-e2_0v5L5Xd781-kFyde7k/preview" style={{flexGrow: 1}} allow="autoplay"></iframe> */}
   </>)
 
 }
 
+const dialog = Object.freeze({
+  hide: 0,
+  module: 1,
+  voteHistory: 2
+})
+
 function NarratorCharacter({user}) {
 
-  const [openDialog, setOpenDialog] = useState(null);
+  const [openDialog, setOpenDialog] = useState(dialog.hide);
   const [selectedReminder, setSelectedReminder] = useState(null);
   const [sync, setSync] = useState({progress: false, error: false});
   const [cohesion, setCohesion] = useState(10);
@@ -254,7 +258,7 @@ function NarratorCharacter({user}) {
         <ContentCopyIcon />
       </IconButton>
     </Typography>
-    <Button variant="contained" sx={{my: 1}} onClick={() => setOpenDialog("module")}>
+    <Button variant="contained" sx={{my: 1}} onClick={() => setOpenDialog(dialog.module)}>
       Select Modules ({modules.length})
     </Button>
     <Button variant="contained" sx={{my: 1}} onClick={handleRandomise}>
@@ -333,7 +337,7 @@ function NarratorCharacter({user}) {
       </Paper>
       <Button variant="contained" onClick={() => {setCohesion(prev => prev - 1)}}><RemoveIcon /></Button>
     </Box>
-    <Button variant="contained" sx={{my: 1}} onClick={() => setOpenDialog("voteHistory")}>
+    <Button variant="contained" sx={{my: 1}} onClick={() => setOpenDialog(dialog.voteHistory)}>
       Vote History
     </Button>
     <Box sx={{display: "flex", alignItems: "stretch", justifyContent: "space-between", my: 1}}>
@@ -378,7 +382,7 @@ function NarratorCharacter({user}) {
 function ModuleSelectionDialog({openDialog, setOpenDialog, allMods}) {
 
   return (
-    <Dialog open={openDialog === "module"} onClose={() => setOpenDialog(null)} >
+    <Dialog open={openDialog === dialog.module} onClose={() => setOpenDialog(dialog.hide)} >
       <DialogTitle>Select Modules</DialogTitle>
       <DialogContent>
         <FormGroup>
@@ -386,7 +390,7 @@ function ModuleSelectionDialog({openDialog, setOpenDialog, allMods}) {
         </FormGroup>
       </DialogContent>
       <DialogActions>
-        <Button variant="outlined" onClick={() => setOpenDialog(null)}>Close</Button>
+        <Button variant="outlined" onClick={() => setOpenDialog(dialog.hide)}>Close</Button>
       </DialogActions>
     </Dialog>
   )
@@ -426,7 +430,7 @@ function VoteHistoryDialog({openDialog, setOpenDialog}) {
   const yesterdaysVoteHistory = voteHistory.filter(item => item.day === round-1);
 
   return (
-    <Dialog open={openDialog === "voteHistory"} onClose={() => setOpenDialog(null)} fullWidth >
+    <Dialog open={openDialog === dialog.voteHistory} onClose={() => setOpenDialog(dialog.hide)} fullWidth >
       <DialogTitle>Voting History</DialogTitle>
       <DialogContent>
         <Box sx={tabStyle}>
@@ -451,7 +455,7 @@ function VoteHistoryDialog({openDialog, setOpenDialog}) {
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button variant="outlined" onClick={() => setOpenDialog(null)}>Close</Button>
+        <Button variant="outlined" onClick={() => setOpenDialog(dialog.hide)}>Close</Button>
       </DialogActions>
     </Dialog>
   )

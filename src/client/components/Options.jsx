@@ -24,6 +24,12 @@ function textFieldBuilder(id, label, input, handleFunc, focus, setInputs, inputs
 
 }
 
+const dialog = Object.freeze({
+  hide: 0,
+  host: 1,
+  join: 2
+})
+
 function Options() {
 
   const sessionId = useStore(state => state.session.id);
@@ -35,14 +41,14 @@ function Options() {
   };
 
   const [anchorEl, setAnchorEl] = useState(null);
-  const [openDialog, setOpenDialog] = useState(0);
+  const [openDialog, setOpenDialog] = useState(dialog.hide);
   const [inputs, setInputs] = useState(defaultInputs);
 
   const open = Boolean(anchorEl);
   
   function handleClose() {
     setAnchorEl(null);
-    setOpenDialog(0);
+    setOpenDialog(dialog.hide);
     setInputs(defaultInputs);
   }
 
@@ -77,6 +83,8 @@ function Options() {
     if (nameValidated && idValidated) {
 
       socket.timeout(5000).emit("join", id, name, (error, response) => {
+        
+        // TODO need to add local state loading during manual resuming
 
         if (error) {
           console.log("Join Error: server timeout");
@@ -156,8 +164,8 @@ function Options() {
             "aria-labelledby": "basic-button",
           }}
         >
-          {sessionId ? "" : <MenuItem onClick={() => {setOpenDialog(1)}}>Host Session</MenuItem>}
-          {sessionId ? "" : <MenuItem onClick={() => {setOpenDialog(2)}}>Join Session</MenuItem>}
+          {sessionId ? "" : <MenuItem onClick={() => {setOpenDialog(dialog.host)}}>Host Session</MenuItem>}
+          {sessionId ? "" : <MenuItem onClick={() => {setOpenDialog(dialog.join)}}>Join Session</MenuItem>}
           {sessionId ? <MenuItem onClick={handleLeave}>Leave Session</MenuItem> : ""}
           <MenuItem 
             component={"a"}
@@ -191,7 +199,7 @@ export default Options
 function HostDialog({openDialog, handleClose, handleHost, setInputs, inputs}) {
 
   return (
-    <Dialog disableRestoreFocus open={openDialog === 1} onClose={handleClose}>
+    <Dialog disableRestoreFocus open={openDialog === dialog.host} onClose={handleClose}>
       <DialogTitle>Host Session</DialogTitle>
       <DialogContent>
         <DialogContentText>
@@ -211,7 +219,7 @@ function HostDialog({openDialog, handleClose, handleHost, setInputs, inputs}) {
 function JoinDialog({openDialog, handleClose, handleJoin, setInputs, inputs}) {
 
   return (
-    <Dialog disableRestoreFocus open={openDialog === 2} onClose={handleClose}>
+    <Dialog disableRestoreFocus open={openDialog === dialog.join} onClose={handleClose}>
       <DialogTitle>Join Session</DialogTitle>
       <DialogContent>
         <DialogContentText>

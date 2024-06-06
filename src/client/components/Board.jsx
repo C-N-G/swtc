@@ -30,9 +30,15 @@ const BOARD_CONFIG = [
   [5,3,5], // 16
 ]
 
+const dialog = Object.freeze({
+  hide: 0,
+  dismiss: 1,
+  viewPlayer: 2
+})
+
 function Board() {
 
-  const [openDialog, setOpenDialog] = useState(0); 
+  const [openDialog, setOpenDialog] = useState(dialog.hide); 
 
   const drawPlayers = useStore(state => state.getDrawPlayers());
   const playerNum = drawPlayers.length;
@@ -91,7 +97,7 @@ function Board() {
 
   function handleDismissalClick(nominatedPlayerId) {
     setNominated(nominatedPlayerId, null);
-    setOpenDialog(1);
+    setOpenDialog(dialog.dismiss);
   }
 
   function handlePlayerSelect(event) {
@@ -103,7 +109,7 @@ function Board() {
     if (!accusingPlayerId) {
       throw new Error("no player selected");
     }
-    setOpenDialog(0);
+    setOpenDialog(dialog.hide);
     // make all players abstain my default
     const votes = drawPlayers
     .filter(player => player.rState === 1)
@@ -138,7 +144,7 @@ function Board() {
   }
 
   function handleViewPlayerClick() {
-    setOpenDialog(2);
+    setOpenDialog(dialog.viewPlayer);
   }
 
   const top = drawPlayers
@@ -251,7 +257,7 @@ function DismissalDialog({openDialog, setOpenDialog,
     const accusingPlayerId = useStore(state => state.votes.accusingPlayer);
 
   return (
-    <Dialog open={openDialog === 1} onClose={() => setOpenDialog(0)}>
+    <Dialog open={openDialog === dialog.dismiss} onClose={() => setOpenDialog(dialog.hide)}>
       <DialogTitle>Player Select</DialogTitle>
       <DialogContent>
         <DialogContentText>
@@ -277,7 +283,7 @@ function DismissalDialog({openDialog, setOpenDialog,
         >
           Begin
         </Button>
-        <Button onClick={() => setOpenDialog(0)}>Cancel</Button>
+        <Button onClick={() => setOpenDialog(dialog.hide)}>Cancel</Button>
       </DialogActions>
     </Dialog>
   )
@@ -285,13 +291,13 @@ function DismissalDialog({openDialog, setOpenDialog,
 
 function ViewPlayerDialog({openDialog, setOpenDialog, player}) {
   return (
-    <Dialog open={openDialog === 2} onClose={() => setOpenDialog(0)} maxWidth={"xs"}>
+    <Dialog open={openDialog === dialog.viewPlayer} onClose={() => setOpenDialog(dialog.hide)} maxWidth={"xs"}>
       <DialogTitle>View Player</DialogTitle>
       <DialogContent>
         <Character user={player} useLocal={true}/>
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => setOpenDialog(0)}>Cancel</Button>
+        <Button onClick={() => setOpenDialog(dialog.hide)}>Cancel</Button>
       </DialogActions>
     </Dialog>
   )
