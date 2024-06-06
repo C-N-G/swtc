@@ -3,7 +3,7 @@ import {Card, Button, Typography, Dialog, DialogTitle, DialogContent, DialogActi
   ListItemButton, Collapse, ListItemText, ButtonGroup, Stack, Grid, ListItem, Divider, Checkbox, Tab, Tabs, Box}from '@mui/material';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import {UserContext} from "../App.jsx";
+import {UserContext} from "../App.js";
 import {socket} from "../helpers/socket.js";
 import GameData from "../strings/_gameData.js";
 import NightOrders from "../helpers/nightOrders.js";

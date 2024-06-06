@@ -1,9 +1,9 @@
 import {useContext, useState} from "react";
 import {Box, Typography, Button, Grid, TextField, Autocomplete, Stack, Chip, 
   Select, MenuItem, InputLabel, FormControl, FormControlLabel, Switch} from '@mui/material';
-import {UserContext} from "../App.jsx";
+import {UserContext} from "../App.js";
 import GameData from "../strings/_gameData.js"
-import Reminder from "./Reminder.jsx";
+import Reminder from "./Reminder.js";
 import useStore from "../hooks/useStore.js";
 
 function PlayerDetails(props) {

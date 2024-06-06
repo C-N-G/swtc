@@ -1,13 +1,13 @@
 import {useState, useMemo} from "react";
 import {Card, Stack, FormControl, Select, InputLabel, MenuItem, Button, Dialog, DialogTitle, DialogContentText, DialogContent, DialogActions} from "@mui/material";
-import PlayerIndicator from "./PlayerIndicator.jsx";
-import DynamicWindow from "./DynamicWindow.jsx";
-import PlayerDetails from "./PlayerDetails.jsx";
-import Vote from "./Vote.jsx";
+import PlayerIndicator from "./PlayerIndicator.js";
+import DynamicWindow from "./DynamicWindow.js";
+import PlayerDetails from "./PlayerDetails.js";
+import Vote from "./Vote.js";
 import {socket} from "../helpers/socket.js";
 import GameData from "../strings/_gameData.js"
 import useCountDown from "../hooks/useCountDown.js";
-import Character from "./Character.jsx";
+import Character from "./Character.js";
 import useStore from "../hooks/useStore.js";
 
 const BOARD_CONFIG = [

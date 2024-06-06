@@ -7,11 +7,11 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import {UserContext} from "../App.jsx";
+import {UserContext} from "../App.js";
 import GameData from "../strings/_gameData.js";
 import {socket} from "../helpers/socket.js";
-import Reminder from './Reminder.jsx';
-import Draggable from './Draggable.jsx';
+import Reminder from './Reminder.js';
+import Draggable from './Draggable.js';
 import useStore from '../hooks/useStore.js';
 import convertTime from "../helpers/convertTime.js";
 

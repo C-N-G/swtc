@@ -1,10 +1,10 @@
 import {memo, useContext} from "react";
 import {Box, Button, Stack, Typography} from '@mui/material';
-import {UserContext} from "../App.jsx";
+import {UserContext} from "../App.js";
 import {useDroppable} from "@dnd-kit/core";
 import GameData from "../strings/_gameData.js"
-import Reminder from "./Reminder.jsx";
-import Draggable from "./Draggable.jsx";
+import Reminder from "./Reminder.js";
+import Draggable from "./Draggable.js";
 
 const PlayerIndicator = memo(function PlayerIndicator(props) {
 
