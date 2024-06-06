@@ -1,4 +1,4 @@
-import Player from "../client/classes/player.js";
+import Player from "../client/classes/player.ts";
 
 export default class Session {
 
