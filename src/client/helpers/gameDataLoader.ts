@@ -17,7 +17,7 @@ export interface GameDataStore {
   modules: Module[];
   reminders: Reminder[];
   filterByModule(moduleArray: string[], type: "chars" | "roles", full: boolean): (Char | Role | string)[];
-  getFilterReminders(charArray: Char[], roleArray: Role[]): Reminder[];
+  getFilteredReminders(charArray: Char[], roleArray: Role[]): Reminder[];
   getFilteredValues(moduleArray: string[], full?: boolean): [(Char | string)[], (Role | string)[]];
   hackValue(input: string): string;
 }
@@ -38,7 +38,7 @@ export default function gameDataLoader(load_obj: GameDataStore, modules: ImportI
       const eleId = load_target[property].length;
 
       // handle stripping reminders from object and adding to reminder array
-      if (typeof eleObj !== "string") {
+      if (typeof eleObj !== "string" && eleObj.reminders) {
         // link the reminder refernces to the new object
         eleObj.reminders = eleObj.reminders.map(reminder => {
           const reminderId = load_target.reminders.length;

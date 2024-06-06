@@ -32,7 +32,7 @@ const GameData: GameDataStore = {
     
   },
 
-  getFilterReminders(charArray, roleArray) {
+  getFilteredReminders(charArray, roleArray) {
 
     const reminderArray: Reminder[] = [];
 
