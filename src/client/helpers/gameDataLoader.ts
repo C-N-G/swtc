@@ -8,7 +8,7 @@ interface Module {
   roles: number[];
 }
 
-interface GameDataStore {
+export interface GameDataStore {
   chars: Char[];
   roles: Role[];
   nightOrder: Array<{id: string, description: string}>;
@@ -16,9 +16,13 @@ interface GameDataStore {
   teams: string[];
   modules: Module[];
   reminders: Reminder[];
+  filterByModule(moduleArray: string[], type: "chars" | "roles", full: boolean): (Char | Role | string)[];
+  getFilterReminders(charArray: Char[], roleArray: Role[]): Reminder[];
+  getFilteredValues(moduleArray: string[], full?: boolean): [(Char | string)[], (Role | string)[]];
+  hackValue(input: string): string;
 }
 
-interface ImportInterface {
+export interface ImportInterface {
   [file: string]: { default: Array<CharData | RoleData | string> };
 }
 
