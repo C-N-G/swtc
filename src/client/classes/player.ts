@@ -1,5 +1,3 @@
-import Reminder from "./reminder";
-
 export default class Player {
 
   /**
@@ -18,8 +16,8 @@ export default class Player {
    * @param rState - real player state that is networked by the narrator
    * @param rTeam - real player team that is networked by the narrator
    * @param VotePower - the Voting power for this player
-   * @param reminders - visual reminders tied to this player
-   * @param nightOrders - the night orders for this players chars and roles
+   * @param reminders - visual reminder ids tied to this player
+   * @param nightOrders - the night order numbers for this players chars and roles
    */
   constructor(
     public readonly id: string, 
@@ -36,7 +34,7 @@ export default class Player {
     public rState = 1,
     public rTeam = 0,
     public rVotePower = 1,
-    public reminders: Reminder[] = [],
+    public reminders: number[] = [],
     public nightOrders: number[] = [],
   ) {
     
