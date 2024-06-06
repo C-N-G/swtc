@@ -15,7 +15,7 @@ tags:
 # Ability
 Placeholder ability text. This text here should be filled with the exact text of the ability.
 
-# Starting Effects
+# Setup Effects
 Placeholder starting effects. This text here should be filled with the exact text of the starting effects.
 
 # Examples
