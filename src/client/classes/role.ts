@@ -1,4 +1,4 @@
-import Reminder from "./reminder";
+import Reminder, { ReminderData } from "./reminder";
 
 export interface RoleData {
   name: string;
@@ -9,11 +9,11 @@ export interface RoleData {
   attributes: string[];
   additional: string[];
   setup: string[][];
-  reminders: Reminder[];
+  reminders: ReminderData[];
   appears: {asType: string, asTeam: string, for: string};
 }
 
-export default class Role implements RoleData {
+export default class Role {
 
   constructor(
     public readonly id: number,

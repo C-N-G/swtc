@@ -1,6 +1,8 @@
 import Char from "./char";
 import Role from "./role";
 
+export type ReminderData = [content: string, colour: string, description: string]; 
+
 export default class Reminder {
 
   constructor(

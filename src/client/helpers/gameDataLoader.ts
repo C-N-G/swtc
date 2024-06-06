@@ -36,13 +36,14 @@ export default function gameDataLoader(load_obj: GameDataStore, modules: ImportI
     load_origin[file_path].default.forEach(eleObj => {
 
       const eleId = load_target[property].length;
+      let reminders: Reminder[] = [];
 
       // handle stripping reminders from object and adding to reminder array
       if (typeof eleObj !== "string" && eleObj.reminders) {
         // link the reminder refernces to the new object
-        eleObj.reminders = eleObj.reminders.map(reminder => {
+        reminders = eleObj.reminders.map(reminder => {
           const reminderId = load_target.reminders.length;
-          const newReminder = new Reminder(reminderId, null, reminder.content, reminder.colour, reminder.description);
+          const newReminder = new Reminder(reminderId, null, reminder[0], reminder[1], reminder[2]);
           load_target.reminders.push(newReminder);
           return newReminder;
         })
@@ -61,7 +62,7 @@ export default function gameDataLoader(load_obj: GameDataStore, modules: ImportI
           eleObj.attributes,
           eleObj.additional,
           eleObj.setup,
-          eleObj.reminders,
+          reminders,
         ));
       } else if (typeof eleObj === "object" && property === "roles" && "type" in eleObj) {
         load_target[property].push(new Role(
@@ -74,7 +75,7 @@ export default function gameDataLoader(load_obj: GameDataStore, modules: ImportI
           eleObj.attributes,
           eleObj.additional,
           eleObj.setup,
-          eleObj.reminders,
+          reminders,
           eleObj.appears,
         ));
       }
@@ -82,10 +83,10 @@ export default function gameDataLoader(load_obj: GameDataStore, modules: ImportI
       // link the reminders to the new object reference
       if (typeof eleObj !== "string" 
           && "reminders" in eleObj 
-          && eleObj.reminders.length > 0 
+          && reminders.length > 0 
           && (property === "chars" || property === "roles")
           ) {
-        eleObj.reminders.forEach(reminder => {
+        reminders.forEach(reminder => {
           reminder.origin = load_target[property][load_target[property].length - 1]
         })
       }

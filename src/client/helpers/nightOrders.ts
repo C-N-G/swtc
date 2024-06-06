@@ -3,12 +3,12 @@ import Player from "../classes/player.ts";
 import Role from "../classes/role.ts";
 import GameData from "../strings/_gameData.ts";
 
-interface OrderItem {
+export interface OrderItem {
   order: number;
   name: string
 }
 
-interface AttachedOrderItem extends OrderItem {
+export interface PlayerOrderItem extends OrderItem {
   playerIndex: number;
   type: "char" | "role";
 }
@@ -21,7 +21,7 @@ const NightOrders = {
    * @param b 
    * @returns 
    */
-  sortOrder(a: AttachedOrderItem | OrderItem, b: AttachedOrderItem | OrderItem): number {
+  sortOrder(a: PlayerOrderItem | OrderItem, b: PlayerOrderItem | OrderItem): number {
 
     if (a.order > b.order) {
       return 1;
@@ -48,9 +48,9 @@ const NightOrders = {
    * @param roleArray 
    * @returns 
    */
-  calculateOrder(playerArray: Player[], charArray: Char[], roleArray: Role[]): AttachedOrderItem[] {
+  calculateOrder(playerArray: Player[], charArray: Char[], roleArray: Role[]): PlayerOrderItem[] {
 
-    const ordering: AttachedOrderItem[] = [];
+    const ordering: PlayerOrderItem[] = [];
 
     playerArray.forEach((player, index) => {
 
@@ -85,7 +85,7 @@ const NightOrders = {
    * @param purgedOrders 
    * @returns 
    */
-  addOrderIndicators(ordering: AttachedOrderItem[], playerArray: Player[], purgedOrders: string[]) {
+  addOrderIndicators(ordering: PlayerOrderItem[], playerArray: Player[], purgedOrders: string[]): Player[] {
 
     playerArray = playerArray.map(player => {
       player.nightOrders = [];

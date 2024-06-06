@@ -1,4 +1,4 @@
-import Reminder from "./reminder";
+import Reminder, { ReminderData } from "./reminder";
 
 export interface CharData {
   name: string;
@@ -8,10 +8,10 @@ export interface CharData {
   attributes: string[];
   additional: string[];
   setup: string[][];
-  reminders: Reminder[];
+  reminders: ReminderData[];
 }
 
-export default class Char implements CharData { 
+export default class Char { 
 
   constructor(
     public readonly id: number,
