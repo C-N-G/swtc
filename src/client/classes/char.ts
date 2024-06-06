@@ -14,7 +14,7 @@ export interface CharData {
 export default class Char implements CharData { 
 
   constructor(
-    public readonly id: string,
+    public readonly id: number,
     public name: string,
     public description = "",
     public ability = "",

@@ -4,7 +4,7 @@ import Role from "./role";
 export default class Reminder {
 
   constructor(
-    public readonly id: string,
+    public readonly id: number,
     public origin: Char | Role | null,
     public content: string,
     public colour: string,

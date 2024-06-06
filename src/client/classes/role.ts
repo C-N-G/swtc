@@ -16,7 +16,7 @@ export interface RoleData {
 export default class Role implements RoleData {
 
   constructor(
-    public readonly id: string,
+    public readonly id: number,
     public name: string,
     public type = "",
     public description = "",
