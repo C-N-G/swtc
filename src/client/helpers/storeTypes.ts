@@ -14,7 +14,7 @@ export interface SessionData {
 export interface SessionSlice {
   session: SessionData;
   resetSession: () => void;
-  setModules: (newModules: Array<string>, newSync: boolean) => void;
+  setModules: (newModules: Array<string>, newSync?: boolean) => void;
   syncSession: (newSession: SessionData) => void;
   syncOff: () => void;
   syncOn: () => void;
