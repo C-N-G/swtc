@@ -1,44 +1,16 @@
-import Player from "../classes/player.js";
-import GameData from "../strings/_gameData.js";
-import NightOrders from "./nightOrders.js";
-import randomise from "./randomiser.js";
-import { socket } from "./socket.js";
+import Player from "../classes/player.ts";
+import GameData from "../strings/_gameData.ts";
+import NightOrders from "./nightOrders.ts";
+import randomise from "./randomiser.ts";
+import { socket } from "./socket.ts";
 import { StateCreator } from "zustand";
-import { DragEndEvent } from "@dnd-kit/core";
-import { CharType, RoleType, SessionSlice } from "./types";
+import { CombinedSlice, PlayerSlice } from "./storeTypes.ts";
 
 
-type SyncSession = {
-  id: string;
-  players: Array<Player>;
-  // votes: {
-  //     list: this.votes, 
-  //     accusingPlayer: this.accusingPlayer, 
-  //     nominatedPlayer: this.nominatedPlayer, 
-  //     voting: this.isVoting },
-  // phase: this.phase,
-  // modules: this.modules,
-  // timers: this.timers
-}
 
-interface PlayerSlice {
-  players: Array<Player>;
-  setPlayers: (newPlayers: Array<Player>) => void;
-  changePlayerAttribute: (targetId: string, targetProperty: string, targetValue: string, fromServer?: boolean) => void;
-  addPlayerReminders: (event: DragEndEvent) => void;
-  syncPlayers: (session: SyncSession) => void;
-  randomisePlayers: (chars: Array<CharType>, roles: Array<RoleType>) => void;
-  addPlayerNightIndicators: (cycle: string, chars: Array<CharType>, roles: Array<RoleType>, purgedOrders: Array<string>, ordering) => void;
-  addPlayer: (player: Player) => void;
-  removePlayer: (playerId: string) => void;
-  pushPlayer: () => void;
-  popPlayer: () => void;
-  getUser: () => void;
-  getDrawPlayers: () => void;
-}
 
 export const createPlayerSlice: StateCreator<
-  PlayerSlice & SessionSlice,
+  CombinedSlice,
   [],
   [],
   PlayerSlice
@@ -63,10 +35,12 @@ export const createPlayerSlice: StateCreator<
     })
 
     if (fromServer === false) {
+      const foundPlayer = newPlayers.find(player => player.id === get().userId);
+      if (!foundPlayer) throw new Error("local player not found while saving session locally");
       localStorage.setItem("lastSession", JSON.stringify({
         players: newPlayers,
         sessionId: get().session.id,
-        playerName: newPlayers.find(player => player.id === get().userId).name
+        playerName: foundPlayer.name
       }));
     }
 
@@ -76,14 +50,14 @@ export const createPlayerSlice: StateCreator<
 
   addPlayerReminders: (event) => set(state => {
 
-    const reminderId = String(event.active.id).split("-|-")[1];
+    const reminderId = Number(String(event.active.id).split("-|-")[1]);
     const originId = String(event.active.id).split("-|-")[0];
     const originIsPlayer = originId !== "new";
     const hasTarget = event.over !== null;
     const maxReminders = 5;
     let removeOrigin = false;
     let placeReminder = true;
-    let playerId;
+    let playerId: string;
 
     if (!hasTarget && !originIsPlayer) return {players: state.players};
 
@@ -93,7 +67,7 @@ export const createPlayerSlice: StateCreator<
       placeReminder = false;
       playerId = originId;
     } else if (hasTarget) {
-      playerId = event.over.id.split("-|-")[1];
+      playerId = String(event.over!.id).split("-|-")[1];
     }
 
     const newPlayers = state.players.map(player => {
@@ -105,6 +79,7 @@ export const createPlayerSlice: StateCreator<
         if (player.reminders.length >= maxReminders) return player;
 
         const reminder = GameData.reminders.find(reminder => reminder.id === reminderId);
+        if (!reminder) throw new Error("could not find reminder for associated drop element");
         player.reminders.push(reminder.id);
       } else if (removeOrigin && player.id === originId) {
         player.reminders = player.reminders.filter(id => id !== reminderId);
@@ -122,7 +97,7 @@ export const createPlayerSlice: StateCreator<
 
     // loop through all the players sent from the server
     session.players.forEach((player, index) => {
-      let clientHasPlayer = clientPlayerIds.has(player.id);
+      const clientHasPlayer = clientPlayerIds.has(player.id);
       // if the client does not have player then put them at their index
       if (!clientHasPlayer) {
         newPlayers[index] = player;
@@ -139,10 +114,12 @@ export const createPlayerSlice: StateCreator<
 
     })
 
+    const foundPlayer = newPlayers.find(player => player.id === state.userId);
+    if (!foundPlayer) throw new Error("local player not found while saving session locally");
     localStorage.setItem("lastSession", JSON.stringify({
       players: newPlayers,
       sessionId: state.session.id,
-      playerName: newPlayers.find(player => player.id === state.userId).name
+      playerName: foundPlayer.name
     }));
 
     return {players: newPlayers};
@@ -171,7 +148,7 @@ export const createPlayerSlice: StateCreator<
 
   addPlayerNightIndicators: (cycle, chars, roles, purgedOrders, ordering) => set(state => {
     let newPlayers = state.players;
-    let newCycle = cycle ? cycle : state.phase.cycle;
+    const newCycle = cycle ? cycle : state.phase.cycle;
     if (newCycle === "Night") {
       ordering = ordering ? ordering : NightOrders.calculateOrder(newPlayers, chars, roles);
       newPlayers = NightOrders.addOrderIndicators(ordering, newPlayers, purgedOrders);
@@ -190,9 +167,9 @@ export const createPlayerSlice: StateCreator<
 
   pushPlayer: () => set(state => {
     const newPlayers = state.players;
-    const i = newPlayers.filter(player => player.type !== 0).length
-    const player = new Player(i, "Player " + i);
-    if (i >= 16) return {players: newPlayers};
+    const index = newPlayers.filter(player => player.type !== 0).length;
+    const player = new Player(String(index), "Player " + index);
+    if (index >= 16) return {players: newPlayers};
     newPlayers.push(player);
     return {player: newPlayers};
   }),

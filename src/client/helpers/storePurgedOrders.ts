@@ -1,8 +1,16 @@
-export const createPurgedOrdersSlice = (set) => ({
+import { StateCreator } from "zustand";
+import { CombinedSlice, PurgedOrdersSlice } from "./storeTypes.ts";
+
+export const createPurgedOrdersSlice: StateCreator<
+  CombinedSlice,
+  [],
+  [],
+  PurgedOrdersSlice
+> = (set) => ({
   purgedOrders: [],
 
   addPurgedOrder: (event, index, ordering, chars, roles) => set(state => {
-    const action = event.target.innerText
+    const action = event.currentTarget.innerText;
     const purgeString = JSON.stringify(ordering[index]);
     const purgedOrders = state.purgedOrders;
     let newPurgedOrders;
@@ -12,6 +20,8 @@ export const createPurgedOrdersSlice = (set) => ({
       newPurgedOrders = purgedOrders.filter(s => s !== purgeString)
     }
 
+    if (typeof newPurgedOrders === "undefined") throw new Error("error adding purged order, order not defined");
+
     state.addPlayerNightIndicators(false, chars, roles, newPurgedOrders);
 
     return {purgedOrders: newPurgedOrders};
@@ -19,7 +29,7 @@ export const createPurgedOrdersSlice = (set) => ({
   }),
 
   removePurgedOrders: (chars, roles, ordering) => set(state => {
-    const newPurgedOrders = [];
+    const newPurgedOrders: string[] = [];
 
     state.addPlayerNightIndicators(false, chars, roles, newPurgedOrders, ordering);
 

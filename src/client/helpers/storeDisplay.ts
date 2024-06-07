@@ -1,16 +1,9 @@
 import { StateCreator } from "zustand";
+import { CombinedSlice, DisplaySlice } from "./storeTypes.ts";
 
-interface DisplaySlice {
-  display: number;
-  selected: string | null;
-  displayNone: () => void;
-  displayDetails: () => void;
-  displayVote: () => void;
-  selectPlayer: (playerId: string) => void;
-}
 
 export const createDisplaySlice: StateCreator<
-  DisplaySlice,
+  CombinedSlice,
   [],
   [],
   DisplaySlice

@@ -90,19 +90,10 @@
 // isaac believes disjointed > wrong day grouping
 // mac believes wrong day grouping > disjointed
 import { StateCreator } from "zustand";
-
-type Phase = {
-  cycle: "Day" | "Night";
-  round: number;
-}
-
-interface PhaseSlice {
-  phase: Phase;
-  nextPhase: (newPhase: Phase) => void;
-}
+import { CombinedSlice, PhaseSlice } from "./storeTypes.ts";
 
 export const createPhaseSlice: StateCreator<
-  PhaseSlice,
+  CombinedSlice,
   [],
   [],
   PhaseSlice
@@ -113,7 +104,7 @@ export const createPhaseSlice: StateCreator<
   },
 
   nextPhase: (newPhase) => set(state => {
-    if (newPhase) return {phase: newPhase};
+    if (typeof newPhase !== "undefined") return {phase: newPhase};
     let newCycle, newRound;
     if (state.phase.cycle === "Night") {
       newCycle = "Day";
@@ -122,6 +113,10 @@ export const createPhaseSlice: StateCreator<
     } else if (state.phase.cycle === "Day") {
       newCycle = "Night";
       newRound = state.phase.round;
+    }
+
+    if (typeof newCycle === "undefined" || typeof newRound === "undefined") {
+      throw new Error("error progressing phase, new phase was not defined");
     }
     return {phase: {cycle: newCycle, round: newRound}};
   }),

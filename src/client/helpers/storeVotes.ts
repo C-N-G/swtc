@@ -1,29 +1,17 @@
 import { StateCreator } from "zustand";
+import { ButtonEnlarger, CombinedSlice, UserVote, VoteHistoryItem, VotesSlice } from "./storeTypes.ts";
 
-const large = {
+const large: ButtonEnlarger = {
   "backgroundColor": "#2f8bf3",
   "transform": "scale(1.15)"
 }
 
-type Vote = {
-  id: string;
-  vote: number;
-  name: string; 
-  power: number;
-
-}
-
-
-
-interface VotesSlice {
-  list: Array<Vote>
-  voting: boolean
-  accusingPlayer: string //player id
-  nominatedPlayer: string //player id
-  userVote: Array<boolean | number>
-}
-
-export const createVotesSlice = (set) => ({
+export const createVotesSlice: StateCreator<
+  CombinedSlice,
+  [],
+  [],
+  VotesSlice
+> = (set) => ({
   votes: {
     list: [],
     voting: false,
@@ -31,13 +19,6 @@ export const createVotesSlice = (set) => ({
     nominatedPlayer: null,
     userVote: [false, false],
   },
-  // voteHistory: {
-  //   pastVotes: [],
-  //   VotersToday: 0,
-  //   mostVoted: null,
-  //   accusers: [],
-  //   nominated: []
-  // },
   voteHistory: [],
 
   setVoting: (newVoting) => set(state => ({
@@ -102,7 +83,7 @@ export const createVotesSlice = (set) => ({
         ...state.votes,
         userVote: state.votes.userVote.map((_, index) => {
           return index === aVote ? large : false
-        })
+        }) as [UserVote, UserVote]
       }
     }
   }),
@@ -110,11 +91,16 @@ export const createVotesSlice = (set) => ({
   addVotesToHistory: () => set(state => {
 
     const players = state.players;
+    const accuser = players.find(player => player.id === state.votes.accusingPlayer);
+    const nominated = players.find(player => player.id === state.votes.nominatedPlayer);
 
-    const newVoteHistoryItem = {
+    if (typeof accuser === "undefined") throw new Error("error adding to vote history accuser not found");
+    if (typeof nominated === "undefined") throw new Error("error adding to vote history nominated player not found");
+
+    const newVoteHistoryItem: VoteHistoryItem = {
       day: state.phase.round,
-      accuser: players.find(player => player.id === state.votes.accusingPlayer).name,
-      nominated: players.find(player => player.id === state.votes.nominatedPlayer).name,
+      accuser: accuser.name,
+      nominated: nominated.name,
       votes: state.votes.list,
       voterTotal: state.votes.list.filter(aVote => aVote.vote === 1).reduce((acc, cur) => acc + cur.power, 0),
       abstainerTotal: state.votes.list.filter(aVote => aVote.vote === 0).reduce((acc, cur) => acc + cur.power, 0),

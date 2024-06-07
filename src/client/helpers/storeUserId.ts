@@ -1,13 +1,8 @@
 import { StateCreator } from "zustand";
-
-interface UserIdSlice {
-  userId: string | null;
-  setUserId: (newUserId: string) => void;
-  toggleDebugUser: () => void;
-}
+import { CombinedSlice, UserIdSlice } from "./storeTypes.ts";
 
 export const createUserIdSlice: StateCreator<
-  UserIdSlice,
+  CombinedSlice,
   [],
   [],
   UserIdSlice

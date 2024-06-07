@@ -1,9 +1,9 @@
 import { StateCreator } from "zustand";
-import { SessionSlice } from "./types.ts";
+import { CombinedSlice, SessionSlice } from "./storeTypes.ts";
 
 
 export const createSessionSlice: StateCreator<
-  SessionSlice,
+  CombinedSlice,
   [],
   [],
   SessionSlice
