@@ -70,8 +70,8 @@ export interface PlayerSlice {
   removePlayer: (playerId: string) => void;
   pushPlayer: () => void;
   popPlayer: () => void;
-  getUser: () => void;
-  getDrawPlayers: () => void;
+  getUser: () => Player;
+  getDrawPlayers: () => Player[];
 }
 
 export interface PurgedOrdersSlice {
