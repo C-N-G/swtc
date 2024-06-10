@@ -1,9 +1,10 @@
 import http from "node:http";
 import process from "node:process";
 import {Namespace, Server} from "socket.io";
-import config from "../appConfig.js";
-import swtcHttpServer from "./httpServer.js";
-import swtcSocketServer, { ClientToServerEvents, ServerToClientEvents } from "./socketServer.ts";
+import config from "../appConfig.ts";
+import swtcHttpServer from "./httpServer.ts";
+import swtcSocketServer from "./socketServer.ts";
+import { ClientToServerEvents, ServerToClientEvents } from "./serverTypes.ts";
 
 const httpserver = http.createServer(swtcHttpServer);
 

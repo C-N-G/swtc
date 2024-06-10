@@ -1,5 +1,6 @@
-import Player from "../client/classes/player.js";
-import Session from "./session.js";
+import Player from "../client/classes/player.ts";
+import Session from "./session.ts";
+
 
 export default class SessionManager {
 

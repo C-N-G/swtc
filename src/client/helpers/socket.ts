@@ -1,6 +1,6 @@
 import { io, Socket } from "socket.io-client";
 import config from "../../appConfig.ts";
-import { ClientToServerEvents, ServerToClientEvents } from "../../server/socketServer.ts";
+import { ClientToServerEvents, ServerToClientEvents } from "../../server/serverTypes.ts";
 
 // "undefined" means the URL will be computed from the `window.location` object
 // const URL = process.env.NODE_ENV === "production" ? undefined : "http://127.0.0.1:3001";

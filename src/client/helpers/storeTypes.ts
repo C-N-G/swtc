@@ -23,7 +23,7 @@ export interface SessionSlice {
 
 export interface UserIdSlice {
   userId: string | null;
-  setUserId: (newUserId: string) => void;
+  setUserId: (newUserId: string | null) => void;
   toggleDebugUser: () => void;
 }
 
@@ -49,7 +49,7 @@ export interface PhaseSlice {
 export interface PlayerSlice {
   players: Player[];
   setPlayers: (newPlayers: Player[]) => void;
-  changePlayerAttribute: (targetId: string, targetProperty: string, targetValue: string, fromServer?: boolean) => void;
+  changePlayerAttribute: (targetId: string, targetProperty: string, targetValue: string | number, fromServer?: boolean) => void;
   addPlayerReminders: (event: DragEndEvent) => void;
   syncPlayers: (session: SessionData) => void;
   randomisePlayers: (chars: Char[], roles: Role[]) => void;
@@ -112,7 +112,7 @@ export interface VotesSlice {
   resetUserVotes: () => void;
   addVoteToList: (newVote: PlayerVoteItem | PlayerVoteItem[]) => void;
   setAccuser: (accusingPlayerId: string) => void;
-  setNominated: (nominatedPlayerId: string, accusingPlayerId: string) => void;
+  setNominated: (nominatedPlayerId: string, accusingPlayerId?: string) => void;
   setVotes: (newVotes: SyncVotes) => void;
   setUserVote: (aVote: number) => void;
   addVotesToHistory: () => void;

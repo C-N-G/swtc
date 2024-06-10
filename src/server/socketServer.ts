@@ -1,49 +1,10 @@
-import SessionManager from "./sessionManager.js";
-import config from "../appConfig.js";
+import SessionManager from "./sessionManager.ts";
+import config from "../appConfig.ts";
 import { DisconnectReason, Namespace, Socket } from "socket.io";
-import { Phase, PlayerVoteItem } from "../client/helpers/storeTypes.js";
-import { SessionData, TimerData } from "./session.js";
-import Player from "../client/classes/player.js";
+import { Phase } from "../client/helpers/storeTypes.ts";
+import Player from "../client/classes/player.ts";
+import { CallbackFn, ClientToServerEvents, PlayerVoteData, ServerToClientEvents, SessionData, TimerData } from "./serverTypes.ts";
 
-export type CallbackFn = (arg: {status: string, error?: string}) => void
-
-export interface PlayerAttributeData {
-  targetId: string;
-  targetProperty: string; 
-  targetValue: string | number;
-}
-
-export interface PlayerVoteData {
-  voting?: boolean;
-  accusingPlayer?: string | null;
-  nominatedPlayer?: string | null;
-  list: PlayerVoteItem | PlayerVoteItem[];
-}
-
-export interface ServerToClientEvents {
-  sync: (session: SessionData, userId?: string | null) => void;
-  joined: (player: Player) => void;
-  phase: () => void;
-  attribute: (data: PlayerAttributeData) => void;
-  vote: (data: PlayerVoteData) => void;
-  module: (data: string[]) => void;
-  timer: (data: TimerData) => void;
-  left: (playerId: string) => void;
-}
-
-export interface ClientToServerEvents {
-  join: (sessiondId: string, name: string, callback: CallbackFn) => void;
-  host: (name: string) => void;
-  phase: (data: Phase) => void;
-  attribute: (data: PlayerAttributeData) => void;
-  vote: (data: PlayerVoteData) => void;
-  module: (data: string[]) => void;
-  sync: (data: {players: Player[], modules: string[]}, callback: CallbackFn) => void;
-  disconnect: (reason: DisconnectReason, details: {message: string, description: string, context: string}) => void;
-  leave: () => void;
-  timer: (data: TimerData, callback: CallbackFn) => void;
-  resume: (sessionId: string, name: string, callback: CallbackFn) => void;
-}
 
 const sessionManager = new SessionManager();
 

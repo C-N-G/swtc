@@ -1,25 +1,7 @@
 import Player from "../client/classes/player.ts";
 import { Phase, PlayerVoteItem } from "../client/helpers/storeTypes.ts";
+import { SessionData, TimerData } from "./serverTypes.ts";
 
-export interface TimerData {
-  name: string;
-  action: string;
-  duration: number;
-}
-
-export interface SessionData {
-    id: string | null;
-    players: Player[];
-    votes: {
-        list: PlayerVoteItem[];
-        accusingPlayer: string | null; 
-        nominatedPlayer: string | null;  
-        voting: boolean;
-    }
-    phase: Phase;
-    modules: string[];
-    timers: {[id: string]: TimerData};
-}
 
 export default class Session {
 
