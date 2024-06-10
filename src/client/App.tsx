@@ -132,11 +132,11 @@ function App() {
 
     function onVote(data: PlayerVoteData) {
 
-      if (data.onlyPlayer && user.type === 0) {
+      if (data.onlyPlayer && user!.type === 0) {
         return;
       }
 
-      if (Object.hasOwn(data, "voting") && data.voting) {
+      if (Object.hasOwn(data, "voting") && data.voting !== undefined) {
         setVoting(data.voting);
         if (data.voting === true) displayVote();
         else resetUserVotes();
@@ -146,11 +146,11 @@ function App() {
         addVoteToList(data.list);
       }
       
-      if (Object.hasOwn(data, "accusingPlayer") && data.accusingPlayer){
+      if (Object.hasOwn(data, "accusingPlayer") && data.accusingPlayer !== undefined){
         setAccuser(data.accusingPlayer);
       }
       
-      if (Object.hasOwn(data, "nominatedPlayer") && data.nominatedPlayer){
+      if (Object.hasOwn(data, "nominatedPlayer") && data.nominatedPlayer !== undefined){
         setNominated(data.nominatedPlayer);
       }
       

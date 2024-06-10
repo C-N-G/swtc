@@ -118,8 +118,7 @@ export const createTimersSlice: StateCreator<
 
     const intervalId = state.timers[timer].intervalId;
 
-    if (intervalId === null) throw new Error("error stopping timer, interval id is null");
-    else clearInterval(intervalId);
+    if (intervalId !== null) clearInterval(intervalId);
 
     return {
       timers: {

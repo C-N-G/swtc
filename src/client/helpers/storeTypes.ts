@@ -111,8 +111,8 @@ export interface VotesSlice {
   setVoting: (newVoting: boolean) => void;
   resetUserVotes: () => void;
   addVoteToList: (newVote: PlayerVoteItem | PlayerVoteItem[]) => void;
-  setAccuser: (accusingPlayerId: string) => void;
-  setNominated: (nominatedPlayerId: string, accusingPlayerId?: string | null) => void;
+  setAccuser: (accusingPlayerId: string | null) => void;
+  setNominated: (nominatedPlayerId: string | null, accusingPlayerId?: string | null) => void;
   setVotes: (newVotes: SyncVotes) => void;
   setUserVote: (aVote: number) => void;
   addVotesToHistory: () => void;

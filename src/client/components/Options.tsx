@@ -246,7 +246,7 @@ interface JoinDialogProps {
 function JoinDialog({openDialog, handleClose, handleJoin, setInputs, inputs}: JoinDialogProps) {
 
   return (
-    <Dialog disableRestoreFocus open={openDialog === OpenDialog.Host} onClose={handleClose}>
+    <Dialog disableRestoreFocus open={openDialog === OpenDialog.Join} onClose={handleClose}>
       <DialogTitle>Join Session</DialogTitle>
       <DialogContent>
         <DialogContentText>
