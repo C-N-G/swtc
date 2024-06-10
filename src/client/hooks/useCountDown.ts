@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function useCountDown(duration, activationFunc) {
+function useCountDown(duration: number, activationFunc: () => void): [time: number, beginTimer: () => void, resetTimer: () => void] {
 
   const [time, setTime] = useState(duration);
   const [timerState, setTimerState] = useState("stopped");
