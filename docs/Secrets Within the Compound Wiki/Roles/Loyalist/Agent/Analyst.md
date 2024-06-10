@@ -1,19 +1,10 @@
 ---
-tags:
-  - Loyalist
-  - Agent
-  - Human
+team: Loyalist
+type: Agent
+module: Standard Procedure
+attributes: Human
+flavour text: “Don’t blame me, I’m just presenting the data.”
 ---
-> [!infobox]
-> # Analyst
-> ######
-> |  |  |
-> | ---- | ---- |
-> | Team | [[Loyalist]] |
-> | Type | [[Agent]] |
-> | [[Module]]| [[Standard Procedure]] |
-> | [[Attributes]] | Human |
-> “Don’t blame me, I’m just presenting the data.”
 # Ability
 Each night, you learn which team the Narrator thinks is winning.
 
