@@ -1,7 +1,10 @@
-// import { useState } from 'react'
 import {Card} from '@mui/material';
 
-function Chat({children}) {
+interface ChatProps {
+  children: React.ReactNode;
+}
+
+function Chat({children}: ChatProps) {
 
   return (
     <Card sx={{

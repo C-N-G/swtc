@@ -1,12 +1,22 @@
 import {memo, useContext} from "react";
 import {Box, Button, Stack, Typography} from '@mui/material';
-import {UserContext} from "../App.js";
+import {UserContext} from "../App.tsx";
 import {useDroppable} from "@dnd-kit/core";
-import GameData from "../strings/_gameData.js"
-import Reminder from "./Reminder.js";
-import Draggable from "./Draggable.js";
+import GameData from "../strings/_gameData.ts"
+import Reminder from "./Reminder.tsx";
+import Draggable from "./Draggable.tsx";
+import Player from "../classes/player.ts";
+import Char from "../classes/char.ts";
+import Role from "../classes/role.ts";
+import { DisplaySlice } from "../helpers/storeTypes.ts";
 
-const PlayerIndicator = memo(function PlayerIndicator(props) {
+
+
+type PlayerIndicatorProps = RegularPlayerIndicatorProps & NarratorPlayerIndicator & { 
+  display: number 
+}
+
+const PlayerIndicator = memo(function PlayerIndicator(props: PlayerIndicatorProps) {
 
   const user = useContext(UserContext);
 
@@ -35,7 +45,9 @@ const PlayerIndicator = memo(function PlayerIndicator(props) {
 
 export default PlayerIndicator
 
-const BUTTON_STYLE = (team, rState, isSelected) => ({
+
+
+const BUTTON_STYLE = (team: number, rState: number, isSelected: boolean) => ({
   aspectRatio: "1/1",
   margin: "5px",
   px: "4px",
@@ -53,7 +65,7 @@ const BUTTON_STYLE = (team, rState, isSelected) => ({
   boxShadow: isSelected ? "inset 0 0 15px 12px rgba(0,0,0,0.8)" : "",
 })
 
-const BUTTON_CONTAINER_STYLE = (vertical) => ({
+const BUTTON_CONTAINER_STYLE = (vertical: boolean) => ({
   width: vertical ? "100%" : "20%",
   aspectRatio: "1/1",
   flexDirection: "column",
@@ -73,7 +85,14 @@ const BUTTON_TEXT_CONTAINER_STYLE = {
   whiteSpace: "break-spaces"
 }
 
-function RegularPlayerIndicator({player, handleClick, vertical, selected}) {
+interface RegularPlayerIndicatorProps {
+  player: Player;
+  handleClick: (playerId: string) => void;
+  vertical: boolean;
+  selected: DisplaySlice["selected"];
+}
+
+function RegularPlayerIndicator({player, handleClick, vertical, selected}: RegularPlayerIndicatorProps) {
 
   const thisPlayerSelected = selected === player.id;
 
@@ -83,7 +102,7 @@ function RegularPlayerIndicator({player, handleClick, vertical, selected}) {
         <Typography>{player.name}</Typography>
         <Box sx={BUTTON_TEXT_CONTAINER_STYLE}>
           <Typography 
-            variant="subtitle" 
+            variant="body1" //TODO should possibly be subtitle2
             sx={{
               wordBreak: "break-word",
               overflow: "inherit",
@@ -97,7 +116,18 @@ function RegularPlayerIndicator({player, handleClick, vertical, selected}) {
 
 }
 
-function NarratorPlayerIndicator({player, handleClick, vertical, chars, roles, selected}) {
+
+
+interface NarratorPlayerIndicator {
+  player: Player;
+  handleClick: (playerId: string) => void;
+  vertical: boolean;
+  chars: Char[];
+  roles: Role[];
+  selected: DisplaySlice["selected"];
+}
+
+function NarratorPlayerIndicator({player, handleClick, vertical, chars, roles, selected}: NarratorPlayerIndicator) {
 
   const {isOver, setNodeRef} = useDroppable({
     id: "droppable-|-" + player.id
@@ -111,7 +141,7 @@ function NarratorPlayerIndicator({player, handleClick, vertical, chars, roles, s
 
   const thisPlayerSelected = selected === player.id;
 
-  function captionBuilder(text) {
+  function captionBuilder(text: string) {
     return(
       <Typography variant="caption" sx={{
         position: "absolute",
@@ -138,7 +168,7 @@ function NarratorPlayerIndicator({player, handleClick, vertical, chars, roles, s
         {player.reminders.map(reminderId => {
           return (
             <Draggable key={String(player.id) + String(reminderId)} draggableId={String(player.id) + "-|-" + String(reminderId)}>
-              <Reminder reminder={GameData.reminders.find(reminder => reminder.id === reminderId)} />
+              <Reminder reminder={GameData.reminders.find(reminder => reminder.id === reminderId)!} />
             </Draggable>
           )
         })}
@@ -149,7 +179,9 @@ function NarratorPlayerIndicator({player, handleClick, vertical, chars, roles, s
         right: "2px",
         zIndex: 1
       }}>
-        {player.nightOrders.map(nightOrder => (<Reminder key={nightOrder} reminder={{colour: "white", content: nightOrder}}/>))}
+        {player.nightOrders.map(nightOrder => (<Reminder key={nightOrder} reminder={
+          {id: nightOrder, colour: "white", origin: null, content: String(nightOrder), description: ""}
+          }/>))}
       </Stack>
       <Button 
         variant="contained" 
@@ -161,7 +193,7 @@ function NarratorPlayerIndicator({player, handleClick, vertical, chars, roles, s
         <Typography>{player.name}</Typography>
         <Box sx={BUTTON_TEXT_CONTAINER_STYLE}>
           <Typography 
-            variant="subtitle" 
+            variant="body1" //TODO should possibly be subtitle2
             sx={{
               wordBreak: "break-word",
               overflow: "inherit",

@@ -1,5 +1,5 @@
 import {Box} from "@mui/material";
-import {default as ReminderClass} from "../classes/reminder";
+import {default as ReminderClass} from "../classes/reminder.ts";
 
 interface ReminderProps {
   reminder: ReminderClass

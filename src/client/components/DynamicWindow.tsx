@@ -1,7 +1,11 @@
 import {Card, Box, Fade} from '@mui/material';
 
+interface DynamicWindowProps {
+  display: number;
+  children: React.ReactNode;
+}
 
-function DynamicWindow({children, display}) {
+function DynamicWindow({children, display}: DynamicWindowProps) {
 
   // const [lastDisplay, setLastDisplay] = useState()
 

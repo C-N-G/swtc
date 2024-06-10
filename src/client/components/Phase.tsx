@@ -3,22 +3,26 @@ import {Card, Button, Typography, Dialog, DialogTitle, DialogContent, DialogActi
   ListItemButton, Collapse, ListItemText, ButtonGroup, Stack, Grid, ListItem, Divider, Checkbox, Tab, Tabs, Box}from '@mui/material';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import {UserContext} from "../App.js";
-import {socket} from "../helpers/socket.js";
-import GameData from "../strings/_gameData.js";
-import NightOrders from "../helpers/nightOrders.js";
-import useStore from "../hooks/useStore.js";
+import {UserContext} from "../App.tsx";
+import {socket} from "../helpers/socket.ts";
+import GameData from "../strings/_gameData.ts";
+import NightOrders, { OrderItem } from "../helpers/nightOrders.ts";
+import useStore from "../hooks/useStore.ts";
+import Char from "../classes/char.ts";
+import Role from "../classes/role.ts";
 
-function Phase(props) {
+
+
+function Phase() {
 
   const user = useContext(UserContext);
 
   const getUserTypeCheckedComponent = () => {
 
     if (user?.type === 0) {
-      return <NarratorPhase {...props}/>
+      return <NarratorPhase />
     } else if (user?.type === 1) {
-      return <PlayerPhase {...props}/>
+      return <PlayerPhase />
     } else {
       return false
     }
@@ -41,18 +45,20 @@ function Phase(props) {
 
 export default Phase
 
-const dialog = Object.freeze({
-  hide: 0,
-  scenario: 1,
-  nightOrder: 2
-})
+
+
+enum OpenDialog {
+  None,
+  Scenario,
+  NightOrder,
+}
 
 function PlayerPhase() {
 
   const modules = useStore(state => state.session.modules);
-  const [openDialog, setOpenDialog] = useState(dialog.hide);
-  const [chars, roles] = useMemo(() => GameData.getFilteredValues(modules, true), [modules]);
-  const handleClose = () => setOpenDialog(dialog.hide);
+  const [openDialog, setOpenDialog] = useState<OpenDialog>(OpenDialog.None);
+  const [chars, roles] = useMemo(() => GameData.getFullFilteredValues(modules), [modules]);
+  const handleClose = () => setOpenDialog(OpenDialog.None);
   const phase = useStore(state => state.phase);
   const voting = useStore(state => state.votes.voting);
   const voteTimer = useStore(state => state.timers.voteTimer);
@@ -62,7 +68,7 @@ function PlayerPhase() {
     <Grid container alignItems="center">
       <Grid item xs={4} container justifyContent="center">
         <ButtonGroup size="small" orientation="vertical">
-          <Button onClick={() => setOpenDialog(dialog.scenario)}>Show Scenario</Button>
+          <Button onClick={() => setOpenDialog(OpenDialog.Scenario)}>Show Scenario</Button>
           {voting ? <Button onClick={() => displayVote()}>Show Vote ({voteTimer.time})</Button> : ""}
         </ButtonGroup>
       </Grid>
@@ -87,12 +93,14 @@ function PlayerPhase() {
 
 
 
+type StateArray = boolean[];
+
 function NarratorPhase() {
 
   const modules = useStore(state => state.session.modules);
-  const [chars, roles] = useMemo(() => GameData.getFilteredValues(modules, true), [modules]);
-  const [checkedState, setCheckedState] = useState(Array(32).fill(false));
-  const [openDialog, setOpenDialog] = useState(dialog.hide);
+  const [chars, roles] = useMemo(() => GameData.getFullFilteredValues(modules), [modules]);
+  const [checkedState, setCheckedState] = useState<StateArray>(Array(32).fill(false));
+  const [openDialog, setOpenDialog] = useState(OpenDialog.None);
   const phase = useStore(state => state.phase);
   const nextPhase = useStore(state => state.nextPhase);
   const addPlayerNightIndicators = useStore(state => state.addPlayerNightIndicators);
@@ -113,7 +121,7 @@ function NarratorPhase() {
       } else if (phase.cycle === "Day") {
         newCycle = "Night";
         newRound = phase.round;
-      }
+      } else throw new Error("error changing phase, phase could not be calculated");
 
       addPlayerNightIndicators(newCycle, chars, roles, purgedOrders);
 
@@ -129,7 +137,7 @@ function NarratorPhase() {
   }
 
   function handleClose() {
-    setOpenDialog(dialog.hide);
+    setOpenDialog(OpenDialog.None);
   }
 
   return (
@@ -137,7 +145,7 @@ function NarratorPhase() {
       <Grid container alignItems="center">
         <Grid item xs={4} container justifyContent="center">
           <ButtonGroup size="small" orientation="vertical">
-            <Button onClick={() => setOpenDialog(dialog.scenario)}>Show Scenario</Button>
+            <Button onClick={() => setOpenDialog(OpenDialog.Scenario)}>Show Scenario</Button>
             {voting ? <Button onClick={() => displayVote()}>Show Vote</Button> : ""}
           </ButtonGroup>
         </Grid>
@@ -150,7 +158,7 @@ function NarratorPhase() {
         <Grid item xs={4} container justifyContent="center">
           <ButtonGroup size="small" orientation="vertical">
             <Button onClick={() => handleClick()}>&gt; Progress Phase &gt;</Button>
-            <Button disabled={phase.cycle !== "Night"} onClick={() => setOpenDialog(dialog.scenario)}>Night Order List</Button>
+            <Button disabled={phase.cycle !== "Night"} onClick={() => setOpenDialog(OpenDialog.Scenario)}>Night Order List</Button>
           </ButtonGroup>
         </Grid>
       </Grid>
@@ -170,17 +178,28 @@ function NarratorPhase() {
 
 }
 
-function NightOrderDialog({openDialog, handleClose, chars, roles, checkedState, setCheckedState}) {
+
+
+interface NightOrderDialogProps {
+  openDialog: OpenDialog;
+  handleClose: () => void;
+  chars: Char[];
+  roles: Role[];
+  checkedState: boolean[];
+  setCheckedState: React.Dispatch<React.SetStateAction<StateArray>>;
+}
+
+function NightOrderDialog({openDialog, handleClose, chars, roles, checkedState, setCheckedState}: NightOrderDialogProps) {
 
   const players = useStore(state => state.players);
   const ordering = useMemo(() => NightOrders.calculateOrder(players, chars, roles), [players, chars, roles]);
-  const [openState, setOpenState] = useState(Array(32).fill(false));
+  const [openState, setOpenState] = useState<StateArray>(Array(32).fill(false));
   const addPurgedOrder = useStore(state => state.addPurgedOrder);
   const removePurgedOrders = useStore(state => state.removePurgedOrders);
   const purgedOrders = useStore(state => state.purgedOrders);
   
 
-  function handleOpenClick(index) {
+  function handleOpenClick(index: number) {
     setOpenState(state => {
       const newState = !state[index];
       state = state.fill(false);
@@ -189,14 +208,14 @@ function NightOrderDialog({openDialog, handleClose, chars, roles, checkedState, 
     })
   }
 
-  function handleCheckClick(index) {
+  function handleCheckClick(index: number) {
     setCheckedState(state => {
       state[index] = !state[index]
       return [...state];
     })
   }
 
-  function handlePurgeClick(index, event) {
+  function handlePurgeClick(index: number, event: React.MouseEvent<HTMLSpanElement, MouseEvent>) {
 
     addPurgedOrder(event, index, ordering, chars, roles);
 
@@ -222,9 +241,9 @@ function NightOrderDialog({openDialog, handleClose, chars, roles, checkedState, 
     } else if(nightOrder.type === "role") {
       attrLong = "Role";
       attribute = roles[players[nightOrder.playerIndex].rRole];
-    }
+    } else throw Error("error rendering night orders, night order type not found");
 
-    const removed = purgedOrders.includes(JSON.stringify(ordering[[index]])) ? true : false;
+    const removed = purgedOrders.includes(JSON.stringify(ordering[index])) ? true : false;
 
     if (!removed) placedIndex++;
 
@@ -264,7 +283,7 @@ function NightOrderDialog({openDialog, handleClose, chars, roles, checkedState, 
   })
 
   return (
-    <Dialog open={openDialog === dialog.nightOrder} onClose={handleClose} fullWidth>
+    <Dialog open={openDialog === OpenDialog.NightOrder} onClose={handleClose} fullWidth>
       <DialogTitle>Night Order List</DialogTitle>
       <DialogContent>
         <List>
@@ -279,16 +298,25 @@ function NightOrderDialog({openDialog, handleClose, chars, roles, checkedState, 
   )
 }
 
-function ScenarioDialog({openDialog, handleClose, chars, roles}) {
+
+
+interface ScenarioDialogProps {
+  openDialog: OpenDialog;
+  handleClose: () => void;
+  chars: Char[];
+  roles: Role[];
+}
+
+function ScenarioDialog({openDialog, handleClose, chars, roles}: ScenarioDialogProps) {
 
   const fullOrdering = useMemo(() => NightOrders.calculateFullOrder(chars, roles), [chars, roles]);
   const [openTab, setOpenTab] = useState(0);
 
-  function handleChange(event, newValue) {
+  function handleChange(_: unknown, newValue: number) {
     setOpenTab(newValue);
   }
 
-  const listMaker = (ele, index) => {
+  const listMaker = (ele: Char | Role, index: number) => {
     const attributes = ele.attributes.length > 0 ? `[${ele.attributes.join(", ")}]` : "";
     const name = <Typography component="span" fontWeight="bold">{ele.name}</Typography>
     const primary = <Typography>{name} {attributes}</Typography>
@@ -300,12 +328,13 @@ function ScenarioDialog({openDialog, handleClose, chars, roles}) {
   }
 
   const nightOrderList = useMemo(() => {
-    const returnList = [];
+    const returnList: React.ReactNode[] = [];
 
-    let tempList = [], lastEle;
+    let tempList: React.ReactNode[] = []; 
+    let lastEle: OrderItem;
     fullOrdering.forEach((ele, index) => {
 
-      function print(text, keyIndex) {
+      function print(text: string, keyIndex: number) {
         returnList.push(
           <Fragment key={keyIndex + "heading"}>
             <Grid item xs={6}><Typography fontWeight="bold">{text}</Typography></Grid>
@@ -345,10 +374,10 @@ function ScenarioDialog({openDialog, handleClose, chars, roles}) {
 
   }, [fullOrdering])
 
-  const filter = (ele) => ele.name !== "Unknown";
-  const agentFilter = (ele) => ele.type === "Agent";
-  const detriFilter = (ele) => ele.type === "Detrimental";
-  const antagFilter = (ele) => ele.type === "Antagonist";
+  const filter = (ele: Char | Role) => ele.name !== "Unknown";
+  const agentFilter = (ele: Role) => ele.type === "Agent";
+  const detriFilter = (ele: Role) => ele.type === "Detrimental";
+  const antagFilter = (ele: Role) => ele.type === "Antagonist";
 
   const tabStyle = {
     borderBottom: 1, 
@@ -367,7 +396,7 @@ function ScenarioDialog({openDialog, handleClose, chars, roles}) {
   const antagRoleList = usableRoles ? usableRoles.filter(antagFilter).map(listMaker) : [];
 
   return (
-    <Dialog open={openDialog === dialog.scenario} onClose={handleClose} fullWidth>
+    <Dialog open={openDialog === OpenDialog.Scenario} onClose={handleClose} fullWidth>
       <DialogTitle>Current Scenario</DialogTitle>
       <DialogContent>
         <Box sx={tabStyle}>

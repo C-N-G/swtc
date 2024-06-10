@@ -53,7 +53,7 @@ export interface PlayerSlice {
   addPlayerReminders: (event: DragEndEvent) => void;
   syncPlayers: (session: SessionData) => void;
   randomisePlayers: (chars: Char[], roles: Role[]) => void;
-  addPlayerNightIndicators: (cycle: string | boolean, chars: Char[], roles: Role[], purgedOrders: string[], ordering?: PlayerOrderItem[]) => void;
+  addPlayerNightIndicators: (cycle: string | undefined | boolean, chars: Char[], roles: Role[], purgedOrders: string[], ordering?: PlayerOrderItem[]) => void;
   addPlayer: (player: Player) => void;
   removePlayer: (playerId: string) => void;
   pushPlayer: () => void;
@@ -112,7 +112,7 @@ export interface VotesSlice {
   resetUserVotes: () => void;
   addVoteToList: (newVote: PlayerVoteItem | PlayerVoteItem[]) => void;
   setAccuser: (accusingPlayerId: string) => void;
-  setNominated: (nominatedPlayerId: string, accusingPlayerId?: string) => void;
+  setNominated: (nominatedPlayerId: string, accusingPlayerId?: string | null) => void;
   setVotes: (newVotes: SyncVotes) => void;
   setUserVote: (aVote: number) => void;
   addVotesToHistory: () => void;

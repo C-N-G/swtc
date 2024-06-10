@@ -18,7 +18,8 @@ export interface GameDataStore {
   reminders: Reminder[];
   filterByModule(moduleArray: string[], type: "chars" | "roles", full: boolean): (Char | Role | string)[];
   getFilteredReminders(charArray: Char[], roleArray: Role[]): Reminder[];
-  getFilteredValues(moduleArray: string[], full?: boolean): [(Char | string)[], (Role | string)[]];
+  getFilteredValues(moduleArray: string[]): [chars: string[], roles: string[]];
+  getFullFilteredValues(moduleArray: string[]): [chars: Char[], roles: Role[]];
   hackValue(input: string): string;
 }
 

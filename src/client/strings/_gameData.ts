@@ -46,10 +46,18 @@ const GameData: GameDataStore = {
 
   },
 
-  getFilteredValues(moduleArray, full = false) {
+  getFilteredValues(moduleArray) {
 
-    const charArray = this.filterByModule(moduleArray, "chars", full) as Char[] | string[];
-    const roleArray = this.filterByModule(moduleArray, "roles", full) as Role[] | string[]
+    const charArray = this.filterByModule(moduleArray, "chars", false) as string[];
+    const roleArray = this.filterByModule(moduleArray, "roles", false) as string[];
+    return [charArray, roleArray];
+
+  },
+
+  getFullFilteredValues(moduleArray) {
+
+    const charArray = this.filterByModule(moduleArray, "chars", true) as Char[];
+    const roleArray = this.filterByModule(moduleArray, "roles", true) as Role[];
     return [charArray, roleArray];
 
   },

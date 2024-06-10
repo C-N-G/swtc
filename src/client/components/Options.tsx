@@ -2,10 +2,23 @@ import {useState} from "react";
 import {Button, Menu, MenuItem, Box, Card, Typography, TextField, Dialog, 
   DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import {socket} from "../helpers/socket.js";
-import useStore from "../hooks/useStore.js";
+import {socket} from "../helpers/socket.ts";
+import useStore from "../hooks/useStore.ts";
 
-function textFieldBuilder(id, label, input, handleFunc, focus, setInputs, inputs) {
+
+
+interface InputFields {
+  [fieldName: string]: {value: string, error: boolean, errorText: string};
+}
+
+enum OpenDialog {
+  None,
+  Host,
+  Join,
+}
+
+function textFieldBuilder(id: string, label: string, input: string, handleFunc: () => void, 
+    focus: boolean, setInputs: React.Dispatch<React.SetStateAction<InputFields>>, inputs: InputFields) {
 
   return <TextField
     autoFocus={focus}
@@ -24,12 +37,6 @@ function textFieldBuilder(id, label, input, handleFunc, focus, setInputs, inputs
 
 }
 
-const dialog = Object.freeze({
-  hide: 0,
-  host: 1,
-  join: 2
-})
-
 function Options() {
 
   const sessionId = useStore(state => state.session.id);
@@ -40,15 +47,15 @@ function Options() {
     joinId: {value: "", error: false, errorText: ""}
   };
 
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [openDialog, setOpenDialog] = useState(dialog.hide);
-  const [inputs, setInputs] = useState(defaultInputs);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLButtonElement>(null);
+  const [openDialog, setOpenDialog] = useState<OpenDialog>(OpenDialog.None);
+  const [inputs, setInputs] = useState<InputFields>(defaultInputs);
 
   const open = Boolean(anchorEl);
   
   function handleClose() {
     setAnchorEl(null);
-    setOpenDialog(dialog.hide);
+    setOpenDialog(OpenDialog.None);
     setInputs(defaultInputs);
   }
 
@@ -164,8 +171,8 @@ function Options() {
             "aria-labelledby": "basic-button",
           }}
         >
-          {sessionId ? "" : <MenuItem onClick={() => {setOpenDialog(dialog.host)}}>Host Session</MenuItem>}
-          {sessionId ? "" : <MenuItem onClick={() => {setOpenDialog(dialog.join)}}>Join Session</MenuItem>}
+          {sessionId ? "" : <MenuItem onClick={() => {setOpenDialog(OpenDialog.Host)}}>Host Session</MenuItem>}
+          {sessionId ? "" : <MenuItem onClick={() => {setOpenDialog(OpenDialog.Join)}}>Join Session</MenuItem>}
           {sessionId ? <MenuItem onClick={handleLeave}>Leave Session</MenuItem> : ""}
           <MenuItem 
             component={"a"}
@@ -196,10 +203,20 @@ function Options() {
 
 export default Options
 
-function HostDialog({openDialog, handleClose, handleHost, setInputs, inputs}) {
+
+
+interface HostDialogProps {
+  openDialog: OpenDialog;
+  handleClose: () => void;
+  handleHost: () => void;
+  setInputs: React.Dispatch<React.SetStateAction<InputFields>>;
+  inputs: InputFields;
+}
+
+function HostDialog({openDialog, handleClose, handleHost, setInputs, inputs}: HostDialogProps) {
 
   return (
-    <Dialog disableRestoreFocus open={openDialog === dialog.host} onClose={handleClose}>
+    <Dialog disableRestoreFocus open={openDialog === OpenDialog.Host} onClose={handleClose}>
       <DialogTitle>Host Session</DialogTitle>
       <DialogContent>
         <DialogContentText>
@@ -216,10 +233,20 @@ function HostDialog({openDialog, handleClose, handleHost, setInputs, inputs}) {
 
 }
 
-function JoinDialog({openDialog, handleClose, handleJoin, setInputs, inputs}) {
+
+
+interface JoinDialogProps {
+  openDialog: OpenDialog;
+  handleClose: () => void;
+  handleJoin: () => void;
+  setInputs: React.Dispatch<React.SetStateAction<InputFields>>;
+  inputs: InputFields;
+}
+
+function JoinDialog({openDialog, handleClose, handleJoin, setInputs, inputs}: JoinDialogProps) {
 
   return (
-    <Dialog disableRestoreFocus open={openDialog === dialog.join} onClose={handleClose}>
+    <Dialog disableRestoreFocus open={openDialog === OpenDialog.Host} onClose={handleClose}>
       <DialogTitle>Join Session</DialogTitle>
       <DialogContent>
         <DialogContentText>

@@ -1,17 +1,12 @@
 import {useContext} from "react";
 import {Button, Typography, TextField, Stack, Grid, Card, List, ListItem, ListItemText, Paper} from '@mui/material';
-import {UserContext} from "../App.js";
-import {socket} from "../helpers/socket.js";
-import useStore from "../hooks/useStore.js";
-import Player from "../classes/player.js";
+import {UserContext} from "../App.tsx";
+import {socket} from "../helpers/socket.ts";
+import useStore from "../hooks/useStore.ts";
+import Player from "../classes/player.ts";
 
-interface VoteProps {
-  nominatedPlayer: Player;
-  accusingPlayer: Player;
-  handleVoteFinishClick: () => void;
-  time: number;
-  beginTimer: () => void;
-}
+
+type VoteProps = NarratorVoteProps & PlayerVoteProps;
 
 function Vote(props: VoteProps) {
 
@@ -37,13 +32,14 @@ function Vote(props: VoteProps) {
 
 export default Vote
 
+
+
 interface PlayerVoteProps {
   nominatedPlayer: Player;
   accusingPlayer: Player;
-  user: Player;
 }
 
-function PlayerVote({nominatedPlayer, accusingPlayer, user}: PlayerVoteProps) {
+function PlayerVote({nominatedPlayer, accusingPlayer, user}: PlayerVoteProps & {user: Player}) {
 
   const handlePlayerDataChange = useStore(state => state.changePlayerAttribute);
   const userVote = useStore(state => state.votes.userVote);
@@ -111,6 +107,8 @@ function PlayerVote({nominatedPlayer, accusingPlayer, user}: PlayerVoteProps) {
     </Stack>
   );
 }
+
+
 
 interface NarratorVoteProps {
   nominatedPlayer: Player;

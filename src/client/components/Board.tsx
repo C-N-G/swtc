@@ -1,14 +1,15 @@
 import {useState, useMemo} from "react";
-import {Card, Stack, FormControl, Select, InputLabel, MenuItem, Button, Dialog, DialogTitle, DialogContentText, DialogContent, DialogActions} from "@mui/material";
-import PlayerIndicator from "./PlayerIndicator.js";
-import DynamicWindow from "./DynamicWindow.js";
-import PlayerDetails from "./PlayerDetails.js";
-import Vote from "./Vote.js";
-import {socket} from "../helpers/socket.js";
-import GameData from "../strings/_gameData.js"
-import useCountDown from "../hooks/useCountDown.js";
-import Character from "./Character.js";
-import useStore from "../hooks/useStore.js";
+import {Card, Stack, FormControl, Select, InputLabel, MenuItem, Button, Dialog, DialogTitle, DialogContentText, DialogContent, DialogActions, SelectChangeEvent} from "@mui/material";
+import PlayerIndicator from "./PlayerIndicator.tsx";
+import DynamicWindow from "./DynamicWindow.tsx";
+import PlayerDetails from "./PlayerDetails.tsx";
+import Vote from "./Vote.tsx";
+import {socket} from "../helpers/socket.ts";
+import GameData from "../strings/_gameData.ts"
+import useCountDown from "../hooks/useCountDown.ts";
+import Character from "./Character.tsx";
+import useStore from "../hooks/useStore.ts";
+import Player from "../classes/player.ts";
 
 const BOARD_CONFIG = [
   [0,0,0], // top, sides, bottom - player count
@@ -30,15 +31,15 @@ const BOARD_CONFIG = [
   [5,3,5], // 16
 ]
 
-const dialog = Object.freeze({
-  hide: 0,
-  dismiss: 1,
-  viewPlayer: 2
-})
+enum OpenDialog {
+  None,
+  Dismiss,
+  ViewPlayer,
+}
 
 function Board() {
 
-  const [openDialog, setOpenDialog] = useState(dialog.hide); 
+  const [openDialog, setOpenDialog] = useState<OpenDialog>(OpenDialog.None); 
 
   const drawPlayers = useStore(state => state.getDrawPlayers());
   const playerNum = drawPlayers.length;
@@ -47,7 +48,7 @@ function Board() {
   const botNum = BOARD_CONFIG[playerNum][2];
   const modules = useStore(state => state.session.modules);
   const [chars, roles] = useMemo(() => GameData.getFilteredValues(modules), [modules]);
-  const [fullChars, fullRoles] = useMemo(() => GameData.getFilteredValues(modules, true), [modules]);
+  const [fullChars, fullRoles] = useMemo(() => GameData.getFullFilteredValues(modules), [modules]);
 
   const timerDuration = (Math.max(playerNum, 8)*2) - 1;
   const [time, beginTimer, resetTimer] = useCountDown(timerDuration, handleVoteTimerEnd);
@@ -67,7 +68,7 @@ function Board() {
   const setNominated = useStore(state => state.setNominated);
   const addVotesToHistory = useStore(state => state.addVotesToHistory);
 
-  function createIndicator(player, index, vertical) {
+  function createIndicator(player: Player, index: number, vertical: boolean) {
 
     return <PlayerIndicator key={index} 
     display={display}
@@ -80,7 +81,7 @@ function Board() {
 
   }
 
-  function handlePlayerIndicatorClick(targetId) {
+  function handlePlayerIndicatorClick(targetId: string) {
 
     if (display === 1 && targetId === selected) {
       if (voting) {
@@ -95,12 +96,12 @@ function Board() {
 
   }
 
-  function handleDismissalClick(nominatedPlayerId) {
+  function handleDismissalClick(nominatedPlayerId: string) {
     setNominated(nominatedPlayerId, null);
-    setOpenDialog(dialog.dismiss);
+    setOpenDialog(OpenDialog.Dismiss);
   }
 
-  function handlePlayerSelect(event) {
+  function handlePlayerSelect(event: SelectChangeEvent<string>) {
     setAccuser(event.target.value);
   }
 
@@ -109,7 +110,7 @@ function Board() {
     if (!accusingPlayerId) {
       throw new Error("no player selected");
     }
-    setOpenDialog(dialog.hide);
+    setOpenDialog(OpenDialog.None);
     // make all players abstain my default
     const votes = drawPlayers
     .filter(player => player.rState === 1)
@@ -144,7 +145,7 @@ function Board() {
   }
 
   function handleViewPlayerClick() {
-    setOpenDialog(dialog.viewPlayer);
+    setOpenDialog(OpenDialog.ViewPlayer);
   }
 
   const top = drawPlayers
@@ -183,21 +184,29 @@ function Board() {
   const accusingPlayer = drawPlayers.find(player => player.id === accusingPlayerId);
   const selectedPlayer = drawPlayers.find(player => player.id === selected);
 
-  const voteWindow = (
+  const voteWindow = nominatedPlayer && accusingPlayer ? (
     <Vote nominatedPlayer={nominatedPlayer} 
       accusingPlayer={accusingPlayer} 
       handleVoteFinishClick={handleVoteFinishClick}
       time={time} beginTimer={beginTimer}/>
-    )
+    ) : null;
 
-  const playerdetails = (
+  const playerdetails = selectedPlayer ? (
     <PlayerDetails 
       player={selectedPlayer} 
       handleDismissalClick={handleDismissalClick}
       handleViewPlayerClick={handleViewPlayerClick}
       chars={chars}
       roles={roles}/>
-  )
+  ) : null;
+
+  const viewPlayerDialog = selectedPlayer ? (
+    <ViewPlayerDialog 
+      openDialog={openDialog} 
+      setOpenDialog={setOpenDialog}
+      player={selectedPlayer}
+    />
+  ) : null;
 
   function displayDynamicContent() {
 
@@ -223,11 +232,7 @@ function Board() {
         selectablePlayers={selectablePlayers} 
         handleBeginClick={handleBeginClick}
       />
-      <ViewPlayerDialog 
-        openDialog={openDialog} 
-        setOpenDialog={setOpenDialog}
-        player={selectedPlayer}
-      />
+      {viewPlayerDialog}
       <Stack sx={{minHeight: "20%"}} direction="row" justifyContent="space-between">
         {top}
       </Stack>
@@ -235,7 +240,7 @@ function Board() {
         <Stack width="20%" direction="column" justifyContent="space-evenly">
           {leftside}
         </Stack>
-        <DynamicWindow width="60%" display={display}>
+        <DynamicWindow display={display}>
           {displayDynamicContent()}
         </DynamicWindow>
         <Stack width="20%" direction="column" justifyContent="space-evenly">
@@ -251,13 +256,23 @@ function Board() {
 
 export default Board
 
+
+
+interface DismissalDialog {
+  openDialog: OpenDialog;
+  setOpenDialog: React.Dispatch<React.SetStateAction<OpenDialog>>;
+  handlePlayerSelect: (event: SelectChangeEvent<string>) => void;
+  selectablePlayers: React.ReactNode[];
+  handleBeginClick: () => void;
+}
+
 function DismissalDialog({openDialog, setOpenDialog, 
-  handlePlayerSelect, selectablePlayers, handleBeginClick}) {
+  handlePlayerSelect, selectablePlayers, handleBeginClick}: DismissalDialog) {
 
     const accusingPlayerId = useStore(state => state.votes.accusingPlayer);
 
   return (
-    <Dialog open={openDialog === dialog.dismiss} onClose={() => setOpenDialog(dialog.hide)}>
+    <Dialog open={openDialog === OpenDialog.Dismiss} onClose={() => setOpenDialog(OpenDialog.None)}>
       <DialogTitle>Player Select</DialogTitle>
       <DialogContent>
         <DialogContentText>
@@ -283,21 +298,29 @@ function DismissalDialog({openDialog, setOpenDialog,
         >
           Begin
         </Button>
-        <Button onClick={() => setOpenDialog(dialog.hide)}>Cancel</Button>
+        <Button onClick={() => setOpenDialog(OpenDialog.None)}>Cancel</Button>
       </DialogActions>
     </Dialog>
   )
 }
 
-function ViewPlayerDialog({openDialog, setOpenDialog, player}) {
+
+
+interface ViewPlayerDialog {
+  openDialog: OpenDialog;
+  setOpenDialog: React.Dispatch<React.SetStateAction<OpenDialog>>;
+  player: Player;
+}
+
+function ViewPlayerDialog({openDialog, setOpenDialog, player}: ViewPlayerDialog) {
   return (
-    <Dialog open={openDialog === dialog.viewPlayer} onClose={() => setOpenDialog(dialog.hide)} maxWidth={"xs"}>
+    <Dialog open={openDialog === OpenDialog.ViewPlayer} onClose={() => setOpenDialog(OpenDialog.None)} maxWidth={"xs"}>
       <DialogTitle>View Player</DialogTitle>
       <DialogContent>
         <Character user={player} useLocal={true}/>
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => setOpenDialog(dialog.hide)}>Cancel</Button>
+        <Button onClick={() => setOpenDialog(OpenDialog.None)}>Cancel</Button>
       </DialogActions>
     </Dialog>
   )

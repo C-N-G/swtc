@@ -7,24 +7,32 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import {UserContext} from "../App.js";
-import GameData from "../strings/_gameData.js";
-import {socket} from "../helpers/socket.js";
-import Reminder from './Reminder.js';
-import Draggable from './Draggable.js';
-import useStore from '../hooks/useStore.js';
-import convertTime from "../helpers/convertTime.js";
+import {UserContext} from "../App.tsx";
+import GameData from "../strings/_gameData.ts";
+import {socket} from "../helpers/socket.ts";
+import Reminder from './Reminder.tsx';
+import Draggable from './Draggable.tsx';
+import useStore from '../hooks/useStore.ts';
+import convertTime from "../helpers/convertTime.ts";
+import Player from '../classes/player.ts';
+import { VoteHistoryItem } from '../helpers/storeTypes.ts';
+import {default as ReminderType} from '../classes/reminder.ts';
 
-function Character(props) {
 
-  const user = useContext(UserContext);
+type CharacterProps = PlayerCharacterProps & NarratorCharacterProps;
+
+function Character(props: CharacterProps) {
+
+  const contextUser = useContext(UserContext);
 
   const getUserTypeCheckedComponent = () => {
 
-    if (user?.type === 0) {
-      return <NarratorCharacter user={user} {...props} />
-    } else if (user?.type === 1) {
-      return <PlayerCharacter user={user} {...props} />
+    if (props.user === undefined && contextUser !== null) props.user = contextUser;
+
+    if (contextUser?.type === 0) {
+      return <NarratorCharacter {...props} />
+    } else if (contextUser?.type === 1) {
+      return <PlayerCharacter {...props} />
     } else {
       return false
     }
@@ -50,10 +58,18 @@ function Character(props) {
 export default Character
 
 
-function PlayerCharacter({user, useLocal}) {
+
+interface PlayerCharacterProps {
+  useLocal?: boolean;
+  user?: Player;
+}
+
+function PlayerCharacter({user, useLocal = false}: PlayerCharacterProps) {
+
+  if (user === undefined) throw new Error("error rendering character window, user is undefined");
 
   const modules = useStore(state => state.session.modules);
-  const [chars, roles] = useMemo(() => GameData.getFilteredValues(modules, true), [modules]);
+  const [chars, roles] = useMemo(() => GameData.getFullFilteredValues(modules), [modules]);
 
   let fullChar, fullRole, team;
   if (useLocal) { // use local player state instead of real state
@@ -122,19 +138,32 @@ function PlayerCharacter({user, useLocal}) {
 
 }
 
-const dialog = Object.freeze({
-  hide: 0,
-  module: 1,
-  voteHistory: 2
-})
 
-function NarratorCharacter({user}) {
 
-  const [openDialog, setOpenDialog] = useState(dialog.hide);
-  const [selectedReminder, setSelectedReminder] = useState(null);
+enum OpenDialog {
+  None,
+  Module,
+  VoteHistory,
+}
+
+interface OldSessionState {
+  players: Player[];
+  modules: string[];
+}
+
+interface NarratorCharacterProps {
+  user?: Player;
+}
+
+function NarratorCharacter({user}: NarratorCharacterProps) {
+
+  if (user === undefined) throw new Error("error rendering character window, user is undefined");
+
+  const [openDialog, setOpenDialog] = useState<OpenDialog>(OpenDialog.None);
+  const [selectedReminder, setSelectedReminder] = useState<ReminderType | null>(null);
   const [sync, setSync] = useState({progress: false, error: false});
   const [cohesion, setCohesion] = useState(10);
-  const [oldSessionState, setOldSessionState] = useState({players: [], modules: []});
+  const [oldSessionState, setOldSessionState] = useState<OldSessionState>({players: [], modules: []});
   const randomisePlayers = useStore(state => state.randomisePlayers);
   const players = useStore(state => state.players);
   const setPlayers = useStore(state => state.setPlayers);
@@ -142,7 +171,8 @@ function NarratorCharacter({user}) {
   const modules = useStore(state => state.session.modules);
   const sessionId = useStore(state => state.session.id);
   const sessionSync = useStore(state => state.session.sync);
-  const [chars, roles, reminders] = useMemo(() => GameData.getFilteredValues(modules, true), [modules]);
+  const [chars, roles] = useMemo(() => GameData.getFullFilteredValues(modules), [modules]);
+  const reminders = useMemo(() => GameData.getFilteredReminders(chars, roles), [chars, roles]);
   const syncOff = useStore(state => state.syncOff);
   const syncOn = useStore(state => state.syncOn);
   const setModules = useStore(state => state.setModules);
@@ -159,14 +189,14 @@ function NarratorCharacter({user}) {
     }
   }
 
-  function handleModuleSelection(e) {
+  function handleModuleSelection(e: React.ChangeEvent<HTMLInputElement>) {
 
     storeOldData();
 
     const checked = e.target.checked;
     const targetMod = e.target.value;
 
-    let data;
+    let data: string[] = [];
 
     if (checked === true) {
       data = [...modules, targetMod];
@@ -204,7 +234,7 @@ function NarratorCharacter({user}) {
       return player;
     });
 
-    let syncData = {"players": sanitisedPlayers, "modules": modules};
+    const syncData = {"players": sanitisedPlayers, "modules": modules};
 
     socket.timeout(5000).emit("sync", syncData, (error, response) => {
 
@@ -219,10 +249,12 @@ function NarratorCharacter({user}) {
 
       if (response.status === "ok") {
         syncOn();
+        const localPlayer = players.find(player => player.id === user!.id);
+        if (!localPlayer) throw new Error("error saving local snapshot after syncing, could not find local player");
         localStorage.setItem("lastSession", JSON.stringify({
           players: players,
           sessionId: sessionId,
-          playerName: players.find(player => player.id === user.id).name
+          playerName: localPlayer.name
         }));
       }
 
@@ -254,11 +286,11 @@ function NarratorCharacter({user}) {
     <Typography variant="h6">
       Session ID: {sessionId}
       {/* this doesn't work without https */}
-      <IconButton onClick={() => {navigator.clipboard.writeText(sessionId)}}>
+      <IconButton onClick={() => {navigator.clipboard.writeText(sessionId!)}}>
         <ContentCopyIcon />
       </IconButton>
     </Typography>
-    <Button variant="contained" sx={{my: 1}} onClick={() => setOpenDialog(dialog.module)}>
+    <Button variant="contained" sx={{my: 1}} onClick={() => setOpenDialog(OpenDialog.Module)}>
       Select Modules ({modules.length})
     </Button>
     <Button variant="contained" sx={{my: 1}} onClick={handleRandomise}>
@@ -267,7 +299,7 @@ function NarratorCharacter({user}) {
     <Box sx={{display: "flex", alignItems: "center"}}>
       <Switch 
         color={sync.error ? "error" : "primary"} 
-        checked={sessionSync}
+        checked={typeof sessionSync === "boolean" ? sessionSync : undefined}
         onChange={() => {
           storeOldData();
           syncOff();
@@ -315,7 +347,7 @@ function NarratorCharacter({user}) {
         fullWidth
         id="narrator-reminder-input"
         options={reminders}
-        groupBy={(option) => option.origin.name}
+        groupBy={(option) => option.origin!.name}
         value={selectedReminder}
         onChange={(_, newValue) => setSelectedReminder(newValue)}
         getOptionLabel={(option) => option.description}
@@ -337,7 +369,7 @@ function NarratorCharacter({user}) {
       </Paper>
       <Button variant="contained" onClick={() => {setCohesion(prev => prev - 1)}}><RemoveIcon /></Button>
     </Box>
-    <Button variant="contained" sx={{my: 1}} onClick={() => setOpenDialog(dialog.voteHistory)}>
+    <Button variant="contained" sx={{my: 1}} onClick={() => setOpenDialog(OpenDialog.VoteHistory)}>
       Vote History
     </Button>
     <Box sx={{display: "flex", alignItems: "stretch", justifyContent: "space-between", my: 1}}>
@@ -379,10 +411,18 @@ function NarratorCharacter({user}) {
 
 }
 
-function ModuleSelectionDialog({openDialog, setOpenDialog, allMods}) {
+
+
+interface ModuleSelectionDialogProps {
+  openDialog: OpenDialog;
+  setOpenDialog: React.Dispatch<React.SetStateAction<OpenDialog>>;
+  allMods: React.ReactNode[];
+}
+
+function ModuleSelectionDialog({openDialog, setOpenDialog, allMods}: ModuleSelectionDialogProps) {
 
   return (
-    <Dialog open={openDialog === dialog.module} onClose={() => setOpenDialog(dialog.hide)} >
+    <Dialog open={openDialog === OpenDialog.Module} onClose={() => setOpenDialog(OpenDialog.None)} >
       <DialogTitle>Select Modules</DialogTitle>
       <DialogContent>
         <FormGroup>
@@ -390,15 +430,24 @@ function ModuleSelectionDialog({openDialog, setOpenDialog, allMods}) {
         </FormGroup>
       </DialogContent>
       <DialogActions>
-        <Button variant="outlined" onClick={() => setOpenDialog(dialog.hide)}>Close</Button>
+        <Button variant="outlined" onClick={() => setOpenDialog(OpenDialog.None)}>Close</Button>
       </DialogActions>
     </Dialog>
   )
 }
 
-function VoteHistoryDialog({openDialog, setOpenDialog}) {
 
-  const [openState, setOpenState] = useState(Array(32).fill(false));
+
+type StateArray = boolean[];
+
+interface VoteHistoryDialogProps {
+  openDialog: OpenDialog;
+  setOpenDialog: React.Dispatch<React.SetStateAction<OpenDialog>>;
+}
+
+function VoteHistoryDialog({openDialog, setOpenDialog}: VoteHistoryDialogProps) {
+
+  const [openState, setOpenState] = useState<StateArray>(Array(32).fill(false));
   const voteHistory = useStore(state => state.voteHistory)
   const round = useStore(state => state.phase.round);
   const [openTab, setOpenTab] = useState(0);
@@ -413,11 +462,11 @@ function VoteHistoryDialog({openDialog, setOpenDialog}) {
     background: "white"
   }
 
-  function handleChange(event, newValue) {
+  function handleChange(_: React.SyntheticEvent<Element, Event>, newValue: number) {
     setOpenTab(newValue);
   }
 
-  function handleOpenClick(index) {
+  function handleOpenClick(index: number) {
     setOpenState(state => {
       const newState = !state[index];
       state = state.fill(false);
@@ -430,7 +479,7 @@ function VoteHistoryDialog({openDialog, setOpenDialog}) {
   const yesterdaysVoteHistory = voteHistory.filter(item => item.day === round-1);
 
   return (
-    <Dialog open={openDialog === dialog.voteHistory} onClose={() => setOpenDialog(dialog.hide)} fullWidth >
+    <Dialog open={openDialog === OpenDialog.VoteHistory} onClose={() => setOpenDialog(OpenDialog.None)} fullWidth >
       <DialogTitle>Voting History</DialogTitle>
       <DialogContent>
         <Box sx={tabStyle}>
@@ -455,16 +504,24 @@ function VoteHistoryDialog({openDialog, setOpenDialog}) {
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button variant="outlined" onClick={() => setOpenDialog(dialog.hide)}>Close</Button>
+        <Button variant="outlined" onClick={() => setOpenDialog(OpenDialog.None)}>Close</Button>
       </DialogActions>
     </Dialog>
   )
 }
 
-function VoteHistoryDay({historyArray, handleOpenClick, openState}) {
+
+
+interface VoteHistoryDayProps {
+  historyArray: VoteHistoryItem[];
+  handleOpenClick: (index: number) => void;
+  openState: StateArray;
+}
+
+function VoteHistoryDay({historyArray, handleOpenClick, openState}: VoteHistoryDayProps) {
 
   const todaysPlayersThatVoted = new Set();
-  const todaysMostVotedPlayer = {votes: 0, name: null};
+  const todaysMostVotedPlayer: {votes: number, name: string | null} = {votes: 0, name: null};
 
   const todaysVoteHistory = historyArray.map((item, index) => {
 

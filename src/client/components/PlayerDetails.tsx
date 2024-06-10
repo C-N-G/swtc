@@ -1,12 +1,20 @@
 import {useContext, useState} from "react";
 import {Box, Typography, Button, Grid, TextField, Autocomplete, Stack, Chip, 
   Select, MenuItem, InputLabel, FormControl, FormControlLabel, Switch} from '@mui/material';
-import {UserContext} from "../App.js";
-import GameData from "../strings/_gameData.js"
-import Reminder from "./Reminder.js";
-import useStore from "../hooks/useStore.js";
+import {UserContext} from "../App.tsx";
+import GameData from "../strings/_gameData.ts"
+import Reminder from "./Reminder.tsx";
+import useStore from "../hooks/useStore.ts";
+import Player from "../classes/player.ts";
+import Char from "../classes/char.ts";
+import Role from "../classes/role.ts";
+import { PlayerSlice } from "../helpers/storeTypes.ts";
 
-function PlayerDetails(props) {
+
+
+type PlayerDetailsProps = RegularPlayerDetailsProps & NarratorDetailsProps;
+
+function PlayerDetails(props: PlayerDetailsProps) {
 
   const user = useContext(UserContext);
 
@@ -30,11 +38,18 @@ export default PlayerDetails
 
 
 
-function RegularPlayerDetails({player, handleViewPlayerClick, chars, roles}) {
+interface RegularPlayerDetailsProps {
+  player: Player;
+  handleViewPlayerClick: () => void;
+  chars: string[];
+  roles: string[];
+}
+
+function RegularPlayerDetails({player, handleViewPlayerClick, chars, roles}: RegularPlayerDetailsProps) {
 
   const handlePlayerDataChange = useStore(state => state.changePlayerAttribute);
 
-  function selectBuilder(playerId, type, list, value) {
+  function selectBuilder(playerId: string, type: string, list: string[], value: number) {
     return <Autocomplete
       disablePortal
       disableClearable
@@ -112,7 +127,14 @@ function RegularPlayerDetails({player, handleViewPlayerClick, chars, roles}) {
 
 
 
-function NarratorDetails({player, handleDismissalClick, chars, roles}) {
+interface NarratorDetailsProps {
+  player: Player;
+  handleDismissalClick: (nominatedPlayerId: string) => void;
+  chars: string[];
+  roles: string[];
+}
+
+function NarratorDetails({player, handleDismissalClick, chars, roles}: NarratorDetailsProps) {
 
   const [showTrueState, setShowTrueState] = useState(false);
 
@@ -121,7 +143,7 @@ function NarratorDetails({player, handleDismissalClick, chars, roles}) {
   const leftVal = "Shown";
   const rightVal = "True"
 
-  function selectBuilder(playerId, type, real, list, value, handleChange) {
+  function selectBuilder(playerId: string, type: string, real: boolean, list: (string | Char | Role)[], value: number, handleChange: PlayerSlice["changePlayerAttribute"]) {
     return <Autocomplete
       disablePortal
       disableClearable
@@ -174,7 +196,10 @@ function NarratorDetails({player, handleDismissalClick, chars, roles}) {
               id="narrator-rVotePower-input"
               value={player.rVotePower}
               label="Vote Power"
-              onChange={(_, newValue) => handleChange(player.id, "rVotePower", newValue.props.value)}
+              onChange={(_, newValue: unknown) => {
+                const val = newValue as {props: {value: number}};
+                handleChange(player.id, "rVotePower", val.props.value)
+              }}
             >
               <MenuItem value={0}>0 vote power</MenuItem>
               <MenuItem value={1}>1 vote power</MenuItem>
@@ -191,10 +216,10 @@ function NarratorDetails({player, handleDismissalClick, chars, roles}) {
           <Chip 
             sx={{borderRadius: 1, m: 0.3}}
             size="small"
-            variant="contained"
+            variant="filled"
             key={String(player.id) + String(reminderId)} 
-            icon={<Reminder reminder={GameData.reminders.find(reminder => reminder.id === reminderId)} />} 
-            label={GameData.reminders.find(reminder => reminder.id === reminderId).description}/>
+            icon={<Reminder reminder={GameData.reminders.find(reminder => reminder.id === reminderId)!} />} 
+            label={GameData.reminders.find(reminder => reminder.id === reminderId)!.description}/>
         )
       })}
     </Grid>
