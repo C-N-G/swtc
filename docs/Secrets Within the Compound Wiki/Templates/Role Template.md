@@ -9,7 +9,7 @@ flavour text: “Placeholder”
 Placeholder ability text. This text here should be filled with the exact text of the ability.
 
 # Setup Effects
-Placeholder starting effects. This text here should be filled with the exact text of the starting effects.
+Placeholder setup effects. This text here should be filled with the exact text of the setup effects.
 
 # Examples
 - Placeholder Example.
