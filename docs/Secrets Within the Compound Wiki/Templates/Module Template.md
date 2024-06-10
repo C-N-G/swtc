@@ -1,7 +1,6 @@
-> [!infobox]
-> # Placeholder Module Name
-> ######
->  “PLACEHOLDER FLAVOUR TEXT.”
+---
+flavour text: Placeholder
+---
 # Summary
 Placeholder Summary.
 
