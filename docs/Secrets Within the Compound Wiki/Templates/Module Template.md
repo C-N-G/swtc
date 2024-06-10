@@ -1,5 +1,5 @@
 ---
-flavour text: Placeholder
+flavour text: “Placeholder”
 ---
 # Summary
 Placeholder Summary.
