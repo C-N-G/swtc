@@ -8,10 +8,12 @@ interface Module {
   roles: number[];
 }
 
+type NightOrder = {id: string, description: string};
+
 export interface GameDataStore {
   chars: Char[];
   roles: Role[];
-  nightOrder: Array<{id: string, description: string}>;
+  nightOrder: NightOrder[];
   states: string[];
   teams: string[];
   modules: Module[];
@@ -24,7 +26,7 @@ export interface GameDataStore {
 }
 
 export interface ImportInterface {
-  [file: string]: { default: Array<CharData | RoleData | string> };
+  [file: string]: { default: Array<CharData | RoleData | string | NightOrder> };
 }
 
 export default function gameDataLoader(load_obj: GameDataStore, modules: ImportInterface) {
@@ -40,7 +42,7 @@ export default function gameDataLoader(load_obj: GameDataStore, modules: ImportI
       let reminders: Reminder[] = [];
 
       // handle stripping reminders from object and adding to reminder array
-      if (typeof eleObj !== "string" && eleObj.reminders) {
+      if (typeof eleObj !== "string" && !("id" in eleObj) && eleObj.reminders) {
         // link the reminder refernces to the new object
         reminders = eleObj.reminders.map(reminder => {
           const reminderId = load_target.reminders.length;
@@ -53,7 +55,9 @@ export default function gameDataLoader(load_obj: GameDataStore, modules: ImportI
 
       if (typeof eleObj === "string" && (property === "states" || property === "teams")) {
         load_target[property].push(eleObj);
-      } else if (typeof eleObj === "object" && property === "chars") {
+      } else if (typeof eleObj === "object" && property === "nightOrder" && "id" in eleObj) {
+        load_target[property].push(eleObj);
+      } else if (typeof eleObj === "object" && property === "chars" && "name" in eleObj) {
           load_target[property].push(new Char(
           eleId,
           eleObj.name,

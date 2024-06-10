@@ -185,8 +185,8 @@ export const createPlayerSlice: StateCreator<
     const players = get().players;
     const userId = get().userId;
     const player = players.find(player => player.id === userId);
-    if (player === undefined) throw new Error("getUser error cold not find matching player");
-    return player;
+    // if (player === undefined) throw new Error("getUser error cold not find matching player");
+    return player === undefined ? null : player;
   },
 
   getDrawPlayers: () => {

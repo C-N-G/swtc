@@ -158,7 +158,7 @@ function NarratorPhase() {
         <Grid item xs={4} container justifyContent="center">
           <ButtonGroup size="small" orientation="vertical">
             <Button onClick={() => handleClick()}>&gt; Progress Phase &gt;</Button>
-            <Button disabled={phase.cycle !== "Night"} onClick={() => setOpenDialog(OpenDialog.Scenario)}>Night Order List</Button>
+            <Button disabled={phase.cycle !== "Night"} onClick={() => setOpenDialog(OpenDialog.NightOrder)}>Night Order List</Button>
           </ButtonGroup>
         </Grid>
       </Grid>

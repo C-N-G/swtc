@@ -58,7 +58,7 @@ export interface PlayerSlice {
   removePlayer: (playerId: string) => void;
   pushPlayer: () => void;
   popPlayer: () => void;
-  getUser: () => Player;
+  getUser: () => Player | null;
   getDrawPlayers: () => Player[];
 }
 

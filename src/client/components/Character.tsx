@@ -27,12 +27,12 @@ function Character(props: CharacterProps) {
 
   const getUserTypeCheckedComponent = () => {
 
-    if (props.user === undefined && contextUser !== null) props.user = contextUser;
+    const theUser = props.user === undefined && contextUser !== null ? contextUser: props.user;
 
     if (contextUser?.type === 0) {
-      return <NarratorCharacter {...props} />
+      return <NarratorCharacter {...props} user={theUser}/>
     } else if (contextUser?.type === 1) {
-      return <PlayerCharacter {...props} />
+      return <PlayerCharacter {...props} user={theUser} />
     } else {
       return false
     }

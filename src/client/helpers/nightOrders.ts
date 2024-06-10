@@ -119,7 +119,7 @@ const NightOrders = {
     .filter(filter)
     .map(ele => {
       const target = GameData.nightOrder.find(order => order.id === ele.orderType);
-      if (!target) throw new Error("failed to calculate full night order no matching orderType found");
+      if (!target) throw new Error(`failed to calculate full night order no matching orderType found for ${target}`);
       const order = GameData.nightOrder.indexOf(target);
       return {order: order, name: ele.name} as OrderItem;
     })
