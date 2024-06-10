@@ -3,7 +3,7 @@ team: Placeholder
 type: Placeholder
 module: Placeholder
 attributes: Placeholder
-flavour text: Placeholder
+flavour text: “Placeholder”
 ---
 # Ability
 Placeholder ability text. This text here should be filled with the exact text of the ability.
