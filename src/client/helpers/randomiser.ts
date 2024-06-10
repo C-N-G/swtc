@@ -1,93 +1,102 @@
+import Char from "../classes/char.js";
+import Player from "../classes/player.js";
+import Role from "../classes/role.js";
 import GameData from "../strings/_gameData.js";
 
-/**
- * @typedef {Object} Player
- * @property {string} id
- * @property {string} name
- * @property {number} type
- * @property {number} char
- * @property {number} role
- * @property {number} team
- * @property {number} rChar
- * @property {number} rRole
- * @property {number} rTeam
- */
+interface OperatingPlayer {
+  index: number;
+  playerObj: Player;
+  strict: boolean;
+  keepSame: boolean
+}
+
+interface TeamConverter {
+  [team: string]: string;
+}
 
 /**
- * @typedef {Object} Char
- * @property {string} name
- * @property {string} type
- * @property {string} description
- * @property {string} ability
- * @property {Array<string>} attributes
- * @property {Array<string>} additional
- * @property {Array<Array<string>>} setup
+Selects random roles and characteristics for a given set of players
+Runs any setup commands found in the roles or characteristics selected
+
+NOTES:
+The neighbour mechanic will currently conduct some rudimentary collision avoidance 
+should either of the neighbour slots be taken, as it will swap any neighbour who is 
+not part of a neighbour group to a free slot if there is a free slot available. This 
+means that if a role who places a neighbour is chosen next to another role who also 
+places neighbours or next to a placed neighbour, then that neighbour will not get placed.
+
+There are two ways to improve this system, firstly to reorganise all the players 
+to maximise free space for new groups, and secondly to not allow a role that places 
+neighbours to be chosen if there is not enough free space to place the neighbours.
+
+SETUP COMMANDS:
+- Add [#] [type] [target] [neighbour] - assigns one or more unassigned 
+players the target char or role during setup
+- AddStrict [#] [type] [target] [neighbour] - assigns one or more unassigned players 
+the following char or role during setup, and prevents that char or roles setup commands from running
+- Convert [#] [target] [neighbour] - assigns one or more unassigned agent players to the target team
+- ShowAs [type] [target] - assigns this player’s shown char or role to the target
+- Neighbour [type] [target] - assigns this player a position on the board which neighbours the target
+
+[#] can be 1 or higher. if the [neighbour] is specified then [#] must be 1 or 2.
+
+[type] can be either “Role” or “Char”.
+
+[target] can be a role name, role type, role team, 
+role attribute, char name, or char attribute.
+
+[neighbour] specifies if the command should select neighbours to target.
+
+if the [target] is a name, the randomiser will choose that target even if they 
+have already been chosen for another player. if the [target] is anything else, 
+it will take into account what has already been chosen so as to not choose duplicates.
+
+The ShowAs and Neighbour commands support omitting the [target] parameter, 
+which will make the randomiser select anything matching the specified type.
+
+ * @param playerArray 
+ * @param charArray 
+ * @param roleArray 
+ * @returns list of players with randomised attributes 
  */
+export default function randomise(playerArray: Player[], charArray: Char[], roleArray: Role[]): Player[] {
 
-/**
- * @typedef {Object} Role
- * @property {string} name
- * @property {string} type
- * @property {string} description
- * @property {string} ability
- * @property {Array<string>} attributes
- * @property {Array<string>} additional
- * @property {Array<Array<string>>} setup
- */
+  const debug = playerArray[0].id === "54321" ? true : false; // debug logging value
 
-/**
- * @typedef {Object} aPlayer
- * @property {number} index 
- * @property {Player} playerObj 
- * @property {boolean} strict 
- * @property {boolean} keepSame 
- */
-
-/**
- * setup commands:
- * 
- * Add [#] [type] [target] [neighbour]
- * AddStrict [#] [type] [target] [neighbour]
- * Convert [#] [target] [neighbour]
- * ShowAs [type] [target]
- * Neighbour [type] [target]
- */
-
-/**
- * Selects random roles and characteristics for a given set of players
- * Runs any setup commands found in the roles or characteristics selected
- * @param {Array<Player>} playerArray 
- * @param {Array<Char>} charArray 
- * @param {Array<Role>} roleArray 
- * @returns {Array<Player>} list of players with randomised attributes 
- */
-export default function randomise(playerArray, charArray, roleArray) {
-
-  let debug = playerArray[0].id === "54321" ? true : false; // debug logging value
-
-  const randomiser = new Randomiser(playerArray, charArray, roleArray, debug)
+  const randomiser = new Randomiser(playerArray, charArray, roleArray, debug);
 
   return randomiser.assignPlayers();
-
 
 }
 
 export class Randomiser {
 
-  TYPE_TO_TEAM = {
+  private TYPE_TO_TEAM: TeamConverter = {
     "Agent": "Loyalist",
     "Detrimental": "Loyalist",
     "Antagonist": "Subversive"
   }
 
+  debug: boolean;
+  playerArray: Player[];
+  charArray: Char[];
+  roleArray: Role[];
+  commandQueue: string[][];
+  takenSets: {chars: Set<number>, roles: Set<number>};
+  neighbourGroups: {masters: string[], minions: { [minion: string]: string }};
+  targetAntags: number;
+  randomIndexes: number[];
+  randomisedPlayers: Player[];
+  targetDetrimentals: number;
+
   /**
    * Randomiser class used for setting up players
-   * @param {Array<Player>} playerArray 
-   * @param {Array<Char>} charArray 
-   * @param {Array<Role>} roleArray 
-   * @param {boolean} debug 
+   * @param playerArray 
+   * @param charArray 
+   * @param roleArray 
+   * @param debug 
    */
-  constructor(playerArray, charArray, roleArray, debug) {
+  constructor(playerArray: Player[], charArray: Char[], roleArray: Role[], debug: boolean) {
 
     this.debug = debug;
 
@@ -96,18 +105,14 @@ export class Randomiser {
     this.roleArray = roleArray;
 
     this.commandQueue = [];
-    /** @type {{chars: Set<Char>, roles: Set<Role>}} */
     this.takenSets = { "chars": new Set(), "roles": new Set() };
-    /** @type {{masters: Array<number>, minions: Object<number, number>}} */
     this.neighbourGroups = {masters: [], minions: {}};
     this.targetAntags = 1;
 
     // remove any narrators from indexes to place
-    /** @type {Array<number>} */
     this.randomIndexes = this.toShuffled(playerArray.map((_, index) => index).filter(playerIndex => playerArray[playerIndex].type !== 0));
 
     // deep copy the player array so incomplete randomisation attemps to not return half finished
-    /** @type {Array<Player>} */
     this.randomisedPlayers = JSON.parse(JSON.stringify(playerArray));
 
     const playerAmount = playerArray.filter(player => player.type !== 0).length;
@@ -119,20 +124,20 @@ export class Randomiser {
 
   /**
    * loops through all players and assigns their charactieristics, roles, and teams
-   * @returns {Array<Player>} - array of randomised players
+   * @returns array of randomised players
    */
-  assignPlayers() {
+  assignPlayers(): Player[] {
 
     this.resetPlayers();
 
-    let aPlayer = {};
+    const aPlayer: OperatingPlayer = {} as OperatingPlayer;
 
     // loop through players to randomise
     while (this.randomIndexes.length > 0) {
 
       //priority setup command > antag > detrimentals > agents
 
-      aPlayer.index = this.getNextPosition();
+      aPlayer.index = this.getNextPosition() as number;
       aPlayer.playerObj = this.randomisedPlayers[aPlayer.index];
       aPlayer.strict = false;
       aPlayer.keepSame = false;
@@ -167,15 +172,15 @@ export class Randomiser {
 
   /**
    * runs the update logic for a given player
-   * @param {aPlayer} aPlayer 
+   * @param aPlayer 
    */
-  updatePlayer(aPlayer) {
+  updatePlayer(aPlayer: OperatingPlayer): void {
 
     if (this.commandQueue.length > 0) {
 
       const commandArray = this.commandQueue[0];
       const commandName = commandArray[0];
-      const commandQuantity = commandArray[1];
+      const commandQuantity = Number(commandArray[1]);
       const commandType = commandArray[2];
       const commandTarget = commandName === "Convert" ? commandArray[2] : commandArray[3];
       const sendCommand = [commandName, commandType, commandTarget];
@@ -184,7 +189,7 @@ export class Randomiser {
   
       // handle command quantity
       if (commandQuantity > 1) {
-        commandArray[1]--;
+        commandArray[1] = String(commandQuantity - 1);
       } else {
         this.commandQueue.shift();
       }
@@ -196,7 +201,7 @@ export class Randomiser {
       // randomise player
       aPlayer.playerObj.char = aPlayer.playerObj.rChar = this.getRandomIndex(this.charArray, this.takenSets.chars);
       aPlayer.playerObj.role = aPlayer.playerObj.rRole = this.getRandomIndex(this.roleArray, this.takenSets.roles, this.getTargetRoles());
-      let playerRoleType = this.roleArray[aPlayer.playerObj.role].type
+      const playerRoleType = this.roleArray[aPlayer.playerObj.role].type as keyof TeamConverter
       aPlayer.playerObj.team = aPlayer.playerObj.rTeam = GameData.teams.indexOf(this.TYPE_TO_TEAM[playerRoleType]);
 
     }
@@ -207,7 +212,7 @@ export class Randomiser {
    * gets a specific list of roles to pick from when assigning a player
    * @returns an array of roles to choose from
    */
-  getTargetRoles() {
+  getTargetRoles(): Role[] {
 
     let targetRoles
     if (this.targetAntags > 0) {
@@ -225,18 +230,19 @@ export class Randomiser {
 
   /**
    * Gets a random index from a list and marks it as taken
-   * @param {Array<Char|Role>} indexArray
-   * @param {Set<number>} takenIndexSet 
-   * @param {Array<Char|Role>=} filteredIndexArray 
-   * @returns {number} a random index
+   * @param indexArray
+   * @param takenIndexSet 
+   * @param filteredIndexArray 
+   * @returns a random index
    */
-  getRandomIndex(indexArray, takenIndexSet, filteredIndexArray) {
+  getRandomIndex(indexArray: (Char | Role)[], takenIndexSet: Set<number>, filteredIndexArray?: (Char | Role)[]): number {
 
     const EveryFilteredIndexTaken = filteredIndexArray ? filteredIndexArray
       .map(ele => indexArray.findIndex(ele1 => ele.name === ele1.name))
       .every(ele => takenIndexSet.has(ele)) : false;
 
-    let index, randomIndex;
+    let index: number | undefined; 
+    let randomIndex: number;
     while (typeof index === "undefined") {
 
       // generate a random index
@@ -267,12 +273,12 @@ export class Randomiser {
 
   /**
    * Shuffles a given array out of place
-   * @param {Array<number>} inputArray 
-   * @returns {Array<number>}
+   * @param inputArray 
+   * @returns a shuffled version of the input array
    */
-  toShuffled(inputArray) {
+  toShuffled(inputArray: number[]): number[] {
 
-    let array = [...inputArray];
+    const array = [...inputArray];
     let currentIndex = array.length,  randomIndex;
     while (currentIndex > 0) {
       randomIndex = Math.floor(Math.random() * currentIndex);
@@ -285,14 +291,13 @@ export class Randomiser {
 
   /**
    * Adds setup commands from a given role to commandArrays
-   * @param {aPlayer} aPlayer 
-   * @returns {Array<string>} command list to run immediately
+   * @param aPlayer 
    */
-  addSetupCommandsFromPlayer(aPlayer) {
+  addSetupCommandsFromPlayer(aPlayer: OperatingPlayer): void {
 
-    let immediateCommandQueue = [];
-    let char = this.charArray[aPlayer.playerObj.char].setup;
-    let role = this.roleArray[aPlayer.playerObj.role].setup;
+    const immediateCommandQueue: string[][] = [];
+    const char = this.charArray[aPlayer.playerObj.char].setup;
+    const role = this.roleArray[aPlayer.playerObj.role].setup;
 
     // return if no setup commands
     if (char.length === 0 && role.length === 0) return;
@@ -334,10 +339,10 @@ export class Randomiser {
 
   /**
    * Applies a setup commnad to a given player
-   * @param {aPlayer} aPlayer 
-   * @param {Array<string>} sendCommand 
+   * @param Player 
+   * @param sendCommand 
    */
-  runSetupCommand(aPlayer, sendCommand) {
+  runSetupCommand(aPlayer: OperatingPlayer, sendCommand: string[]): void {
 
     const [command, type, target] = [sendCommand[0], sendCommand[1], sendCommand[2]];
 
@@ -349,7 +354,10 @@ export class Randomiser {
     }
 
     // get all possible targets
-    let possibleTargets, targetName, targetShownName, targetArray;
+    let possibleTargets: (Char | Role)[];
+    let targetName: string; 
+    let targetShownName: string; 
+    let targetArray: (Char | Role)[];
     if (type === "Char") {
       // if no target given then use anything
       possibleTargets = target === undefined ? this.charArray : this.charArray.filter(char => 
@@ -375,7 +383,12 @@ export class Randomiser {
       targetName = "role";
       targetShownName = "rRole";
       targetArray = this.roleArray;
-    } else if (command !== "Convert"){
+    } else if (command === "Convert"){
+      targetName = "";
+      targetShownName = ""
+      possibleTargets = [];
+      targetArray = [];
+    } else {
       throw new Error(`unknown setup command target type: ${type}`);
     }
 
@@ -384,16 +397,27 @@ export class Randomiser {
     // if command is Add or AddStrict
     if (command.includes("Add")) {
 
+      const takenSetsTarget = `${targetName}s`;
+      const playerAttribute = targetName;
+
+      if (takenSetsTarget !== "chars" && takenSetsTarget !== "roles") {
+        throw new Error(`add target not set properly, found ${takenSetsTarget} for taken set`);
+      }
+
+      if (playerAttribute !== "char" && playerAttribute !== "role") {
+        throw new Error(`add target not set properly, found ${playerAttribute} for player attribute`);
+      }
+
       // delete initially randomised target from the taken targets
-      this.takenSets[`${targetName}s`].delete(aPlayer.playerObj[targetName]);
+      this.takenSets[takenSetsTarget].delete(aPlayer.playerObj[playerAttribute]);
 
       // take into account taken targets if there are multiple possible targets
       if (possibleTargets.length > 1) {
-        aPlayer.playerObj[targetName] = this.getRandomIndex(targetArray, this.takenSets[`${targetName}s`], possibleTargets);
+        aPlayer.playerObj[playerAttribute] = this.getRandomIndex(targetArray, this.takenSets[takenSetsTarget], possibleTargets);
       } else {
         // else if there is only one possible target it must be specific so choose it anyway
-        aPlayer.playerObj[targetName] = targetArray.findIndex(target => target.id === possibleTargets[0].id);
-        this.takenSets[`${targetName}s`].add(aPlayer.playerObj[targetName]);
+        aPlayer.playerObj[playerAttribute] = targetArray.findIndex(target => target.id === possibleTargets[0].id);
+        this.takenSets[takenSetsTarget].add(aPlayer.playerObj[playerAttribute]);
       }
 
     } 
@@ -411,13 +435,24 @@ export class Randomiser {
 
     if (command === "ShowAs") {
 
+      const takenSetsTarget = `${targetName}s`;
+      const playerAttribute = targetShownName;
+
+      if (takenSetsTarget !== "chars" && takenSetsTarget !== "roles") {
+        throw new Error(`showas target not set properly, found ${takenSetsTarget} for taken set`);
+      }
+
+      if (playerAttribute !== "rChar" && playerAttribute !== "rRole") {
+        throw new Error(`showas target not set properly, found ${playerAttribute} for player attribute`);
+      }
+
       // take into account taken roles if there are multiple possible roles
       if (possibleTargets.length > 1) {
-        aPlayer.playerObj[targetShownName] = this.getRandomIndex(targetArray, this.takenSets[`${targetName}s`], possibleTargets);
+        aPlayer.playerObj[playerAttribute] = this.getRandomIndex(targetArray, this.takenSets[takenSetsTarget], possibleTargets);
       } else {
         // else if there is only one possible role the target must be specific so choose it anyway
-        aPlayer.playerObj[targetShownName] = targetArray.findIndex(target => target.id === possibleTargets[0].id);
-        this.takenSets[`${targetName}s`].add(aPlayer.playerObj[targetShownName]);
+        aPlayer.playerObj[playerAttribute] = targetArray.findIndex(target => target.id === possibleTargets[0].id);
+        this.takenSets[takenSetsTarget].add(aPlayer.playerObj[playerAttribute]);
       }
 
       // change player team to the role they appear as
@@ -427,11 +462,17 @@ export class Randomiser {
 
     if (command === "Neighbour") {
 
+      const playerAttribute = targetName;
+
+      if (playerAttribute !== "char" && playerAttribute !== "role") {
+        throw new Error(`neighbour target not set properly, found ${playerAttribute} for player attribute`);
+      }
+
       // find targets
-      const playerIndexes = [];
+      const playerIndexes: number[] = [];
       possibleTargets.forEach(target => {
       this.randomisedPlayers.forEach((player, index) => {
-        if (targetArray[player[targetName]]?.id === target.id) playerIndexes.push(index);
+        if (targetArray[player[playerAttribute]]?.id === target.id) playerIndexes.push(index);
       })})
 
       if (playerIndexes.length === 0) {
@@ -462,10 +503,10 @@ export class Randomiser {
   /**
    * moves a player from their current index to a new index
    * does not change the player itself but instead moves their char/role/team to the player at the new index
-   * @param {number} newIndex 
-   * @param {aPlayer} aPlayer 
+   * @param newIndex 
+   * @param aPlayer 
    */
-  movePlayerToIndex(newIndex, aPlayer) {
+  movePlayerToIndex(newIndex: number, aPlayer: OperatingPlayer): void {
 
     if (this.debug) console.debug(
       "moving player from", 
@@ -498,7 +539,7 @@ export class Randomiser {
    * resets the char/role/team of all the players to create a blank slate to work on
    * if they're not reset then the Neighbour setup command can get confused by the previous state
    */
-  resetPlayers() {
+  resetPlayers(): void {
 
     this.randomisedPlayers = this.randomisedPlayers.map(player => {
       player.char = 0;
@@ -515,13 +556,12 @@ export class Randomiser {
   /**
    * Finds the neighbour indexes for a given index
    * Views the array as circular, and takes into account skipping narrator type players
-   * @param {number} anIndex 
-   * @returns {Array<number>} left and right neighbour indexes
+   * @param anIndex 
+   * @returns left and right neighbour indexes
    */
-  findNeighbourIndexes(anIndex) {
+  findNeighbourIndexes(anIndex: number): number[] {
 
-    let neighbourIndexes;
-    let indexArray = this.randomisedPlayers.map((_, index) => index);
+    const indexArray = this.randomisedPlayers.map((_, index) => index);
 
     // take into account skipping narrators
     let left = anIndex-1, right = anIndex+1;
@@ -533,7 +573,7 @@ export class Randomiser {
       if (this.randomisedPlayers[left].type === 0) left--;
       if (this.randomisedPlayers[right].type === 0) right++;
     }
-    neighbourIndexes = [left, right];
+    const neighbourIndexes = [left, right];
 
     return neighbourIndexes;
 
@@ -542,10 +582,10 @@ export class Randomiser {
   /**
    * tries to find or create a free neighbouring position for a given position
    * if no free positions are available will try and swap players to open positions to create a free position
-   * @param {number} anIndex - the position to find a free neighbour for
-   * @returns {number} - the index of the free position
+   * @param anIndex - the position to find a free neighbour for
+   * @returns the index of the free position
    */
-  getFreeNeighbourIndex(anIndex) {
+  getFreeNeighbourIndex(anIndex: number): number | null {
 
     let returnIndex;
     const [leftIndex, rightIndex] = this.findNeighbourIndexes(anIndex);
@@ -600,9 +640,9 @@ export class Randomiser {
   /**
    * Finds a position to place the next player
    * Will take into account any neighbour setup commands currently in the queue
-   * @returns {number} an index position for the next player
+   * @returns an index position for the next player
    */
-  getNextPosition() {
+  getNextPosition(): number | null {
 
     let returnIndex;
 
@@ -611,7 +651,8 @@ export class Randomiser {
       || typeof this.commandQueue[0][4] === "undefined"
       || !this.commandQueue[0][4].startsWith("Neighbour")
       ) {
-        returnIndex = this.randomIndexes.shift();
+      returnIndex = this.randomIndexes.shift();
+      if (returnIndex === undefined) throw new Error("got undefined index from random indexes");
       if (this.debug) console.debug("found new player index early.", this.randomIndexes.length, "indexes left", this.randomIndexes);
       return returnIndex;
     }
@@ -637,15 +678,17 @@ export class Randomiser {
 
   /**
    * Swaps a players attributes from a given index to an unprocessed index
-   * @param {number} desiredIndex  
+   * @param desiredIndex  
    */
-  createFreeSpace(desiredIndex) {
+  createFreeSpace(desiredIndex: number): void {
 
     if (this.randomIndexes.length < 1) {
       throw Error("not enough free spaces for neighbours");
     }
 
-    let newIndex = this.randomIndexes.shift();
+    const newIndex = this.randomIndexes.shift();
+
+    if (newIndex === undefined) throw new Error("got undefined index from random index array");
 
     // assume the player at the desired index has already been randomised
     this.randomisedPlayers[newIndex].char = this.randomisedPlayers[desiredIndex].char
