@@ -1,23 +1,44 @@
 import Player from "../client/classes/player.ts";
+import { Phase, PlayerVoteItem } from "../client/helpers/storeTypes.ts";
+
+export interface TimerData {
+  name: string;
+  action: string;
+  duration: number;
+}
+
+export interface SessionData {
+    id: string | null;
+    players: Player[];
+    votes: {
+        list: PlayerVoteItem[];
+        accusingPlayer: string | null; 
+        nominatedPlayer: string | null;  
+        voting: boolean;
+    }
+    phase: Phase;
+    modules: string[];
+    timers: {[id: string]: TimerData};
+}
 
 export default class Session {
 
-    constructor(sessionId) {
-
-        this.id = sessionId;
-        this.players = [];
-        this.votes = [];
-        this.isVoting = false;
-        this.accusingPlayer = null;
-        this.nominatedPlayer = null;
-        this.phase = {cycle: "Day", round: 1};
-        this.modules = [];
-        this.timers = {};
-        this.disconnectTimers = {};
+    constructor(
+        public readonly id: string | null,
+        public players: Player[] = [],
+        private votes: PlayerVoteItem[] = [],
+        private isVoting = false,
+        private accusingPlayer: string | null = null,
+        private nominatedPlayer: string | null = null,
+        private phase: Phase = {cycle: "Day", round: 1},
+        private modules: string[] = [],
+        private timers: {[id: string]: TimerData} = {},
+        public disconnectTimers: {[id: string]: NodeJS.Timeout} = {}
+    ) {
 
     }
 
-    addPlayer(playerId, name) {
+    addPlayer(playerId: string, name: string): Player {
 
         let player;
 
@@ -33,13 +54,13 @@ export default class Session {
 
     }
 
-    removePlayer(playerId) {
+    removePlayer(playerId: string): void {
 
         this.players = this.players.filter(player => player.id !== playerId);
 
     }
 
-    updatePlayer(playerId, property, value) {
+    updatePlayer(playerId: string, property: string, value: string | number): void {
 
         this.players = this.players.map(player => {
             if (player.id === playerId) {
@@ -51,16 +72,16 @@ export default class Session {
 
     }
 
-    setPlayers(players) {
+    setPlayers(players: Player[]): void {
 
       this.players = players;
       
     }
 
-    addVote(voteObj) {
+    addVote(voteObj: PlayerVoteItem | PlayerVoteItem[]): void {
 
-        if (voteObj.length === 0) {
-            this.votes = []
+        if (Array.isArray(voteObj)) {
+            this.votes = voteObj;
         } else {
             const existingVote = this.votes.find(vote => vote.id === voteObj.id)
             if (existingVote) {
@@ -72,62 +93,62 @@ export default class Session {
 
     }
 
-    setVoting(value) {
+    setVoting(value: boolean): void {
 
         this.isVoting = value;
 
     }
 
-    setAcuPlayer(playerId) {
+    setAcuPlayer(playerId: string): void {
 
         this.accusingPlayer = playerId;
 
     }
 
-    setNomPlayer(playerId) {
+    setNomPlayer(playerId: string): void {
 
         this.nominatedPlayer = playerId;
 
     }
 
-    clearVotes() {
+    clearVotes(): void {
 
         this.votes = [];
         this.isVoting = false;
         this.accusingPlayer = null;
-        this.nominatedPlayer = false;
+        this.nominatedPlayer = null;
 
     }
 
-    setPhase(newPhase) {
+    setPhase(newPhase: Phase): void {
 
         this.phase = newPhase;
 
     }
 
-    isEmpty() {
+    isEmpty(): boolean {
 
         return this.players.length === 0;
 
     }
 
-    setModules(newModules) {
+    setModules(newModules: string[]): void {
 
       this.modules = newModules;
 
     }
 
-    setTimers(newTimer) {
+    setTimers(newTimer: TimerData): void {
 
       if (newTimer.action === "set" || newTimer.action === "start") {
-        this.timers = {...this.timers, newTimer};
+        this.timers[newTimer.name] = newTimer;
       } else if (newTimer.action === "stop") {
-        this.timers = {...Object.values(this.timers).filter(timer => timer.name !== newTimer.name)};
+        delete this.timers[newTimer.name];
       }
 
     }
 
-    getData() {
+    getData(): SessionData {
 
         return {
             id: this.id,

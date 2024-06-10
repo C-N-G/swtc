@@ -23,6 +23,6 @@
     "noImplicitThis": true,
     "strictNullChecks": true
   },
-  "include": ["src/client"],
+  "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

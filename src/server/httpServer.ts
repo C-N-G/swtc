@@ -1,17 +1,25 @@
 import path from "node:path";
 import { fileURLToPath } from 'url';
 import fs from "node:fs";
+import { IncomingMessage, ServerResponse } from "node:http";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const basePath = path.join(__dirname, "..", "..", "dist");
 
-export default function swtcHttpServer(req, res) {
+export default function swtcHttpServer(req: IncomingMessage, res: ServerResponse) {
 
 
   console.log(req.url);
   
   res.setHeader('Access-Control-Allow-Origin', '*');
+
+  if (req.url === undefined) {
+    res.statusCode = 404;
+    res.write("Error 404");
+    res.end();
+    return;
+  }
 
   // set header for content type
   if (req.url.endsWith("html")) {

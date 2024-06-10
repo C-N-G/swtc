@@ -4,18 +4,19 @@ import Char from "../classes/char.ts";
 import Role from "../classes/role.ts";
 import { PlayerOrderItem } from "./nightOrders.ts";
 import { MouseEvent } from "react";
+import { SessionData } from "../../server/session.ts";
 
-export interface SessionData {
+export interface CurrentSession {
   id: string | null;
   sync: boolean | null;
   modules: Array<string>;
 }
 
 export interface SessionSlice {
-  session: SessionData;
+  session: CurrentSession;
   resetSession: () => void;
   setModules: (newModules: Array<string>, newSync?: boolean) => void;
-  syncSession: (newSession: SessionData) => void;
+  syncSession: (newSession: CurrentSession) => void;
   syncOff: () => void;
   syncOn: () => void;
 }
@@ -45,25 +46,12 @@ export interface PhaseSlice {
   nextPhase: (newPhase?: Phase) => void;
 }
 
-export interface SyncingSession {
-  id: string;
-  players: Player[];
-  // votes: {
-  //     list: this.votes, 
-  //     accusingPlayer: this.accusingPlayer, 
-  //     nominatedPlayer: this.nominatedPlayer, 
-  //     voting: this.isVoting },
-  // phase: this.phase,
-  // modules: this.modules,
-  // timers: this.timers
-}
-
 export interface PlayerSlice {
   players: Player[];
   setPlayers: (newPlayers: Player[]) => void;
   changePlayerAttribute: (targetId: string, targetProperty: string, targetValue: string, fromServer?: boolean) => void;
   addPlayerReminders: (event: DragEndEvent) => void;
-  syncPlayers: (session: SyncingSession) => void;
+  syncPlayers: (session: SessionData) => void;
   randomisePlayers: (chars: Char[], roles: Role[]) => void;
   addPlayerNightIndicators: (cycle: string | boolean, chars: Char[], roles: Role[], purgedOrders: string[], ordering?: PlayerOrderItem[]) => void;
   addPlayer: (player: Player) => void;
@@ -85,7 +73,7 @@ export interface ButtonEnlarger {
   "transform": string;
 }
 
-interface Vote {
+export interface PlayerVoteItem {
   id: string;
   vote: number;
   name: string; 
@@ -95,7 +83,7 @@ interface Vote {
 export type UserVote = boolean | ButtonEnlarger;
 
 interface SyncVotes {
-  list?: Vote[];
+  list?: PlayerVoteItem[];
   voting?: boolean;
   accusingPlayer?: string | null;
   nominatedPlayer?: string | null;
@@ -106,14 +94,14 @@ export interface VoteHistoryItem {
   day: number;
   accuser: string;
   nominated: string;
-  votes: Vote[];
+  votes: PlayerVoteItem[];
   voterTotal: number;
   abstainerTotal: number;
 }
 
 export interface VotesSlice {
   votes: {
-    list: Vote[];
+    list: PlayerVoteItem[];
     voting: boolean;
     accusingPlayer: string | null; //player id
     nominatedPlayer: string | null; //player id
@@ -122,7 +110,7 @@ export interface VotesSlice {
   voteHistory: VoteHistoryItem[];
   setVoting: (newVoting: boolean) => void;
   resetUserVotes: () => void;
-  addVoteToList: (newVote: Vote | Vote[]) => void;
+  addVoteToList: (newVote: PlayerVoteItem | PlayerVoteItem[]) => void;
   setAccuser: (accusingPlayerId: string) => void;
   setNominated: (nominatedPlayerId: string, accusingPlayerId: string) => void;
   setVotes: (newVotes: SyncVotes) => void;

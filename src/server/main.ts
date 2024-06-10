@@ -1,9 +1,9 @@
 import http from "node:http";
 import process from "node:process";
-import {Server} from "socket.io";
+import {Namespace, Server} from "socket.io";
 import config from "../appConfig.js";
 import swtcHttpServer from "./httpServer.js";
-import swtcSocketServer from "./socketServer.js";
+import swtcSocketServer, { ClientToServerEvents, ServerToClientEvents } from "./socketServer.ts";
 
 const httpserver = http.createServer(swtcHttpServer);
 
@@ -12,10 +12,9 @@ const options = process.env.NODE_ENV === "production" ? {path: config.socket_add
   cors: {origin: config.dev_addr},
   path: config.socket_addr
 }
-const io = new Server(httpserver, options);
-const swtcNamespace = io.of("/swtc")
-const onConnection = (socket) => {swtcSocketServer(swtcNamespace, socket)};
-swtcNamespace.on("connection", onConnection);
+const io = new Server<ClientToServerEvents, ServerToClientEvents, [], []>(httpserver, options);
+const swtcNamespace: Namespace<ClientToServerEvents, ServerToClientEvents, [], []> = io.of("/swtc");
+swtcNamespace.on("connection", (socket) => swtcSocketServer(swtcNamespace, socket));
 
 
 httpserver.listen(config.port, config.addr, () => {

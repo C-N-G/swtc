@@ -1,24 +1,72 @@
 import SessionManager from "./sessionManager.js";
 import config from "../appConfig.js";
+import { DisconnectReason, Namespace, Socket } from "socket.io";
+import { Phase, PlayerVoteItem } from "../client/helpers/storeTypes.js";
+import { SessionData, TimerData } from "./session.js";
+import Player from "../client/classes/player.js";
+
+export type CallbackFn = (arg: {status: string, error?: string}) => void
+
+export interface PlayerAttributeData {
+  targetId: string;
+  targetProperty: string; 
+  targetValue: string | number;
+}
+
+export interface PlayerVoteData {
+  voting?: boolean;
+  accusingPlayer?: string | null;
+  nominatedPlayer?: string | null;
+  list: PlayerVoteItem | PlayerVoteItem[];
+}
+
+export interface ServerToClientEvents {
+  sync: (session: SessionData, userId?: string | null) => void;
+  joined: (player: Player) => void;
+  phase: () => void;
+  attribute: (data: PlayerAttributeData) => void;
+  vote: (data: PlayerVoteData) => void;
+  module: (data: string[]) => void;
+  timer: (data: TimerData) => void;
+  left: (playerId: string) => void;
+}
+
+export interface ClientToServerEvents {
+  join: (sessiondId: string, name: string, callback: CallbackFn) => void;
+  host: (name: string) => void;
+  phase: (data: Phase) => void;
+  attribute: (data: PlayerAttributeData) => void;
+  vote: (data: PlayerVoteData) => void;
+  module: (data: string[]) => void;
+  sync: (data: {players: Player[], modules: string[]}, callback: CallbackFn) => void;
+  disconnect: (reason: DisconnectReason, details: {message: string, description: string, context: string}) => void;
+  leave: () => void;
+  timer: (data: TimerData, callback: CallbackFn) => void;
+  resume: (sessionId: string, name: string, callback: CallbackFn) => void;
+}
 
 const sessionManager = new SessionManager();
 
-export default function swtcSocketServer(server, socket) {
+export default function swtcSocketServer(
+  server: Namespace<ClientToServerEvents, ServerToClientEvents, [], []>, 
+  socket: Socket<ClientToServerEvents, ServerToClientEvents, [], []>
+) {
 
   console.log("new socket connection, id:", socket.id);
 
-  let connectedSessionId = null;
-  let playerName;
+  let connectedSessionId: string | null = null;
+  let playerName: string | undefined;
   let playerId = socket.id;
 
-  function log(msg, data) {
-    const messageId = `${playerId}:${playerName ? playerName : "UnKnown"}`;
+  function log(msg: string, data?: unknown) {
+    const messageId = `${playerId}:${playerName ? playerName : "Unknown"}`;
     const messageContent = `- ${msg}`;
     const messageData = data ? `- ${JSON.stringify(data)}` : "";
     console.log(messageId, messageContent, messageData);
   }
 
-  function onResumeTest(sessionId, name, callback) {
+  // function onResumeTest(sessionId, name, callback) {
+  function onResumeTest(sessionId: string, name: string, callback: CallbackFn) {
 
     log("testing resume");
 
@@ -43,7 +91,7 @@ export default function swtcSocketServer(server, socket) {
 
   }
 
-  function onJoin(sessionId, name, callback) {
+  function onJoin(sessionId: string, name: string, callback: CallbackFn): void {
 
     log("joining");
 
@@ -68,6 +116,7 @@ export default function swtcSocketServer(server, socket) {
 
       // get disconncted player
       const player = session.players.find(player => player.name === name);
+      if (player === undefined) return callback({status: "error", error: "could not find player"});
       // update player id on the server
       playerId = player.id;
       // sync session to resuming player
@@ -94,15 +143,14 @@ export default function swtcSocketServer(server, socket) {
 
   }
 
-  function onHost(name) {
+  function onHost(name: string): void {
 
     log("hosting session");
 
-    if (connectedSessionId !== null) {
-      return;
-    }
+    if (connectedSessionId !== null) return;
 
     const session = sessionManager.createSession();
+    if (session.id === null) return;
     connectedSessionId = session.id;
     const player = sessionManager.joinSession(session.id, playerId, name);
     playerName = name;
@@ -113,23 +161,25 @@ export default function swtcSocketServer(server, socket) {
 
   }
 
-  function onPhase(data) {
+  function onPhase(data: Phase): void {
 
     log("updating phase state")
 
+    if (connectedSessionId === null) return;
     const session = sessionManager.getSession(connectedSessionId);
     if (!session) return;
     session.setPhase(data);
-    server.to(connectedSessionId).emit("phase", data);
+    server.to(connectedSessionId).emit("phase");
     log("updated phase state successfully", data);
 
   }
 
-  function onAttribute(data) {
+  function onAttribute(data: {targetId: string, targetProperty: string, targetValue: string | number}): void {
 
     log("updating attribute state");
 
     // TODO ONLY SEND UPDATES TO THE SPECIFIC PLAYER THAT IS BEING UPDATED
+    if (connectedSessionId === null) return;
     const session = sessionManager.getSession(connectedSessionId);
     if (!session) return;
     session.updatePlayer(data.targetId, data.targetProperty, data.targetValue);
@@ -138,16 +188,17 @@ export default function swtcSocketServer(server, socket) {
 
   }
 
-  function onVote(data) {
+  function onVote(data: PlayerVoteData): void {
 
     log("updating vote state");
 
+    if (connectedSessionId === null) return;
     const session = sessionManager.getSession(connectedSessionId);
     if (!session) return;
     Object.keys(data).map(property => {
-      if (property === "voting") session.setVoting(data[property]);
-      if (property === "accusingPlayer") session.setAcuPlayer(data[property]);
-      if (property === "nominatedPlayer") session.setNomPlayer(data[property]);
+      if (property === "voting") session.setVoting(data[property]!);
+      if (property === "accusingPlayer") session.setAcuPlayer(data[property]!);
+      if (property === "nominatedPlayer") session.setNomPlayer(data[property]!);
       if (property === "list") session.addVote(data[property]);
     })
     server.to(connectedSessionId).emit("vote", data);
@@ -155,11 +206,12 @@ export default function swtcSocketServer(server, socket) {
 
   }
 
-  function onModule(data) {
+  function onModule(data: string[]): void {
 
 
     log("updating module state");
 
+    if (connectedSessionId === null) return;
     const session = sessionManager.getSession(connectedSessionId);
     if (!session) return;
     session.setModules(data);
@@ -168,10 +220,11 @@ export default function swtcSocketServer(server, socket) {
 
   }
 
-  function onTimer(data, callback) {
+  function onTimer(data: TimerData, callback: CallbackFn) {
 
     log("updating timer from client");
 
+    if (connectedSessionId === null) return;
     const session = sessionManager.getSession(connectedSessionId);
     if (!session) return callback({status: "error", error: "no session found"});
 
@@ -184,14 +237,15 @@ export default function swtcSocketServer(server, socket) {
 
   }
 
-  function onSync(data, callback) {
+  function onSync(data: {players: Player[], modules: string[]}, callback: CallbackFn) {
 
     log("syncing client state to server");
 
+    if (connectedSessionId === null) return;
     const session = sessionManager.getSession(connectedSessionId);
     if (!session) return callback({status: "error", error: "no session found"});
 
-    let returnData = {}
+    const returnData = {} as SessionData;
 
     if (data.players) {
       session.setPlayers(data.players);
@@ -209,7 +263,7 @@ export default function swtcSocketServer(server, socket) {
 
   }
 
-  function onDisconnect(reason, details) {
+  function onDisconnect(reason: DisconnectReason, details: {message: string, description: string, context: string}) {
 
     // https://socket.io/docs/v4/troubleshooting-connection-issues/#usage-of-the-socketid-attribute
     // https://socket.io/docs/v4/client-options/#auth
@@ -233,10 +287,18 @@ export default function swtcSocketServer(server, socket) {
 
     if (connectedSessionId !== null) {
 
-      if (!sessionManager.sessionExists(connectedSessionId)) return;
+      if (!sessionManager.sessionExists(connectedSessionId)) {
+        console.log("disconnect could not find session");
+        return;
+      }
 
       const session = sessionManager.getSession(connectedSessionId);
       const player = session.players.find(player => player.id === playerId);
+
+      if (player === undefined) {
+        console.log("disconnect could not find player");
+        return;
+      }
 
       if (Object.hasOwn(session.disconnectTimers, player.name)) {
         clearTimeout(session.disconnectTimers[player.name]);
@@ -244,6 +306,11 @@ export default function swtcSocketServer(server, socket) {
 
       // start dc timer
       session.disconnectTimers[player.name] = setTimeout(() => {
+
+        if (connectedSessionId === null) {
+          console.log("disconnect could not find connectedSessionId");
+          return;
+        }
 
         // remove player after timer
         sessionManager.leaveSession(connectedSessionId, playerId);
@@ -265,6 +332,7 @@ export default function swtcSocketServer(server, socket) {
 
     log("leaving session");
 
+    if (connectedSessionId === null) return;
     if (!sessionManager.sessionExists(connectedSessionId)) return;
 
     // leave the players current session and room
@@ -280,7 +348,8 @@ export default function swtcSocketServer(server, socket) {
     // reset player session
     const blankSession = sessionManager.createSession();
     socket.emit("sync", {...blankSession.getData(), id: null}, null);
-    sessionManager.removeSession(blankSession);
+    if (blankSession.id === null) return;
+    sessionManager.removeSession(blankSession.id);
 
 
   }
@@ -298,3 +367,4 @@ export default function swtcSocketServer(server, socket) {
   socket.on("resume", onResumeTest);
 
 }
+
