@@ -4,7 +4,7 @@ import Char from "../classes/char.ts";
 import Role from "../classes/role.ts";
 import { PlayerOrderItem } from "./nightOrders.ts";
 import { MouseEvent } from "react";
-import { SessionData } from "../../server/session.ts";
+import { SessionData } from "../../server/serverTypes.ts";
 
 export interface CurrentSession {
   id: string | null;
@@ -16,7 +16,7 @@ export interface SessionSlice {
   session: CurrentSession;
   resetSession: () => void;
   setModules: (newModules: Array<string>, newSync?: boolean) => void;
-  syncSession: (newSession: CurrentSession) => void;
+  syncSession: (newSession: SessionData) => void;
   syncOff: () => void;
   syncOn: () => void;
 }

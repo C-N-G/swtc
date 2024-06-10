@@ -5,7 +5,7 @@ import { Phase, PlayerVoteItem } from "../client/helpers/storeTypes.ts";
 export interface TimerData {
   name: string;
   action: string;
-  duration: number;
+  duration?: number;
 }
 
 export interface SessionData {
@@ -37,7 +37,7 @@ export interface PlayerVoteData {
   accusingPlayer?: string | null;
   nominatedPlayer?: string | null;
   list: PlayerVoteItem | PlayerVoteItem[];
-  onlyPlayer: boolean;
+  onlyPlayer?: boolean;
 }
 
 export interface ServerToClientEvents {

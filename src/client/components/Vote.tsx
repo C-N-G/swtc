@@ -3,8 +3,17 @@ import {Button, Typography, TextField, Stack, Grid, Card, List, ListItem, ListIt
 import {UserContext} from "../App.js";
 import {socket} from "../helpers/socket.js";
 import useStore from "../hooks/useStore.js";
+import Player from "../classes/player.js";
 
-function Vote(props) {
+interface VoteProps {
+  nominatedPlayer: Player;
+  accusingPlayer: Player;
+  handleVoteFinishClick: () => void;
+  time: number;
+  beginTimer: () => void;
+}
+
+function Vote(props: VoteProps) {
 
   const user = useContext(UserContext);
 
@@ -28,9 +37,13 @@ function Vote(props) {
 
 export default Vote
 
+interface PlayerVoteProps {
+  nominatedPlayer: Player;
+  accusingPlayer: Player;
+  user: Player;
+}
 
-
-function PlayerVote({nominatedPlayer, accusingPlayer, user}) {
+function PlayerVote({nominatedPlayer, accusingPlayer, user}: PlayerVoteProps) {
 
   const handlePlayerDataChange = useStore(state => state.changePlayerAttribute);
   const userVote = useStore(state => state.votes.userVote);
@@ -39,7 +52,7 @@ function PlayerVote({nominatedPlayer, accusingPlayer, user}) {
 
   const playerIsDead = user.rState === 0
 
-  function handleVote(player, aVote) {
+  function handleVote(player: Player, aVote: number) {
 
     // disallow voting if user has already voted
     // if (userVote[0] !== userVote[1]) {
@@ -73,7 +86,7 @@ function PlayerVote({nominatedPlayer, accusingPlayer, user}) {
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Button 
           disabled={voteTimer.state === "stopped" || playerIsDead} 
-          sx={{...userVote[1], transition: "transform 0.25s"}} 
+          sx={{...userVote[1] as object, transition: "transform 0.25s"}} 
           variant="contained" 
           onClick={() => {handleVote(user, 1)}}
         >
@@ -88,7 +101,7 @@ function PlayerVote({nominatedPlayer, accusingPlayer, user}) {
         </Paper>
         <Button 
           disabled={voteTimer.state === "stopped" || playerIsDead} 
-          sx={{...userVote[0], transition: "transform 0.25s"}} 
+          sx={{...userVote[0] as object, transition: "transform 0.25s"}} 
           variant="contained" 
           onClick={() => {handleVote(user, 0)}}
         >
@@ -99,9 +112,15 @@ function PlayerVote({nominatedPlayer, accusingPlayer, user}) {
   );
 }
 
+interface NarratorVoteProps {
+  nominatedPlayer: Player;
+  accusingPlayer: Player;
+  handleVoteFinishClick: () => void;
+  time: number;
+  beginTimer: () => void;
+}
 
-
-function NarratorVote({nominatedPlayer, accusingPlayer, handleVoteFinishClick, time, beginTimer}) {
+function NarratorVote({nominatedPlayer, accusingPlayer, handleVoteFinishClick, time, beginTimer}: NarratorVoteProps) {
 
   function handleVoteStartClick() {
     beginTimer();

@@ -1,27 +1,27 @@
 import {createContext, useEffect} from "react";
-// eslint-disable-next-line no-unused-vars
-import { createTheme } from "@mui/material/styles";
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+// import { createTheme } from "@mui/material/styles";
 import {Box, Button, Container, Grid} from "@mui/material";
-import {DndContext} from "@dnd-kit/core";
+import {DndContext, DragEndEvent} from "@dnd-kit/core";
 import Board from "./components/Board.tsx";
-import Phase from "./components/Phase.js";
-import Options from "./components/Options.js";
-import Character from "./components/Character.js";
-import Chat from "./components/Chat.js";
-import Player from "./classes/player.js";
-import { socket } from "./helpers/socket.js";
-import GameData from "./strings/_gameData.js";
-import useStore from "./hooks/useStore.js";
+import Phase from "./components/Phase.tsx";
+import Options from "./components/Options.tsx";
+import Character from "./components/Character.tsx";
+import Chat from "./components/Chat.tsx";
+import Player from "./classes/player.ts";
+import { socket } from "./helpers/socket.ts";
+import GameData from "./strings/_gameData.ts";
+import useStore from "./hooks/useStore.ts";
 import "./App.css"
+import { PlayerAttributeData, PlayerVoteData, SessionData, SocketCallbackResponse, TimerData } from "../server/serverTypes.ts";
 
+export const UserContext = createContext<Player | null>(null);
 
-export const UserContext = createContext({});
-
-const PLAYER = new Player(54321, "Player " + 54321, 0);
+const PLAYER = new Player(String(54321), "Player " + 54321, 0);
 
 const somePlayers = [PLAYER];
 for (let i = 0; i < 8; i++) {
-  let player = new Player(i, "Player " + i);
+  const player = new Player(String(i), "Player " + i);
   somePlayers.push(player);
 }
 
@@ -35,7 +35,7 @@ function App() {
   const pushPlayer = useStore(state => state.pushPlayer);
   const popPlayer = useStore(state => state.popPlayer);
   const addPlayerReminders = useStore(state => state.addPlayerReminders);
-  const handleDragEnd = (event) => addPlayerReminders(event);
+  const handleDragEnd = (event: DragEndEvent) => addPlayerReminders(event);
 
   const userId = useStore(state => state.userId);
   const setUserId = useStore(state => state.setUserId);
@@ -65,7 +65,7 @@ function App() {
 
   useEffect(() => {
 
-    const resumeCallback = (error, res) => {
+    const resumeCallback = (error: Error, res: SocketCallbackResponse) => {
 
       if (error) return console.log("ResumeTest Error: server timeout");
       if (res.status === "error") {
@@ -76,14 +76,19 @@ function App() {
       }
 
       if (res.status === "ok") {
-        const lastSession = JSON.parse(localStorage.getItem("lastSession"));
+        const seesionItem = localStorage.getItem("lastSession");
+        if (seesionItem === null) {
+          console.log("error getting session item, could not find session");
+          return;
+        }
+        const lastSession = JSON.parse(seesionItem);
         setPlayers(lastSession.players);
         socket.timeout(5000).emit("join", lastSession.sessionId, lastSession.playerName, joinCallback);
       }
 
     };
 
-    const joinCallback = (error, res) => {
+    const joinCallback = (error: Error, res: SocketCallbackResponse) => {
 
       if (error || res.error) setPlayers([]);
 
@@ -92,103 +97,121 @@ function App() {
 
     };
 
-    const socketEvents = {
+    function onConnect() {
 
-      connect() {
+      if (localStorage.getItem("lastSession") === null) return;
 
-        if (localStorage.getItem("lastSession") === null) return;
+      const seesionItem = localStorage.getItem("lastSession");
+      if (seesionItem === null) {
+        console.log("error getting session item, could not find session");
+        return;
+      }
+      const lastSession = JSON.parse(seesionItem);
 
-        const lastSession = JSON.parse(localStorage.getItem("lastSession"));
+      socket.timeout(20000).emit("resume", lastSession.sessionId, lastSession.playerName, resumeCallback);
 
-        socket.timeout(20000).emit("resume", lastSession.sessionId, lastSession.playerName, resumeCallback);
+    }
 
-      },
+    function onDisconnect() {
+      resetSession();
+      setPlayers([])
+      setUserId(null);
+    }
 
-      disconnect() {
-        resetSession();
-        setPlayers([])
-        setUserId(null);
-      },
+    function onPhase() {
+      nextPhase();
+    }
 
-      phase() {
-        nextPhase();
-      },
+    function onAttribute(data: PlayerAttributeData) {
+      handlePlayerDataChange(data.targetId, data.targetProperty, data.targetValue, true);
+    }
 
-      attribute(data) {
-        handlePlayerDataChange(data.targetId, data.targetProperty, data.targetValue, true);
-      },
+    function onModule(data: string[]) {
+      setModules(data);
+    }
 
-      module(data) {
-        setModules(data);
-      },
+    function onVote(data: PlayerVoteData) {
 
-      vote(data) {
-
-        if (data.onlyPlayer && user.type === 0) {
-          return;
-        }
-
-        if (Object.hasOwn(data, "voting")) {
-          setVoting(data.voting);
-          if (data.voting === true) displayVote();
-          else resetUserVotes();
-        }
-        
-        if (Object.hasOwn(data, "list")){
-          addVoteToList(data.list);
-        }
-        
-        if (Object.hasOwn(data, "accusingPlayer")){
-          setAccuser(data.accusingPlayer);
-        }
-        
-        if (Object.hasOwn(data, "nominatedPlayer")){
-          setNominated(data.nominatedPlayer);
-        }
-        
-      },
-
-      timer(data) {
-
-        if (data.action === "set") {
-          setTimer(data.name, data.duration);
-        } else if (data.action === "start") {
-          startTimer(data.name);
-        } else if (data.action === "stop") {
-          stopTimer(data.name);
-        }
-        
-      },
-
-      sync(session, userId) {
-
-        if (userId !== undefined) setUserId(userId);
-        syncSession(session);
-        if (session.players !== undefined) syncPlayers(session);
-        if (session.phase !== undefined) nextPhase(session.phase);
-        if (session.votes !== undefined) setVotes(session.votes);
-        if (session.timers !== undefined) for (const timerData in session.timers) socketEvents.timer(session.timers[timerData]);
-
-      },
-
-      joined(player) {
-        addPlayer(player);
-      },
-
-      left(playerId) {
-        removePlayer(playerId);
+      if (data.onlyPlayer && user.type === 0) {
+        return;
       }
 
+      if (Object.hasOwn(data, "voting") && data.voting) {
+        setVoting(data.voting);
+        if (data.voting === true) displayVote();
+        else resetUserVotes();
+      }
+      
+      if (Object.hasOwn(data, "list")){
+        addVoteToList(data.list);
+      }
+      
+      if (Object.hasOwn(data, "accusingPlayer") && data.accusingPlayer){
+        setAccuser(data.accusingPlayer);
+      }
+      
+      if (Object.hasOwn(data, "nominatedPlayer") && data.nominatedPlayer){
+        setNominated(data.nominatedPlayer);
+      }
+      
     }
 
-    for (const event in socketEvents) {
-      socket.on(event, socketEvents[event])
+    function onTimer(data: TimerData) {
+
+      if (data.action === "set") {
+        if (data.duration === undefined) throw new Error("error setting timer, duration is undefined");
+        setTimer(data.name, data.duration);
+      } else if (data.action === "start") {
+        startTimer(data.name);
+      } else if (data.action === "stop") {
+        stopTimer(data.name);
+      }
+      
     }
+
+    function onSync(session: SessionData, userId: string | null | undefined) {
+
+      if (userId !== undefined) setUserId(userId);
+      syncSession(session);
+      if (session.players !== undefined) syncPlayers(session);
+      if (session.phase !== undefined) nextPhase(session.phase);
+      if (session.votes !== undefined) setVotes(session.votes);
+      if (session.timers !== undefined) for (const timerData in session.timers) onTimer(session.timers[timerData]);
+
+    }
+
+    function onJoined(player: Player) {
+      addPlayer(player);
+    }
+
+    function onLeft(playerId: string) {
+      removePlayer(playerId);
+    }
+
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
+    socket.on("phase", onPhase);
+    socket.on("attribute", onAttribute);
+    socket.on("module", onModule);
+    socket.on("vote", onVote);
+    socket.on("timer", onTimer);
+    socket.on("sync", onSync);
+    socket.on("joined", onJoined);
+    socket.on("left", onLeft);
 
     return () => {
-      for (const event in socketEvents) {
-        socket.off(event, socketEvents[event])
-      }
+
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+      socket.off("phase", onPhase);
+      socket.off("attribute", onAttribute);
+      socket.off("module", onModule);
+      socket.off("vote", onVote);
+      socket.off("timer", onTimer);
+      socket.off("sync", onSync);
+      socket.off("joined", onJoined);
+      socket.off("left", onLeft);
+
     };
   }, [handlePlayerDataChange, setPlayers, syncPlayers, addPlayer, removePlayer, 
     nextPhase, setUserId, displayVote, resetSession, setModules, syncSession, 

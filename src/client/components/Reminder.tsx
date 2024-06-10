@@ -1,6 +1,11 @@
 import {Box} from "@mui/material";
+import {default as ReminderClass} from "../classes/reminder";
 
-function Reminder({reminder}) {
+interface ReminderProps {
+  reminder: ReminderClass
+}
+
+function Reminder({reminder}: ReminderProps) {
 
   return (
     <Box 
