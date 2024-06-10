@@ -1,17 +1,10 @@
 ---
-tags:
--
+team: Placeholder
+type: Placeholder
+module: Placeholder
+attributes: Placeholder
+flavour text: Placeholder
 ---
-> [!infobox]
-> # Placeholder Role Name
-> ######
-> |  |  |
-> | ---- | ---- |
-> | Team | Placeholder |
-> | Type | Placeholder |
-> | Module | Placeholder |
-> | Attributes | Placeholder |
->  “PLACEHOLDER FLAVOUR TEXT.”
 # Ability
 Placeholder ability text. This text here should be filled with the exact text of the ability.
 
