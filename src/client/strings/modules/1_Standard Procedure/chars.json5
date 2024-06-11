@@ -75,7 +75,7 @@
   {
     "name": "Obnoxious",
     "description": "PLACEHOLDER",
-    "ability": "The first person to choose you with an ability becomes malfunctioning.",
+    "ability": "The first person (not yourself) to choose you with an ability becomes malfunctioning.",
     "reminders": [
       ["💩", "#FFFF00", "Obnoxious: This player is malfunctioning."]
     ]
