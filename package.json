@@ -22,6 +22,7 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.18",
     "@mui/material": "^5.14.13",
+    "json5": "^2.2.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "socket.io": "^4.7.2",
@@ -58,8 +59,10 @@
     "email": "cgudge@outlook.ie",
     "url": "https://www.linkedin.com/in/cormac-gudge-swe/"
   },
-  "contributors" : [
-    {"name": "Isaac Poulton"}
+  "contributors": [
+    {
+      "name": "Isaac Poulton"
+    }
   ],
   "license": "SEE LICENSE IN LICENSE",
   "bugs": {

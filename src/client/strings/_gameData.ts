@@ -1,9 +1,13 @@
 import Char from "../classes/char.js";
 import Reminder from "../classes/reminder.js";
 import Role from "../classes/role.js";
-import loader, { GameDataStore, ImportInterface } from "../helpers/gameDataLoader.js";
+import loader, { GameDataStore, RawImportData } from "../helpers/gameDataLoader.js";
 
-const modules = import.meta.glob(["./*.json", "./modules/*/*.json"], {eager: true}) as ImportInterface;
+const modules = import.meta.glob(["./*.json5", "./modules/*/*.json5"], {
+  query: "?raw",
+  import: "default",
+  eager: true,
+}) as RawImportData;
 
 const GameData: GameDataStore = {
   chars: [],
