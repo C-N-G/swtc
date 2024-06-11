@@ -84,7 +84,7 @@
   {
     "name": "Observant",
     "description": "PLACEHOLDER",
-    "ability": "You start knowing how many of your neighbours wake up due to an ability of theirs during the first night.",
+    "ability": "You start knowing how many of your neighbours woke up, or will wake up, due to an ability of theirs during the first night.",
     "orderType": "char_with_starting_info"
   },
   
