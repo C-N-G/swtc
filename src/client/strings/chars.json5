@@ -5,9 +5,49 @@
     "type": "",
     "description": "",
     "ability": "",
+    "orderType": "",
+    "setup": [],
     "attributes": [],
     "additional": [],
-    "setup": [],
     "reminders": []
   }
+  /*
+
+  char = characteristic
+  CHAR TEMPLATE
+
+  name          - the char name shown to the users used to represent the char in the app.
+  description   - any descriptive fluff text give for the char.
+  ability       - the ability description for this char. 
+  orderType     - an id string corresponding with a specific night order type found in nightOrder.json5.
+  setup         - any setup specific text for this char, allows for a list of items with the following format
+                  [description, command?] where description is a mandatory piece of descriptive text, and
+                  the command is an optional command string to run during the randomisation algorithm.
+  attributes    - a list of attributes associated with this char.
+  additional    - a list of strings for any additiona information associated with this char.
+  reminders     - a list of reminders associated with this char that follow the format [icon, colour, description]
+                  where icon is an emoji or single alphanumeric character to represent the emoji, colour is the 
+                  background colour of the reminder, and description is the piece of text describing the reminder.
+  
+  {
+    "name": "Char Name",
+    "description": "Char Description",
+    "ability": "Char Ability",
+    "orderType": "night_order_string",
+    "setup": [
+      ["General Description"]
+      ["Setup Description", "Add 2 Role Agent"],
+      ["Setup Description", "Add 3 Role Agent"],
+    ],
+    "attributes": ["Attribute 1", "Attribute 2"],
+    "additional": [
+      "Additional Text 1",
+      "Additional Text 2"
+    ],
+    "reminders": [
+      ["A", "#FFFFFF", "Reminder Description"]
+    ]
+  }
+
+  */
 ]

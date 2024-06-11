@@ -1,4 +1,4 @@
-// night orders used to calculate the night order for roles
+// night orders used to calculate the night order for roles and characteristics
 [
   {"id": "role_causes_injury", "description": "ROLES THAT CAUSE INJURY"},
   {"id": "role_causes_malfunction", "description": "ROLES THAT CAUSE MALFUNCTIONS"},
