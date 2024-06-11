@@ -26,18 +26,22 @@ export interface GameDataStore {
   hackValue(input: string): string;
 }
 
-export interface ImportInterface {
-  [file: string]: { default: Array<CharData | RoleData | string | NightOrder> };
-}
+export type RawImportData = { [file: string]: string }
 
-export default function gameDataLoader(load_obj: GameDataStore, modules: ImportInterface) {
+type ImportData = (CharData | RoleData | NightOrder | string)[];
 
-  function import_json(file_path: string, load_origin: ImportInterface, load_target: GameDataStore) {
+export default function gameDataLoader(load_obj: GameDataStore, modules: RawImportData) {
 
-    const property = file_path!.split("/")!.pop()!.slice(0, -5) as keyof GameDataStore;
+  function import_json(file_path: string, load_origin: RawImportData, load_target: GameDataStore) {
+
+    // use the file name as the target property to add data to
+    const property = file_path!.split("/")!.pop()!.slice(0, -6) as keyof GameDataStore;
+
+    // parse the json5 data into an object
+    const fileData: ImportData = JSON5.parse(load_origin[file_path]);
 
     // add file contents to correct property array in game data
-    load_origin[file_path].default.forEach(eleObj => {
+    fileData.forEach(eleObj => {
 
       const eleId = load_target[property].length;
       let reminders: Reminder[] = [];
@@ -158,8 +162,6 @@ export default function gameDataLoader(load_obj: GameDataStore, modules: ImportI
     }
 
   }
-
-  console.log(JSON5.parse(Object.values(modules)[0] as unknown as string));
 
   // sort modules by file path length so unknowns will be loaded first
   Object.keys(modules).sort((a,b) => a.length - b.length).forEach((path) => import_json(path, modules, load_obj));
