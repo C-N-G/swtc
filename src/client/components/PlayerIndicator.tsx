@@ -106,6 +106,8 @@ function RegularPlayerIndicator({player, handleClick, vertical, selected}: Regul
             sx={{
               wordBreak: "break-word",
               overflow: "inherit",
+              lineHeight: 1.7,
+              px: 0.5
             }}>
               {player.label}
           </Typography>
@@ -193,12 +195,13 @@ function NarratorPlayerIndicator({player, handleClick, vertical, chars, roles, s
         <Typography>{player.name}</Typography>
         <Box sx={BUTTON_TEXT_CONTAINER_STYLE}>
           <Typography 
-            variant="body1" //TODO should possibly be subtitle2
+            variant="subtitle2"
             sx={{
               wordBreak: "break-word",
               overflow: "inherit",
               width: "inherit",
-              pb: 1
+              pb: 1,
+              lineHeight: 1.9
             }}>
               <Box component={"span"} sx={{position: "relative"}}>
                 {GameData.states[player.rState]}{player.state !== player.rState ? "*" : ""}
