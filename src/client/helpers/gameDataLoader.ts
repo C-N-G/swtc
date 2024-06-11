@@ -1,6 +1,7 @@
 import Char, { CharData } from "../classes/char.ts";
 import Reminder from "../classes/reminder.ts";
 import Role, { RoleData } from "../classes/role.ts";
+import JSON5 from "json5";
 
 interface Module {
   name: string;
@@ -157,6 +158,8 @@ export default function gameDataLoader(load_obj: GameDataStore, modules: ImportI
     }
 
   }
+
+  console.log(JSON5.parse(Object.values(modules)[0] as unknown as string));
 
   // sort modules by file path length so unknowns will be loaded first
   Object.keys(modules).sort((a,b) => a.length - b.length).forEach((path) => import_json(path, modules, load_obj));
