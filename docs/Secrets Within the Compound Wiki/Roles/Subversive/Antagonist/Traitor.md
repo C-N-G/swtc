@@ -20,8 +20,8 @@ You start knowing 3 not in-play [[Role|roles]]. Each night, after the first, you
 - The Narrator wakes the Traitor up on the first night, and tells them 3 not in-play [[Role|roles]]. Each night, after the first night, the Narrator wakes the Traitor up to choose a player to kill.
 - The Narrator wakes the Traitor up during the night, and asks them to choose a player. That player dies. At the start of the following day, the Narrator announces who has died.
 - The Narrator wakes the Traitor up during the night, and asks them to choose a player. The Traitor chooses an already dead player, so their target does not die.
-- The Narrator wakes the Traitor up during the night, and asks them to choose a player. The Traitor is [[malfunctioning]], so their target does not die.
 - It is the final day of the game. The Traitor is the last [[Subversive|Subversive]] player alive. The remaining [[Loyalist|Loyalists]] dismiss the Traitor, and the [[Loyalist|Loyalists]] win the game.
+- The Narrator wakes the Traitor up during the night, and asks them to choose a player. The Traitor is [[malfunctioning]], so their target does not die.
 
 # How to Play
 - You should attempt to bluff as 1 of the 3 not in-play [[Role|roles]] you learnt at the start of the game, this means you won't accidentally claim someone else's [[role]].
