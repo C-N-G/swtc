@@ -83,13 +83,11 @@ function PlayerPhase() {
 
 
 
-type StateArray = boolean[];
 
 function NarratorPhase() {
 
   const modules = useStore(state => state.session.modules);
   const [chars, roles] = useMemo(() => GameData.getFullFilteredValues(modules), [modules]);
-  const [checkedState, setCheckedState] = useState<StateArray>(Array(32).fill(false));
   const [openDialog, setOpenDialog] = useState(OpenDialog.None);
   const phase = useStore(state => state.phase);
   const nextPhase = useStore(state => state.nextPhase);
@@ -98,6 +96,7 @@ function NarratorPhase() {
   const purgedOrders = useStore(state => state.purgedOrders);
   const voting = useStore(state => state.votes.voting);
   const displayVote = useStore(state => state.displayVote);
+  const removeAllCompletedOrders = useStore(state => state.removeAllCompletedOrders);
 
 
   function handleClick() {
@@ -121,7 +120,7 @@ function NarratorPhase() {
         socket.emit("phase", {cycle: newCycle, round: newRound});
       }
 
-      setCheckedState(state => state.fill(false));
+      removeAllCompletedOrders();
 
 
   }
@@ -155,8 +154,7 @@ function NarratorPhase() {
 
       <NightOrderDialog 
         openDialog={openDialog} handleClose={handleClose}
-        chars={chars} roles={roles}
-        checkedState={checkedState} setCheckedState={setCheckedState} />
+        chars={chars} roles={roles} />
 
       <ScenarioDialog
         openDialog={openDialog}

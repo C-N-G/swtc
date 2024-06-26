@@ -9,6 +9,7 @@ export interface OrderItem {
 }
 
 export interface PlayerOrderItem extends OrderItem {
+  id: string;
   playerIndex: number;
   type: "char" | "role";
 }
@@ -59,7 +60,8 @@ const NightOrders = {
         const target = GameData.nightOrder.find(ele => ele.id === char.orderType);
         if (!target) throw new Error("failed to calculate night order no orderType found for char");
         const order = GameData.nightOrder.indexOf(target);
-        ordering.push({order: order, name: char.name, playerIndex: index, type: "char"});
+        const id = player.id + char.name + ordering.length;
+        ordering.push({id: id, order: order, name: char.name, playerIndex: index, type: "char"});
       }
 
       const role = roleArray[player.rRole]
@@ -67,7 +69,8 @@ const NightOrders = {
         const target = GameData.nightOrder.find(ele => ele.id === role.orderType);
         if (!target) throw new Error("failed to calculate night order no orderType found for role");
         const order = GameData.nightOrder.indexOf(target);
-        ordering.push({order: order, name: role.name, playerIndex: index, type: "role"});
+        const id = player.id + role.name + ordering.length;
+        ordering.push({id: id, order: order, name: role.name, playerIndex: index, type: "role"});
       }
 
     })

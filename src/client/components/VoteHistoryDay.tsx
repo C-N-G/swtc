@@ -4,12 +4,10 @@ import { Fragment } from "react/jsx-runtime";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 
-type StateArray = boolean[];
-
 interface VoteHistoryDayProps {
   historyArray: VoteHistoryItem[];
   handleOpenClick: (index: number) => void;
-  openState: StateArray;
+  openState: Set<number>;
 }
 
 function VoteHistoryDay({historyArray, handleOpenClick, openState}: VoteHistoryDayProps) {
@@ -46,11 +44,11 @@ function VoteHistoryDay({historyArray, handleOpenClick, openState}: VoteHistoryD
       <Fragment key={index}>
         <ListItem disablePadding >
           <ListItemButton onClick={() => handleOpenClick(index)}>
-            {openState[index] ? <ExpandLess /> : <ExpandMore />}
+            {openState.has(index) ? <ExpandLess /> : <ExpandMore />}
             <ListItemText primary={`#${index+1}. (${item.accuser}) nominated (${item.nominated}) - ${item.voterTotal} vs ${item.abstainerTotal}`} />
           </ListItemButton>
         </ListItem>
-        <Collapse in={openState[index]} timeout="auto" unmountOnExit>
+        <Collapse in={openState.has(index)} timeout="auto" unmountOnExit>
           <Typography>{voterList}</Typography>
         </Collapse>
       </Fragment>

@@ -89,6 +89,7 @@
 
 // isaac believes disjointed > wrong day grouping
 // mac believes wrong day grouping > disjointed
+// this has been sorted out
 import { StateCreator } from "zustand";
 import { CombinedSlice, PhaseSlice } from "./storeTypes.ts";
 

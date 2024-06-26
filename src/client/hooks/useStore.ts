@@ -7,6 +7,7 @@ import { createDisplaySlice } from "../helpers/storeDisplay.ts";
 import { createVotesSlice } from "../helpers/storeVotes.ts";
 import { createSessionSlice } from "../helpers/storeSession.ts";
 import { createTimersSlice } from "../helpers/storeTimers.ts";
+import { createNightOrderSlice } from "../helpers/storeNightOrders.ts";
 import { CombinedSlice } from "../helpers/storeTypes.ts";
 
 const useStore = create<CombinedSlice>()((...a) => ({
@@ -19,6 +20,7 @@ const useStore = create<CombinedSlice>()((...a) => ({
   ...createVotesSlice(...a),
   ...createSessionSlice(...a),
   ...createTimersSlice(...a),
+  ...createNightOrderSlice(...a),
 
 }))
 

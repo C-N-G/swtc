@@ -4,8 +4,6 @@ import useStore from '../hooks/useStore.ts';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Tab, Tabs } from '@mui/material';
 import VoteHistoryDay from './VoteHistoryDay.tsx';
 
-type StateArray = boolean[];
-
 interface VoteHistoryDialogProps {
   openDialog: OpenDialog;
   setOpenDialog: React.Dispatch<React.SetStateAction<OpenDialog>>;
@@ -13,7 +11,7 @@ interface VoteHistoryDialogProps {
 
 function VoteHistoryDialog({openDialog, setOpenDialog}: VoteHistoryDialogProps) {
 
-  const [openState, setOpenState] = useState<StateArray>(Array(32).fill(false));
+  const [openState, setOpenState] = useState<Set<number>>(new Set());
   const voteHistory = useStore(state => state.voteHistory)
   const round = useStore(state => state.phase.round);
   const [openTab, setOpenTab] = useState(0);
@@ -34,10 +32,13 @@ function VoteHistoryDialog({openDialog, setOpenDialog}: VoteHistoryDialogProps) 
 
   function handleOpenClick(index: number) {
     setOpenState(state => {
-      const newState = !state[index];
-      state = state.fill(false);
-      state[index] = newState;
-      return [...state];
+      if (state.has(index)) {
+        state.delete(index);
+      } else {
+        state.clear();
+        state.add(index);
+      }
+      return new Set(state);
     })
   }
 

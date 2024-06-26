@@ -8,56 +8,63 @@ import { Button, Checkbox, Collapse, Dialog, DialogActions, DialogContent, Dialo
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 
-type StateArray = boolean[];
-
 interface NightOrderDialogProps {
   openDialog: OpenDialog;
   handleClose: () => void;
   chars: Char[];
   roles: Role[];
-  checkedState: boolean[];
-  setCheckedState: React.Dispatch<React.SetStateAction<StateArray>>;
 }
 
-function NightOrderDialog({openDialog, handleClose, chars, roles, checkedState, setCheckedState}: NightOrderDialogProps) {
+function NightOrderDialog({openDialog, handleClose, chars, roles}: NightOrderDialogProps) {
 
   const players = useStore(state => state.players);
   const ordering = useMemo(() => NightOrders.calculateOrder(players, chars, roles), [players, chars, roles]);
-  const [openState, setOpenState] = useState<StateArray>(Array(32).fill(false));
+  const [openState, setOpenState] = useState(new Set());
   const addPurgedOrder = useStore(state => state.addPurgedOrder);
   const removePurgedOrders = useStore(state => state.removePurgedOrders);
   const purgedOrders = useStore(state => state.purgedOrders);
+  const completedOrders = useStore(state => state.completedOrders);
+  const addCompletedOrder = useStore(state => state.addCompletedOrder);
+  const removeCompletedOrder = useStore(state => state.removeCompletedOrder);
+  const removeAllCompletedOrders = useStore(state => state.removeAllCompletedOrders);
+
   
 
-  function handleOpenClick(index: number) {
+  function handleOpenClick(id: string) {
+
     setOpenState(state => {
-      const newState = !state[index];
-      state = state.fill(false);
-      state[index] = newState;
-      return [...state];
+      if (state.has(id)) {
+        state.delete(id);
+      } else {
+        state.clear();
+        state.add(id);
+      }
+      return new Set(state);
     })
+
   }
 
-  function handleCheckClick(index: number) {
-    setCheckedState(state => {
-      state[index] = !state[index]
-      return [...state];
-    })
+  function handleCheckClick(id: string) {
+    if (completedOrders.has(id)) {
+      removeCompletedOrder(id);
+    } else {
+      addCompletedOrder(id);
+    }
   }
 
-  function handlePurgeClick(index: number, event: React.MouseEvent<HTMLSpanElement, MouseEvent>) {
+  function handlePurgeClick(index: number, event: React.MouseEvent<HTMLSpanElement, MouseEvent>, id: string) {
 
     addPurgedOrder(event, index, ordering, chars, roles);
 
-    if (openState[index] === true) {
-      setOpenState(state => state.fill(false));
+    if (openState.has(id)) {
+      setOpenState(new Set());
     }
     
   }
 
   function handleResetClick() {
     removePurgedOrders(chars, roles, ordering);
-    setCheckedState(state => state.fill(false));
+    removeAllCompletedOrders();
   }
 
 
@@ -87,7 +94,7 @@ function NightOrderDialog({openDialog, handleClose, chars, roles, checkedState, 
         variant="text" 
         size="small" 
         sx={{mr: 1}}
-        onClick={(event) => handlePurgeClick(index, event)}
+        onClick={(event) => handlePurgeClick(index, event, nightOrder.id)}
       >
         {removed ? "undo" : "remove"}
       </Button>
@@ -97,15 +104,15 @@ function NightOrderDialog({openDialog, handleClose, chars, roles, checkedState, 
       <Fragment key={"orderListKey" + index + nightOrder.name}>
         <ListItem secondaryAction={button} disablePadding >
           <Checkbox 
-            checked={checkedState[index] || removed}
-            onChange={() => handleCheckClick(index)}
+            checked={completedOrders.has(nightOrder.id) || removed}
+            onChange={() => handleCheckClick(nightOrder.id)}
             disabled={removed}/>
-          <ListItemButton disabled={removed} onClick={() => handleOpenClick(index)}>
-            {openState[index] ? <ExpandLess /> : <ExpandMore />}
+          <ListItemButton disabled={removed} onClick={() => handleOpenClick(nightOrder.id)}>
+            {openState.has(nightOrder.id) ? <ExpandLess /> : <ExpandMore />}
             <ListItemText primary={name} sx={removed ? {textDecoration: "line-through", color: "rgb(255, 0, 0)"} : {}}/>
           </ListItemButton>
         </ListItem>
-        <Collapse in={openState[index]} timeout="auto" unmountOnExit>
+        <Collapse in={openState.has(nightOrder.id)} timeout="auto" unmountOnExit>
           <Typography component={"span"}>{attrLong} Ability: {attribute.ability}</Typography>
         </Collapse>
       </Fragment>

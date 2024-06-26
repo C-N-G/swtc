@@ -137,6 +137,13 @@ export interface TimersSlice {
   resetTimer: (timer: string) => void;
 }
 
+export interface NightOrderSlice {
+  completedOrders: Set<string>;
+  addCompletedOrder: (id: string) => void;
+  removeCompletedOrder: (id: string) => void;
+  removeAllCompletedOrders: () => void;
+}
+
 export type CombinedSlice = 
   SessionSlice 
   & UserIdSlice
@@ -145,4 +152,5 @@ export type CombinedSlice =
   & PlayerSlice
   & PurgedOrdersSlice
   & VotesSlice
-  & TimersSlice;
+  & TimersSlice
+  & NightOrderSlice;
