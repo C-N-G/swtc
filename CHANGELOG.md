@@ -1,3 +1,11 @@
+### 26/06/2024 v0.5.3
+- converted project to typescript
+- converted data files to json5
+- small visual changes to the text inside of player indicators
+- night order indicators for players now turn green once that night order is marked completed
+- night order indicators are now clickable which marks them as completed 
+---
+
 ### 20/04/2024 v0.5.2
 - added selected player ui 
 - added show vote button to phase window

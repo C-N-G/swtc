@@ -1,6 +1,6 @@
 {
   "name": "swtc",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "Secrets Within the Compound Game",
   "main": "./index.html",
   "type": "module",
