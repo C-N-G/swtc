@@ -9,6 +9,7 @@ import Player from "../classes/player.ts";
 import Char from "../classes/char.ts";
 import Role from "../classes/role.ts";
 import { DisplaySlice } from "../helpers/storeTypes.ts";
+import NightOrderIndicator from "./NightOrderIndicator.tsx";
 
 
 
@@ -181,9 +182,7 @@ function NarratorPlayerIndicator({player, handleClick, vertical, chars, roles, s
         right: "2px",
         zIndex: 1
       }}>
-        {player.nightOrders.map(nightOrder => (<Reminder key={nightOrder} reminder={
-          {id: nightOrder, colour: "white", origin: null, content: String(nightOrder), description: ""}
-          }/>))}
+        {player.nightOrders.map(nightOrder => (<NightOrderIndicator key={nightOrder.id} nightOrder={nightOrder}/>))}
       </Stack>
       <Button 
         variant="contained" 

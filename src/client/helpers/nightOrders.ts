@@ -100,7 +100,7 @@ const NightOrders = {
     }
   
     ordering.forEach((nightOrder, index) => {
-      playerArray[nightOrder.playerIndex].nightOrders.push(index + 1);
+      playerArray[nightOrder.playerIndex].nightOrders.push({id: nightOrder.id, order: index + 1});
     })
 
     return [...playerArray];

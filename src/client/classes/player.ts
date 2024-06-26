@@ -1,3 +1,5 @@
+import { nightOrder } from "../components/NightOrderIndicator";
+
 export default class Player {
 
   /**
@@ -35,7 +37,7 @@ export default class Player {
     public rTeam = 0,
     public rVotePower = 1,
     public reminders: number[] = [],
-    public nightOrders: number[] = [],
+    public nightOrders: nightOrder[] = [],
   ) {
     
   }
