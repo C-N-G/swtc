@@ -1,5 +1,5 @@
 import {useState, useMemo} from "react";
-import {Card, Stack, FormControl, Select, InputLabel, MenuItem, Button, Dialog, DialogTitle, DialogContentText, DialogContent, DialogActions, SelectChangeEvent} from "@mui/material";
+import {Card, Stack, MenuItem, SelectChangeEvent} from "@mui/material";
 import PlayerIndicator from "./PlayerIndicator.tsx";
 import DynamicWindow from "./DynamicWindow.tsx";
 import PlayerDetails from "./PlayerDetails.tsx";
@@ -7,35 +7,12 @@ import Vote from "./Vote.tsx";
 import {socket} from "../helpers/socket.ts";
 import GameData from "../strings/_gameData.ts"
 import useCountDown from "../hooks/useCountDown.ts";
-import Character from "./Character.tsx";
 import useStore from "../hooks/useStore.ts";
 import Player from "../classes/player.ts";
-
-const BOARD_CONFIG = [
-  [0,0,0], // top, sides, bottom - player count
-  [1,0,0], // 1
-  [2,0,0], // 2
-  [2,0,1], // 3
-  [2,0,2], // 4
-  [2,0,3], // 5
-  [2,1,2], // 6
-  [2,1,3], // 7
-  [3,1,3], // 8
-  [3,1,4], // 9
-  [4,1,4], // 10
-  [4,1,5], // 11
-  [4,2,4], // 12
-  [4,2,5], // 13
-  [5,2,5], // 14
-  [4,3,5], // 15
-  [5,3,5], // 16
-]
-
-enum OpenDialog {
-  None,
-  Dismiss,
-  ViewPlayer,
-}
+import config from "../../appConfig.ts";
+import { OpenBoardDialog as OpenDialog } from "../helpers/enumTypes.ts";
+import ViewPlayerDialog from "./ViewPlayerDialog.tsx";
+import DismissalDialog from "./DismissalDialog.tsx";
 
 function Board() {
 
@@ -43,9 +20,9 @@ function Board() {
 
   const drawPlayers = useStore(state => state.getDrawPlayers());
   const playerNum = drawPlayers.length;
-  const topNum = BOARD_CONFIG[playerNum][0];
-  const sideNum = BOARD_CONFIG[playerNum][1];
-  const botNum = BOARD_CONFIG[playerNum][2];
+  const topNum = config.board_config[playerNum][0];
+  const sideNum = config.board_config[playerNum][1];
+  const botNum = config.board_config[playerNum][2];
   const modules = useStore(state => state.session.modules);
   const [chars, roles] = useMemo(() => GameData.getFilteredValues(modules), [modules]);
   const [fullChars, fullRoles] = useMemo(() => GameData.getFullFilteredValues(modules), [modules]);
@@ -258,70 +235,7 @@ export default Board
 
 
 
-interface DismissalDialog {
-  openDialog: OpenDialog;
-  setOpenDialog: React.Dispatch<React.SetStateAction<OpenDialog>>;
-  handlePlayerSelect: (event: SelectChangeEvent<string>) => void;
-  selectablePlayers: React.ReactNode[];
-  handleBeginClick: () => void;
-}
-
-function DismissalDialog({openDialog, setOpenDialog, 
-  handlePlayerSelect, selectablePlayers, handleBeginClick}: DismissalDialog) {
-
-    const accusingPlayerId = useStore(state => state.votes.accusingPlayer);
-
-  return (
-    <Dialog open={openDialog === OpenDialog.Dismiss} onClose={() => setOpenDialog(OpenDialog.None)}>
-      <DialogTitle>Player Select</DialogTitle>
-      <DialogContent>
-        <DialogContentText>
-          Please select the player who nominated this player
-        </DialogContentText>
-        <FormControl fullWidth> 
-          <InputLabel id="nominating-player-select-label">Player</InputLabel>
-          <Select
-            labelId="nominating-player-select-label" 
-            id="nominating-player-select"
-            label="Player"
-            value={accusingPlayerId ? accusingPlayerId : ""}
-            onChange={handlePlayerSelect} 
-          >
-            {selectablePlayers}
-          </Select>
-        </FormControl>
-      </DialogContent>
-      <DialogActions>
-        <Button 
-          disabled={accusingPlayerId === null} 
-          onClick={handleBeginClick}
-        >
-          Begin
-        </Button>
-        <Button onClick={() => setOpenDialog(OpenDialog.None)}>Cancel</Button>
-      </DialogActions>
-    </Dialog>
-  )
-}
 
 
 
-interface ViewPlayerDialog {
-  openDialog: OpenDialog;
-  setOpenDialog: React.Dispatch<React.SetStateAction<OpenDialog>>;
-  player: Player;
-}
 
-function ViewPlayerDialog({openDialog, setOpenDialog, player}: ViewPlayerDialog) {
-  return (
-    <Dialog open={openDialog === OpenDialog.ViewPlayer} onClose={() => setOpenDialog(OpenDialog.None)} maxWidth={"xs"}>
-      <DialogTitle>View Player</DialogTitle>
-      <DialogContent>
-        <Character user={player} useLocal={true}/>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => setOpenDialog(OpenDialog.None)}>Cancel</Button>
-      </DialogActions>
-    </Dialog>
-  )
-}

@@ -1,9 +1,6 @@
-import {Fragment, useContext, useState, useMemo} from 'react'
-import {Card, Typography, Grid, Paper, Checkbox, FormGroup, FormControlLabel, Dialog, 
-        DialogActions, DialogContent, DialogTitle, Button, Box, CircularProgress, Switch, 
-        IconButton, Autocomplete, TextField, List, ListItem, ListItemText, ListItemButton, Collapse, Tabs, Tab}from '@mui/material';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
+import {useContext, useState, useMemo} from 'react'
+import {Card, Typography, Grid, Paper, Checkbox, FormControlLabel, Button, Box, CircularProgress, Switch, 
+        IconButton, Autocomplete, TextField}from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -15,8 +12,10 @@ import Draggable from './Draggable.tsx';
 import useStore from '../hooks/useStore.ts';
 import convertTime from "../helpers/convertTime.ts";
 import Player from '../classes/player.ts';
-import { VoteHistoryItem } from '../helpers/storeTypes.ts';
 import {default as ReminderType} from '../classes/reminder.ts';
+import { OpenCharacterDialog as OpenDialog } from '../helpers/enumTypes.ts';
+import ModuleSelectionDialog from './ModuleSelectionDialog.tsx';
+import VoteHistoryDialog from './VoteHistoryDialog.tsx';
 
 
 type CharacterProps = PlayerCharacterProps & NarratorCharacterProps;
@@ -140,11 +139,7 @@ function PlayerCharacter({user, useLocal = false}: PlayerCharacterProps) {
 
 
 
-enum OpenDialog {
-  None,
-  Module,
-  VoteHistory,
-}
+
 
 interface OldSessionState {
   players: Player[];
@@ -413,172 +408,12 @@ function NarratorCharacter({user}: NarratorCharacterProps) {
 
 
 
-interface ModuleSelectionDialogProps {
-  openDialog: OpenDialog;
-  setOpenDialog: React.Dispatch<React.SetStateAction<OpenDialog>>;
-  allMods: React.ReactNode[];
-}
-
-function ModuleSelectionDialog({openDialog, setOpenDialog, allMods}: ModuleSelectionDialogProps) {
-
-  return (
-    <Dialog open={openDialog === OpenDialog.Module} onClose={() => setOpenDialog(OpenDialog.None)} >
-      <DialogTitle>Select Modules</DialogTitle>
-      <DialogContent>
-        <FormGroup>
-          {allMods}
-        </FormGroup>
-      </DialogContent>
-      <DialogActions>
-        <Button variant="outlined" onClick={() => setOpenDialog(OpenDialog.None)}>Close</Button>
-      </DialogActions>
-    </Dialog>
-  )
-}
 
 
 
-type StateArray = boolean[];
-
-interface VoteHistoryDialogProps {
-  openDialog: OpenDialog;
-  setOpenDialog: React.Dispatch<React.SetStateAction<OpenDialog>>;
-}
-
-function VoteHistoryDialog({openDialog, setOpenDialog}: VoteHistoryDialogProps) {
-
-  const [openState, setOpenState] = useState<StateArray>(Array(32).fill(false));
-  const voteHistory = useStore(state => state.voteHistory)
-  const round = useStore(state => state.phase.round);
-  const [openTab, setOpenTab] = useState(0);
-
-  const tabStyle = {
-    borderBottom: 1, 
-    borderColor: "divider", 
-    mb:2, 
-    position: "sticky",
-    top: 0,
-    zIndex: 1,
-    background: "white"
-  }
-
-  function handleChange(_: React.SyntheticEvent<Element, Event>, newValue: number) {
-    setOpenTab(newValue);
-  }
-
-  function handleOpenClick(index: number) {
-    setOpenState(state => {
-      const newState = !state[index];
-      state = state.fill(false);
-      state[index] = newState;
-      return [...state];
-    })
-  }
-
-  const todaysVoteHistory = voteHistory.filter(item => item.day === round);
-  const yesterdaysVoteHistory = voteHistory.filter(item => item.day === round-1);
-
-  return (
-    <Dialog open={openDialog === OpenDialog.VoteHistory} onClose={() => setOpenDialog(OpenDialog.None)} fullWidth >
-      <DialogTitle>Voting History</DialogTitle>
-      <DialogContent>
-        <Box sx={tabStyle}>
-          <Tabs value={openTab} onChange={handleChange} variant="fullWidth" >
-            <Tab label="Today" />
-            <Tab label="Yesterday" />
-          </Tabs>
-        </Box>
-        <Box hidden={openTab !== 0}>
-          <VoteHistoryDay 
-            historyArray={todaysVoteHistory}
-            handleOpenClick={handleOpenClick}
-            openState={openState}
-          />
-        </Box>
-        <Box hidden={openTab !== 1}>
-          <VoteHistoryDay 
-            historyArray={yesterdaysVoteHistory}
-            handleOpenClick={handleOpenClick}
-            openState={openState}
-          />
-        </Box>
-      </DialogContent>
-      <DialogActions>
-        <Button variant="outlined" onClick={() => setOpenDialog(OpenDialog.None)}>Close</Button>
-      </DialogActions>
-    </Dialog>
-  )
-}
 
 
 
-interface VoteHistoryDayProps {
-  historyArray: VoteHistoryItem[];
-  handleOpenClick: (index: number) => void;
-  openState: StateArray;
-}
-
-function VoteHistoryDay({historyArray, handleOpenClick, openState}: VoteHistoryDayProps) {
-
-  const todaysPlayersThatVoted = new Set();
-  const todaysMostVotedPlayer: {votes: number, name: string | null} = {votes: 0, name: null};
-
-  const todaysVoteHistory = historyArray.map((item, index) => {
-
-    if (item.voterTotal > todaysMostVotedPlayer.votes) {
-      todaysMostVotedPlayer.votes = item.voterTotal;
-      todaysMostVotedPlayer.name = item.nominated;
-    } else if (item.voterTotal === todaysMostVotedPlayer.votes) {
-      todaysMostVotedPlayer.name = null;
-    }
-  
-    const voterList = item.votes.map((aVote, index) => {
-      const voted = aVote.vote === 1;
-      if (voted) todaysPlayersThatVoted.add(aVote.name);
-      const showPower = aVote.power !== 1
-      return (
-        <Typography key={index} component={"span"} sx={{
-          backgroundColor: voted ? "springgreen" : "indianred",
-          p: 0.5,
-          borderRadius: 1,
-          mr: "0.5rem"
-        }}>
-          {`${aVote.name} ${showPower ? "x" + String(aVote.power) : ""}`}
-        </Typography>
-      )
-    })
-
-    return (
-      <Fragment key={index}>
-        <ListItem disablePadding >
-          <ListItemButton onClick={() => handleOpenClick(index)}>
-            {openState[index] ? <ExpandLess /> : <ExpandMore />}
-            <ListItemText primary={`#${index+1}. (${item.accuser}) nominated (${item.nominated}) - ${item.voterTotal} vs ${item.abstainerTotal}`} />
-          </ListItemButton>
-        </ListItem>
-        <Collapse in={openState[index]} timeout="auto" unmountOnExit>
-          <Typography>{voterList}</Typography>
-        </Collapse>
-      </Fragment>
-    )
-  })
-
-  const hasMostVotedPlayer = todaysMostVotedPlayer.name !== null;
-
-  const totalPotentialVoters = historyArray[0]?.votes.length;
-  const passedThreshold = todaysMostVotedPlayer !== null ? todaysMostVotedPlayer.votes > Math.ceil(totalPotentialVoters/2) : false;
-  const threshold = `${todaysMostVotedPlayer.votes}/${Math.ceil(totalPotentialVoters/2)}`;
-
-  if (!hasMostVotedPlayer) todaysMostVotedPlayer.name = "Inconclusive";
-  else todaysMostVotedPlayer.name = "(" + todaysMostVotedPlayer.name + ")";
 
 
-  return (<>
-    <Typography >Most Voted Player: {todaysMostVotedPlayer.name}</Typography>
-    {hasMostVotedPlayer ? <Typography >Has enough votes for dismissal? {passedThreshold ? `Yes ${threshold}` : "no"}</Typography> : ""}
-    <Typography >Players that have Voted: {Array.from(todaysPlayersThatVoted).join(", ")}</Typography>
-    <List>
-      {todaysVoteHistory}
-    </List>
-  </>)
-}
+
