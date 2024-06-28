@@ -1,4 +1,6 @@
 {
+  "extends": "astro/tsconfigs/base",
+
   "compilerOptions": {
     "target": "ES2020",
     "useDefineForClassFields": true,
@@ -23,6 +25,7 @@
     "noImplicitThis": true,
     "strictNullChecks": true
   },
+  
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

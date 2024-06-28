@@ -14,14 +14,19 @@
     "test": "npx playwright test",
     "uitest": "npx playwright test --ui",
     "report": "npx playwright show-report",
-    "bundleSize": "npx vite-bundle-visualizer"
+    "bundleSize": "npx vite-bundle-visualizer",
+    "pedia": "astro dev",
+    "pediaBuild": "astro build",
+    "pediaPreview": "astro preview"
   },
   "dependencies": {
+    "@astrojs/starlight": "^0.24.5",
     "@dnd-kit/core": "^6.1.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.18",
     "@mui/material": "^5.14.13",
+    "astro": "^4.11.3",
     "json5": "^2.2.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
