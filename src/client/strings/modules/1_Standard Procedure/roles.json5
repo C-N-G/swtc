@@ -145,7 +145,7 @@
     "name": "Medic",
     "type": "Agent",
     "description": "You can’t save everyone.",
-    "ability": "Each night, if any players have died tonight, you learn who, and may choose one to resurrect.",
+    "ability": "Once per game, each night, if any players have died tonight, you learn who, and may choose one to resurrect.",
     "orderType": "role_resurrects_others",
     "attributes": [
       "Human"
