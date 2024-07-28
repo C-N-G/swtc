@@ -1,9 +1,12 @@
 ---
-team: Loyalist
+name: Analyst
 type: Agent
+team: Loyalist
+description: “Don’t blame me, I’m just presenting the data.”
+ability: Each night, you learn which team the narrator thinks is winning.
+orderType: role_with_recurring_info
 module: Standard Procedure
 attributes: Human
-flavour text: “Don’t blame me, I’m just presenting the data.”
 ---
 # Ability
 Each night, you learn which team the Narrator thinks is winning.
