@@ -14,7 +14,8 @@
     "test": "npx playwright test",
     "uitest": "npx playwright test --ui",
     "report": "npx playwright show-report",
-    "bundleSize": "npx vite-bundle-visualizer"
+    "bundleSize": "npx vite-bundle-visualizer",
+    "pedia": "tsx ./src/server/pediaGenerator.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
@@ -22,12 +23,20 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.18",
     "@mui/material": "^5.14.13",
+    "glob": "^11.0.0",
     "json5": "^2.2.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "rehype-stringify": "^10.0.0",
+    "remark-frontmatter": "^5.0.0",
+    "remark-gfm": "^4.0.0",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.0",
+    "remark-wiki-link": "^2.0.1",
     "socket.io": "^4.7.2",
     "socket.io-client": "^4.7.2",
     "sqlite3": "^5.1.6",
+    "unified": "^11.0.5",
     "zustand": "^4.5.2"
   },
   "devDependencies": {
