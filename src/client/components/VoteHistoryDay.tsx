@@ -58,7 +58,7 @@ function VoteHistoryDay({historyArray, handleOpenClick, openState}: VoteHistoryD
   const hasMostVotedPlayer = todaysMostVotedPlayer.name !== null;
 
   const totalPotentialVoters = historyArray[0]?.votes.length;
-  const passedThreshold = todaysMostVotedPlayer !== null ? todaysMostVotedPlayer.votes > Math.ceil(totalPotentialVoters/2) : false;
+  const passedThreshold = todaysMostVotedPlayer !== null ? todaysMostVotedPlayer.votes >= Math.ceil(totalPotentialVoters/2) : false;
   const threshold = `${todaysMostVotedPlayer.votes}/${Math.ceil(totalPotentialVoters/2)}`;
 
   if (!hasMostVotedPlayer) todaysMostVotedPlayer.name = "Inconclusive";
