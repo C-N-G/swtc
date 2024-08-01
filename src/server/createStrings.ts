@@ -87,11 +87,16 @@ interface moduleData {
 /**
  * Reads the front matter from every file in an array of file and converts them to an object for writing to disk
  * @param filePaths 
+ * @param onlyModules - flag for only processing files if they are part of a module directory
  * @returns object for returning
  */
-async function convertFiles(filePaths: string[]): Promise<moduleData> {
+async function convertFiles(filePaths: string[], onlyModules?: boolean): Promise<moduleData> {
   const frontMatterData: moduleData = {};
   for (let i = 0; i < filePaths.length; i++) {
+
+    // only use path if it part of a module
+    if (onlyModules && !filePaths[i].toLowerCase().includes("module")) continue;
+
     // get front matter from file
     const data = await getFrontMatter(filePaths[i]); 
 
@@ -166,6 +171,7 @@ async function createModules(dataObj: moduleData, basePath: string): Promise<voi
 const vaultPath = ("../swtc-site/vault");
 const stringsPath = ("./src/client/strings");
 const modulePath = stringsPath + "/modules";
+const onlyProcessModules = true;
 
 // check if vault directory exists before continuing
 if (!await fileExists(vaultPath)) {
@@ -173,6 +179,6 @@ if (!await fileExists(vaultPath)) {
 }
 
 const mdFiles = await glob(`${vaultPath}/**/*.md`);
-const data = await convertFiles(mdFiles);
+const data = await convertFiles(mdFiles, onlyProcessModules);
 await createModules(data, modulePath);
 console.log("front matter conversion complete");
