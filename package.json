@@ -15,7 +15,8 @@
     "uitest": "npx playwright test --ui",
     "report": "npx playwright show-report",
     "bundleSize": "npx vite-bundle-visualizer",
-    "pedia": "tsx ./src/server/pediaGenerator.ts"
+    "createStrings": "tsx ./src/server/createStrings.ts"
+
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",
@@ -23,6 +24,8 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.18",
     "@mui/material": "^5.14.13",
+    "front-matter": "^4.0.2",
+    "glob": "^11.0.0",
     "json5": "^2.2.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
