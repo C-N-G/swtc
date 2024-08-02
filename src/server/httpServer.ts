@@ -2,15 +2,14 @@ import path from "node:path";
 import { fileURLToPath } from 'url';
 import fs from "node:fs";
 import { IncomingMessage, ServerResponse } from "node:http";
+import controlPanelController, { controlPanelUrl } from "./controlPanel";
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const basePath = path.join(__dirname, "..", "..", "dist");
 
 export default function swtcHttpServer(req: IncomingMessage, res: ServerResponse) {
-
-
-  console.log(req.url);
   
   res.setHeader('Access-Control-Allow-Origin', '*');
 
@@ -33,6 +32,8 @@ export default function swtcHttpServer(req: IncomingMessage, res: ServerResponse
   // redirect url to work with nginx server
   if (req.url === "/swtc") {
     req.url = "/"
+  } else if (req.url.startsWith("/swtc/" + controlPanelUrl)) {
+    return controlPanelController(req, res);
   } else if (req.url.startsWith("/swtc")) {
     req.url = req.url.slice(5)
   }
