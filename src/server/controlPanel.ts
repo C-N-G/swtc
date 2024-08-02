@@ -48,10 +48,16 @@ export default function controlPanelController(req: IncomingMessage, res: Server
     exec(commandString, (error, stdout, stderr) => {
       if (error) {
         console.log(`error: ${error.message}`);
+        res.statusCode = 200;
+        res.write(JSON.stringify(error.message));
+        res.end();
         return;
       }
       if (stderr) {
           console.log(`stderr: ${stderr}`);
+          res.statusCode = 200;
+          res.write(JSON.stringify(stderr));
+          res.end();
           return;
       }
       console.log(`stdout: ${stdout}`);
