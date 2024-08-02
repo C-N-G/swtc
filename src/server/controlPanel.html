@@ -13,28 +13,36 @@
 
     <script>
 
+      const strings = document.getElementById("strings");
+      const output = document.getElementById("output");
+
       const status = {
         element: document.getElementById("status"),
         processing: false,
         text: "",
         animation: "",
+        time: 0,
         set(string) {
           this.text = string;
           this.element.innerHTML = string;
         },
         startProcessing(message) {
+          output.innerHTML = "";
           this.set(message);
+          const startTime = Date.now();
           this.processing = setInterval(() => {
-            this.animation = this.animation + "."
-            if (this.animation.length > 3) this.animation = "";
-            this.element.innerHTML = this.text + this.animation;
+            this.animation = this.animation + ".";
+            this.time = Math.floor((Date.now() - startTime) / 1000);
+            if (this.animation.length > 6) this.animation = "";
+            this.element.innerHTML = `${this.time}s - ${this.text}${this.animation}`;
           }, 300)
         },
         stopProcessing(message) {
           clearInterval(this.processing);
           this.processing = false;
           this.animation = "";
-          this.set(message);
+          this.set(`(${this.time}) - ${message}`);
+          this.time = 0;
         }
       } 
 
@@ -47,7 +55,7 @@
           .replaceAll("'", '&#039;')
       }
 
-      const strings = document.getElementById("strings")
+
 
       async function handleRequest(command) {
 
@@ -62,7 +70,7 @@
             throw new Error(`Response status: ${response.status}`);
           }
           const json = await response.json();
-          document.getElementById("output").innerHTML = escapeHtml(json);
+          output.innerHTML = escapeHtml(json);
           status.stopProcessing("processing complete");
           strings.disabled = false;
         } catch (error) {

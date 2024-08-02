@@ -42,21 +42,22 @@ export default function controlPanelController(req: IncomingMessage, res: Server
       " && git pull" +
       " && cd ../swtc" +
       " && npm run createStrings" + 
-      " && npm run build" +
-      " && pm2 restart swtc"
+      " && npm run build"
+
+      // cd ../swtc-site && git pull && cd ../swtc && npm run createStrings && npm run build && pm2 restart swtc
  
     exec(commandString, (error, stdout, stderr) => {
       if (error) {
         console.log(`error: ${error.message}`);
         res.statusCode = 200;
-        res.write(JSON.stringify(error.message));
+        res.write(JSON.stringify(`error: ${error.message}`));
         res.end();
         return;
       }
       if (stderr) {
           console.log(`stderr: ${stderr}`);
           res.statusCode = 200;
-          res.write(JSON.stringify(stderr));
+          res.write(JSON.stringify(`stderr: ${stderr}`));
           res.end();
           return;
       }

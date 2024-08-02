@@ -16,7 +16,7 @@ async function fileExists(path: string): Promise<boolean> {
     console.log(path + " already exists");
     return true;
   } catch {
-    console.error(path + " does not exist");
+    console.log(path + " does not exist");
     return false;
   }
 }
