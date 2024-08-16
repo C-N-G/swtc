@@ -1,3 +1,8 @@
+### 02/07/2024 v0.5.4
+- added favicon
+---
+
+
 ### 26/06/2024 v0.5.3
 - converted project to typescript
 - converted data files to json5
