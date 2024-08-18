@@ -90,12 +90,23 @@ interface RegularPlayerIndicatorProps {
   player: Player;
   handleClick: (playerId: string) => void;
   vertical: boolean;
+  chars: Char[];
+  roles: Role[];
   selected: DisplaySlice["selected"];
 }
 
-function RegularPlayerIndicator({player, handleClick, vertical, selected}: RegularPlayerIndicatorProps) {
+function RegularPlayerIndicator({player, handleClick, vertical, chars, roles, selected}: RegularPlayerIndicatorProps) {
 
   const thisPlayerSelected = selected === player.id;
+
+  const getValue = (value: number | string, list: Char[] | Role[]) => {
+    if (typeof value === "string") {
+      return value;
+    } 
+    else if (typeof value === "number") {
+      return GameData.hackValue(list[value].name);
+    }
+  }
 
   return (
     <Box sx={BUTTON_CONTAINER_STYLE(vertical)}>
@@ -105,12 +116,22 @@ function RegularPlayerIndicator({player, handleClick, vertical, selected}: Regul
           <Typography 
             variant="body1" //TODO should possibly be subtitle2
             sx={{
-              wordBreak: "break-word",
+              wordBreak: "normal",
               overflow: "inherit",
               lineHeight: 1.7,
               px: 0.5
             }}>
-              {player.label}
+              {/* {player.label} */}
+              <Box component={"span"} sx={{position: "relative"}}>
+
+              {getValue(player.role, roles)}
+              </Box>
+              <br />
+              <Box component={"span"} sx={{position: "relative"}}>
+
+              {getValue(player.char, chars)}
+              </Box>
+
           </Typography>
         </Box>
       </Button>
@@ -220,7 +241,6 @@ function NarratorPlayerIndicator({player, handleClick, vertical, chars, roles, s
               <Box component={"span"} sx={{position: "relative"}}>
                 {GameData.teams[player.rTeam]}{player.team !== player.rTeam? "*" : ""}
                 {player.team !== player.rTeam ? captionBuilder(GameData.teams[player.team]) : ""}
-                
               </Box>
           </Typography>
         </Box>

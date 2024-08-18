@@ -48,17 +48,41 @@ interface RegularPlayerDetailsProps {
 function RegularPlayerDetails({player, handleViewPlayerClick, chars, roles}: RegularPlayerDetailsProps) {
 
   const handlePlayerDataChange = useStore(state => state.changePlayerAttribute);
+  
+  const getValue = (value: number | string, list: string[]) => {
+    if (typeof value === "string") {
+      return value;
+    } 
+    else {
+      return GameData.hackValue(list[value]);
+    }
+  }
 
-  function selectBuilder(playerId: string, type: string, list: string[], value: number) {
+  const checkSetValue = (value: string, list: string[]) => {
+    if (typeof value === "string" && list.includes(value)) {
+      return list.indexOf(value);
+    } 
+    else if (typeof value === "string") {
+      return value;
+    } 
+    else if (value === null) {
+      return 0;
+    }
+    else {
+      return GameData.hackValue(list[value]); // hack - this is for when the modules change and the current value no longer exists
+    }
+  }
+
+  function selectBuilder(playerId: string, type: string, list: string[], value: number | string) {
     return <Autocomplete
       disablePortal
-      disableClearable
+      freeSolo
       id={`player-${type.toLowerCase()}-input`}
       size="small"
       options={list}
       renderInput={(params) => <TextField {...params} label={type} />}
-      value={GameData.hackValue(list[value])} // hack - this is for when the modules change and the current value no longer exists
-      onChange={(_, newValue) => handlePlayerDataChange(playerId, type.toLowerCase(), list.indexOf(newValue))}
+      inputValue={getValue(value, list)} 
+      onInputChange={(_, newValue) => handlePlayerDataChange(playerId, type.toLowerCase(), checkSetValue(newValue, list))}
     />
   }
 
