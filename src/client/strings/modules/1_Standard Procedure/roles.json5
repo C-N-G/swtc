@@ -127,7 +127,7 @@
     "name": "Janitor",
     "type": "Agent",
     "description": "I’ve seen things in the dark hours of the night, things you people wouldn’t believe.",
-    "ability": "Each night, you learn how many other players woke up, or will wake up, that night due to their ability.",
+    "ability": "Each night, you learn a player (not yourself) who woke up, or will wake up, that night due to their ability.",
     "orderType": "role_depends_on_others",
     "attributes": [
       "Human"
