@@ -12,7 +12,7 @@
   {
     "name": "Alert",
     "description": "PLACEHOLDER",
-    "ability": "During the night, once per game, when you’re chosen by another player, you learn who they are, even if their ability would kill you.",
+    "ability": "During the night, once per game, when you’re chosen by a player (not yourself), you learn who they are, even if their ability would kill you.",
     "reminders": [
       ["🚨", "#FFFF00", "Alert: Has used their ability."]
     ]
@@ -101,7 +101,7 @@
   {
     "name": "Persevering",
     "description": "PLACEHOLDER",
-    "ability": "The first time you are killed by another player, you survive.",
+    "ability": "The first time you are killed by a player (not yourself), you survive.",
     "reminders": [
       ["🫀", "#FFFF00", "Persevering: Has used their ability."]
     ]
