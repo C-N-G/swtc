@@ -37,7 +37,7 @@
   {
     "name": "Empathetic",
     "description": "PLACEHOLDER",
-    "ability": "You start knowing how many other players are Psychic.",
+    "ability": "You start knowing how many players (not yourself) are Psychic.",
     "orderType": "char_with_starting_info",
     "attributes": ["Psychic"]
   },
