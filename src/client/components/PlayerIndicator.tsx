@@ -64,16 +64,18 @@ const BUTTON_STYLE = (team: number, rState: number, isSelected: boolean) => ({
   },
   textTransform: "none",
   boxShadow: isSelected ? "inset 0 0 15px 12px rgba(0,0,0,0.8)" : "",
+  maxHeight: "calc(100% - 10px)"
 })
 
 const BUTTON_CONTAINER_STYLE = (vertical: boolean) => ({
   width: vertical ? "100%" : "20%",
+  maxHeight: vertical ? "33.33%" : "unset",
   aspectRatio: "1/1",
   flexDirection: "column",
   justifyContent: "flex-start",
   display: "flex",
   position: "relative",
-  // overflow: "clip", 
+  overflow: "clip", 
 })
 
 const BUTTON_TEXT_CONTAINER_STYLE = {
@@ -114,11 +116,11 @@ function RegularPlayerIndicator({player, handleClick, vertical, chars, roles, se
         <Typography>{player.name}</Typography>
         <Box sx={BUTTON_TEXT_CONTAINER_STYLE}>
           <Typography 
-            variant="body1" //TODO should possibly be subtitle2
+            variant="subtitle2"
             sx={{
               wordBreak: "normal",
               overflow: "inherit",
-              lineHeight: 1.7,
+              lineHeight: 1.8,
               px: 0.5
             }}>
               {/* {player.label} */}
@@ -220,8 +222,8 @@ function NarratorPlayerIndicator({player, handleClick, vertical, chars, roles, s
               wordBreak: "break-word",
               overflow: "inherit",
               width: "inherit",
-              pb: 1,
-              lineHeight: 1.9
+              lineHeight: 1.8,
+              pb: 0.5
             }}>
               <Box component={"span"} sx={{position: "relative"}}>
                 {GameData.states[player.rState]}{player.state !== player.rState ? "*" : ""}
