@@ -28,12 +28,14 @@ function Phase() {
 
   return (
   <Card sx={{
-    background: "lightgreen", 
+    background: "var(--sl-color-gray-5)", 
+    borderBottom: "2px solid var(--sl-color-accent)",
     height: "10vh", 
     flexGrow: 1,
     display: "flex", 
     justifyContent: "space-evenly",
     alignItems: "center",
+    boxSizing: "border-box",
   }}>
     {getUserTypeCheckedComponent()}
   </Card>
@@ -139,7 +141,12 @@ function NarratorPhase() {
           </ButtonGroup>
         </Grid>
         <Grid item xs={4} container justifyContent="center">
-          <Stack alignItems="center" spacing={-1}>
+          <Stack alignItems="center" spacing={-1} sx={{
+            borderRadius: "50px",
+            color: phase.cycle === "Night" ? "white" : "black",
+            background: phase.cycle === "Night" ? "black" : "white",
+            boxShadow: `0 0 30px 50px ${phase.cycle === "Night" ? "black" : "white"}`,
+          }}>
             <Typography variant="h5">Current Phase</Typography>
             <Typography variant="h3">{phase.cycle} {phase.round}</Typography>
           </Stack>

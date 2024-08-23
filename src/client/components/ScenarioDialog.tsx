@@ -101,7 +101,7 @@ function ScenarioDialog({openDialog, handleClose, chars, roles}: ScenarioDialogP
     position: "sticky",
     top: 0,
     zIndex: 1,
-    background: "white"
+    background: "var(--sl-color-gray-5)"
   }
 
   const charList = chars ? chars.filter(filter).map(listMaker) : [];

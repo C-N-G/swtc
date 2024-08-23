@@ -40,7 +40,8 @@ function Character(props: CharacterProps) {
 
   return (
     <Card sx={{
-      background: "darkseagreen", 
+      background: "var(--sl-color-gray-5)", 
+      borderLeft: "2px solid var(--sl-color-accent)",
       width: "100%",
       height: "70%",
       display: "flex", 
@@ -84,12 +85,12 @@ function PlayerCharacter({user, useLocal = false}: PlayerCharacterProps) {
   return (<>
     <Grid container justifyContent="left" spacing={2} sx={{overflow: "auto"}}>
       <Grid item xs={6}>
-        <Paper elevation={2} sx={{backgroundColor: "lightgreen"}}>
+        <Paper elevation={2} sx={{backgroundColor: "var(--sl-color-accent)"}}>
           <Typography variant="h6" px={3} ><Box component="span" fontWeight={"Bold"}>State: </Box>{GameData.states[user.rState]}</Typography> 
         </Paper>
       </Grid>
       <Grid item xs={6}>
-        <Paper elevation={2} sx={{backgroundColor: "lightgreen"}}>
+        <Paper elevation={2} sx={{backgroundColor: "var(--sl-color-accent)"}}>
           <Typography variant="h6" px={3}>{user?.name}</Typography> 
         </Paper>
       </Grid>
@@ -357,7 +358,7 @@ function NarratorCharacter({user}: NarratorCharacterProps) {
         flexGrow: 1, 
         justifyContent: "center", 
         alignItems: "center",
-        backgroundColor: "rgb(25, 118, 210)",
+        backgroundColor: "var(--sl-color-accent)",
         mx: 1
         }}>
         <Typography variant="h6" color={"white"}>Cohesion: {cohesion}</Typography>
@@ -385,7 +386,7 @@ function NarratorCharacter({user}: NarratorCharacterProps) {
         flexGrow: 1, 
         justifyContent: "center", 
         alignItems: "center",
-        backgroundColor: "rgb(25, 118, 210)",
+        backgroundColor: "var(--sl-color-accent)",
       }}>
         <Typography color={"white"}>Timer: {convertTime(phaseTimer.time)}</Typography>
       </Paper>

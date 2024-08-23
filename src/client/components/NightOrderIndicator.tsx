@@ -29,7 +29,7 @@ function NightOrderIndicator({nightOrder}: NightOrderIndicatorProps) {
   return (
     <Box 
       sx={{
-        background: checked ? "lightgreen" : "white",
+        background: checked ? "var(--sl-color-accent-low)" : "var(--sl-color-gray-3)",
         p: 0.1,
         borderRadius: 1,
         fontFamily: "monospace",

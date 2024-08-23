@@ -140,7 +140,9 @@ function Options() {
 
   return (
     <Card sx={{
-      background: "lightcoral", 
+      background: "var(--sl-color-gray-5)", 
+      borderLeft: "2px solid var(--sl-color-accent)",
+      borderBottom: "2px solid var(--sl-color-accent)",
       height: "10vh", 
       display: "flex", 
       justifyContent: "space-around", 

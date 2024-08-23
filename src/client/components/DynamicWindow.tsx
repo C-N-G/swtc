@@ -17,7 +17,7 @@ function DynamicWindow({children, display}: DynamicWindowProps) {
     }}>
       <Card sx={{
         textAlign: "center",
-        background: "lightpink",
+        background: "var(--sl-color-gray-4)", 
         display: "flex",
         flexGrow: 1,
         margin: "5px"

@@ -55,15 +55,15 @@ const BUTTON_STYLE = (team: number, rState: number, isSelected: boolean) => ({
   flexDirection: "column",
   justifyContent: "flex-start",
   overflow: "clip",
-  background: team === 2 ? "rgb(180, 30, 10)" : team === 1 ? "rgb(25, 118, 210)" : "rgb(128, 128, 128)",
+  background: team === 2 ? "var(--sl-color-accent)" : team === 1 ? "var(--sl-color-loyalist-accent)" : "var(--sl-color-unknown-accent)",
   backgroundImage: rState === 0 ? "linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,0.5), rgba(0,0,0,1))" : "",
   ":hover": {
-    background: team === 2 ? "rgb(150, 25, 5)" : team === 1 ? "rgb(21, 101, 192)" : "rgb(96, 96, 96)",
+    background: team === 2 ? "var(--sl-color-accent-low)" : team === 1 ? "var(--sl-color-loyalist-accent-low)" : "var(--sl-color-unknown-accent-low)",
     backgroundImage: rState === 0 ? "linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.5), rgba(0,0,0,1))" : "",
-    boxShadow: isSelected ? "inset 0 0 15px 12px rgba(0,0,0,1)" : "",
+    boxShadow: isSelected ? "inset 0 0 10px 7px rgba(0,0,0,0.8)" : "",
   },
   textTransform: "none",
-  boxShadow: isSelected ? "inset 0 0 15px 12px rgba(0,0,0,0.8)" : "",
+  boxShadow: isSelected ? "inset 0 0 10px 7px rgba(0,0,0,0.8)" : "",
   maxHeight: "calc(100% - 10px)"
 })
 

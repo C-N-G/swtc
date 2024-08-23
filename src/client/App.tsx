@@ -1,6 +1,5 @@
 import {createContext, useEffect} from "react";
-// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-// import { createTheme } from "@mui/material/styles";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import {Box, Button, Container, Grid} from "@mui/material";
 import {DndContext, DragEndEvent} from "@dnd-kit/core";
 import Board from "./components/Board.tsx";
@@ -14,6 +13,30 @@ import GameData from "./strings/_gameData.ts";
 import useStore from "./hooks/useStore.ts";
 import "./App.css"
 import { PlayerAttributeData, PlayerVoteData, SessionData, SocketCallbackResponse, TimerData } from "../server/serverTypes.ts";
+
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+    primary: {
+      light: '#fa5757',
+      main: '#a61c1c',
+      dark: '#5e0808',
+      contrastText: '#fff',
+    },
+  },
+  components: {
+    // Name of the component
+    MuiButton: {
+      styleOverrides: {
+        // Name of the slot
+        root: {
+          // Some CSS
+          // fontSize: '1rem',
+        },
+      },
+    },
+  },
+});
 
 export const UserContext = createContext<Player | null>(null);
 
@@ -219,6 +242,7 @@ function App() {
     startTimer, stopTimer, setTimer, user]);
 
   return (
+    <ThemeProvider theme={darkTheme}>
     <DndContext onDragEnd={handleDragEnd}>
     <UserContext.Provider value={user}>
     <Container sx={{maxWidth: "1440px"}}>
@@ -266,6 +290,7 @@ function App() {
     </Container>
     </UserContext.Provider>
     </DndContext>
+    </ThemeProvider>
   );
 }
 
