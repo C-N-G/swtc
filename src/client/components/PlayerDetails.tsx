@@ -107,7 +107,7 @@ function RegularPlayerDetails({player, handleViewPlayerClick, chars, roles}: Reg
       <Grid item xs={6}>
         <Stack spacing={2} sx={{mx: "1rem", mb: "0", mt: "1rem"}}>
           <Box position={"relative"}>
-          <Typography variant="h5" sx={{mb: "0.72rem"}}>
+          <Typography variant="h5" sx={{mb: "0.5rem"}}>
             {player.name}
           </Typography>
           <Typography variant="caption" sx={{
@@ -131,7 +131,7 @@ function RegularPlayerDetails({player, handleViewPlayerClick, chars, roles}: Reg
             }}
           />
           {/* <Button variant="outlined" sx={{marginLeft: "1rem", marginRight: "1rem"}}>Talk (W.I.P)</Button> */}
-          <Button variant="outlined" onClick={handleViewPlayerClick}>View Player</Button>
+          <Button variant="outlined" onClick={handleViewPlayerClick} sx={{height: "40px"}}>View Player</Button>
         </Stack>
       </Grid>
       <Grid item xs={6}>
@@ -147,7 +147,7 @@ function RegularPlayerDetails({player, handleViewPlayerClick, chars, roles}: Reg
               id="player-notes"
               label="Player Notes"
               multiline
-              rows={8}
+              rows={9}
               fullWidth
               value={player.notes}
               onChange={(event) => {
