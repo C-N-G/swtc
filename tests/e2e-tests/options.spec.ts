@@ -12,12 +12,13 @@ test("session resuming with local data", async ({session}) => {
 
   await player1.reload();
   await expect(player1.getByText(/day 1/i)).toBeVisible({timeout: 15000});
-  await expect(player1.getByText(/test1/i)).toBeVisible();
   await player1.getByRole('button', { name: /player1/i }).click();
+  await expect(player1.getByText(/test1/i)).toBeVisible();
   await player1.getByLabel('Quick Label').fill('test2');
 
   await player1.reload();
   await expect(player1.getByText(/day 1/i)).toBeVisible();
+  await player1.getByRole('button', { name: /player1/i }).click();
   await expect(player1.getByText(/test2/i)).toBeVisible();
 
   await expect(player2.getByText(/day 1/i)).toBeVisible();
@@ -27,6 +28,7 @@ test("session resuming with local data", async ({session}) => {
   await player2.reload();
 
   await expect(player2.getByText(/day 1/i)).toBeVisible();
+  await player2.getByRole('button', { name: /player1/i }).click();
   await expect(player2.getByText(/test3/i)).toBeVisible();
 
   await expect(player1.getByText(/test2/i)).toBeVisible();
