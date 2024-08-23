@@ -80,7 +80,7 @@ const BUTTON_CONTAINER_STYLE = (vertical: boolean) => ({
 
 const BUTTON_TEXT_CONTAINER_STYLE = {
   display: "flex", 
-  justifyContent: "flex-start", 
+  justifyContent: "center", 
   flexDirection: "column",
   flexGrow: 1,
   overflow: "inherit",
@@ -113,10 +113,31 @@ function RegularPlayerIndicator({player, handleClick, vertical, chars, roles, se
     }
   }
 
+  const getName = (name: string, nickname: string) => {
+    if (nickname) {
+      return nickname;
+    } else {
+      return name;
+    }
+  }
+
   return (
     <Box sx={BUTTON_CONTAINER_STYLE(vertical)}>
       <Button variant="contained" onClick={() => {handleClick(player.id)}} sx={BUTTON_STYLE(player.team, player.rState, thisPlayerSelected)}>
-        <Typography>{player.name}</Typography>
+        <Box sx={{position: "relative", width: "100%"}}>
+          <Typography>{getName(player.name, player.label)}</Typography>
+          <Typography variant="caption" sx={{
+            position: "absolute",
+            top: "110%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            wordBreak: "keep-all",
+            fontSize: "9px"
+            }}
+          >
+            {player.label && `(${player.name})`}
+          </Typography>
+        </Box>
         <Box sx={BUTTON_TEXT_CONTAINER_STYLE}>
           <Typography 
             variant="subtitle2"
@@ -126,17 +147,13 @@ function RegularPlayerIndicator({player, handleClick, vertical, chars, roles, se
               lineHeight: 1.8,
               px: 0.5
             }}>
-              {/* {player.label} */}
               <Box component={"span"} sx={{position: "relative"}}>
-
-              {getValue(player.role, roles)}
+                {getValue(player.role, roles)}
               </Box>
               <br />
               <Box component={"span"} sx={{position: "relative"}}>
-
-              {getValue(player.char, chars)}
+                {getValue(player.char, chars)}
               </Box>
-
           </Typography>
         </Box>
       </Button>
