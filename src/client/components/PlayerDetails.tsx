@@ -58,7 +58,7 @@ function RegularPlayerDetails({player, handleViewPlayerClick, chars, roles}: Reg
     }
   }
 
-  const checkSetValue = (value: string, list: string[]) => {
+  const checkSetValue = (value: string | null, list: string[]) => {
     if (typeof value === "string" && list.includes(value)) {
       return list.indexOf(value);
     } 
@@ -73,7 +73,7 @@ function RegularPlayerDetails({player, handleViewPlayerClick, chars, roles}: Reg
     }
   }
 
-  function selectBuilder(playerId: string, type: string, list: string[], value: number | string) {
+  function selectBuilderSolo(playerId: string, type: string, list: string[], value: number | string) {
     return <Autocomplete
       disablePortal
       freeSolo
@@ -81,8 +81,23 @@ function RegularPlayerDetails({player, handleViewPlayerClick, chars, roles}: Reg
       size="small"
       options={list}
       renderInput={(params) => <TextField {...params} label={type} />}
+      value={getValue(value, list)}
+      onChange={(_, newValue) => handlePlayerDataChange(playerId, type.toLowerCase(), checkSetValue(newValue, list))}
       inputValue={getValue(value, list)} 
       onInputChange={(_, newValue) => handlePlayerDataChange(playerId, type.toLowerCase(), checkSetValue(newValue, list))}
+    />
+  }
+  
+  function selectBuilder(playerId: string, type: string, list: string[], value: number) {
+    return <Autocomplete
+      disablePortal
+      disableClearable
+      id={`player-${type.toLowerCase()}-input`}
+      size="small"
+      options={list}
+      renderInput={(params) => <TextField {...params} label={type} />}
+      value={GameData.hackValue(list[value])} // hack - this is for when the modules change and the current value no longer exists
+      onChange={(_, newValue) => handlePlayerDataChange(playerId, type.toLowerCase(), list.indexOf(newValue))}
     />
   }
 
@@ -122,8 +137,8 @@ function RegularPlayerDetails({player, handleViewPlayerClick, chars, roles}: Reg
       </Grid>
       <Grid item xs={7}>
         <Stack spacing={2} sx={{mx: "1rem", mb: "0", mt: "1.3rem"}}>
-          {selectBuilder(player.id, "Role", roles, player.role)}
-          {selectBuilder(player.id, "Char", chars, player.char)}
+          {selectBuilderSolo(player.id, "Role", roles, player.role)}
+          {selectBuilderSolo(player.id, "Char", chars, player.char)}
           {selectBuilder(player.id, "Team", GameData.teams, player.team)}
           <Button variant="outlined" onClick={handleViewPlayerClick}>View Player</Button>
         </Stack>

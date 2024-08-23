@@ -21,8 +21,6 @@ export const createPlayerSlice: StateCreator<
 
   changePlayerAttribute: (targetId, targetProperty, targetValue, fromServer = false) => set(state => {
 
-    console.log("target value: ", targetValue);
-
     if (["rRole", "rChar", "rState", "rTeam", "rVotePower"].includes(targetProperty) && fromServer === false && state.session.sync === true) {
       socket.emit("attribute", {targetId: targetId, targetProperty: targetProperty, targetValue: targetValue});
       return {players: state.players};
