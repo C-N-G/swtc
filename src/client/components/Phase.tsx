@@ -65,7 +65,13 @@ function PlayerPhase() {
         </ButtonGroup>
       </Grid>
       <Grid item xs={4} container justifyContent="center">
-        <Stack alignItems="center" spacing={-1}>
+        <Stack alignItems="center" spacing={-1} sx={{
+            borderRadius: "50px",
+            color: phase.cycle === "Night" ? "white" : "black",
+            background: phase.cycle === "Night" ? "black" : "white",
+            boxShadow: `0 0 30px 50px ${phase.cycle === "Night" ? "black" : "white"}`,
+            transition: "color 0.5s, background 0.5s, box-shadow, 0.5s",
+          }}>
           <Typography variant="h5">Current Phase</Typography>
           <Typography variant="h3">{phase.cycle} {phase.round}</Typography>
         </Stack>
@@ -146,6 +152,7 @@ function NarratorPhase() {
             color: phase.cycle === "Night" ? "white" : "black",
             background: phase.cycle === "Night" ? "black" : "white",
             boxShadow: `0 0 30px 50px ${phase.cycle === "Night" ? "black" : "white"}`,
+            transition: "color 0.5s, background 0.5s, box-shadow, 0.5s",
           }}>
             <Typography variant="h5">Current Phase</Typography>
             <Typography variant="h3">{phase.cycle} {phase.round}</Typography>

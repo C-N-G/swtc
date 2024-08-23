@@ -1,7 +1,12 @@
 body {
   margin: 0;
   overflow: hidden;
-  background: var(--sl-color-gray-6);
+  /* background: var(--sl-color-gray-6); */
+  background: linear-gradient(
+    var(--sl-color-gray-3),
+    var(--sl-color-black)
+  );
+  height: 110vh;
 }
 
 :root {
