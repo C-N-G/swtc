@@ -105,6 +105,9 @@ function RegularPlayerIndicator({player, handleClick, vertical, chars, roles, se
     if (typeof value === "string") {
       return value;
     } 
+    else if (typeof value === "number" && value === 0) {
+      return "";
+    }
     else if (typeof value === "number") {
       return GameData.hackValue(list[value].name);
     }

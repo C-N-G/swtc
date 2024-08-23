@@ -104,10 +104,10 @@ function RegularPlayerDetails({player, handleViewPlayerClick, chars, roles}: Reg
 
   return (
     <Grid container>
-      <Grid item xs={5}>
-        <Stack>
+      <Grid item xs={6}>
+        <Stack spacing={2} sx={{mx: "1rem", mb: "0", mt: "1rem"}}>
           <Box position={"relative"}>
-          <Typography variant="h5" sx={{marginTop: "1rem"}}>
+          <Typography variant="h5" sx={{mb: "0.72rem"}}>
             {player.name}
           </Typography>
           <Typography variant="caption" sx={{
@@ -122,25 +122,23 @@ function RegularPlayerDetails({player, handleViewPlayerClick, chars, roles}: Reg
           </Box>
           <TextField sx={{margin: "1rem"}}
             id="player-label-input"
-            label="Quick Label"
-            multiline
-            rows={4}
+            label="Nickname"
             size="small"
             value={player.label}
             onChange={(event) => {
-              if (event.target.value.length > 100) return;
+              if (event.target.value.length > 32) return;
               else return handlePlayerDataChange(player.id, "label", event.target.value);
             }}
           />
-          <Button variant="outlined" sx={{marginLeft: "1rem", marginRight: "1rem"}}>Talk (W.I.P)</Button>
+          {/* <Button variant="outlined" sx={{marginLeft: "1rem", marginRight: "1rem"}}>Talk (W.I.P)</Button> */}
+          <Button variant="outlined" onClick={handleViewPlayerClick}>View Player</Button>
         </Stack>
       </Grid>
-      <Grid item xs={7}>
-        <Stack spacing={2} sx={{mx: "1rem", mb: "0", mt: "1.3rem"}}>
+      <Grid item xs={6}>
+        <Stack spacing={2} sx={{mx: "1rem", mb: "0", mt: "1rem"}}>
           {selectBuilderSolo(player.id, "Role", roles, player.role)}
           {selectBuilderSolo(player.id, "Char", chars, player.char)}
           {selectBuilder(player.id, "Team", GameData.teams, player.team)}
-          <Button variant="outlined" onClick={handleViewPlayerClick}>View Player</Button>
         </Stack>
       </Grid>
       <Grid item xs={12}>
@@ -149,7 +147,7 @@ function RegularPlayerDetails({player, handleViewPlayerClick, chars, roles}: Reg
               id="player-notes"
               label="Player Notes"
               multiline
-              rows={6}
+              rows={8}
               fullWidth
               value={player.notes}
               onChange={(event) => {
