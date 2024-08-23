@@ -75,7 +75,7 @@ const BUTTON_CONTAINER_STYLE = (vertical: boolean) => ({
   justifyContent: "flex-start",
   display: "flex",
   position: "relative",
-  overflow: "clip", 
+  // overflow: "clip", do not use this as it will clip player reminders from showing when they are being moved between player indicators
 })
 
 const BUTTON_TEXT_CONTAINER_STYLE = {
