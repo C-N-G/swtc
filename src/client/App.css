@@ -1,4 +1,33 @@
 body {
   margin: 0;
   overflow: hidden;
+  /* background: var(--sl-color-gray-6); */
+  background: linear-gradient(
+    var(--sl-color-gray-3),
+    var(--sl-color-black)
+  );
+  height: 110vh;
+}
+
+:root {
+  --sl-color-accent-low: #5e0808;
+	--sl-color-accent: #a61c1c;
+	--sl-color-accent-high: #fa5757;
+
+  --sl-color-loyalist-accent-low: #144f92;
+  --sl-color-loyalist-accent: #1975d2;
+  --sl-color-loyalist-accent-high: #17aaff;
+
+  --sl-color-unknown-accent-low: #373638;
+  --sl-color-unknown-accent: #6f6b70;
+  --sl-color-unknown-accent-high: #a19fa1;
+
+  --sl-color-white: #ffffff;
+	--sl-color-gray-1: #eeedef;
+	--sl-color-gray-2: #c3c1c4;
+	--sl-color-gray-3: #8d8a8f;
+	--sl-color-gray-4: #5a575b;
+	--sl-color-gray-5: #3a373b;
+	--sl-color-gray-6: #282629;
+	--sl-color-black: #191819;
 }

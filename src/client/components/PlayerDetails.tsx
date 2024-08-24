@@ -48,7 +48,46 @@ interface RegularPlayerDetailsProps {
 function RegularPlayerDetails({player, handleViewPlayerClick, chars, roles}: RegularPlayerDetailsProps) {
 
   const handlePlayerDataChange = useStore(state => state.changePlayerAttribute);
+  
+  const getValue = (value: number | string, list: string[]) => {
+    if (typeof value === "string") {
+      return value;
+    } 
+    else {
+      return GameData.hackValue(list[value]);
+    }
+  }
 
+  const checkSetValue = (value: string | null, list: string[]) => {
+    if (typeof value === "string" && list.includes(value)) {
+      return list.indexOf(value);
+    } 
+    else if (typeof value === "string") {
+      return value;
+    } 
+    else if (value === null) {
+      return 0;
+    }
+    else {
+      return GameData.hackValue(list[value]); // hack - this is for when the modules change and the current value no longer exists
+    }
+  }
+
+  function selectBuilderSolo(playerId: string, type: string, list: string[], value: number | string) {
+    return <Autocomplete
+      disablePortal
+      freeSolo
+      id={`player-${type.toLowerCase()}-input`}
+      size="small"
+      options={list}
+      renderInput={(params) => <TextField {...params} label={type} />}
+      value={getValue(value, list)}
+      onChange={(_, newValue) => handlePlayerDataChange(playerId, type.toLowerCase(), checkSetValue(newValue, list))}
+      inputValue={getValue(value, list)} 
+      onInputChange={(_, newValue) => handlePlayerDataChange(playerId, type.toLowerCase(), checkSetValue(newValue, list))}
+    />
+  }
+  
   function selectBuilder(playerId: string, type: string, list: string[], value: number) {
     return <Autocomplete
       disablePortal
@@ -65,10 +104,10 @@ function RegularPlayerDetails({player, handleViewPlayerClick, chars, roles}: Reg
 
   return (
     <Grid container>
-      <Grid item xs={5}>
-        <Stack>
+      <Grid item xs={6}>
+        <Stack spacing={2} sx={{mx: "1rem", mb: "0", mt: "1rem"}}>
           <Box position={"relative"}>
-          <Typography variant="h5" sx={{marginTop: "1rem"}}>
+          <Typography variant="h5" sx={{mb: "0.5rem"}}>
             {player.name}
           </Typography>
           <Typography variant="caption" sx={{
@@ -83,25 +122,23 @@ function RegularPlayerDetails({player, handleViewPlayerClick, chars, roles}: Reg
           </Box>
           <TextField sx={{margin: "1rem"}}
             id="player-label-input"
-            label="Quick Label"
-            multiline
-            rows={4}
+            label="Nickname"
             size="small"
             value={player.label}
             onChange={(event) => {
-              if (event.target.value.length > 100) return;
+              if (event.target.value.length > 32) return;
               else return handlePlayerDataChange(player.id, "label", event.target.value);
             }}
           />
-          <Button variant="outlined" sx={{marginLeft: "1rem", marginRight: "1rem"}}>Talk (W.I.P)</Button>
+          {/* <Button variant="outlined" sx={{marginLeft: "1rem", marginRight: "1rem"}}>Talk (W.I.P)</Button> */}
+          <Button variant="outlined" onClick={handleViewPlayerClick} sx={{height: "40px"}}>View Player</Button>
         </Stack>
       </Grid>
-      <Grid item xs={7}>
-        <Stack spacing={2} sx={{mx: "1rem", mb: "0", mt: "1.3rem"}}>
-          {selectBuilder(player.id, "Role", roles, player.role)}
-          {selectBuilder(player.id, "Char", chars, player.char)}
+      <Grid item xs={6}>
+        <Stack spacing={2} sx={{mx: "1rem", mb: "0", mt: "1rem"}}>
+          {selectBuilderSolo(player.id, "Role", roles, player.role)}
+          {selectBuilderSolo(player.id, "Char", chars, player.char)}
           {selectBuilder(player.id, "Team", GameData.teams, player.team)}
-          <Button variant="outlined" onClick={handleViewPlayerClick}>View Player</Button>
         </Stack>
       </Grid>
       <Grid item xs={12}>
@@ -110,7 +147,7 @@ function RegularPlayerDetails({player, handleViewPlayerClick, chars, roles}: Reg
               id="player-notes"
               label="Player Notes"
               multiline
-              rows={6}
+              rows={9}
               fullWidth
               value={player.notes}
               onChange={(event) => {

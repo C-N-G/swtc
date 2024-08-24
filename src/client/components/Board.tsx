@@ -200,7 +200,7 @@ function Board() {
   return (
     <Card sx={{
       aspectRatio: "1/1",
-      background: "lightblue",
+      background: "var(--sl-color-gray-5)", 
     }}>
       <DismissalDialog 
         openDialog={openDialog} 

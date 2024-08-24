@@ -104,12 +104,18 @@ export const createPlayerSlice: StateCreator<
 
       // if the client does have the player then take their synced values
       } else if (clientHasPlayer) {
-        // potential bug here
+        newPlayers[index] = Object.assign({}, newPlayers[index]); // change reference value so react will push an update
         newPlayers[index].rChar = player.rChar;
         newPlayers[index].rRole = player.rRole;
         newPlayers[index].rTeam = player.rTeam;
         newPlayers[index].rState = player.rState;
         newPlayers[index].rVotePower = player.rVotePower;
+      }
+
+      if (state.userId === player.id) {
+        newPlayers[index].char = player.rChar;
+        newPlayers[index].role = player.rRole
+        newPlayers[index].team = player.rTeam;
       }
 
     })
