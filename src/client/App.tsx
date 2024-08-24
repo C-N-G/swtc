@@ -84,13 +84,17 @@ function App() {
   const stopTimer = useStore(state => state.stopTimer);
 
   const user = useStore(state => state.getUser()); // the users player object
-  
+
 
   useEffect(() => {
 
     const resumeCallback = (error: Error, res: SocketCallbackResponse) => {
 
-      if (error) return console.log("ResumeTest Error: server timeout");
+      if (error) {
+        console.log("ResumeTest Error: server timeout");
+        return;
+      }
+
       if (res.status === "error") {
         console.log("ResumeTest:", res.error);
         if (res.error === "no session found") localStorage.removeItem("lastSession");
@@ -122,7 +126,15 @@ function App() {
 
     function onConnect() {
 
-      if (localStorage.getItem("lastSession") === null) return;
+      const url = window.location.href.slice(-12);
+      const hasIdInUrl = url.startsWith("swtc/");
+      if (hasIdInUrl) {
+        return;
+      }
+
+      if (localStorage.getItem("lastSession") === null) {
+        return;
+      }
 
       const seesionItem = localStorage.getItem("lastSession");
       if (seesionItem === null) {
@@ -194,7 +206,12 @@ function App() {
 
     function onSync(session: SessionData, userId: string | null | undefined) {
 
-      if (userId !== undefined) setUserId(userId);
+      if (userId !== undefined) {
+        setUserId(userId);
+        const index = window.location.href.indexOf("swtc") + 4;
+        const newUrl = window.location.href.slice(0, index) + "/";
+        history.pushState(null, "swtc game", newUrl);
+      }
       syncSession(session);
       if (session.players !== undefined) syncPlayers(session);
       if (session.phase !== undefined) nextPhase(session.phase);

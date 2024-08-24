@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Button, Menu, MenuItem, Box, Card, Typography, TextField, Dialog, 
   DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -52,7 +52,19 @@ function Options() {
   const [inputs, setInputs] = useState<InputFields>(defaultInputs);
 
   const open = Boolean(anchorEl);
-  
+
+  useEffect(() => {
+
+    const url = window.location.href.slice(-12);
+    const hasIdInUrl = url.startsWith("swtc/");
+    if (hasIdInUrl) {
+      setOpenDialog(OpenDialog.Join);
+      const gameId = url.split("/")[1];
+      setInputs(prev => ({...prev, joinId: {...prev.joinId, value: gameId}}));
+    }
+
+  }, [])
+ 
   function handleClose() {
     setAnchorEl(null);
     setOpenDialog(OpenDialog.None);
@@ -182,6 +194,13 @@ function Options() {
             target="_blank"
           >
             Rulebook
+          </MenuItem>
+          <MenuItem 
+            component={"a"}
+            href="https://secretswithinthecompound.com" 
+            target="_blank"
+          >
+            Docs
           </MenuItem>
         </Menu>
         <HostDialog 

@@ -4,6 +4,7 @@ import {Card, Typography, Grid, Paper, Checkbox, FormControlLabel, Button, Box, 
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import LinkIcon from '@mui/icons-material/Link';
 import {UserContext} from "../App.tsx";
 import GameData from "../strings/_gameData.ts";
 import {socket} from "../helpers/socket.ts";
@@ -269,6 +270,17 @@ function NarratorCharacter({user}: NarratorCharacterProps) {
 
   }
 
+  function getUrl() {
+    const url = window.location.href;
+    let returnString = "";
+    if (url.endsWith("swtc/")) {
+      returnString = url + sessionId!;
+    } else if (url.endsWith("swtc")) {
+      returnString = url + "/" + sessionId!;
+    }
+    navigator.clipboard.writeText(returnString);
+  }
+
   const allMods = GameData.modules.map(mod => {
     const title = `${mod.name} - ${mod.roles.length} roles - ${mod.chars.length} chars`;
     const checkbox = <Checkbox 
@@ -284,6 +296,9 @@ function NarratorCharacter({user}: NarratorCharacterProps) {
       {/* this doesn't work without https */}
       <IconButton onClick={() => {navigator.clipboard.writeText(sessionId!)}}>
         <ContentCopyIcon />
+      </IconButton>
+      <IconButton onClick={getUrl}>
+        <LinkIcon />
       </IconButton>
     </Typography>
     <Button variant="contained" sx={{my: 1}} onClick={() => setOpenDialog(OpenDialog.Module)}>
