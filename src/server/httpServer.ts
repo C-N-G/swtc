@@ -31,11 +31,13 @@ export default function swtcHttpServer(req: IncomingMessage, res: ServerResponse
 
   // redirect url to work with nginx server
   if (req.url === "/swtc") {
-    req.url = "/"
+    req.url = "/";
   } else if (req.url.startsWith("/swtc/" + controlPanelUrl)) {
     return controlPanelController(req, res);
+  } else if (req.url.startsWith("/swtc") && req.url.length === 13) { // /swtc/ + gameid = 13 char length
+    req.url = "/";
   } else if (req.url.startsWith("/swtc")) {
-    req.url = req.url.slice(5)
+    req.url = req.url.slice(5);
   }
 
   let target;
