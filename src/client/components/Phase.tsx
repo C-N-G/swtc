@@ -42,6 +42,15 @@ function Phase() {
   )
 }
 
+const PHASE_ANIMATION = (cycle: string) => ({
+  borderRadius: "50px",
+  color: cycle === "Night" ? "white" : "black",
+  background: cycle === "Night" ? "black" : "white",
+  border: `solid 10px ${cycle === "Night" ? "black": "white"}`,
+  boxShadow: `0 0 30px 50px ${cycle === "Night" ? "black" : "white"}`,
+  transition: "color 0.5s, background 0.5s, box-shadow, 0.5s",
+})
+
 export default Phase
 
 
@@ -65,13 +74,7 @@ function PlayerPhase() {
         </ButtonGroup>
       </Grid>
       <Grid item xs={4} container justifyContent="center">
-        <Stack alignItems="center" spacing={-1} sx={{
-            borderRadius: "50px",
-            color: phase.cycle === "Night" ? "white" : "black",
-            background: phase.cycle === "Night" ? "black" : "white",
-            boxShadow: `0 0 30px 50px ${phase.cycle === "Night" ? "black" : "white"}`,
-            transition: "color 0.5s, background 0.5s, box-shadow, 0.5s",
-          }}>
+        <Stack alignItems="center" spacing={-1} sx={PHASE_ANIMATION(phase.cycle)}>
           <Typography variant="h5">Current Phase</Typography>
           <Typography variant="h3">{phase.cycle} {phase.round}</Typography>
         </Stack>
@@ -147,13 +150,7 @@ function NarratorPhase() {
           </ButtonGroup>
         </Grid>
         <Grid item xs={4} container justifyContent="center">
-          <Stack alignItems="center" spacing={-1} sx={{
-            borderRadius: "50px",
-            color: phase.cycle === "Night" ? "white" : "black",
-            background: phase.cycle === "Night" ? "black" : "white",
-            boxShadow: `0 0 30px 50px ${phase.cycle === "Night" ? "black" : "white"}`,
-            transition: "color 0.5s, background 0.5s, box-shadow, 0.5s",
-          }}>
+          <Stack alignItems="center" spacing={-1} sx={PHASE_ANIMATION(phase.cycle)}>
             <Typography variant="h5">Current Phase</Typography>
             <Typography variant="h3">{phase.cycle} {phase.round}</Typography>
           </Stack>
