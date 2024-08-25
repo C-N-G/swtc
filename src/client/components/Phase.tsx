@@ -1,5 +1,5 @@
 import {useContext, useMemo, useState} from "react";
-import {Card, Button, Typography, ButtonGroup, Stack, Grid}from '@mui/material';
+import {Card, Button, Typography, ButtonGroup, Stack, Grid, Box}from '@mui/material';
 import {UserContext} from "../App.tsx";
 import {socket} from "../helpers/socket.ts";
 import GameData from "../strings/_gameData.ts";
@@ -51,6 +51,12 @@ const PHASE_ANIMATION = (cycle: string) => ({
   transition: "color 0.5s, background 0.5s, box-shadow, 0.5s",
 })
 
+// firefox does not render border radius and box shadow properly so this is a workaround
+const FAKE_BORDER = (cycle: string) => ({
+  background: cycle === "Night" ? "black" : "white",
+  transition: "background 0.5s",
+})
+
 export default Phase
 
 
@@ -74,10 +80,12 @@ function PlayerPhase() {
         </ButtonGroup>
       </Grid>
       <Grid item xs={4} container justifyContent="center">
-        <Stack alignItems="center" spacing={-1} sx={PHASE_ANIMATION(phase.cycle)}>
-          <Typography variant="h5">Current Phase</Typography>
-          <Typography variant="h3">{phase.cycle} {phase.round}</Typography>
-        </Stack>
+        <Box sx={FAKE_BORDER(phase.cycle)}>
+          <Stack alignItems="center" spacing={-1} sx={PHASE_ANIMATION(phase.cycle)}>
+            <Typography variant="h5">Current Phase</Typography>
+            <Typography variant="h3">{phase.cycle} {phase.round}</Typography>
+          </Stack>
+        </Box>
       </Grid>
       <Grid item xs={4} container justifyContent="center">
       </Grid>
@@ -150,10 +158,12 @@ function NarratorPhase() {
           </ButtonGroup>
         </Grid>
         <Grid item xs={4} container justifyContent="center">
-          <Stack alignItems="center" spacing={-1} sx={PHASE_ANIMATION(phase.cycle)}>
-            <Typography variant="h5">Current Phase</Typography>
-            <Typography variant="h3">{phase.cycle} {phase.round}</Typography>
-          </Stack>
+          <Box sx={FAKE_BORDER(phase.cycle)}>
+            <Stack alignItems="center" spacing={-1} sx={PHASE_ANIMATION(phase.cycle)}>
+              <Typography variant="h5">Current Phase</Typography>
+              <Typography variant="h3">{phase.cycle} {phase.round}</Typography>
+            </Stack>
+          </Box>
         </Grid>
         <Grid item xs={4} container justifyContent="center">
           <ButtonGroup size="small" orientation="vertical">
