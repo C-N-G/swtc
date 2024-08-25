@@ -55,30 +55,32 @@ const BUTTON_STYLE = (team: number, rState: number, isSelected: boolean) => ({
   flexDirection: "column",
   justifyContent: "flex-start",
   overflow: "clip",
-  background: team === 2 ? "rgb(180, 30, 10)" : team === 1 ? "rgb(25, 118, 210)" : "rgb(128, 128, 128)",
+  background: team === 2 ? "var(--sl-color-accent)" : team === 1 ? "var(--sl-color-loyalist-accent)" : "var(--sl-color-unknown-accent)",
   backgroundImage: rState === 0 ? "linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,0.5), rgba(0,0,0,1))" : "",
   ":hover": {
-    background: team === 2 ? "rgb(150, 25, 5)" : team === 1 ? "rgb(21, 101, 192)" : "rgb(96, 96, 96)",
+    background: team === 2 ? "var(--sl-color-accent-low)" : team === 1 ? "var(--sl-color-loyalist-accent-low)" : "var(--sl-color-unknown-accent-low)",
     backgroundImage: rState === 0 ? "linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.5), rgba(0,0,0,1))" : "",
-    boxShadow: isSelected ? "inset 0 0 15px 12px rgba(0,0,0,1)" : "",
+    boxShadow: isSelected ? "inset 0 0 10px 7px rgba(0,0,0,0.8)" : "",
   },
   textTransform: "none",
-  boxShadow: isSelected ? "inset 0 0 15px 12px rgba(0,0,0,0.8)" : "",
+  boxShadow: isSelected ? "inset 0 0 10px 7px rgba(0,0,0,0.8)" : "",
+  maxHeight: "calc(100% - 10px)"
 })
 
 const BUTTON_CONTAINER_STYLE = (vertical: boolean) => ({
   width: vertical ? "100%" : "20%",
+  maxHeight: vertical ? "33.33%" : "unset",
   aspectRatio: "1/1",
   flexDirection: "column",
   justifyContent: "flex-start",
   display: "flex",
   position: "relative",
-  // overflow: "clip", 
+  // overflow: "clip", do not use this as it will clip player reminders from showing when they are being moved between player indicators
 })
 
 const BUTTON_TEXT_CONTAINER_STYLE = {
   display: "flex", 
-  justifyContent: "flex-start", 
+  justifyContent: "center", 
   flexDirection: "column",
   flexGrow: 1,
   overflow: "inherit",
@@ -90,27 +92,68 @@ interface RegularPlayerIndicatorProps {
   player: Player;
   handleClick: (playerId: string) => void;
   vertical: boolean;
+  chars: Char[];
+  roles: Role[];
   selected: DisplaySlice["selected"];
 }
 
-function RegularPlayerIndicator({player, handleClick, vertical, selected}: RegularPlayerIndicatorProps) {
+function RegularPlayerIndicator({player, handleClick, vertical, chars, roles, selected}: RegularPlayerIndicatorProps) {
 
   const thisPlayerSelected = selected === player.id;
+
+  const getValue = (value: number | string, list: Char[] | Role[]) => {
+    if (typeof value === "string") {
+      return value;
+    } 
+    else if (typeof value === "number" && value === 0) {
+      return "";
+    }
+    else if (typeof value === "number") {
+      return GameData.hackValue(list[value].name);
+    }
+  }
+
+  const getName = (name: string, nickname: string) => {
+    if (nickname) {
+      return nickname;
+    } else {
+      return name;
+    }
+  }
 
   return (
     <Box sx={BUTTON_CONTAINER_STYLE(vertical)}>
       <Button variant="contained" onClick={() => {handleClick(player.id)}} sx={BUTTON_STYLE(player.team, player.rState, thisPlayerSelected)}>
-        <Typography>{player.name}</Typography>
+        <Box sx={{position: "relative", width: "100%"}}>
+          <Typography>{getName(player.name, player.label)}</Typography>
+          <Typography variant="caption" sx={{
+            position: "absolute",
+            top: "110%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            wordBreak: "keep-all",
+            fontSize: "9px"
+            }}
+          >
+            {player.label && `(${player.name})`}
+          </Typography>
+        </Box>
         <Box sx={BUTTON_TEXT_CONTAINER_STYLE}>
           <Typography 
-            variant="body1" //TODO should possibly be subtitle2
+            variant="subtitle2"
             sx={{
-              wordBreak: "break-word",
+              wordBreak: "normal",
               overflow: "inherit",
-              lineHeight: 1.7,
+              lineHeight: 1.8,
               px: 0.5
             }}>
-              {player.label}
+              <Box component={"span"} sx={{position: "relative"}}>
+                {getValue(player.role, roles)}
+              </Box>
+              <br />
+              <Box component={"span"} sx={{position: "relative"}}>
+                {getValue(player.char, chars)}
+              </Box>
           </Typography>
         </Box>
       </Button>
@@ -199,8 +242,8 @@ function NarratorPlayerIndicator({player, handleClick, vertical, chars, roles, s
               wordBreak: "break-word",
               overflow: "inherit",
               width: "inherit",
-              pb: 1,
-              lineHeight: 1.9
+              lineHeight: 1.8,
+              pb: 0.5
             }}>
               <Box component={"span"} sx={{position: "relative"}}>
                 {GameData.states[player.rState]}{player.state !== player.rState ? "*" : ""}
@@ -220,7 +263,6 @@ function NarratorPlayerIndicator({player, handleClick, vertical, chars, roles, s
               <Box component={"span"} sx={{position: "relative"}}>
                 {GameData.teams[player.rTeam]}{player.team !== player.rTeam? "*" : ""}
                 {player.team !== player.rTeam ? captionBuilder(GameData.teams[player.team]) : ""}
-                
               </Box>
           </Typography>
         </Box>

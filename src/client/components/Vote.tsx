@@ -175,7 +175,7 @@ function NarratorVote({nominatedPlayer, accusingPlayer, handleVoteFinishClick, t
       </Grid>
       <Grid item xs={6} height="80%" sx={{display: "flex", flexDirection: "column", p: 1}}>
         <Typography>{voterTotal} Voted</Typography>
-        <Card sx={{flexGrow: "1", backgroundColor: "springgreen"}}>
+        <Card sx={{flexGrow: "1", backgroundColor: "var(--sl-color-gray-3)"}}>
           <List sx={{
             overflow: "auto",
             maxHeight: "100%",
@@ -187,7 +187,7 @@ function NarratorVote({nominatedPlayer, accusingPlayer, handleVoteFinishClick, t
       </Grid>
       <Grid item xs={6} height="80%" sx={{display: "flex", flexDirection: "column", p: 1}}>
         <Typography>{abstainerTotal} Abstained</Typography>
-        <Card sx={{flexGrow: "1", backgroundColor: "indianred"}}>
+        <Card sx={{flexGrow: "1", backgroundColor: "var(--sl-color-gray-3)"}}>
           <List sx={{
             overflow: "auto",
             maxHeight: "100%",

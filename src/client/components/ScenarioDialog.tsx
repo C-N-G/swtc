@@ -28,7 +28,16 @@ function ScenarioDialog({openDialog, handleClose, chars, roles}: ScenarioDialogP
     const primary = <Typography>{name} {attributes}</Typography>
     return (
       <ListItem disablePadding key={index}>
-        <ListItemText primary={primary} secondary={ele.ability}/>
+        <ListItemText 
+          primary={primary} 
+          secondary={
+            <>
+              {ele.ability}
+              <br />
+              {ele.setup.length > 0 && `- Setup: ${ele.setup.map((setup, i) => (i+1) + ": " + setup[0]).join(" ")}`}
+            </>
+          }
+        />
       </ListItem>
     )
   }
@@ -92,7 +101,7 @@ function ScenarioDialog({openDialog, handleClose, chars, roles}: ScenarioDialogP
     position: "sticky",
     top: 0,
     zIndex: 1,
-    background: "white"
+    background: "var(--sl-color-gray-5)"
   }
 
   const charList = chars ? chars.filter(filter).map(listMaker) : [];

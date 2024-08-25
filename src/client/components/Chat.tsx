@@ -8,7 +8,9 @@ function Chat({children}: ChatProps) {
 
   return (
     <Card sx={{
-      background: "lightcyan", 
+      background: "var(--sl-color-gray-5)", 
+      borderLeft: "2px solid var(--sl-color-accent)",
+      boxSizing: "border-box",
       width: "100%",
       height: "28%",
       flexGrow: 1,

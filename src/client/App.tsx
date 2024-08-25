@@ -1,6 +1,5 @@
 import {createContext, useEffect} from "react";
-// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-// import { createTheme } from "@mui/material/styles";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import {Box, Button, Container, Grid} from "@mui/material";
 import {DndContext, DragEndEvent} from "@dnd-kit/core";
 import Board from "./components/Board.tsx";
@@ -14,6 +13,30 @@ import GameData from "./strings/_gameData.ts";
 import useStore from "./hooks/useStore.ts";
 import "./App.css"
 import { PlayerAttributeData, PlayerVoteData, SessionData, SocketCallbackResponse, TimerData } from "../server/serverTypes.ts";
+
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+    primary: {
+      light: '#fa5757',
+      main: '#a61c1c',
+      dark: '#5e0808',
+      contrastText: '#fff',
+    },
+  },
+  components: {
+    // Name of the component
+    MuiButton: {
+      styleOverrides: {
+        // Name of the slot
+        root: {
+          // Some CSS
+          // fontSize: '1rem',
+        },
+      },
+    },
+  },
+});
 
 export const UserContext = createContext<Player | null>(null);
 
@@ -61,13 +84,17 @@ function App() {
   const stopTimer = useStore(state => state.stopTimer);
 
   const user = useStore(state => state.getUser()); // the users player object
-  
+
 
   useEffect(() => {
 
     const resumeCallback = (error: Error, res: SocketCallbackResponse) => {
 
-      if (error) return console.log("ResumeTest Error: server timeout");
+      if (error) {
+        console.log("ResumeTest Error: server timeout");
+        return;
+      }
+
       if (res.status === "error") {
         console.log("ResumeTest:", res.error);
         if (res.error === "no session found") localStorage.removeItem("lastSession");
@@ -99,7 +126,15 @@ function App() {
 
     function onConnect() {
 
-      if (localStorage.getItem("lastSession") === null) return;
+      const url = window.location.href.slice(-12);
+      const hasIdInUrl = url.startsWith("swtc/");
+      if (hasIdInUrl) {
+        return;
+      }
+
+      if (localStorage.getItem("lastSession") === null) {
+        return;
+      }
 
       const seesionItem = localStorage.getItem("lastSession");
       if (seesionItem === null) {
@@ -171,7 +206,12 @@ function App() {
 
     function onSync(session: SessionData, userId: string | null | undefined) {
 
-      if (userId !== undefined) setUserId(userId);
+      if (userId !== undefined) {
+        setUserId(userId);
+        const index = window.location.href.indexOf("swtc") + 4;
+        const newUrl = window.location.href.slice(0, index) + "/";
+        history.pushState(null, "swtc game", newUrl);
+      }
       syncSession(session);
       if (session.players !== undefined) syncPlayers(session);
       if (session.phase !== undefined) nextPhase(session.phase);
@@ -219,6 +259,7 @@ function App() {
     startTimer, stopTimer, setTimer, user]);
 
   return (
+    <ThemeProvider theme={darkTheme}>
     <DndContext onDragEnd={handleDragEnd}>
     <UserContext.Provider value={user}>
     <Container sx={{maxWidth: "1440px"}}>
@@ -266,6 +307,7 @@ function App() {
     </Container>
     </UserContext.Provider>
     </DndContext>
+    </ThemeProvider>
   );
 }
 

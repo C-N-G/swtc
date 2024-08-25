@@ -1,7 +1,21 @@
+### 24/08/2024 v0.6.0
+- changed player details for the player view
+  - replaced quick notes input with nickname input, this will change the selected users name
+  - changed both role and characteristic inputs to allow arbitrary text
+  - added role and characteristic inputs to appear on the player indicator
+- added automatic filling in of characteristic, role, and team inputs when syncing a session
+- added setup text to show in the scenario dialog
+- complete styling overhaul
+- added day night cycle colouration to the phase indicator
+- added support for url joining
+  - added new copy link button next to copy game id button
+  - pressing this button will copy a link including the game id to the clipboard
+  - loading this url will open the app with the join dialog open and game id already filled in
+---
+
 ### 02/07/2024 v0.5.4
 - added favicon
 ---
-
 
 ### 26/06/2024 v0.5.3
 - converted project to typescript
