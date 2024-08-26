@@ -1,3 +1,8 @@
+### xx/xx/xxx v0.6.1
+- changed day night order from day 1, night 1, day 2 ect. to night 1, day 1, night 2 ect.
+- 
+---
+
 ### 24/08/2024 v0.6.0
 - changed player details for the player view
   - replaced quick notes input with nickname input, this will change the selected users name
