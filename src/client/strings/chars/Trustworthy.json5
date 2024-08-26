@@ -1,0 +1,8 @@
+{
+  "name": "Trustworthy",
+  "flavour": "PLACEHOLDER",
+  "ability": "The first time you’re dismissed, you survive.",
+  "reminders": [
+    ["🤝", "#FFFF00", "Trustworthy: Has used their ability."]
+  ]
+}

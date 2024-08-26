@@ -1,0 +1,17 @@
+{
+  "name": "Quartermaster",
+  "type": "Agent",
+  "flavour": "Form an orderly line! It’s important we ration our supplies!",
+  "ability": "Each night, you learn a different Agent role (not yourself) that is in play.",
+  "orderType": "role_with_recurring_info",
+  "attributes": [
+    "Human"
+  ],
+  "reminders": [
+    [
+      "📦",
+      "#0000FF",
+      "Quartermaster: Learnt this player's role."
+    ]
+  ]
+}

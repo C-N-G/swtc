@@ -1,0 +1,17 @@
+{
+  "name": "Psychologist",
+  "type": "Agent",
+  "flavour": "PLACEHOLDER",
+  "ability": "Each night, you must choose a player: you learn their characteristic.",
+  "orderType": "role_with_recurring_info",
+  "attributes": [
+    "Human"
+  ],
+  "reminders": [
+    [
+      "🧠️",
+      "#0000FF",
+      "Psychologist: Chose this player."
+    ]
+  ]
+}

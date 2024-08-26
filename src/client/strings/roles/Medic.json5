@@ -1,0 +1,17 @@
+{
+  "name": "Medic",
+  "type": "Agent",
+  "flavour": "You can’t save everyone.",
+  "ability": "Once per game, during the night, if any players have died tonight, you learn who, and may choose one to resurrect.",
+  "orderType": "role_resurrects_others",
+  "attributes": [
+    "Human"
+  ],
+  "reminders": [
+    [
+      "⛑️",
+      "#0000FF",
+      "Medic: Resurrected this player."
+    ]
+  ]
+}

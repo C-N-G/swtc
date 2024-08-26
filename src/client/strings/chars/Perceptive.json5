@@ -1,0 +1,9 @@
+{
+  "name": "Perceptive",
+  "flavour": "PLACEHOLDER",
+  "ability": "You start knowing that 1 of 3 players (not yourself) is a specific characteristic.",
+  "orderType": "char_with_starting_info",
+  "reminders": [
+    ["🔍", "#FFFF00", "Perceptive: Learnt this player."]
+  ]
+}

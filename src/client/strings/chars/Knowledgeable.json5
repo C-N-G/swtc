@@ -1,0 +1,6 @@
+{
+  "name": "Knowledgeable",
+  "flavour": "PLACEHOLDER",
+  "ability": "You start knowing whether a role of your choice is in play or not.",
+  "orderType": "char_with_starting_info"
+}

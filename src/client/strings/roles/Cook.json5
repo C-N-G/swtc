@@ -1,0 +1,16 @@
+{
+  "name": "Cook",
+  "type": "Agent",
+  "flavour": "First, we eat",
+  "ability": "Your neighbours cannot malfunction.",
+  "attributes": [
+    "Human"
+  ],
+  "reminders": [
+    [
+      "🧑‍🍳",
+      "#0000FF",
+      "Cook: This player cannot malfunction."
+    ]
+  ]
+}

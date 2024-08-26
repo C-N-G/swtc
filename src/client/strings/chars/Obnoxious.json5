@@ -1,0 +1,8 @@
+{
+  "name": "Obnoxious",
+  "flavour": "PLACEHOLDER",
+  "ability": "The first person (not yourself) to choose you with an ability becomes malfunctioning.",
+  "reminders": [
+    ["💩", "#FFFF00", "Obnoxious: This player is malfunctioning."]
+  ]
+}

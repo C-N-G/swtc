@@ -1,0 +1,11 @@
+{
+  "name": "Resourceful",
+  "flavour": "PLACEHOLDER",
+  "ability": "If the Cohesion changes, it changes by an additional +1 or -1, whichever is more beneficial for you.",
+  "setup": [],
+  "attributes": [],
+  "additional": [
+    "If the Resourceful player is a Loyalist, then in most cases, their ability should increase the Cohesion.",
+    "If the Resourceful player is a Subversive, then in most cases, their ability should decrease the Cohesion."
+  ]
+}

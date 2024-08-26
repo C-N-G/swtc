@@ -1,0 +1,10 @@
+{
+  "name": "Tracker",
+  "type": "Agent",
+  "flavour": "PLACEHOLDER",
+  "ability": "Each night, you learn the direction to the closest Subversive player from you, if equidistant this information is arbitrary.",
+  "orderType": "role_with_recurring_info",
+  "attributes": [
+    "Human"
+  ]
+}

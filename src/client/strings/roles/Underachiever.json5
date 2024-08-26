@@ -1,0 +1,22 @@
+{
+  "name": "Underachiever",
+  "type": "Detrimental",
+  "flavour": "Almost.",
+  "ability": "You do not know you are the Underachiever. You think you are an Agent role, but you are not.",
+  "setup": [
+    [
+      "You think you are an Agent role.",
+      "ShowAs Role Agent"
+    ]
+  ],
+  "attributes": [
+    "Human"
+  ],
+  "reminders": [
+    [
+      "🙃",
+      "#702963",
+      "Underachiever: Is the Underachiever."
+    ]
+  ]
+}
