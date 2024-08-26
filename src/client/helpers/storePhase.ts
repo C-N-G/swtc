@@ -100,20 +100,22 @@ export const createPhaseSlice: StateCreator<
   PhaseSlice
 > = (set, get) => ({
   phase: {
-    cycle: "Day",
+    cycle: "Night",
     round: 1,
   },
 
   nextPhase: (newPhase) => set(state => {
+    
     if (typeof newPhase !== "undefined") return {phase: newPhase};
+
     let newCycle, newRound;
     if (state.phase.cycle === "Night") {
       newCycle = "Day";
-      newRound = state.phase.round + 1;
+      newRound = state.phase.round;
       get().calculateVoteHistory(newRound);
     } else if (state.phase.cycle === "Day") {
       newCycle = "Night";
-      newRound = state.phase.round;
+      newRound = state.phase.round + 1;
     }
 
     if (typeof newCycle === "undefined" || typeof newRound === "undefined") {

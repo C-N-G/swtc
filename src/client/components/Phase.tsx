@@ -125,10 +125,10 @@ function NarratorPhase() {
 
       if (phase.cycle === "Night") {
         newCycle = "Day";
-        newRound = phase.round + 1;
+        newRound = phase.round;
       } else if (phase.cycle === "Day") {
         newCycle = "Night";
-        newRound = phase.round;
+        newRound = phase.round + 1;
       } else throw new Error("error changing phase, phase could not be calculated");
 
       addPlayerNightIndicators(newCycle, chars, roles, purgedOrders);

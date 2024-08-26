@@ -12,7 +12,7 @@ export default class Session {
         private isVoting = false,
         private accusingPlayer: string | null = null,
         private nominatedPlayer: string | null = null,
-        private phase: Phase = {cycle: "Day", round: 1},
+        private phase: Phase = {cycle: "Night", round: 1},
         private modules: string[] = [],
         private timers: {[id: string]: TimerData} = {},
         public disconnectTimers: {[id: string]: NodeJS.Timeout} = {}
