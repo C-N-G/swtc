@@ -3,7 +3,7 @@ import Reminder from "../classes/reminder.js";
 import Role from "../classes/role.js";
 import loader, { GameDataStore, RawImportData } from "../helpers/gameDataLoader.js";
 
-const modules = import.meta.glob(["./*.json5", "./modules/*/*.json5"], {
+const modules = import.meta.glob(["./*.json5", "./*/*.json5"], {
   query: "?raw",
   import: "default",
   eager: true,
@@ -15,7 +15,7 @@ const GameData: GameDataStore = {
   nightOrder: [],
   states: [],
   teams: [],
-  modules: [],
+  scenarios: [],
   reminders: [],
 
   filterByModule(moduleArray, type, full) {
