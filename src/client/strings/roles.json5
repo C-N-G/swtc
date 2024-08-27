@@ -1,4 +1,4 @@
-// default roles even when no module is selected
+// default roles even when no scenario is selected
 {
   "name": "Unknown",
   "type": "",

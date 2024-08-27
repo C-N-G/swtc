@@ -22,12 +22,10 @@ async function fileExists(path: string): Promise<boolean> {
 }
 
 interface VaultRoleData extends RoleData {
-  module?: string;
   publish?: boolean;
 }
 
 interface VaultCharData extends CharData {
-  module?: string;
   publish?: boolean;
 }
 
@@ -102,7 +100,7 @@ async function convertFrontMatterToData(filePaths: string[]): Promise<StringData
     // get front matter from file
     const data = await getFrontMatter(filePaths[i]); 
 
-    // stop processing if front matter is undefined or does not include a module
+    // stop processing if front matter is undefined
     if (data === undefined) continue; 
 
     // push data item to return data structure
@@ -124,12 +122,21 @@ async function convertDataToStrings(dataObj: StringData, basePath: string): Prom
 
   const create = async (type: "chars" | "roles") => {
 
-    const modulePath = `${basePath}/${type}`;
-    if (!await fileExists(modulePath)) await createDir(modulePath);
+    // set the base path for file creation
+    const dataPath = `${basePath}/${type}`;
+
+    // check if the parent folder exists otherwise create it
+    if (!await fileExists(dataPath)) await createDir(dataPath);
+
+    // loop through all the entries of the specific dataObj param
     for (let i = 0; i < dataObj[type].length; i++) {
-      const data = JSON.stringify(dataObj[type][i], null, 2);
+      
+      // if the front matter doesnt have a name attribute then skip it
       if (!Object.hasOwn(dataObj[type][i], "name")) continue;
-      await createDataFile(`${modulePath}/${dataObj[type][i].name}.json5`, data);
+
+      // create the json string and write it to file
+      const data = JSON.stringify(dataObj[type][i], null, 2);
+      await createDataFile(`${dataPath}/${dataObj[type][i].name}.json5`, data);
     }
 
   }

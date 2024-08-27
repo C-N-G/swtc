@@ -2,20 +2,8 @@ import Char, { CharData } from "../classes/char.ts";
 import Reminder from "../classes/reminder.ts";
 import Role, { RoleData } from "../classes/role.ts";
 import JSON5 from "json5";
+import Scenario, { ScenarioData } from "../classes/scenario.ts";
 
-interface Scenario {
-  name: string;
-  flavour: string;
-  chars: number[];
-  roles: number[];
-}
-
-interface ScenarioData {
-  name: string;
-  flavour: string;
-  chars: string[];
-  roles: string[];
-}
 
 type NightOrder = {id: string, description: string};
 type ReminderData = [string, string, string];
@@ -28,10 +16,10 @@ export interface GameDataStore {
   teams: string[];
   scenarios: Scenario[];
   reminders: Reminder[];
-  filterByScenario(scenarioArray: string[], type: "chars" | "roles", full: boolean): (Char | Role | string)[];
+  filterByScenario(scenarioArray: Scenario[], type: "chars" | "roles", full: boolean): (Char | Role | string)[];
   getFilteredReminders(charArray: Char[], roleArray: Role[]): Reminder[];
-  getFilteredValues(scenarioArray: string[]): [chars: string[], roles: string[]];
-  getFullFilteredValues(scenarioArray: string[]): [chars: Char[], roles: Role[]];
+  getFilteredValues(scenarioArray: Scenario[]): [chars: string[], roles: string[]];
+  getFullFilteredValues(scenarioArray: Scenario[]): [chars: Char[], roles: Role[]];
   hackValue(input: string): string;
 }
 
@@ -133,12 +121,13 @@ export default function gameDataLoader(load_obj: GameDataStore, files: RawImport
       return foundRole?.id;
     }).filter(role => role !== undefined);
 
-    return {
-      name: scenario.name,
-      flavour: scenario.flavour,
-      chars: convertedChars,
-      roles: convertedRoles,
-    }
+    return new Scenario(
+      load_target.scenarios.length,
+      scenario.name,
+      scenario.flavour,
+      convertedChars as number[],
+      convertedRoles as number[],
+    )
 
   }
 
@@ -159,10 +148,10 @@ export default function gameDataLoader(load_obj: GameDataStore, files: RawImport
     }
 
     function sort_Scenario(a: Scenario, b: Scenario) {
-      const modA = Number(a.name.split("_")[0]);
-      const modB = Number(b.name.split("_")[0]);
-      if (modA < modB) return -1;
-      if (modA > modB) return 1;
+      const scenarioA = Number(a.name.split("_")[0]);
+      const scenarioB = Number(b.name.split("_")[0]);
+      if (scenarioA < scenarioB) return -1;
+      if (scenarioA > scenarioB) return 1;
       return 0;
     }
 

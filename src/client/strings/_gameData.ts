@@ -3,7 +3,7 @@ import Reminder from "../classes/reminder.js";
 import Role from "../classes/role.js";
 import loader, { GameDataStore, RawImportData } from "../helpers/gameDataLoader.js";
 
-const modules = import.meta.glob(["./*.json5", "./*/*.json5"], {
+const stringFiles = import.meta.glob(["./*.json5", "./*/*.json5"], {
   query: "?raw",
   import: "default",
   eager: true,
@@ -22,7 +22,7 @@ const GameData: GameDataStore = {
 
     const enabledSet = new Set(
       scenarioArray.map(scenario => {
-        const scenarioFound = this.scenarios.find(ele => ele.name === scenario);
+        const scenarioFound = this.scenarios.find(ele => ele.name === scenario.name);
         if (scenarioFound) return scenarioFound[type];
         else throw new Error("filtering failed no matching scenario found");
       }).flat()
@@ -72,7 +72,7 @@ const GameData: GameDataStore = {
 
 }
 
-loader(GameData, modules);
+loader(GameData, stringFiles);
 
 console.log("GameData loaded", GameData);
 

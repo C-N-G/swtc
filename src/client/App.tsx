@@ -13,6 +13,7 @@ import GameData from "./strings/_gameData.ts";
 import useStore from "./hooks/useStore.ts";
 import "./App.css"
 import { PlayerAttributeData, PlayerVoteData, SessionData, SocketCallbackResponse, TimerData } from "../server/serverTypes.ts";
+import Scenario from "./classes/scenario.ts";
 
 const darkTheme = createTheme({
   palette: {
@@ -161,7 +162,7 @@ function App() {
       handlePlayerDataChange(data.targetId, data.targetProperty, data.targetValue, true);
     }
 
-    function onScenario(data: string[]) {
+    function onScenario(data: Scenario[]) {
       setScenarios(data);
     }
 
@@ -281,7 +282,7 @@ function App() {
               <Button variant="contained" onClick={() => {
                 setUserId("54321");
                 setPlayers([...somePlayers]);
-                setScenarios([GameData.scenarios[0].name]);
+                setScenarios([GameData.scenarios[0]]);
               }}>
                 Add Dummy Players
               </Button>

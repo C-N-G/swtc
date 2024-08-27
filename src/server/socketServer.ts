@@ -4,6 +4,7 @@ import { DisconnectReason, Namespace, Socket } from "socket.io";
 import { Phase } from "../client/helpers/storeTypes.ts";
 import Player from "../client/classes/player.ts";
 import { CallbackFn, ClientToServerEvents, PlayerVoteData, ServerToClientEvents, SessionData, TimerData } from "./serverTypes.ts";
+import Scenario from "../client/classes/scenario.ts";
 
 
 const sessionManager = new SessionManager();
@@ -167,7 +168,7 @@ export default function swtcSocketServer(
 
   }
 
-  function onScenario(data: string[]): void {
+  function onScenario(data: Scenario[]): void {
 
 
     log("updating scenario state");
@@ -198,7 +199,7 @@ export default function swtcSocketServer(
 
   }
 
-  function onSync(data: {players: Player[], scenarios: string[]}, callback: CallbackFn) {
+  function onSync(data: {players: Player[], scenarios: Scenario[]}, callback: CallbackFn) {
 
     log("syncing client state to server");
 

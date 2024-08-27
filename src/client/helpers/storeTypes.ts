@@ -5,17 +5,18 @@ import Role from "../classes/role.ts";
 import { PlayerOrderItem } from "./nightOrders.ts";
 import { MouseEvent } from "react";
 import { SessionData } from "../../server/serverTypes.ts";
+import Scenario from "../classes/scenario.ts";
 
 export interface CurrentSession {
   id: string | null;
   sync: boolean | null;
-  scenarios: Array<string>;
+  scenarios: Scenario[];
 }
 
 export interface SessionSlice {
   session: CurrentSession;
   resetSession: () => void;
-  setScenarios: (newScenarios: Array<string>, newSync?: boolean) => void;
+  setScenarios: (newScenarios: Scenario[], newSync?: boolean) => void;
   syncSession: (newSession: SessionData) => void;
   syncOff: () => void;
   syncOn: () => void;

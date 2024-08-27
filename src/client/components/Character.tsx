@@ -17,6 +17,7 @@ import {default as ReminderType} from '../classes/reminder.ts';
 import { OpenCharacterDialog as OpenDialog } from '../helpers/enumTypes.ts';
 import ScenarioSelectionDialog from './ScenarioSelectionDialog.tsx';
 import VoteHistoryDialog from './VoteHistoryDialog.tsx';
+import Scenario from '../classes/scenario.ts';
 
 
 type CharacterProps = PlayerCharacterProps & NarratorCharacterProps;
@@ -145,7 +146,7 @@ function PlayerCharacter({user, useLocal = false}: PlayerCharacterProps) {
 
 interface OldSessionState {
   players: Player[];
-  scenarios: string[];
+  scenarios: Scenario[];
 }
 
 interface NarratorCharacterProps {
@@ -191,16 +192,16 @@ function NarratorCharacter({user}: NarratorCharacterProps) {
     storeOldData();
 
     const checked = e.target.checked;
-    const targetMod = e.target.value;
+    const targetScenario = e.target.value;
 
-    let data: string[] = [];
+    let data: Scenario[] = [];
 
     if (checked === true) {
-      data = [...scenarios, targetMod];
+      data = [...scenarios, GameData.scenarios.find((scenario) => scenario.name === targetScenario)!];
     }
 
     if (checked === false) {
-      data = scenarios.filter((scenario) => scenario !== targetMod);
+      data = scenarios.filter((scenario) => scenario.name !== targetScenario);
     }
 
     setScenarios(data, false);
@@ -281,10 +282,10 @@ function NarratorCharacter({user}: NarratorCharacterProps) {
     navigator.clipboard.writeText(returnString);
   }
 
-  const allMods = GameData.scenarios.map(scenario => {
+  const allScenarios = GameData.scenarios.map(scenario => {
     const title = `${scenario.name} - ${scenario.roles.length} roles - ${scenario.chars.length} chars`;
     const checkbox = <Checkbox 
-      checked={scenarios.includes(scenario.name)} 
+      checked={scenarios.some(ele => ele.name === scenario.name)} 
       onChange={handleScenarioSelection} 
       value={scenario.name} />
     return <FormControlLabel key={scenario.name} control={checkbox} label={title} />
@@ -410,7 +411,7 @@ function NarratorCharacter({user}: NarratorCharacterProps) {
     <ScenarioSelectionDialog 
       openDialog={openDialog}
       setOpenDialog={setOpenDialog}
-      allMods={allMods}
+      allScenarios={allScenarios}
     />
       
     <VoteHistoryDialog 

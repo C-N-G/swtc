@@ -1,4 +1,5 @@
 import Player from "../client/classes/player.ts";
+import Scenario from "../client/classes/scenario.ts";
 import { Phase, PlayerVoteItem } from "../client/helpers/storeTypes.ts";
 import { SessionData, TimerData } from "./serverTypes.ts";
 
@@ -13,7 +14,7 @@ export default class Session {
         private accusingPlayer: string | null = null,
         private nominatedPlayer: string | null = null,
         private phase: Phase = {cycle: "Night", round: 1},
-        private scenarios: string[] = [],
+        private scenarios: Scenario[] = [],
         private timers: {[id: string]: TimerData} = {},
         public disconnectTimers: {[id: string]: NodeJS.Timeout} = {}
     ) {
@@ -114,7 +115,7 @@ export default class Session {
 
     }
 
-    setScenarios(newScenarios: string[]): void {
+    setScenarios(newScenarios: Scenario[]): void {
 
       this.scenarios = newScenarios;
 
