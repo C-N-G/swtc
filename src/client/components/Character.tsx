@@ -18,6 +18,7 @@ import { OpenCharacterDialog as OpenDialog } from '../helpers/enumTypes.ts';
 import ScenarioSelectionDialog from './ScenarioSelectionDialog.tsx';
 import VoteHistoryDialog from './VoteHistoryDialog.tsx';
 import Scenario from '../classes/scenario.ts';
+import ScenarioCreationDialog from './ScenarioCreationDialog.tsx';
 
 
 type CharacterProps = PlayerCharacterProps & NarratorCharacterProps;
@@ -412,6 +413,11 @@ function NarratorCharacter({user}: NarratorCharacterProps) {
       openDialog={openDialog}
       setOpenDialog={setOpenDialog}
       allScenarios={allScenarios}
+    />
+
+    <ScenarioCreationDialog
+      openDialog={openDialog}
+      setOpenDialog={setOpenDialog}
     />
       
     <VoteHistoryDialog 

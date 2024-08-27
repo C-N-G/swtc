@@ -13,5 +13,6 @@ export enum OpenBoardDialog {
 export enum OpenCharacterDialog {
   None,
   Scenario,
+  CreateScenario,
   VoteHistory,
 }
