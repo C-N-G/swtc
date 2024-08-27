@@ -18,7 +18,7 @@ export interface SessionData {
         voting: boolean;
     }
     phase: Phase;
-    modules: string[];
+    scenarios: string[];
     timers: {[id: string]: TimerData};
 }
 
@@ -46,7 +46,7 @@ export interface ServerToClientEvents {
   phase: () => void;
   attribute: (data: PlayerAttributeData) => void;
   vote: (data: PlayerVoteData) => void;
-  module: (data: string[]) => void;
+  scenario: (data: string[]) => void;
   timer: (data: TimerData) => void;
   left: (playerId: string) => void;
 }
@@ -57,8 +57,8 @@ export interface ClientToServerEvents {
   phase: (data: Phase) => void;
   attribute: (data: PlayerAttributeData) => void;
   vote: (data: PlayerVoteData) => void;
-  module: (data: string[]) => void;
-  sync: (data: {players: Player[], modules: string[]}, callback: CallbackFn) => void;
+  scenario: (data: string[]) => void;
+  sync: (data: {players: Player[], scenarios: string[]}, callback: CallbackFn) => void;
   disconnect: (reason: DisconnectReason, details: {message: string, description: string, context: string}) => void;
   leave: () => void;
   timer: (data: TimerData, callback: CallbackFn) => void;

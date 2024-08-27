@@ -167,17 +167,17 @@ export default function swtcSocketServer(
 
   }
 
-  function onModule(data: string[]): void {
+  function onScenario(data: string[]): void {
 
 
-    log("updating module state");
+    log("updating scenario state");
 
     if (connectedSessionId === null) return;
     const session = sessionManager.getSession(connectedSessionId);
     if (!session) return;
-    session.setModules(data);
-    server.to(connectedSessionId).emit("module", data);
-    log("updated module state successfully", data);
+    session.setScenarios(data);
+    server.to(connectedSessionId).emit("scenario", data);
+    log("updated scenario state successfully", data);
 
   }
 
@@ -198,7 +198,7 @@ export default function swtcSocketServer(
 
   }
 
-  function onSync(data: {players: Player[], modules: string[]}, callback: CallbackFn) {
+  function onSync(data: {players: Player[], scenarios: string[]}, callback: CallbackFn) {
 
     log("syncing client state to server");
 
@@ -213,9 +213,9 @@ export default function swtcSocketServer(
       returnData.players = data.players;
     }
 
-    if (data.modules) {
-      session.setModules(data.modules);
-      returnData.modules= data.modules;
+    if (data.scenarios) {
+      session.setScenarios(data.scenarios);
+      returnData.scenarios = data.scenarios;
     }
 
     socket.to(connectedSessionId).emit("sync", returnData); // won't send to sender
@@ -320,7 +320,7 @@ export default function swtcSocketServer(
   socket.on("phase", onPhase);
   socket.on("attribute", onAttribute);
   socket.on("vote", onVote);
-  socket.on("module", onModule);
+  socket.on("scenario", onScenario);
   socket.on("sync", onSync);
   socket.on("disconnect", onDisconnect);
   socket.on("leave", onLeave);

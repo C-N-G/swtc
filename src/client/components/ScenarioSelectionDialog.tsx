@@ -1,17 +1,17 @@
 import { Dialog, DialogTitle, DialogContent, FormGroup, DialogActions, Button } from '@mui/material';
 import { OpenCharacterDialog as OpenDialog } from '../helpers/enumTypes.ts';
 
-interface ModuleSelectionDialogProps {
+interface ScenarioSelectionDialogProps {
   openDialog: OpenDialog;
   setOpenDialog: React.Dispatch<React.SetStateAction<OpenDialog>>;
   allMods: React.ReactNode[];
 }
 
-function ModuleSelectionDialog({openDialog, setOpenDialog, allMods}: ModuleSelectionDialogProps) {
+function ScenarioSelectionDialog({openDialog, setOpenDialog, allMods}: ScenarioSelectionDialogProps) {
 
   return (
-    <Dialog open={openDialog === OpenDialog.Module} onClose={() => setOpenDialog(OpenDialog.None)} >
-      <DialogTitle>Select Modules</DialogTitle>
+    <Dialog open={openDialog === OpenDialog.Scenario} onClose={() => setOpenDialog(OpenDialog.None)} >
+      <DialogTitle>Select Scenarios</DialogTitle>
       <DialogContent>
         <FormGroup>
           {allMods}
@@ -24,4 +24,4 @@ function ModuleSelectionDialog({openDialog, setOpenDialog, allMods}: ModuleSelec
   )
 }
 
-export default ModuleSelectionDialog;
+export default ScenarioSelectionDialog;

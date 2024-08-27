@@ -13,7 +13,7 @@ export default class Session {
         private accusingPlayer: string | null = null,
         private nominatedPlayer: string | null = null,
         private phase: Phase = {cycle: "Night", round: 1},
-        private modules: string[] = [],
+        private scenarios: string[] = [],
         private timers: {[id: string]: TimerData} = {},
         public disconnectTimers: {[id: string]: NodeJS.Timeout} = {}
     ) {
@@ -114,9 +114,9 @@ export default class Session {
 
     }
 
-    setModules(newModules: string[]): void {
+    setScenarios(newScenarios: string[]): void {
 
-      this.modules = newModules;
+      this.scenarios = newScenarios;
 
     }
 
@@ -141,7 +141,7 @@ export default class Session {
                 nominatedPlayer: this.nominatedPlayer, 
                 voting: this.isVoting },
             phase: this.phase,
-            modules: this.modules,
+            scenarios: this.scenarios,
             timers: this.timers
         }
 

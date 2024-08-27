@@ -9,13 +9,13 @@ import { SessionData } from "../../server/serverTypes.ts";
 export interface CurrentSession {
   id: string | null;
   sync: boolean | null;
-  modules: Array<string>;
+  scenarios: Array<string>;
 }
 
 export interface SessionSlice {
   session: CurrentSession;
   resetSession: () => void;
-  setModules: (newModules: Array<string>, newSync?: boolean) => void;
+  setScenarios: (newScenarios: Array<string>, newSync?: boolean) => void;
   syncSession: (newSession: SessionData) => void;
   syncOff: () => void;
   syncOn: () => void;

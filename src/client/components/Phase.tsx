@@ -62,9 +62,9 @@ export default Phase
 
 function PlayerPhase() {
 
-  const modules = useStore(state => state.session.modules);
+  const scenarios = useStore(state => state.session.scenarios);
   const [openDialog, setOpenDialog] = useState<OpenDialog>(OpenDialog.None);
-  const [chars, roles] = useMemo(() => GameData.getFullFilteredValues(modules), [modules]);
+  const [chars, roles] = useMemo(() => GameData.getFullFilteredValues(scenarios), [scenarios]);
   const handleClose = () => setOpenDialog(OpenDialog.None);
   const phase = useStore(state => state.phase);
   const voting = useStore(state => state.votes.voting);
@@ -105,8 +105,8 @@ function PlayerPhase() {
 
 function NarratorPhase() {
 
-  const modules = useStore(state => state.session.modules);
-  const [chars, roles] = useMemo(() => GameData.getFullFilteredValues(modules), [modules]);
+  const scenarios = useStore(state => state.session.scenarios);
+  const [chars, roles] = useMemo(() => GameData.getFullFilteredValues(scenarios), [scenarios]);
   const [openDialog, setOpenDialog] = useState(OpenDialog.None);
   const phase = useStore(state => state.phase);
   const nextPhase = useStore(state => state.nextPhase);

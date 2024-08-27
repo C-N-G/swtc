@@ -23,9 +23,9 @@ function Board() {
   const topNum = config.board_config[playerNum][0];
   const sideNum = config.board_config[playerNum][1];
   const botNum = config.board_config[playerNum][2];
-  const modules = useStore(state => state.session.modules);
-  const [chars, roles] = useMemo(() => GameData.getFilteredValues(modules), [modules]);
-  const [fullChars, fullRoles] = useMemo(() => GameData.getFullFilteredValues(modules), [modules]);
+  const scenarios = useStore(state => state.session.scenarios);
+  const [chars, roles] = useMemo(() => GameData.getFilteredValues(scenarios), [scenarios]);
+  const [fullChars, fullRoles] = useMemo(() => GameData.getFullFilteredValues(scenarios), [scenarios]);
 
   const timerDuration = (Math.max(playerNum, 8)*2) - 1;
   const [time, beginTimer, resetTimer] = useCountDown(timerDuration, handleVoteTimerEnd);

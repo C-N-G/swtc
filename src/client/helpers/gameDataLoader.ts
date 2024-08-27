@@ -5,11 +5,20 @@ import JSON5 from "json5";
 
 interface Scenario {
   name: string;
+  flavour: string;
   chars: number[];
   roles: number[];
 }
 
+interface ScenarioData {
+  name: string;
+  flavour: string;
+  chars: string[];
+  roles: string[];
+}
+
 type NightOrder = {id: string, description: string};
+type ReminderData = [string, string, string];
 
 export interface GameDataStore {
   chars: Char[];
@@ -19,16 +28,14 @@ export interface GameDataStore {
   teams: string[];
   scenarios: Scenario[];
   reminders: Reminder[];
-  filterByModule(moduleArray: string[], type: "chars" | "roles", full: boolean): (Char | Role | string)[];
+  filterByScenario(scenarioArray: string[], type: "chars" | "roles", full: boolean): (Char | Role | string)[];
   getFilteredReminders(charArray: Char[], roleArray: Role[]): Reminder[];
-  getFilteredValues(moduleArray: string[]): [chars: string[], roles: string[]];
-  getFullFilteredValues(moduleArray: string[]): [chars: Char[], roles: Role[]];
+  getFilteredValues(scenarioArray: string[]): [chars: string[], roles: string[]];
+  getFullFilteredValues(scenarioArray: string[]): [chars: Char[], roles: Role[]];
   hackValue(input: string): string;
 }
 
 export type RawImportData = { [file: string]: string }
-
-type ImportData = (CharData | RoleData) | (NightOrder | string)[];
 
 export default function gameDataLoader(load_obj: GameDataStore, files: RawImportData) {
 
@@ -44,7 +51,7 @@ export default function gameDataLoader(load_obj: GameDataStore, files: RawImport
     }
 
     // parse the json5 data into an object
-    const fileData: ImportData = JSON5.parse(load_origin[file_path]);
+    const fileData = JSON5.parse(load_origin[file_path]);
 
     const eleId = load_target[property].length;
     let reminders: Reminder[] = [];
@@ -52,7 +59,7 @@ export default function gameDataLoader(load_obj: GameDataStore, files: RawImport
     // handle stripping reminders from object and adding to reminder array
     if (typeof fileData !== "string" && !("id" in fileData) && "reminders" in fileData) {
       // link the reminder refernces to the new object
-      reminders = fileData.reminders.map(reminder => {
+      reminders = fileData.reminders.map((reminder: ReminderData) => {
         const reminderId = load_target.reminders.length;
         const newReminder = new Reminder(reminderId, null, reminder[0], reminder[1], reminder[2]);
         load_target.reminders.push(newReminder);
@@ -89,13 +96,16 @@ export default function gameDataLoader(load_obj: GameDataStore, files: RawImport
         roleData.appears,
       ));
     } else if (property === "nightOrder") {
-      const nightOrderData = fileData as unknown as NightOrder;
-      load_target.nightOrder.push(nightOrderData);
+      console.log(property, fileData);
+      load_target.nightOrder.push(...fileData as NightOrder[]);
     } else if (property === "states"){
-      load_target.states.push(fileData as unknown as string);
+      load_target.states.push(...fileData as string[]);
     } else if (property === "teams"){
-      load_target.teams.push(fileData as unknown as string);
+      load_target.teams.push(...fileData as string[]);
+    } else if (property === "scenarios") {
+      load_target.scenarios.push(import_scenario(fileData as ScenarioData, load_target));
     }
+    
 
     // link the reminders to the new object reference
     if (typeof fileData !== "string" 
@@ -108,6 +118,27 @@ export default function gameDataLoader(load_obj: GameDataStore, files: RawImport
       })
     }
 
+
+  }
+
+  function import_scenario(scenario: ScenarioData, load_target: GameDataStore): Scenario {
+    
+    const convertedChars = scenario.chars.map(char => {
+      const foundChar = load_target.chars.find(searchChar => searchChar.name === char);
+      return foundChar?.id;
+    }).filter(char => char !== undefined);
+    
+    const convertedRoles = scenario.roles.map(role => {
+      const foundRole = load_target.roles.find(searchRole => searchRole.name === role);
+      return foundRole?.id;
+    }).filter(role => role !== undefined);
+
+    return {
+      name: scenario.name,
+      flavour: scenario.flavour,
+      chars: convertedChars,
+      roles: convertedRoles,
+    }
 
   }
 
@@ -127,17 +158,17 @@ export default function gameDataLoader(load_obj: GameDataStore, files: RawImport
       return 0;
     }
 
-    // function sort_module(a: Module, b: Module) {
-    //   const modA = Number(a.name.split("_")[0]);
-    //   const modB = Number(b.name.split("_")[0]);
-    //   if (modA < modB) return -1;
-    //   if (modA > modB) return 1;
-    //   return 0;
-    // }
+    function sort_Scenario(a: Scenario, b: Scenario) {
+      const modA = Number(a.name.split("_")[0]);
+      const modB = Number(b.name.split("_")[0]);
+      if (modA < modB) return -1;
+      if (modA > modB) return 1;
+      return 0;
+    }
 
     load_target.chars.sort(sort_name);
     load_target.roles.sort(sort_name);
-    // if (Array.isArray(load_target.modules)) load_target.modules.sort(sort_module);
+    if (load_target.scenarios.length > 1) load_target.scenarios.sort(sort_Scenario);
 
   }
 
@@ -154,7 +185,7 @@ export default function gameDataLoader(load_obj: GameDataStore, files: RawImport
 
   // }
 
-  // sort modules by file path length so unknowns will be loaded first
+
   Object.keys(files).forEach((path) => import_json(path, files, load_obj));
 
   sort_game_data(load_obj);
