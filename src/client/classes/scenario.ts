@@ -8,7 +8,7 @@ export interface ScenarioData {
 export default class Scenario { 
 
   constructor(
-    public readonly id: number,
+    public readonly id: string,
     public name: string,
     public flavour: string,
     public chars: number[],

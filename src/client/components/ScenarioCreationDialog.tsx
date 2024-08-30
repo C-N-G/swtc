@@ -4,6 +4,7 @@ import GameData from '../strings/_gameData.ts';
 import Scenario from '../classes/scenario.ts';
 import { useState } from 'react';
 import Role from '../classes/role.ts';
+import hash from '../helpers/hash.ts';
 
 interface ScenarioCreationDialogProps {
   openDialog: OpenDialog;
@@ -13,7 +14,7 @@ interface ScenarioCreationDialogProps {
 
 function ScenarioCreationDialog({openDialog, setOpenDialog, scenario}: ScenarioCreationDialogProps) {
 
-  const [newScenario, setNewScenario] = useState<Scenario>(scenario ? scenario : new Scenario(0, "", "", [], []))
+  const [newScenario, setNewScenario] = useState<Scenario>(scenario ? scenario : new Scenario("", "", "", [], []))
   const [roleNums, setRoleNums] = useState({agent: 0, detrimental: 0, antagonist: 0})
   
   function handleCheckbox(id: number, type: "chars" | "roles", roleType?: "agent" | "detrimental" | "antagonist") {
@@ -32,35 +33,50 @@ function ScenarioCreationDialog({openDialog, setOpenDialog, scenario}: ScenarioC
 
   }
 
-  function handleSave() {
-    console.log(newScenario)
+
+  function downloadJSON(object: object, fileName: string) {
+
+    const data = JSON.stringify(object, null, 2);
+    const link = document.createElement("a");
+    link.href = "data:text/json;charset=utf-8;" + "," + encodeURIComponent(data);
+    link.download = fileName + ".json";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+  }
+
+  async function handleSave(destination: "file" | "browser") {
+
+    const scenarioWithNames = {
+      ...newScenario,
+      chars: [...newScenario.chars].map(index => GameData.chars[index].name).sort(),
+      roles: [...newScenario.roles].map(index => GameData.roles[index].name).sort(),
+    }
+
+    const idHash = await hash(JSON.stringify(scenarioWithNames));
+
+    GameData.scenarios.push(new Scenario(
+      idHash, 
+      newScenario.name, 
+      newScenario.flavour,
+      newScenario.chars.sort(),
+      newScenario.roles.sort()
+    ))
+
+    if (destination === "file") {
+      downloadJSON(scenarioWithNames, scenarioWithNames.name);
+    } else if (destination === "browser") {
+      console.log(GameData.scenarios)
+    }
+
+    setOpenDialog(OpenDialog.Scenario);
+
   }
 
   function maxChar(newInput: string, curInput: string, max: number) {
     return newInput.length < max ? newInput : curInput; 
   }
-
-  // const allChars = GameData.chars.filter(char => char.name !== "Unknown").map(char => {
-  //   const title = char.name;
-  //   const checkbox = <Checkbox 
-  //     size="small"
-  //     checked={newScenario.chars.includes(char.id)} 
-  //     onChange={() => handleCheckbox(char.id, "chars")} 
-  //     value={char.id} 
-  //     />
-  //   return <FormControlLabel sx={{color: newScenario.chars.includes(char.id) ? "#a61c1c" : "inherit"}} key={char.name} control={checkbox} label={title} />
-  // })
-
-  // const allRoles = GameData.roles.filter(role => role.name !== "Unknown").map(role => {
-  //   const title = role.name;
-  //   const checkbox = <Checkbox 
-  //     size="small"
-  //     checked={newScenario.roles.includes(role.id)} 
-  //     onChange={() => handleCheckbox(role.id, "roles")} 
-  //     value={role.id} 
-  //     />
-  //   return <FormControlLabel sx={{color: newScenario.roles.includes(role.id) ? "#a61c1c" : "inherit"}} key={role.name} control={checkbox} label={title} />
-  // })
 
   const createList = (type: "char" | "role", roleType?: "agent" | "detrimental" | "antagonist") => {
     const plural = type === "char" ? "chars" : "roles";
@@ -70,7 +86,6 @@ function ScenarioCreationDialog({openDialog, setOpenDialog, scenario}: ScenarioC
       if (type === "char") return true;
       if (type === "role" && roleType !== undefined && (item as Role).type.toLowerCase() === roleType) return true;
       else return false;
-      return item.name !== "Unknown" && (type === "role" && roleType !== undefined) ? (item as Role).type.toLowerCase() === roleType : true
     })
     .map(item => {
       const title = item.name;
@@ -115,7 +130,7 @@ function ScenarioCreationDialog({openDialog, setOpenDialog, scenario}: ScenarioC
           />
           <Grid container spacing={2} sx={{justifyContent: "center"}}>
             <Grid item sx={{textAlign: "center"}}>
-              <Typography variant="h5">Characteristics ({newScenario.chars.length}/20)</Typography>
+              <Typography variant="h5">Characteristics ({newScenario.chars.length}/18)</Typography>
               <Divider />
               {createList("char")}
             </Grid>
@@ -138,7 +153,9 @@ function ScenarioCreationDialog({openDialog, setOpenDialog, scenario}: ScenarioC
         </FormGroup>
       </DialogContent>
       <DialogActions>
-        <Button variant="outlined" onClick={() => handleSave()}>Save</Button>
+        <Button variant="outlined" onClick={() => setOpenDialog(OpenDialog.None)}>Load From JSON</Button>
+        <Button variant="outlined" disabled={newScenario.name.length === 0} onClick={() => handleSave("file")}>Save to File</Button>
+        <Button variant="outlined" disabled={newScenario.name.length === 0} onClick={() => handleSave("browser")}>Save to Browser</Button>
         <Button variant="outlined" onClick={() => setOpenDialog(OpenDialog.None)}>Close</Button>
       </DialogActions>
     </Dialog>

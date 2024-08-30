@@ -122,7 +122,7 @@ export default function gameDataLoader(load_obj: GameDataStore, files: RawImport
     }).filter(role => role !== undefined);
 
     return new Scenario(
-      load_target.scenarios.length,
+      String(load_target.scenarios.length),
       scenario.name,
       scenario.flavour,
       convertedChars as number[],
