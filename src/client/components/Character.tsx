@@ -1,10 +1,6 @@
 import {useContext, useState, useMemo} from 'react'
-import {Card, Typography, Grid, Paper, Checkbox, Button, Box, CircularProgress, Switch, 
-        IconButton, Autocomplete, TextField,
-        ListItem,
-        ListItemButton,
-        ListItemIcon,
-        ListItemText}from '@mui/material';
+import {Card, Typography, Grid, Paper, Button, Box, CircularProgress, Switch, 
+        IconButton, Autocomplete, TextField}from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import LinkIcon from '@mui/icons-material/Link';
 import {UserContext} from "../App.tsx";
@@ -17,10 +13,9 @@ import convertTime from "../helpers/convertTime.ts";
 import Player from '../classes/player.ts';
 import {default as ReminderType} from '../classes/reminder.ts';
 import { OpenCharacterDialog as OpenDialog } from '../helpers/enumTypes.ts';
-import ScenarioSelectionDialog from './ScenarioSelectionDialog.tsx';
 import VoteHistoryDialog from './VoteHistoryDialog.tsx';
 import Scenario from '../classes/scenario.ts';
-import ScenarioCreationDialog from './ScenarioCreationDialog.tsx';
+import ScenarioSelectionButton from './ScenarioSeletionButton.tsx';
 
 
 type CharacterProps = PlayerCharacterProps & NarratorCharacterProps;
@@ -182,31 +177,12 @@ function NarratorCharacter({user}: NarratorCharacterProps) {
   const stopTimer = useStore(state => state.stopTimer);
   const resetTimer = useStore(state => state.resetTimer);
   
+  // const [editingScenario, setEditingScenario] = useState<string>();
 
   function storeOldData() {
     if (sessionSync) {
       setOldSessionState({players: JSON.parse(JSON.stringify(players)), scenarios: [...scenarios]});
     }
-  }
-
-  function handleScenarioSelection(scenarioId: string) {
-
-    storeOldData();
-
-    const checked = scenarios.some(ele => ele.id === scenarioId)
-
-    let data: Scenario[] = [];
-
-    if (checked === false) {
-      data = [...scenarios, GameData.scenarios.find((scenario) => scenario.id === scenarioId)!];
-    }
-
-    if (checked === true) {
-      data = scenarios.filter((scenario) => scenario.id !== scenarioId);
-    }
-
-    setScenarios(data, false);
-
   }
 
   function handleRandomise() {
@@ -283,30 +259,7 @@ function NarratorCharacter({user}: NarratorCharacterProps) {
     navigator.clipboard.writeText(returnString);
   }
 
-  const allScenarios = GameData.scenarios.map(scenario => {
-    const title = `${scenario.name} - ${scenario.roles.length} roles - ${scenario.chars.length} chars`;
-    const isCustom = scenario.id.length === 40;
-    const listItem = <ListItem 
-        key={scenario.name}
-        disablePadding
-      >
-        <ListItemButton onClick={() => handleScenarioSelection(scenario.id)}>
-          <ListItemIcon>
-            <Checkbox 
-              edge="start"
-              checked={scenarios.some(ele => ele.id === scenario.id)} 
-              value={scenario.id} 
-            />
-          </ListItemIcon>
-          <ListItemText>
-            {title}
-          </ListItemText>
-          
-        </ListItemButton>
-        {isCustom && <Button sx={{ml: 1}} variant="outlined">Edit</Button>}
-      </ListItem>
-    return listItem
-  })
+
 
   return (<>
     <Typography variant="h6">
@@ -319,9 +272,11 @@ function NarratorCharacter({user}: NarratorCharacterProps) {
         <LinkIcon />
       </IconButton>
     </Typography>
-    <Button variant="contained" sx={{my: 1}} onClick={() => setOpenDialog(OpenDialog.Scenario)}>
-      Select Scenarios ({scenarios.length})
-    </Button>
+    <ScenarioSelectionButton 
+      setOpenDialog={setOpenDialog}
+      storeOldData={storeOldData}
+      openDialog={openDialog}
+    />
     <Button variant="contained" sx={{my: 1}} onClick={handleRandomise}>
       Randomise Players
     </Button>
@@ -410,17 +365,6 @@ function NarratorCharacter({user}: NarratorCharacterProps) {
         <Typography color={"white"}>Timer: {convertTime(phaseTimer.time)}</Typography>
       </Paper>
     </Box>
-      
-    <ScenarioSelectionDialog 
-      openDialog={openDialog}
-      setOpenDialog={setOpenDialog}
-      allScenarios={allScenarios}
-    />
-
-    <ScenarioCreationDialog
-      openDialog={openDialog}
-      setOpenDialog={setOpenDialog}
-    />
       
     <VoteHistoryDialog 
       openDialog={openDialog}

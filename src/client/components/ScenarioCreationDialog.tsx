@@ -9,12 +9,14 @@ import hash from '../helpers/hash.ts';
 interface ScenarioCreationDialogProps {
   openDialog: OpenDialog;
   setOpenDialog: React.Dispatch<React.SetStateAction<OpenDialog>>;
-  scenario?: Scenario; 
+  newScenario: Scenario; 
+  setNewScenario: React.Dispatch<React.SetStateAction<Scenario>>;
 }
 
-function ScenarioCreationDialog({openDialog, setOpenDialog, scenario}: ScenarioCreationDialogProps) {
+function ScenarioCreationDialog({openDialog, setOpenDialog, newScenario, setNewScenario}: ScenarioCreationDialogProps) {
 
-  const [newScenario, setNewScenario] = useState<Scenario>(scenario ? scenario : new Scenario("", "", "", [], []))
+  const isNewScenario = newScenario.id === "";
+
   const [roleNums, setRoleNums] = useState({agent: 0, detrimental: 0, antagonist: 0})
   
   function handleCheckbox(id: number, type: "chars" | "roles", roleType?: "agent" | "detrimental" | "antagonist") {
@@ -56,13 +58,24 @@ function ScenarioCreationDialog({openDialog, setOpenDialog, scenario}: ScenarioC
 
     const idHash = await hash(JSON.stringify(scenarioWithNames));
 
-    GameData.scenarios.push(new Scenario(
-      idHash, 
-      newScenario.name, 
-      newScenario.flavour,
-      newScenario.chars.sort(),
-      newScenario.roles.sort()
-    ))
+    if (isNewScenario) {
+      GameData.scenarios.push(new Scenario(
+        idHash, 
+        newScenario.name, 
+        newScenario.flavour,
+        newScenario.chars.sort(),
+        newScenario.roles.sort()
+      ))
+    } else {
+      GameData.scenarios = GameData.scenarios.filter(scenario => scenario.id !== newScenario.id);
+      GameData.scenarios.push(new Scenario(
+        idHash, 
+        newScenario.name, 
+        newScenario.flavour,
+        newScenario.chars.sort(),
+        newScenario.roles.sort()
+      ))
+    }
 
     if (destination === "file") {
       downloadJSON(scenarioWithNames, scenarioWithNames.name);
@@ -156,7 +169,7 @@ function ScenarioCreationDialog({openDialog, setOpenDialog, scenario}: ScenarioC
         <Button variant="outlined" onClick={() => setOpenDialog(OpenDialog.None)}>Load From JSON</Button>
         <Button variant="outlined" disabled={newScenario.name.length === 0} onClick={() => handleSave("file")}>Save to File</Button>
         <Button variant="outlined" disabled={newScenario.name.length === 0} onClick={() => handleSave("browser")}>Save to Browser</Button>
-        <Button variant="outlined" onClick={() => setOpenDialog(OpenDialog.None)}>Close</Button>
+        <Button variant="outlined" onClick={() => setOpenDialog(OpenDialog.Scenario)}>Close</Button>
       </DialogActions>
     </Dialog>
   )
