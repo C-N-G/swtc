@@ -4,6 +4,7 @@ import fm from "front-matter";
 import type { FrontMatterResult } from 'front-matter';
 import { RoleData } from '../client/classes/role';
 import { CharData } from '../client/classes/char';
+import { ScenarioData } from '../client/classes/scenario';
 
 /**
  * Checks to see if a file path exists and returns true or false
@@ -29,15 +30,21 @@ interface VaultCharData extends CharData {
   publish?: boolean;
 }
 
+interface VaultScenarioData extends ScenarioData {
+  publish?: boolean;
+}
+
 /**
  * Gets the front matter from a specified file
  * @param path
  * @returns object containing the front matter
  */
-async function getFrontMatter(path: string): Promise<VaultRoleData | VaultCharData | undefined> {
+async function getFrontMatter(path: string): Promise<VaultRoleData | VaultCharData | VaultScenarioData | undefined> {
   try {
     const contents: FrontMatterResult<VaultRoleData | VaultCharData> = fm(await fs.readFile(path, {encoding: "utf8"}));
-    if (Object.hasOwn(contents.attributes, "publish")) {
+    if (Object.hasOwn(contents.attributes, "publish") && contents.attributes.publish === false) {
+      return undefined;
+    } else if (Object.hasOwn(contents.attributes, "publish")) {
       delete contents.attributes.publish;
     }
     return contents.attributes;
@@ -78,6 +85,7 @@ async function createDir(path: string) {
 interface StringData {
   chars: VaultCharData[]
   roles: VaultRoleData[]
+  scenarios: VaultScenarioData[]
 }
 
 /**
@@ -87,15 +95,16 @@ interface StringData {
  */
 async function convertFrontMatterToData(filePaths: string[]): Promise<StringData> {
 
-  const frontMatterData: StringData = {chars: [], roles: []};
+  const frontMatterData: StringData = {chars: [], roles: [], scenarios: []};
   for (let i = 0; i < filePaths.length; i++) {
 
     // determine if a char or role is being processed
     const isChar = filePaths[i].toLowerCase().includes("characteristic") === true;
     const isRole = filePaths[i].toLowerCase().includes("role") === true;
+    const isScenario = filePaths[i].toLowerCase().includes("scenario") === true;
 
     // skip the path if isn't a charcteristic or role
-    if (!isChar && !isRole) continue;
+    if (!isChar && !isRole && !isScenario) continue;
 
     // get front matter from file
     const data = await getFrontMatter(filePaths[i]); 
@@ -105,7 +114,8 @@ async function convertFrontMatterToData(filePaths: string[]): Promise<StringData
 
     // push data item to return data structure
     if (isRole) frontMatterData.roles.push(data as VaultRoleData);
-    else if (isChar) frontMatterData.chars.push(data);
+    else if (isChar) frontMatterData.chars.push(data as VaultCharData);
+    else if (isScenario) frontMatterData.scenarios.push(data as VaultScenarioData);
 
   }
 
@@ -120,7 +130,7 @@ async function convertFrontMatterToData(filePaths: string[]): Promise<StringData
  */
 async function convertDataToStrings(dataObj: StringData, basePath: string): Promise<void> {
 
-  const create = async (type: "chars" | "roles") => {
+  const create = async (type: "chars" | "roles" | "scenarios") => {
 
     // set the base path for file creation
     const dataPath = `${basePath}/${type}`;
@@ -143,6 +153,7 @@ async function convertDataToStrings(dataObj: StringData, basePath: string): Prom
 
   create("chars");
   create("roles");
+  create("scenarios");
 
 }
 
