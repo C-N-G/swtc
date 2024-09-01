@@ -1,6 +1,10 @@
 import {useContext, useState, useMemo} from 'react'
-import {Card, Typography, Grid, Paper, Checkbox, FormControlLabel, Button, Box, CircularProgress, Switch, 
-        IconButton, Autocomplete, TextField}from '@mui/material';
+import {Card, Typography, Grid, Paper, Checkbox, Button, Box, CircularProgress, Switch, 
+        IconButton, Autocomplete, TextField,
+        ListItem,
+        ListItemButton,
+        ListItemIcon,
+        ListItemText}from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -188,21 +192,20 @@ function NarratorCharacter({user}: NarratorCharacterProps) {
     }
   }
 
-  function handleScenarioSelection(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleScenarioSelection(scenarioId: string) {
 
     storeOldData();
 
-    const checked = e.target.checked;
-    const targetScenario = e.target.value;
+    const checked = scenarios.some(ele => ele.id === scenarioId)
 
     let data: Scenario[] = [];
 
-    if (checked === true) {
-      data = [...scenarios, GameData.scenarios.find((scenario) => scenario.name === targetScenario)!];
+    if (checked === false) {
+      data = [...scenarios, GameData.scenarios.find((scenario) => scenario.id === scenarioId)!];
     }
 
-    if (checked === false) {
-      data = scenarios.filter((scenario) => scenario.name !== targetScenario);
+    if (checked === true) {
+      data = scenarios.filter((scenario) => scenario.id !== scenarioId);
     }
 
     setScenarios(data, false);
@@ -285,11 +288,27 @@ function NarratorCharacter({user}: NarratorCharacterProps) {
 
   const allScenarios = GameData.scenarios.map(scenario => {
     const title = `${scenario.name} - ${scenario.roles.length} roles - ${scenario.chars.length} chars`;
-    const checkbox = <Checkbox 
-      checked={scenarios.some(ele => ele.name === scenario.name)} 
-      onChange={handleScenarioSelection} 
-      value={scenario.name} />
-    return <FormControlLabel key={scenario.name} control={checkbox} label={title} />
+    const isCustom = scenario.id.length === 40;
+    const listItem = <ListItem 
+        key={scenario.name}
+        disablePadding
+      >
+        <ListItemButton onClick={() => handleScenarioSelection(scenario.id)}>
+          <ListItemIcon>
+            <Checkbox 
+              edge="start"
+              checked={scenarios.some(ele => ele.id === scenario.id)} 
+              value={scenario.id} 
+            />
+          </ListItemIcon>
+          <ListItemText>
+            {title}
+          </ListItemText>
+          
+        </ListItemButton>
+        {isCustom && <Button sx={{ml: 1}} variant="outlined">Edit</Button>}
+      </ListItem>
+    return listItem
   })
 
   return (<>

@@ -1,4 +1,4 @@
-import { Dialog, DialogTitle, DialogContent, FormGroup, DialogActions, Button } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, List } from '@mui/material';
 import { OpenCharacterDialog as OpenDialog } from '../helpers/enumTypes.ts';
 
 interface ScenarioSelectionDialogProps {
@@ -13,12 +13,12 @@ function ScenarioSelectionDialog({openDialog, setOpenDialog, allScenarios}: Scen
     <Dialog open={openDialog === OpenDialog.Scenario} onClose={() => setOpenDialog(OpenDialog.None)} >
       <DialogTitle>Select Scenarios</DialogTitle>
       <DialogContent>
-        <FormGroup>
+        <List>
           {allScenarios}
-        </FormGroup>
+        </List>
       </DialogContent>
       <DialogActions sx={{justifyContent: "space-between"}}>
-        <Button variant="outlined" onClick={() => setOpenDialog(OpenDialog.CreateScenario)}>Create</Button>
+        <Button variant="outlined" onClick={() => setOpenDialog(OpenDialog.CreateScenario)}>Create (W.I.P)</Button>
         <Button variant="outlined" onClick={() => setOpenDialog(OpenDialog.None)}>Close</Button>
       </DialogActions>
     </Dialog>
