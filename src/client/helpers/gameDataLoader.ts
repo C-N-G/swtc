@@ -84,7 +84,6 @@ export default function gameDataLoader(load_obj: GameDataStore, files: RawImport
         roleData.appears,
       ));
     } else if (property === "nightOrder") {
-      console.log(property, fileData);
       load_target.nightOrder.push(...fileData as NightOrder[]);
     } else if (property === "states"){
       load_target.states.push(...fileData as string[]);
