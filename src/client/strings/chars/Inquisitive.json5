@@ -1,0 +1,13 @@
+{
+  "name": "Inquisitive",
+  "flavour": "Placeholder Flavour",
+  "ability": "Once per game, during the night, you may choose to learn a role. One of your living neighbours is this role.\n",
+  "orderType": "char_with_recurring_info",
+  "reminders": [
+    [
+      "❓",
+      "#FFFF00",
+      "Inquisitive: Learnt this player."
+    ]
+  ]
+}

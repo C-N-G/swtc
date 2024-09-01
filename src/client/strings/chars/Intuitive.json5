@@ -1,10 +1,9 @@
 {
   "name": "Intuitive",
-  "flavour": "PLACEHOLDER",
-  "ability": "Each night, you learn who the narrator thinks you should speak with the most.",
-  "attributes": ["Psychic"],
+  "flavour": "Placeholder Flavour",
+  "ability": "Each night, you learn who the Narrator thinks you should speak with the most.\n",
   "orderType": "char_with_recurring_info",
-  "reminders": [
-    ["🧭", "#FFFF00", "Intuitive: Learnt this player."]
+  "attributes": [
+    "Psychic"
   ]
 }

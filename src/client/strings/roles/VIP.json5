@@ -1,8 +1,9 @@
 {
   "name": "VIP",
+  "team": "Loyalist",
   "type": "Detrimental",
   "flavour": "Special? No, no, no. Special is your lover bringing you flowers. Me? I’m important.",
-  "ability": "When you die, the Cohesion decreases by 3.",
+  "ability": "If you're dismissed your team loses.\n",
   "attributes": [
     "Human"
   ]

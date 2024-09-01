@@ -1,0 +1,27 @@
+{
+  "name": "Warden",
+  "team": "Loyalist",
+  "type": "Agent",
+  "flavour": "Placeholder Flavour",
+  "ability": "Each night, you must choose a player: if you choose the Prisoner, they become an Agent role of their choice.\n",
+  "orderType": "role_converts_others",
+  "attributes": [
+    "Human"
+  ],
+  "setup": [
+    [
+      "Placeholder setup Solo Description"
+    ],
+    [
+      "Placeholder Setup Effect Description",
+      "AddInvariant 1 Role Prisoner"
+    ]
+  ],
+  "reminders": [
+    [
+      "⛓️",
+      "#0000FF",
+      "Warden: Chose this player."
+    ]
+  ]
+}

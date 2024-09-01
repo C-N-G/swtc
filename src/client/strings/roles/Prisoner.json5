@@ -1,14 +1,15 @@
 {
   "name": "Prisoner",
+  "team": "Loyalist",
   "type": "Detrimental",
   "flavour": "How long will you keep me here? I beg you just let it end!",
-  "ability": "You appear as a Subversive Antagonist to Loyalist players.",
+  "ability": "You appear as a Subversive Antagonist to all Loyalist players, except the Warden.\n",
+  "attributes": [
+    "Human"
+  ],
   "appears": {
     "asType": "Antagonist",
     "asTeam": "Subversive",
     "for": "Loyalist"
-  },
-  "attributes": [
-    "Human"
-  ]
+  }
 }

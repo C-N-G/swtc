@@ -1,8 +1,9 @@
 {
   "name": "Cook",
+  "team": "Loyalist",
   "type": "Agent",
-  "flavour": "First, we eat",
-  "ability": "Your neighbours cannot malfunction.",
+  "flavour": "First, we eat.",
+  "ability": "Your neighbours cannot malfunction.\n",
   "attributes": [
     "Human"
   ],

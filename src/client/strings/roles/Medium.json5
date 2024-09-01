@@ -1,0 +1,19 @@
+{
+  "name": "Medium",
+  "team": "Loyalist",
+  "type": "Agent",
+  "flavour": "Placeholder Flavour",
+  "ability": "Each night, after the first, you may choose a dead player: you learn their role.\n",
+  "orderType": "role_with_late_info",
+  "attributes": [
+    "Human",
+    "Psychic"
+  ],
+  "reminders": [
+    [
+      "👻",
+      "#0000FF",
+      "Medium: Chose this player."
+    ]
+  ]
+}

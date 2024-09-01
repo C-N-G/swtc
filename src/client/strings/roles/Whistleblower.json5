@@ -1,10 +1,18 @@
 {
   "name": "Whistleblower",
+  "team": "Loyalist",
   "type": "Detrimental",
-  "flavour": "It’s time for some truth.",
-  "ability": "Each night, you learn the current Cohesion and decrease it by 1. You win with the Subversive team if the Cohesion reaches 0.",
+  "flavour": "Give them some truth.",
+  "ability": "Each night, the Antagonists learn an Agent player and their role, until there are no more left to learn.\n",
   "orderType": "role_with_recurring_info",
   "attributes": [
     "Human"
+  ],
+  "reminders": [
+    [
+      "🪈",
+      "#702963",
+      "Whistleblower: Antagonists learnt this Agent player and their role."
+    ]
   ]
 }

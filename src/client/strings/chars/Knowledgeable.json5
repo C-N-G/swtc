@@ -1,6 +1,13 @@
 {
   "name": "Knowledgeable",
-  "flavour": "PLACEHOLDER",
-  "ability": "You start knowing whether a role of your choice is in play or not.",
-  "orderType": "char_with_starting_info"
+  "flavour": "Placeholder Flavour",
+  "ability": "You start knowing whether a role of your choice is in play or not.\n",
+  "orderType": "char_with_starting_info",
+  "reminders": [
+    [
+      "📖",
+      "#FFFF00",
+      "Knowledgeable: Learnt that this role is in play."
+    ]
+  ]
 }

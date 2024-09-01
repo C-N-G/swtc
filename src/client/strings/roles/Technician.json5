@@ -1,8 +1,9 @@
 {
   "name": "Technician",
+  "team": "Loyalist",
   "type": "Detrimental",
   "flavour": "I don’t think you’re aware of how much I do around here.",
-  "ability": "When you die, 2 players on your team (not yourself) become malfunctioning.",
+  "ability": "When you die, 2 players on your team (not yourself) become malfunctioning.\n",
   "attributes": [
     "Human"
   ],

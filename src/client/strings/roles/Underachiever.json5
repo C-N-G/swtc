@@ -1,16 +1,17 @@
 {
   "name": "Underachiever",
+  "team": "Loyalist",
   "type": "Detrimental",
   "flavour": "Almost.",
-  "ability": "You do not know you are the Underachiever. You think you are an Agent role, but you are not.",
+  "ability": "You do not know you are the Underachiever. You think you are an Agent role, but you are not.\n",
+  "attributes": [
+    "Human"
+  ],
   "setup": [
     [
       "You think you are an Agent role.",
       "ShowAs Role Agent"
     ]
-  ],
-  "attributes": [
-    "Human"
   ],
   "reminders": [
     [

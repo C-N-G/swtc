@@ -1,0 +1,11 @@
+{
+  "name": "Turncoat",
+  "team": "Either",
+  "type": "Detrimental",
+  "flavour": "Placeholder Flavour",
+  "ability": "Each night, after the first, you change team.\n",
+  "orderType": "role_converts_self",
+  "attributes": [
+    "Human"
+  ]
+}

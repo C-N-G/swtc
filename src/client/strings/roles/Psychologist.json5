@@ -1,8 +1,9 @@
 {
   "name": "Psychologist",
+  "team": "Loyalist",
   "type": "Agent",
-  "flavour": "PLACEHOLDER",
-  "ability": "Each night, you must choose a player: you learn their characteristic.",
+  "flavour": "Placeholder Flavour",
+  "ability": "Each night, you must choose a player: you learn their characteristic.\n",
   "orderType": "role_with_recurring_info",
   "attributes": [
     "Human"

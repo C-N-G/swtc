@@ -1,8 +1,9 @@
 {
   "name": "Clairvoyant",
+  "team": "Loyalist",
   "type": "Agent",
   "flavour": "Open your eyes, and see where you are not.",
-  "ability": "Each night, you must choose a player: you learn their team.",
+  "ability": "Each night, you must choose a player: you learn their team.\n",
   "orderType": "role_with_recurring_info",
   "attributes": [
     "Human",
