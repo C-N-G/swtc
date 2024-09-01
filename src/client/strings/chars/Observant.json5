@@ -1,0 +1,13 @@
+{
+  "name": "Observant",
+  "flavour": "Placeholder Flavour",
+  "ability": "You start knowing how many of your neighbours woke up or will wake up that night due to their ability.\n",
+  "orderType": "char_with_starting_info",
+  "reminders": [
+    [
+      "👓",
+      "#FFFF00",
+      "Observant: This player woke due to their ability."
+    ]
+  ]
+}

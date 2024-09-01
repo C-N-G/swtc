@@ -1,64 +1,62 @@
-// default roles even when no module is selected
-[
-  {
-    "name": "Unknown",
-    "type": "",
-    "description": "",
-    "ability": "",
-    "orderType": "",
-    "appears": {"asType": "", "asTeam": "", "for": ""},
-    "setup": [],
-    "attributes": [],
-    "additional": [],
-    "reminders": []
-  }
-  /*
+// default roles even when no scenario is selected
+{
+  "name": "Unknown",
+  "type": "",
+  "description": "",
+  "ability": "",
+  "orderType": "",
+  "appears": {"asType": "", "asTeam": "", "for": ""},
+  "setup": [],
+  "attributes": [],
+  "additional": [],
+  "reminders": []
+}
+/*
 
-  ROLE TEMPLATE
+ROLE TEMPLATE
 
-  name          - the role name shown to the users used to represent the role in the app.
-  type          - the category of the role, either Agent, Detrimental, or Antagonist.
-  description   - any descriptive fluff text give for the role.
-  ability       - the ability description for this role. 
-  orderType     - an id string corresponding with a specific night order type found in nightOrder.json5.
-  appears       - used in the randomisation algorithm to support specific role functionality.
-    asType      - the type to appear as for the specified target.
-    asTeam      - the team to appear as for the specified target.
-    for         - the target for which the type and team should apply to e.g. a team.
-  setup         - any setup specific text for this role, allows for a list of items with the following format
-                  [description, command?] where description is a mandatory piece of descriptive text, and
-                  the command is an optional command string to run during the randomisation algorithm.
-  attributes    - a list of attributes associated with this role.
-  additional    - a list of strings for any additiona information associated with this role.
-  reminders     - a list of reminders associated with this role that follow the format [icon, colour, description]
-                  where icon is an emoji or single alphanumeric character to represent the emoji, colour is the 
-                  background colour of the reminder, and description is the piece of text describing the reminder.
+name          - the role name shown to the users used to represent the role in the app.
+type          - the category of the role, either Agent, Detrimental, or Antagonist.
+description   - any descriptive fluff text give for the role.
+ability       - the ability description for this role. 
+orderType     - an id string corresponding with a specific night order type found in nightOrder.json5.
+appears       - used in the randomisation algorithm to support specific role functionality.
+  asType      - the type to appear as for the specified target.
+  asTeam      - the team to appear as for the specified target.
+  for         - the target for which the type and team should apply to e.g. a team.
+setup         - any setup specific text for this role, allows for a list of items with the following format
+                [description, command?] where description is a mandatory piece of descriptive text, and
+                the command is an optional command string to run during the randomisation algorithm.
+attributes    - a list of attributes associated with this role.
+additional    - a list of strings for any additiona information associated with this role.
+reminders     - a list of reminders associated with this role that follow the format [icon, colour, description]
+                where icon is an emoji or single alphanumeric character to represent the emoji, colour is the 
+                background colour of the reminder, and description is the piece of text describing the reminder.
 
-  {
-    "name": "Role Name", 
-    "type": "Agent",
-    "description": "Role Description",
-    "ability": "Role Ability",
-    "orderType": "night_order_string",
-    "appears": {
-      "asType": "Antagonist",
-      "asTeam": "Subversive",
-      "for": "Loyalist"
-    },
-    "setup": [
-      ["General Description"]
-      ["Setup Description", "Add 2 Role Agent"],
-      ["Setup Description", "Add 3 Role Agent"],
-    ],
-    "attributes": ["Attribute 1", "Attribute 2"],
-    "additional": [
-      "Additional Text 1",
-      "Additional Text 2"
-    ],
-    "reminders": [
-      ["A", "#FFFFFF", "Reminder Description"]
-    ]
-  }
+{
+  "name": "Role Name", 
+  "type": "Agent",
+  "description": "Role Description",
+  "ability": "Role Ability",
+  "orderType": "night_order_string",
+  "appears": {
+    "asType": "Antagonist",
+    "asTeam": "Subversive",
+    "for": "Loyalist"
+  },
+  "setup": [
+    ["General Description"]
+    ["Setup Description", "Add 2 Role Agent"],
+    ["Setup Description", "Add 3 Role Agent"],
+  ],
+  "attributes": ["Attribute 1", "Attribute 2"],
+  "additional": [
+    "Additional Text 1",
+    "Additional Text 2"
+  ],
+  "reminders": [
+    ["A", "#FFFFFF", "Reminder Description"]
+  ]
+}
 
-  */
-]
+*/

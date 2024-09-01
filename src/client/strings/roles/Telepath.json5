@@ -1,0 +1,19 @@
+{
+  "name": "Telepath",
+  "team": "Loyalist",
+  "type": "Agent",
+  "flavour": "I’d like to walk around in your mind.",
+  "ability": "Each night, you learn a role. One of your living neighbours is this role.\n",
+  "orderType": "role_with_recurring_info",
+  "attributes": [
+    "Human",
+    "Psychic"
+  ],
+  "reminders": [
+    [
+      "😶‍🌫️",
+      "#0000FF",
+      "Telepath: Learnt this player's role."
+    ]
+  ]
+}

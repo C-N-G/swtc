@@ -1,0 +1,18 @@
+{
+  "name": "Enamoured",
+  "flavour": "Placeholder Flavour",
+  "ability": "You start knowing a player (not yourself) and their role. If they die, you become malfunctioning.\n",
+  "orderType": "char_with_starting_info",
+  "reminders": [
+    [
+      "💑",
+      "#FFFF00",
+      "Enamoured: Learnt this player"
+    ],
+    [
+      "💑",
+      "#FFFF00",
+      "Enamoured: This player is malfunctioning"
+    ]
+  ]
+}

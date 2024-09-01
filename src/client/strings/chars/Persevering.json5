@@ -1,0 +1,12 @@
+{
+  "name": "Persevering",
+  "flavour": "Placeholder Flavour",
+  "ability": "The first time you are killed by a player (not yourself), you survive.\n",
+  "reminders": [
+    [
+      "🫀",
+      "#FFFF00",
+      "Persevering: Has used their ability."
+    ]
+  ]
+}

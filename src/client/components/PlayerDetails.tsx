@@ -69,7 +69,7 @@ function RegularPlayerDetails({player, handleViewPlayerClick, chars, roles}: Reg
       return 0;
     }
     else {
-      return GameData.hackValue(list[value]); // hack - this is for when the modules change and the current value no longer exists
+      return GameData.hackValue(list[value]); // hack - this is for when the scenarios change and the current value no longer exists
     }
   }
 
@@ -96,7 +96,7 @@ function RegularPlayerDetails({player, handleViewPlayerClick, chars, roles}: Reg
       size="small"
       options={list}
       renderInput={(params) => <TextField {...params} label={type} />}
-      value={GameData.hackValue(list[value])} // hack - this is for when the modules change and the current value no longer exists
+      value={GameData.hackValue(list[value])} // hack - this is for when the scenarios change and the current value no longer exists
       onChange={(_, newValue) => handlePlayerDataChange(playerId, type.toLowerCase(), list.indexOf(newValue))}
     />
   }
@@ -188,7 +188,7 @@ function NarratorDetails({player, handleDismissalClick, chars, roles}: NarratorD
       size="small"
       options={list}
       renderInput={(params) => <TextField {...params} label={`${real ? leftVal : rightVal} ${type}`} />}
-      value={list[value] ? list[value] : list[0]} // hack - this is for when the modules change and the current value no longer exists
+      value={list[value] ? list[value] : list[0]} // hack - this is for when the scenarios change and the current value no longer exists
       onChange={(_, newValue) => handleChange(playerId, `${real ? "r" : ""}${real ? type : type.toLowerCase()}`, list.indexOf(newValue))}
     />
   }
@@ -256,7 +256,7 @@ function NarratorDetails({player, handleDismissalClick, chars, roles}: NarratorD
             variant="filled"
             key={String(player.id) + String(reminderId)} 
             icon={<Reminder reminder={GameData.reminders.find(reminder => reminder.id === reminderId)!} />} 
-            label={GameData.reminders.find(reminder => reminder.id === reminderId)!.description}/>
+            label={GameData.reminders.find(reminder => reminder.id === reminderId)!.flavour}/>
         )
       })}
     </Grid>

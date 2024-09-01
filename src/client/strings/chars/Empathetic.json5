@@ -1,0 +1,16 @@
+{
+  "name": "Empathetic",
+  "flavour": "Placeholder Flavour",
+  "ability": "You start knowing how many players (not yourself) are Psychic.\n",
+  "orderType": "char_with_starting_info",
+  "attributes": [
+    "Psychic"
+  ],
+  "reminders": [
+    [
+      "❤️",
+      "#FFFF00",
+      "Empathetic: Learnt this player."
+    ]
+  ]
+}

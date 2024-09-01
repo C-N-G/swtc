@@ -13,6 +13,7 @@ import GameData from "./strings/_gameData.ts";
 import useStore from "./hooks/useStore.ts";
 import "./App.css"
 import { PlayerAttributeData, PlayerVoteData, SessionData, SocketCallbackResponse, TimerData } from "../server/serverTypes.ts";
+import Scenario from "./classes/scenario.ts";
 
 const darkTheme = createTheme({
   palette: {
@@ -68,7 +69,7 @@ function App() {
   const nextPhase = useStore(state => state.nextPhase);
 
   const resetSession = useStore(state => state.resetSession);
-  const setModules = useStore(state => state.setModules);
+  const setScenarios = useStore(state => state.setScenarios);
   const syncSession = useStore(state => state.syncSession);
   const sessionId = useStore(state => state.session.id);
 
@@ -161,8 +162,8 @@ function App() {
       handlePlayerDataChange(data.targetId, data.targetProperty, data.targetValue, true);
     }
 
-    function onModule(data: string[]) {
-      setModules(data);
+    function onScenario(data: Scenario[]) {
+      setScenarios(data);
     }
 
     function onVote(data: PlayerVoteData) {
@@ -232,7 +233,7 @@ function App() {
     socket.on("disconnect", onDisconnect);
     socket.on("phase", onPhase);
     socket.on("attribute", onAttribute);
-    socket.on("module", onModule);
+    socket.on("scenario", onScenario);
     socket.on("vote", onVote);
     socket.on("timer", onTimer);
     socket.on("sync", onSync);
@@ -245,7 +246,7 @@ function App() {
       socket.off("disconnect", onDisconnect);
       socket.off("phase", onPhase);
       socket.off("attribute", onAttribute);
-      socket.off("module", onModule);
+      socket.off("scenario", onScenario);
       socket.off("vote", onVote);
       socket.off("timer", onTimer);
       socket.off("sync", onSync);
@@ -254,7 +255,7 @@ function App() {
 
     };
   }, [handlePlayerDataChange, setPlayers, syncPlayers, addPlayer, removePlayer, 
-    nextPhase, setUserId, displayVote, resetSession, setModules, syncSession, 
+    nextPhase, setUserId, displayVote, resetSession, setScenarios, syncSession, 
     setVoting, resetUserVotes, addVoteToList, setAccuser, setNominated, setVotes, 
     startTimer, stopTimer, setTimer, user]);
 
@@ -281,7 +282,7 @@ function App() {
               <Button variant="contained" onClick={() => {
                 setUserId("54321");
                 setPlayers([...somePlayers]);
-                setModules([GameData.modules[2].name]);
+                setScenarios([GameData.scenarios[0]]);
               }}>
                 Add Dummy Players
               </Button>

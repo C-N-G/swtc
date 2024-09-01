@@ -1,15 +1,15 @@
 import { test, expect } from "./sessionSetup.ts";
 
-test("module selection", async ({narrator}) => {
+test("scenario selection", async ({narrator}) => {
 
-  await narrator.getByRole("button", {name: /select modules/i}).click()
-  let modNum: number = 0;
-  for (const module of await narrator.getByLabel(/chars/i).all()) {
-    await module.click();
-    modNum++;
+  await narrator.getByRole("button", {name: /select scenarios/i}).click()
+  let secnarioNum: number = 0;
+  for (const scenario of await narrator.getByLabel(/chars/i).all()) {
+    await scenario.click();
+    secnarioNum++;
   }
   await narrator.getByRole("button", {name: /close/i}).click()
-  await expect(narrator.getByRole("button", {name: /select modules/i})).toContainText(String(modNum));
+  await expect(narrator.getByRole("button", {name: /select scenarios/i})).toContainText(String(secnarioNum));
 
 });
 

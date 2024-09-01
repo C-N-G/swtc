@@ -1,0 +1,9 @@
+{
+  "name": "Intuitive",
+  "flavour": "Placeholder Flavour",
+  "ability": "Each night, you learn who the Narrator thinks you should speak with the most.\n",
+  "orderType": "char_with_recurring_info",
+  "attributes": [
+    "Psychic"
+  ]
+}

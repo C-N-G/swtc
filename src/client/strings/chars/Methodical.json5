@@ -1,0 +1,13 @@
+{
+  "name": "Methodical",
+  "flavour": "Placeholder Flavour",
+  "ability": "Each night, you learn a different characteristic (not yourself) that is in play, until there are no more left to learn.\n",
+  "orderType": "char_with_recurring_info",
+  "reminders": [
+    [
+      "📋",
+      "#FFFF00",
+      "Methodical: Learnt this player's characteristic."
+    ]
+  ]
+}

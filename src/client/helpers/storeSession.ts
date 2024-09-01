@@ -11,21 +11,21 @@ export const createSessionSlice: StateCreator<
   session: {
     id: null,
     sync: false,
-    modules: [],
+    scenarios: [],
   },
 
   resetSession: () => set(() => ({
     session: {
       id: null,
       sync: null,
-      modules: []
+      scenarios: []
     }
   })),
 
-  setModules: (newModules, newSync) => set(state => ({
+  setScenarios: (newScenarios, newSync) => set(state => ({
     session: {
       ...state.session,
-      modules: newModules,
+      scenarios: newScenarios,
       sync: newSync !== undefined ? newSync : state.session.sync
     }
   })),
@@ -34,7 +34,7 @@ export const createSessionSlice: StateCreator<
       session: {
         ...state.session,
         id: (newSession.id || newSession.id === null) ? newSession.id : state.session.id,
-        modules: newSession.modules ? newSession.modules : state.session.modules
+        scenarios: newSession.scenarios ? newSession.scenarios : state.session.scenarios
       }
   })),
 

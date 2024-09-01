@@ -1,0 +1,18 @@
+{
+  "name": "Therapist",
+  "team": "Loyalist",
+  "type": "Agent",
+  "flavour": "Placeholder Flavour",
+  "ability": "Each night, you learn a player who is malfunctioning or that no one is malfunctioning.\n",
+  "orderType": "role_with_recurring_info",
+  "attributes": [
+    "Human"
+  ],
+  "reminders": [
+    [
+      "💆",
+      "#0000FF",
+      "Therapist: Learnt this player."
+    ]
+  ]
+}

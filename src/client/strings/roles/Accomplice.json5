@@ -1,0 +1,27 @@
+{
+  "name": "Accomplice",
+  "team": "Subversive",
+  "type": "Detrimental",
+  "flavour": "My fingerprints? No, you must be mistaken.",
+  "ability": "You do not know you are the Accomplice. You think you are an Agent role, but you are not. All Antagonists know who you are.\n",
+  "attributes": [
+    "Human"
+  ],
+  "setup": [
+    [
+      "You think you are a Loyalist role.",
+      "ShowAs Role Loyalist"
+    ],
+    [
+      "You neighbour the Antagonist.",
+      "Neighbour Role Antagonist"
+    ]
+  ],
+  "reminders": [
+    [
+      "👣",
+      "#702963",
+      "Accomplice: Is the Accomplice."
+    ]
+  ]
+}

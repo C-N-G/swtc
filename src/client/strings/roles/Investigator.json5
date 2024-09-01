@@ -1,0 +1,18 @@
+{
+  "name": "Investigator",
+  "team": "Loyalist",
+  "type": "Agent",
+  "flavour": "Placeholder Flavour",
+  "ability": "Each night, you must choose a player and a role: you learn if they are this role.\n",
+  "orderType": "role_with_recurring_info",
+  "attributes": [
+    "Human"
+  ],
+  "reminders": [
+    [
+      "🕵️",
+      "#0000FF",
+      "Investigator: Chose this player."
+    ]
+  ]
+}

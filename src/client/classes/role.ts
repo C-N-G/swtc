@@ -3,7 +3,7 @@ import Reminder, { ReminderData } from "./reminder";
 export interface RoleData {
   name: string;
   type: string;
-  description: string;
+  flavour: string;
   ability: string;
   orderType: string;
   attributes: string[];
@@ -19,7 +19,7 @@ export default class Role {
     public readonly id: number,
     public name: string,
     public type = "",
-    public description = "",
+    public flavour = "",
     public ability = "",
     public orderType = "",
     public attributes: string[] = [],

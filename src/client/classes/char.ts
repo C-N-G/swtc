@@ -2,7 +2,7 @@ import Reminder, { ReminderData } from "./reminder";
 
 export interface CharData {
   name: string;
-  description: string;
+  flavour: string;
   ability: string;
   orderType: string;
   attributes: string[];
@@ -16,7 +16,7 @@ export default class Char {
   constructor(
     public readonly id: number,
     public name: string,
-    public description = "",
+    public flavour = "",
     public ability = "",
     public orderType = "",
     public attributes: string[] = [],

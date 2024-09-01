@@ -1,6 +1,10 @@
 import {useContext, useState, useMemo} from 'react'
-import {Card, Typography, Grid, Paper, Checkbox, FormControlLabel, Button, Box, CircularProgress, Switch, 
-        IconButton, Autocomplete, TextField}from '@mui/material';
+import {Card, Typography, Grid, Paper, Checkbox, Button, Box, CircularProgress, Switch, 
+        IconButton, Autocomplete, TextField,
+        ListItem,
+        ListItemButton,
+        ListItemIcon,
+        ListItemText}from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -15,8 +19,10 @@ import convertTime from "../helpers/convertTime.ts";
 import Player from '../classes/player.ts';
 import {default as ReminderType} from '../classes/reminder.ts';
 import { OpenCharacterDialog as OpenDialog } from '../helpers/enumTypes.ts';
-import ModuleSelectionDialog from './ModuleSelectionDialog.tsx';
+import ScenarioSelectionDialog from './ScenarioSelectionDialog.tsx';
 import VoteHistoryDialog from './VoteHistoryDialog.tsx';
+import Scenario from '../classes/scenario.ts';
+import ScenarioCreationDialog from './ScenarioCreationDialog.tsx';
 
 
 type CharacterProps = PlayerCharacterProps & NarratorCharacterProps;
@@ -69,8 +75,8 @@ function PlayerCharacter({user, useLocal = false}: PlayerCharacterProps) {
 
   if (user === undefined) throw new Error("error rendering character window, user is undefined");
 
-  const modules = useStore(state => state.session.modules);
-  const [chars, roles] = useMemo(() => GameData.getFullFilteredValues(modules), [modules]);
+  const scenarios = useStore(state => state.session.scenarios);
+  const [chars, roles] = useMemo(() => GameData.getFullFilteredValues(scenarios), [scenarios]);
 
   let fullChar, fullRole, team;
   if (useLocal) { // use local player state instead of real state
@@ -105,7 +111,7 @@ function PlayerCharacter({user, useLocal = false}: PlayerCharacterProps) {
       </Grid>
       {fullRole["name"] !== "Unknown" && <>
         <Grid item xs={12}>
-          <Typography variant="body2" gutterBottom>{"“" + fullRole["description"] + "”"}</Typography>
+          <Typography variant="body2" gutterBottom>{"“" + fullRole.flavour + "”"}</Typography>
           <Typography variant="body2"><Box component="span" fontWeight={"Bold"}>{fullRole["ability"] ? "Ability: " : ""}</Box>{fullRole["ability"]}</Typography>
           {fullRole["additional"].map((ele, index) => <Typography variant="body2" key={fullRole["name"] + "additional" + index}>{ele}</Typography>)}
         </Grid>
@@ -129,7 +135,7 @@ function PlayerCharacter({user, useLocal = false}: PlayerCharacterProps) {
       </Grid>
       {fullChar["name"] !== "Unknown" &&
       <Grid item xs={12}>
-        <Typography variant="body2" gutterBottom>{"“" + fullChar["description"]  + "”"}</Typography>
+        <Typography variant="body2" gutterBottom>{"“" + fullChar.flavour  + "”"}</Typography>
         <Typography variant="body2"><Box component="span" fontWeight={"Bold"}>{fullChar["ability"] ? "Ability: " : ""}</Box>{fullChar["ability"]}</Typography>
         {fullChar["additional"].map((ele, index) => <Typography variant="body2" key={fullChar["name"] + index}>{ele}</Typography>)}
       </Grid>}
@@ -145,7 +151,7 @@ function PlayerCharacter({user, useLocal = false}: PlayerCharacterProps) {
 
 interface OldSessionState {
   players: Player[];
-  modules: string[];
+  scenarios: Scenario[];
 }
 
 interface NarratorCharacterProps {
@@ -160,19 +166,19 @@ function NarratorCharacter({user}: NarratorCharacterProps) {
   const [selectedReminder, setSelectedReminder] = useState<ReminderType | null>(null);
   const [sync, setSync] = useState({progress: false, error: false});
   const [cohesion, setCohesion] = useState(10);
-  const [oldSessionState, setOldSessionState] = useState<OldSessionState>({players: [], modules: []});
+  const [oldSessionState, setOldSessionState] = useState<OldSessionState>({players: [], scenarios: []});
   const randomisePlayers = useStore(state => state.randomisePlayers);
   const players = useStore(state => state.players);
   const setPlayers = useStore(state => state.setPlayers);
 
-  const modules = useStore(state => state.session.modules);
+  const scenarios = useStore(state => state.session.scenarios);
   const sessionId = useStore(state => state.session.id);
   const sessionSync = useStore(state => state.session.sync);
-  const [chars, roles] = useMemo(() => GameData.getFullFilteredValues(modules), [modules]);
+  const [chars, roles] = useMemo(() => GameData.getFullFilteredValues(scenarios), [scenarios]);
   const reminders = useMemo(() => GameData.getFilteredReminders(chars, roles), [chars, roles]);
   const syncOff = useStore(state => state.syncOff);
   const syncOn = useStore(state => state.syncOn);
-  const setModules = useStore(state => state.setModules);
+  const setScenarios = useStore(state => state.setScenarios);
 
   const phaseTimer = useStore(state => state.timers.phaseTimer);
   const startTimer = useStore(state => state.startTimer);
@@ -182,28 +188,27 @@ function NarratorCharacter({user}: NarratorCharacterProps) {
 
   function storeOldData() {
     if (sessionSync) {
-      setOldSessionState({players: JSON.parse(JSON.stringify(players)), modules: [...modules]});
+      setOldSessionState({players: JSON.parse(JSON.stringify(players)), scenarios: [...scenarios]});
     }
   }
 
-  function handleModuleSelection(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleScenarioSelection(scenarioId: string) {
 
     storeOldData();
 
-    const checked = e.target.checked;
-    const targetMod = e.target.value;
+    const checked = scenarios.some(ele => ele.id === scenarioId)
 
-    let data: string[] = [];
-
-    if (checked === true) {
-      data = [...modules, targetMod];
-    }
+    let data: Scenario[] = [];
 
     if (checked === false) {
-      data = modules.filter((mod) => mod !== targetMod);
+      data = [...scenarios, GameData.scenarios.find((scenario) => scenario.id === scenarioId)!];
     }
 
-    setModules(data, false);
+    if (checked === true) {
+      data = scenarios.filter((scenario) => scenario.id !== scenarioId);
+    }
+
+    setScenarios(data, false);
 
   }
 
@@ -231,7 +236,7 @@ function NarratorCharacter({user}: NarratorCharacterProps) {
       return player;
     });
 
-    const syncData = {"players": sanitisedPlayers, "modules": modules};
+    const syncData = {"players": sanitisedPlayers, "scenarios": scenarios};
 
     socket.timeout(5000).emit("sync", syncData, (error, response) => {
 
@@ -264,9 +269,9 @@ function NarratorCharacter({user}: NarratorCharacterProps) {
 
     setPlayers(oldSessionState.players);
 
-    setModules(oldSessionState.modules, true);
+    setScenarios(oldSessionState.scenarios, true);
 
-    setOldSessionState({players: [], modules: []});
+    setOldSessionState({players: [], scenarios: []});
 
   }
 
@@ -281,13 +286,29 @@ function NarratorCharacter({user}: NarratorCharacterProps) {
     navigator.clipboard.writeText(returnString);
   }
 
-  const allMods = GameData.modules.map(mod => {
-    const title = `${mod.name} - ${mod.roles.length} roles - ${mod.chars.length} chars`;
-    const checkbox = <Checkbox 
-      checked={modules.includes(mod.name)} 
-      onChange={handleModuleSelection} 
-      value={mod.name} />
-    return <FormControlLabel key={mod.name} control={checkbox} label={title} />
+  const allScenarios = GameData.scenarios.map(scenario => {
+    const title = `${scenario.name} - ${scenario.roles.length} roles - ${scenario.chars.length} chars`;
+    const isCustom = scenario.id.length === 40;
+    const listItem = <ListItem 
+        key={scenario.name}
+        disablePadding
+      >
+        <ListItemButton onClick={() => handleScenarioSelection(scenario.id)}>
+          <ListItemIcon>
+            <Checkbox 
+              edge="start"
+              checked={scenarios.some(ele => ele.id === scenario.id)} 
+              value={scenario.id} 
+            />
+          </ListItemIcon>
+          <ListItemText>
+            {title}
+          </ListItemText>
+          
+        </ListItemButton>
+        {isCustom && <Button sx={{ml: 1}} variant="outlined">Edit</Button>}
+      </ListItem>
+    return listItem
   })
 
   return (<>
@@ -301,8 +322,8 @@ function NarratorCharacter({user}: NarratorCharacterProps) {
         <LinkIcon />
       </IconButton>
     </Typography>
-    <Button variant="contained" sx={{my: 1}} onClick={() => setOpenDialog(OpenDialog.Module)}>
-      Select Modules ({modules.length})
+    <Button variant="contained" sx={{my: 1}} onClick={() => setOpenDialog(OpenDialog.Scenario)}>
+      Select Scenarios ({scenarios.length})
     </Button>
     <Button variant="contained" sx={{my: 1}} onClick={handleRandomise}>
       Randomise Players
@@ -361,7 +382,7 @@ function NarratorCharacter({user}: NarratorCharacterProps) {
         groupBy={(option) => option.origin!.name}
         value={selectedReminder}
         onChange={(_, newValue) => setSelectedReminder(newValue)}
-        getOptionLabel={(option) => option.description}
+        getOptionLabel={(option) => option.flavour}
         size="small"
         renderInput={(params) => <TextField {...params} label="Add Reminder" />}
       />
@@ -407,10 +428,15 @@ function NarratorCharacter({user}: NarratorCharacterProps) {
       </Paper>
     </Box>
       
-    <ModuleSelectionDialog 
+    <ScenarioSelectionDialog 
       openDialog={openDialog}
       setOpenDialog={setOpenDialog}
-      allMods={allMods}
+      allScenarios={allScenarios}
+    />
+
+    <ScenarioCreationDialog
+      openDialog={openDialog}
+      setOpenDialog={setOpenDialog}
     />
       
     <VoteHistoryDialog 

@@ -1,0 +1,13 @@
+{
+  "name": "Approachable",
+  "flavour": "Placeholder Flavour",
+  "ability": "Once per game, during the night, you may choose any player: they learn your characteristic.\n",
+  "orderType": "char_with_recurring_info",
+  "reminders": [
+    [
+      "😊",
+      "#FFFF00",
+      "Approachable: Chose this player."
+    ]
+  ]
+}

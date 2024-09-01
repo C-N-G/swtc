@@ -34,6 +34,8 @@ SETUP COMMANDS:
 players the target char or role during setup
 - AddStrict [#] [type] [target] [neighbour] - assigns one or more unassigned players 
 the following char or role during setup, and prevents that char or roles setup commands from running
+- AddInvariant [#] [type] [target] [neighbour] - assigns one or more unassigned players the target char role
+only if it hasn't already been assigned to someone
 - Convert [#] [target] [neighbour] - assigns one or more unassigned agent players to the target team
 - ShowAs [type] [target] - assigns this player’s shown char or role to the target
 - Neighbour [type] [target] - assigns this player a position on the board which neighbours the target
@@ -235,7 +237,7 @@ export class Randomiser {
    * @param filteredIndexArray 
    * @returns a random index
    */
-  getRandomIndex(indexArray: (Char | Role)[], takenIndexSet: Set<number>, filteredIndexArray?: (Char | Role)[]): number {
+  getRandomIndex(indexArray: (Char | Role)[], takenIndexSet: Set<number>, filteredIndexArray?: (Char | Role)[] | null): number {
 
     const EveryFilteredIndexTaken = filteredIndexArray ? filteredIndexArray
       .map(ele => indexArray.findIndex(ele1 => ele.name === ele1.name))
@@ -349,7 +351,7 @@ export class Randomiser {
     // randomise player initially
     if (!aPlayer.keepSame) {
       aPlayer.playerObj.char = this.getRandomIndex(this.charArray, this.takenSets.chars);
-      const agentRoles = this.roleArray.filter(role => role.type === "Agent")
+      const agentRoles = this.roleArray.filter(role => role.type === "Agent");
       aPlayer.playerObj.role = this.getRandomIndex(this.roleArray, this.takenSets.roles, agentRoles);
     }
 
@@ -414,10 +416,20 @@ export class Randomiser {
       // take into account taken targets if there are multiple possible targets
       if (possibleTargets.length > 1) {
         aPlayer.playerObj[playerAttribute] = this.getRandomIndex(targetArray, this.takenSets[takenSetsTarget], possibleTargets);
-      } else {
-        // else if there is only one possible target it must be specific so choose it anyway
+      } else if (possibleTargets.length === 1 && command !== "AddInvariant") {
+        // else if there is only one possible target and no invariant it must be specific so choose it anyway
         aPlayer.playerObj[playerAttribute] = targetArray.findIndex(target => target.id === possibleTargets[0].id);
         this.takenSets[takenSetsTarget].add(aPlayer.playerObj[playerAttribute]);
+      } else if (possibleTargets.length === 1 && command === "AddInvariant") {
+        const targetId = targetArray.findIndex(target => target.id === possibleTargets[0].id);
+        const targetIsAlreadyInUse = this.takenSets[takenSetsTarget].has(targetId);
+        if (targetIsAlreadyInUse) {
+          const filteredSet = targetName === "char" ? null : this.roleArray.filter(role => role.type === "Agent");
+          aPlayer.playerObj[playerAttribute] = this.getRandomIndex(targetArray, this.takenSets[takenSetsTarget], filteredSet);
+        } else {
+          aPlayer.playerObj[playerAttribute] = targetId;
+          this.takenSets[takenSetsTarget].add(targetId);
+        }
       }
 
     } 
