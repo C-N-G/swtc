@@ -6,8 +6,6 @@ import {Card, Typography, Grid, Paper, Checkbox, Button, Box, CircularProgress, 
         ListItemIcon,
         ListItemText}from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
 import LinkIcon from '@mui/icons-material/Link';
 import {UserContext} from "../App.tsx";
 import GameData from "../strings/_gameData.ts";
@@ -165,7 +163,6 @@ function NarratorCharacter({user}: NarratorCharacterProps) {
   const [openDialog, setOpenDialog] = useState<OpenDialog>(OpenDialog.None);
   const [selectedReminder, setSelectedReminder] = useState<ReminderType | null>(null);
   const [sync, setSync] = useState({progress: false, error: false});
-  const [cohesion, setCohesion] = useState(10);
   const [oldSessionState, setOldSessionState] = useState<OldSessionState>({players: [], scenarios: []});
   const randomisePlayers = useStore(state => state.randomisePlayers);
   const players = useStore(state => state.players);
@@ -386,20 +383,6 @@ function NarratorCharacter({user}: NarratorCharacterProps) {
         size="small"
         renderInput={(params) => <TextField {...params} label="Add Reminder" />}
       />
-    </Box>
-    <Box sx={{display: "flex", alignItems: "stretch", justifyContent: "space-between", my: 1}}>
-      <Button variant="contained" onClick={() => {setCohesion(prev => prev + 1)}}><AddIcon /></Button>
-      <Paper elevation={2} sx={{
-        display: "flex", 
-        flexGrow: 1, 
-        justifyContent: "center", 
-        alignItems: "center",
-        backgroundColor: "var(--sl-color-accent)",
-        mx: 1
-        }}>
-        <Typography variant="h6" color={"white"}>Cohesion: {cohesion}</Typography>
-      </Paper>
-      <Button variant="contained" onClick={() => {setCohesion(prev => prev - 1)}}><RemoveIcon /></Button>
     </Box>
     <Button variant="contained" sx={{my: 1}} onClick={() => setOpenDialog(OpenDialog.VoteHistory)}>
       Vote History
