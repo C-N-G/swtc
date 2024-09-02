@@ -78,7 +78,13 @@ function ScenarioCreationDialog({openDialog, setOpenDialog, newScenario, setNewS
     }
 
     if (destination === "file") {
-      downloadJSON(scenarioWithNames, scenarioWithNames.name);
+      const ScenarioWithoutId = {
+        name: scenarioWithNames.name,
+        flavour: scenarioWithNames.flavour,
+        chars: scenarioWithNames.chars,
+        roles: scenarioWithNames.roles,
+      }
+      downloadJSON(ScenarioWithoutId, ScenarioWithoutId.name);
     } else if (destination === "browser") {
       console.log(GameData.scenarios)
     }
@@ -111,6 +117,8 @@ function ScenarioCreationDialog({openDialog, setOpenDialog, newScenario, setNewS
       return <FormControlLabel sx={{color: newScenario[plural].includes(item.id) ? "#a61c1c" : "inherit"}} key={item.name} control={checkbox} label={title} />
     })
   }
+  
+  // TODO add player count seciton to form
 
   return (
     <Dialog open={openDialog === OpenDialog.CreateScenario} onClose={() => setOpenDialog(OpenDialog.None)} >
@@ -166,7 +174,6 @@ function ScenarioCreationDialog({openDialog, setOpenDialog, newScenario, setNewS
         </FormGroup>
       </DialogContent>
       <DialogActions>
-        <Button variant="outlined" onClick={() => setOpenDialog(OpenDialog.None)}>Load From JSON</Button>
         <Button variant="outlined" disabled={newScenario.name.length === 0} onClick={() => handleSave("file")}>Save to File</Button>
         <Button variant="outlined" disabled={newScenario.name.length === 0} onClick={() => handleSave("browser")}>Save to Browser</Button>
         <Button variant="outlined" onClick={() => setOpenDialog(OpenDialog.Scenario)}>Close</Button>

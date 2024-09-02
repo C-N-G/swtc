@@ -7,6 +7,7 @@ import Scenario from "../classes/scenario.ts";
 import ScenarioSelectionDialog from "./ScenarioSelectionDialog";
 import ScenarioCreationDialog from "./ScenarioCreationDialog.tsx";
 import DeleteIcon from '@mui/icons-material/Delete';
+import ScenarioLoadingDialog from "./ScenarioLoadingDialog.tsx";
 
 interface ScenarioSelectionButtonProps {
   setOpenDialog: React.Dispatch<React.SetStateAction<OpenDialog>>;
@@ -103,6 +104,10 @@ function ScenarioSelectionButton({setOpenDialog, storeOldData, openDialog}: Scen
       setOpenDialog={setOpenDialog}
       newScenario={newScenario}
       setNewScenario={setNewScenario}
+    />
+    <ScenarioLoadingDialog
+      openDialog={openDialog}
+      setOpenDialog={setOpenDialog}
     />
   </>)
 }

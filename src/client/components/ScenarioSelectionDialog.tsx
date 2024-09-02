@@ -25,7 +25,8 @@ function ScenarioSelectionDialog({openDialog, setOpenDialog, allScenarios, setNe
         </List>
       </DialogContent>
       <DialogActions sx={{justifyContent: "space-between"}}>
-        <Button variant="outlined" onClick={handleCreate}>Create (W.I.P)</Button>
+        <Button variant="outlined" onClick={handleCreate}>Create</Button>
+        <Button variant="outlined" onClick={() => setOpenDialog(OpenDialog.LoadScenario)}>Load</Button>
         <Button variant="outlined" onClick={() => setOpenDialog(OpenDialog.None)}>Close</Button>
       </DialogActions>
     </Dialog>
