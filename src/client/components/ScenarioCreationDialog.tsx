@@ -142,6 +142,7 @@ function ScenarioCreationDialog({openDialog, setOpenDialog, newScenario, setNewS
 
   function handleClose() {
     setNewScenario(new Scenario("", "", "", [], []));
+    setRoleNums({agent: 0, detrimental: 0, antagonist: 0});
     setPlayerCount("16");
     setOpenDialog(OpenDialog.Scenario);
   }
@@ -153,7 +154,7 @@ function ScenarioCreationDialog({openDialog, setOpenDialog, newScenario, setNewS
     roleNums.antagonist >= 1;
 
   return (
-    <Dialog open={openDialog === OpenDialog.CreateScenario} onClose={handleClose} >
+    <Dialog open={openDialog === OpenDialog.CreateScenario} onClose={handleClose}>
       <DialogTitle>{dialogName}</DialogTitle>
       <DialogContent>
         <FormGroup>
