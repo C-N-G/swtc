@@ -190,13 +190,6 @@ function Options() {
           {sessionId ? <MenuItem onClick={handleLeave}>Leave Session</MenuItem> : ""}
           <MenuItem 
             component={"a"}
-            href="https://drive.google.com/file/d/1BSgDm_VNXi-e2_0v5L5Xd781-kFyde7k/preview" 
-            target="_blank"
-          >
-            Rulebook
-          </MenuItem>
-          <MenuItem 
-            component={"a"}
             href="https://secretswithinthecompound.com" 
             target="_blank"
           >

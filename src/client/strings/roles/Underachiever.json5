@@ -3,13 +3,13 @@
   "team": "Loyalist",
   "type": "Detrimental",
   "flavour": "Almost.",
-  "ability": "You do not know you are the Underachiever. You think you are an Agent role, but you are not.\n",
+  "ability": "You are confused about being an Agent.\n",
   "attributes": [
     "Human"
   ],
   "setup": [
     [
-      "You think you are an Agent role.",
+      "You are confused about being an Agent.",
       "ShowAs Role Agent"
     ]
   ],

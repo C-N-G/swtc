@@ -1,6 +1,26 @@
 ### xx/xx/xxx v0.6.1
 - changed day night order from day 1, night 1, day 2 ect. to night 1, day 1, night 2 ect.
-- 
+- roles added or removed:
+  - +Medium
+  - +Test Subject
+  - +Therapist
+  - +Turncoat
+  - +Warden
+  - -Analyst
+  - -Janitor
+  - -Medic
+  - -Precog
+  - -Supervisor
+  - -Tracker
+  - -Trainee
+  - -Vessel
+- chars added or removed:
+  - +Eccentric
+  - +Enamoured
+  - +Inquisitive
+  - +Methodical
+  - -Resourceful
+  - -Secretive
 ---
 
 ### 24/08/2024 v0.6.0

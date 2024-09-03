@@ -14,5 +14,6 @@ export enum OpenCharacterDialog {
   None,
   Scenario,
   CreateScenario,
+  LoadScenario,
   VoteHistory,
 }
