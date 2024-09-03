@@ -22,8 +22,8 @@ function ScenarioCreationDialog({openDialog, setOpenDialog, newScenario, setNewS
   const scenarios = useStore(state => state.session.scenarios);
   const setScenarios = useStore(state => state.setScenarios);
   const [roleNums, setRoleNums] = useState({agent: 0, detrimental: 0, antagonist: 0})
-  const [playerCount, setPlayerCount] = useState(16);
-  const playerFormula = Math.floor((0.5 * playerCount) - 2);
+  const [playerCount, setPlayerCount] = useState("16");
+  const playerFormula = Math.floor((0.5 * Number(playerCount)) - 2);
   
   function handleCheckbox(id: number, type: "chars" | "roles", roleType?: "agent" | "detrimental" | "antagonist") {
 
@@ -133,20 +133,27 @@ function ScenarioCreationDialog({openDialog, setOpenDialog, newScenario, setNewS
     })
   }
   
-  function handlePlayerCount(playerCount: number) {
-    if (playerCount < 0) playerCount = 0;
-    else if (playerCount > 16) playerCount = 16;
-    setPlayerCount(playerCount);
+  function handlePlayerCount(playerCount: string) {
+    let playerCountNum = Number(playerCount);
+    if (playerCountNum <= 0) playerCountNum = 0;
+    else if (playerCountNum > 16) playerCountNum = 16;
+    setPlayerCount(String(playerCountNum));
   }
 
   function handleClose() {
     setNewScenario(new Scenario("", "", "", [], []));
-    setPlayerCount(16);
+    setPlayerCount("16");
     setOpenDialog(OpenDialog.Scenario);
   }
 
+  const canSave = newScenario.name.length > 0 &&
+    newScenario.chars.length >= (Number(playerCount)+2) &&
+    roleNums.agent >= (playerFormula + 6) &&
+    roleNums.detrimental >= (playerFormula + 2) &&
+    roleNums.antagonist >= 1;
+
   return (
-    <Dialog open={openDialog === OpenDialog.CreateScenario} onClose={() => setOpenDialog(OpenDialog.None)} >
+    <Dialog open={openDialog === OpenDialog.CreateScenario} onClose={handleClose} >
       <DialogTitle>{dialogName}</DialogTitle>
       <DialogContent>
         <FormGroup>
@@ -174,7 +181,7 @@ function ScenarioCreationDialog({openDialog, setOpenDialog, newScenario, setNewS
                 fullWidth
                 variant="outlined"
                 value={playerCount}
-                onChange={(e) => {handlePlayerCount(Number(e.target.value))}}
+                onChange={(e) => {handlePlayerCount(e.target.value)}}
               />
             </Grid>
             <Grid item xs={12} >
@@ -198,7 +205,7 @@ function ScenarioCreationDialog({openDialog, setOpenDialog, newScenario, setNewS
 
           <Grid container spacing={2} sx={{justifyContent: "center"}}>
             <Grid item sx={{textAlign: "center"}}>
-              <Typography variant="h5">Characteristics ({newScenario.chars.length}/{playerCount+2})</Typography>
+              <Typography variant="h5">Characteristics ({newScenario.chars.length}/{Number(playerCount)+2})</Typography>
               <Divider />
               {createList("char")}
             </Grid>
@@ -221,8 +228,8 @@ function ScenarioCreationDialog({openDialog, setOpenDialog, newScenario, setNewS
         </FormGroup>
       </DialogContent>
       <DialogActions>
-        <Button variant="outlined" disabled={newScenario.name.length === 0} onClick={() => handleSave("file")}>Download JSON</Button>
-        <Button variant="outlined" disabled={newScenario.name.length === 0} onClick={() => handleSave("save")}>Save</Button>
+        <Button variant="outlined" disabled={!canSave} onClick={() => handleSave("file")}>Download JSON</Button>
+        <Button variant="outlined" disabled={!canSave} onClick={() => handleSave("save")}>Save</Button>
         <Button variant="outlined" onClick={handleClose}>Close</Button>
       </DialogActions>
     </Dialog>

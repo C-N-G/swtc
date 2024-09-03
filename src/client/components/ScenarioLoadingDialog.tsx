@@ -106,7 +106,9 @@ function ScenarioLoadingDialog({openDialog, setOpenDialog, setNewScenario}: Scen
       loadedScenario.roles.map(role => GameData.roles.find(ele => ele.name === role)!.id)
     ))
 
-    handleClose();
+    setInputJson("");
+    setInputError(undefined);
+    setOpenDialog(OpenDialog.CreateScenario);
 
   }
 
@@ -117,7 +119,7 @@ function ScenarioLoadingDialog({openDialog, setOpenDialog, setNewScenario}: Scen
   }
 
   return (
-    <Dialog open={openDialog === OpenDialog.LoadScenario} onClose={() => setOpenDialog(OpenDialog.None)} >
+    <Dialog open={openDialog === OpenDialog.LoadScenario} onClose={handleClose}>
       <DialogTitle>Load Scenario JSON</DialogTitle>
       <DialogContent>
         <Typography>
