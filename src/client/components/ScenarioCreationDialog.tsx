@@ -5,6 +5,7 @@ import Scenario from '../classes/scenario.ts';
 import { useState } from 'react';
 import Role from '../classes/role.ts';
 import hash from '../helpers/hash.ts';
+import useStore from '../hooks/useStore.ts';
 
 interface ScenarioCreationDialogProps {
   openDialog: OpenDialog;
@@ -16,8 +17,13 @@ interface ScenarioCreationDialogProps {
 function ScenarioCreationDialog({openDialog, setOpenDialog, newScenario, setNewScenario}: ScenarioCreationDialogProps) {
 
   const isNewScenario = newScenario.id === "";
+  const dialogName = isNewScenario ? "Create New Scenario" : `Edit Saved Scenario`;
 
+  const scenarios = useStore(state => state.session.scenarios);
+  const setScenarios = useStore(state => state.setScenarios);
   const [roleNums, setRoleNums] = useState({agent: 0, detrimental: 0, antagonist: 0})
+  const [playerCount, setPlayerCount] = useState(16);
+  const playerFormula = Math.floor((0.5 * playerCount) - 2);
   
   function handleCheckbox(id: number, type: "chars" | "roles", roleType?: "agent" | "detrimental" | "antagonist") {
 
@@ -48,7 +54,7 @@ function ScenarioCreationDialog({openDialog, setOpenDialog, newScenario, setNewS
 
   }
 
-  async function handleSave(destination: "file" | "browser") {
+  async function handleSave(destination: "file" | "save") {
 
     const scenarioWithNames = {
       ...newScenario,
@@ -56,40 +62,49 @@ function ScenarioCreationDialog({openDialog, setOpenDialog, newScenario, setNewS
       roles: [...newScenario.roles].map(index => GameData.roles[index].name).sort(),
     }
 
+    const scenarioWithoutId = {
+      name: scenarioWithNames.name,
+      flavour: scenarioWithNames.flavour,
+      chars: scenarioWithNames.chars,
+      roles: scenarioWithNames.roles,
+    }
+
     const idHash = await hash(JSON.stringify(scenarioWithNames));
 
-    if (isNewScenario) {
-      GameData.scenarios.push(new Scenario(
-        idHash, 
-        newScenario.name, 
-        newScenario.flavour,
-        newScenario.chars.sort(),
-        newScenario.roles.sort()
-      ))
+    // just download the json file
+    if (destination === "file") return downloadJSON(scenarioWithoutId, scenarioWithoutId.name);
+
+    const savedScenarioJson = localStorage.getItem("savedScenarios");
+    let savedScenarios;
+
+    if (savedScenarioJson === null) {
+      savedScenarios = {};
     } else {
+      savedScenarios = JSON.parse(savedScenarioJson);
+    }
+
+    if (!isNewScenario) {
       GameData.scenarios = GameData.scenarios.filter(scenario => scenario.id !== newScenario.id);
-      GameData.scenarios.push(new Scenario(
-        idHash, 
-        newScenario.name, 
-        newScenario.flavour,
-        newScenario.chars.sort(),
-        newScenario.roles.sort()
-      ))
+      setScenarios([...scenarios.filter(scenario => scenario.id !== newScenario.id)]);
+      delete savedScenarios[newScenario.id];
     }
 
-    if (destination === "file") {
-      const ScenarioWithoutId = {
-        name: scenarioWithNames.name,
-        flavour: scenarioWithNames.flavour,
-        chars: scenarioWithNames.chars,
-        roles: scenarioWithNames.roles,
-      }
-      downloadJSON(ScenarioWithoutId, ScenarioWithoutId.name);
-    } else if (destination === "browser") {
-      console.log(GameData.scenarios)
-    }
+    // save to scenarios now
+    GameData.scenarios.push(new Scenario(
+      idHash, 
+      newScenario.name, 
+      newScenario.flavour,
+      newScenario.chars.sort(),
+      newScenario.roles.sort()
+    ));
 
-    setOpenDialog(OpenDialog.Scenario);
+    // also save to local storage
+    savedScenarios[idHash] = scenarioWithoutId;
+    console.log("saving scenarios to local storage", savedScenarios)
+
+    localStorage.setItem("savedScenarios", JSON.stringify(savedScenarios));
+
+    handleClose();
 
   }
 
@@ -118,50 +133,82 @@ function ScenarioCreationDialog({openDialog, setOpenDialog, newScenario, setNewS
     })
   }
   
-  // TODO add player count seciton to form
+  function handlePlayerCount(playerCount: number) {
+    if (playerCount < 0) playerCount = 0;
+    else if (playerCount > 16) playerCount = 16;
+    setPlayerCount(playerCount);
+  }
+
+  function handleClose() {
+    setNewScenario(new Scenario("", "", "", [], []));
+    setPlayerCount(16);
+    setOpenDialog(OpenDialog.Scenario);
+  }
 
   return (
     <Dialog open={openDialog === OpenDialog.CreateScenario} onClose={() => setOpenDialog(OpenDialog.None)} >
-      <DialogTitle>Create New Scenario</DialogTitle>
+      <DialogTitle>{dialogName}</DialogTitle>
       <DialogContent>
         <FormGroup>
-          <TextField
-            margin="dense"
-            size="small"
-            id="new-scenario-name-input"
-            label="Name"
-            type="text"
-            fullWidth
-            variant="outlined"
-            value={newScenario.name}
-            onChange={(e) => {setNewScenario(scenario => ({...scenario, name:  maxChar(e.target.value, scenario.name, 32)}))}}
-          />
-          <TextField
-            margin="dense"
-            size="small"
-            id="new-scenario-flavour-input"
-            label="Flavour"
-            type="text"
-            multiline
-            maxRows={3}
-            fullWidth
-            variant="outlined"
-            value={newScenario.flavour}
-            onChange={(e) => {setNewScenario(scenario => ({...scenario, flavour:  maxChar(e.target.value, scenario.flavour, 200)}))}}
-          />
+          <Grid container spacing={2}>
+            <Grid item xs={10} >
+              <TextField 
+                margin="dense"
+                size="small"
+                id="new-scenario-name-input"
+                label="Name"
+                type="text"
+                fullWidth
+                variant="outlined"
+                value={newScenario.name}
+                onChange={(e) => {setNewScenario(scenario => ({...scenario, name:  maxChar(e.target.value, scenario.name, 32)}))}}
+              />
+            </Grid>
+            <Grid item xs={2} >
+              <TextField
+                margin="dense"
+                size="small"
+                id="new-scenario-player-count-input"
+                label="Players"
+                type="number"
+                fullWidth
+                variant="outlined"
+                value={playerCount}
+                onChange={(e) => {handlePlayerCount(Number(e.target.value))}}
+              />
+            </Grid>
+            <Grid item xs={12} >
+              <TextField
+                margin="dense"
+                size="small"
+                id="new-scenario-flavour-input"
+                label="Flavour"
+                type="text"
+                multiline
+                maxRows={3}
+                fullWidth
+                variant="outlined"
+                value={newScenario.flavour}
+                onChange={(e) => {setNewScenario(scenario => ({...scenario, flavour:  maxChar(e.target.value, scenario.flavour, 200)}))}}
+              />
+            </Grid>
+            
+          </Grid>
+
+
           <Grid container spacing={2} sx={{justifyContent: "center"}}>
             <Grid item sx={{textAlign: "center"}}>
-              <Typography variant="h5">Characteristics ({newScenario.chars.length}/18)</Typography>
+              <Typography variant="h5">Characteristics ({newScenario.chars.length}/{playerCount+2})</Typography>
               <Divider />
               {createList("char")}
             </Grid>
             <Grid item sx={{textAlign: "center"}}>
-              <Typography variant="h5">Agent Roles ({roleNums.agent}/12)</Typography>
+              <Typography variant="h5">Agent Roles ({roleNums.agent}/{playerFormula + 6})</Typography>
               <Divider />
               {createList("role", "agent")}
             </Grid>
             <Grid item sx={{textAlign: "center"}}>
-              <Typography variant="h5">Detrimental Roles ({roleNums.detrimental}/8)</Typography>
+              <Typography variant="h5">Detrimental Roles ({roleNums.detrimental}/{playerFormula + 2})</Typography>
               <Divider />
               {createList("role", "detrimental")}
             </Grid>
@@ -174,9 +221,9 @@ function ScenarioCreationDialog({openDialog, setOpenDialog, newScenario, setNewS
         </FormGroup>
       </DialogContent>
       <DialogActions>
-        <Button variant="outlined" disabled={newScenario.name.length === 0} onClick={() => handleSave("file")}>Save to File</Button>
-        <Button variant="outlined" disabled={newScenario.name.length === 0} onClick={() => handleSave("browser")}>Save to Browser</Button>
-        <Button variant="outlined" onClick={() => setOpenDialog(OpenDialog.Scenario)}>Close</Button>
+        <Button variant="outlined" disabled={newScenario.name.length === 0} onClick={() => handleSave("file")}>Download JSON</Button>
+        <Button variant="outlined" disabled={newScenario.name.length === 0} onClick={() => handleSave("save")}>Save</Button>
+        <Button variant="outlined" onClick={handleClose}>Close</Button>
       </DialogActions>
     </Dialog>
   )

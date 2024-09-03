@@ -1,15 +1,16 @@
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Typography } from '@mui/material';
 import { OpenCharacterDialog as OpenDialog } from '../helpers/enumTypes.ts';
-import { ScenarioData } from '../classes/scenario.ts';
+import Scenario, { ScenarioData } from '../classes/scenario.ts';
 import { useState } from 'react';
 import GameData from '../strings/_gameData.ts';
 
 interface ScenarioLoadingDialogProps {
   openDialog: OpenDialog;
   setOpenDialog: React.Dispatch<React.SetStateAction<OpenDialog>>;
+  setNewScenario: React.Dispatch<React.SetStateAction<Scenario>>
 }
 
-function ScenarioLoadingDialog({openDialog, setOpenDialog}: ScenarioLoadingDialogProps) {
+function ScenarioLoadingDialog({openDialog, setOpenDialog, setNewScenario}: ScenarioLoadingDialogProps) {
 
   const [inputJSON, setInputJson] = useState<string>();
   const [inputError, setInputError] = useState<string>();
@@ -96,9 +97,23 @@ function ScenarioLoadingDialog({openDialog, setOpenDialog}: ScenarioLoadingDialo
     if (validationFeedback.startsWith("error")) return setInputError(validationFeedback);
     else if (validationFeedback !== "valid json found") return setInputError("unknown json validation error");
 
-    const json = JSON.parse(inputJSON);
-    // set new scenario to this value and open scenario creator
+    const loadedScenario: ScenarioData = JSON.parse(inputJSON);
+    setNewScenario(new Scenario(
+      "",
+      loadedScenario.name,
+      loadedScenario.flavour,
+      loadedScenario.chars.map(char => GameData.chars.find(ele => ele.name === char)!.id),
+      loadedScenario.roles.map(role => GameData.roles.find(ele => ele.name === role)!.id)
+    ))
 
+    handleClose();
+
+  }
+
+  function handleClose() {
+    setInputJson("");
+    setInputError(undefined);
+    setOpenDialog(OpenDialog.Scenario);
   }
 
   return (
@@ -125,8 +140,8 @@ function ScenarioLoadingDialog({openDialog, setOpenDialog}: ScenarioLoadingDialo
             />
         </DialogContent>
       <DialogActions sx={{justifyContent: "space-between"}}>
-        <Button variant="outlined" onClick={() => loadJSON()}>Load</Button>
-        <Button variant="outlined" onClick={() => setOpenDialog(OpenDialog.Scenario)}>Close</Button>
+        <Button variant="outlined" onClick={loadJSON}>Load</Button>
+        <Button variant="outlined" onClick={handleClose}>Close</Button>
       </DialogActions>
     </Dialog>
   )

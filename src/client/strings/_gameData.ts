@@ -20,13 +20,7 @@ const GameData: GameDataStore = {
 
   filterByScenario(scenarioArray, type, full) {
 
-    const enabledSet = new Set(
-      scenarioArray.map(scenario => {
-        const scenarioFound = this.scenarios.find(ele => ele.name === scenario.name);
-        if (scenarioFound) return scenarioFound[type];
-        else throw new Error("filtering failed no matching scenario found");
-      }).flat()
-    )
+    const enabledSet = new Set(scenarioArray.map(scenario => scenario[type]).flat());
 
     const return_data = this[type] // hack - leave unknown out of the filtering
     .filter(ele => enabledSet.has(ele.id) || ele.name === "Unknown")

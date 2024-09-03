@@ -2,8 +2,8 @@ import { Button, Checkbox, IconButton, ListItem, ListItemButton, ListItemIcon, L
 import { OpenCharacterDialog as OpenDialog } from '../helpers/enumTypes.ts';
 import useStore from '../hooks/useStore.ts';
 import GameData from "../strings/_gameData.ts";
-import { useState } from "react";
-import Scenario from "../classes/scenario.ts";
+import { useEffect, useState } from "react";
+import Scenario, { ScenarioData } from "../classes/scenario.ts";
 import ScenarioSelectionDialog from "./ScenarioSelectionDialog";
 import ScenarioCreationDialog from "./ScenarioCreationDialog.tsx";
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -19,7 +19,7 @@ function ScenarioSelectionButton({setOpenDialog, storeOldData, openDialog}: Scen
 
   const scenarios = useStore(state => state.session.scenarios);
   const setScenarios = useStore(state => state.setScenarios);
-  const [newScenario, setNewScenario] = useState<Scenario>(new Scenario("", "", "", [], []))
+  const [newScenario, setNewScenario] = useState<Scenario>(new Scenario("", "", "", [], []));
 
   function handleScenarioSelection(scenarioId: string) {
 
@@ -42,11 +42,67 @@ function ScenarioSelectionButton({setOpenDialog, storeOldData, openDialog}: Scen
   }
 
   function handleDelete(scenarioId: string) {
-    console.log("deleting")
-    GameData.scenarios = GameData.scenarios.filter(ele => ele.id !== scenarioId);
+
+    GameData.scenarios = GameData.scenarios.filter(scenario => scenario.id !== scenarioId);
+    setScenarios([...scenarios.filter(scenario => scenario.id !== scenarioId)]);
+    const savedScenarioJson = localStorage.getItem("savedScenarios");
+    if (savedScenarioJson !== null) {
+      const savedScenarios = JSON.parse(savedScenarioJson);
+      delete savedScenarios[scenarioId];
+      localStorage.setItem("savedScenarios", JSON.stringify(savedScenarios));
+    }
     setNewScenario(new Scenario("", "", "", [], []));
-    console.log(GameData.scenarios)
+
   }
+
+  useEffect(() => {
+    const savedScenarioJson = localStorage.getItem("savedScenarios");
+    if (savedScenarioJson === null) return;
+    const savedScenarios: {[scenarioId: string]: ScenarioData} = JSON.parse(savedScenarioJson);
+    console.log("Loading Saved Scenarios: ", savedScenarios);
+
+    Object.keys(savedScenarios).forEach(scenarioId => {
+
+      if (GameData.scenarios.some(scenario => scenario.id === scenarioId)) return;
+
+      const charsFound = savedScenarios[scenarioId].chars.every(charName => {
+        return GameData.chars.some(char => char.name === charName);
+      })
+      const rolesFound = savedScenarios[scenarioId].roles.every(roleName => {
+        return GameData.roles.some(role => role.name === roleName);
+      })
+
+      let updateScenario = false;
+      const scenariosToPush: Scenario[] = [];
+      if (charsFound && rolesFound) {
+        const data = new Scenario(
+          scenarioId,
+          savedScenarios[scenarioId].name,
+          savedScenarios[scenarioId].flavour,
+          savedScenarios[scenarioId].chars.map(charName => GameData.chars.find(char => char.name === charName)!.id),
+          savedScenarios[scenarioId].roles.map(roleName => GameData.roles.find(role => role.name === roleName)!.id),
+        );
+        scenariosToPush.push(data);
+      } else {
+        console.log(`deleting scenario "${savedScenarios[scenarioId].name}" due to data mismatch`);
+        console.log(savedScenarios[scenarioId]);
+        delete savedScenarios[scenarioId];
+        updateScenario = true;
+      }
+
+      if (updateScenario) {
+        localStorage.setItem("savedScenarios", JSON.stringify(savedScenarios));
+      }
+
+      if (scenariosToPush.length > 0) {
+        GameData.scenarios.push(...scenariosToPush);
+      }
+
+    })
+    
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  // this only needs to run once and doesn't matter when it loads so it doesn't need the dependencies
 
   const allScenarios = GameData.scenarios.map(scenario => {
     const title = `${scenario.name} - ${scenario.roles.length} roles - ${scenario.chars.length} chars`;
@@ -108,6 +164,7 @@ function ScenarioSelectionButton({setOpenDialog, storeOldData, openDialog}: Scen
     <ScenarioLoadingDialog
       openDialog={openDialog}
       setOpenDialog={setOpenDialog}
+      setNewScenario={setNewScenario}
     />
   </>)
 }
