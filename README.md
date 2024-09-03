@@ -3,7 +3,6 @@ Social deception game intended for 6 to 16 players and 1 or more narrators. \
 Typical game length targetted to be 90 minutes. \
 Designed to be played via a [webapp](https://cormacgudge.xyz/swtc) in person using mobile devices or remotely using your Desktop/Laptop. \
 Currently requires a third party tool to fascilitate voice communication such as [Discord](https://discord.gg/j9JuuRwv8x).
-- [Game rules](https://drive.google.com/file/d/1BSgDm_VNXi-e2_0v5L5Xd781-kFyde7k/preview)
 
 ## Introduction
 Secrets Within the Compound is set in a world where a secret international organization, the
