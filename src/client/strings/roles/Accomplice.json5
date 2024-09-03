@@ -3,13 +3,13 @@
   "team": "Subversive",
   "type": "Detrimental",
   "flavour": "My fingerprints? No, you must be mistaken.",
-  "ability": "You do not know you are the Accomplice. You think you are an Agent role, but you are not. All Antagonists know who you are.\n",
+  "ability": "You are confused about being an Agent.\n",
   "attributes": [
     "Human"
   ],
   "setup": [
     [
-      "You think you are a Loyalist role.",
+      "You are confused about being an Agent.",
       "ShowAs Role Loyalist"
     ],
     [
