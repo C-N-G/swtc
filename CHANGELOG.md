@@ -1,4 +1,4 @@
-### xx/xx/xxx v0.6.1
+### 03/09/2024 v0.6.1
 - changed day night order from day 1, night 1, day 2 ect. to night 1, day 1, night 2 ect.
 - roles added or removed:
   - +Medium
@@ -21,6 +21,19 @@
   - +Methodical
   - -Resourceful
   - -Secretive
+- added scenario crud functions
+  - when a narrator presses select scenario they will now see two extra buttons, "Create" and "Load"
+  - pressing create will bring you to the scenario creation screen
+  - the scenario creation screen allows the narrator to give the scenario a name, flavour text, and a selection of roles and characteristiscs
+  - it also allows saving the scenario to a json file locally or to the users browser
+  - scenarios saved to the users browser will be checked for and loaded when the app is first opened
+  - pressing load will bring you to the scenario loading screen
+  - the scenario loading screen allows for loading scenarios from json data
+  - user created scenarios can also be delete or edited from the scenario select screen
+- remove options link to rulebook document
+- added "AddInvariant" setup command
+- refactored string storage for new file strucutre
+- refactored modules to scenario
 ---
 
 ### 24/08/2024 v0.6.0
