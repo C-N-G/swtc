@@ -1,7 +1,7 @@
-import Char from "../classes/char.js";
-import Player from "../classes/player.js";
-import Role from "../classes/role.js";
-import GameData from "../strings/_gameData.js";
+import Char from "../../classes/char.js";
+import Player from "../../classes/player.js";
+import Role from "../../classes/role.js";
+import GameData from "../../strings/_gameData.js";
 
 interface OperatingPlayer {
   index: number;

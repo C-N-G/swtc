@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest';
 import { DebugOrderItem, Randomiser } from "./randomiser";
-import Player from '../classes/player';
-import GameData from '../strings/_gameData';
+import Player from '../../classes/player';
+import GameData from '../../strings/_gameData';
 
 function testDebugOrder(debugOrders: DebugOrderItem[]): Player[] {
   const players = Array.from(Array(8), (_, i) => new Player(String(i), "Player " + i));

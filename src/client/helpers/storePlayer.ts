@@ -1,7 +1,7 @@
 import Player from "../classes/player.ts";
 import GameData from "../strings/_gameData.ts";
 import NightOrders from "./nightOrders.ts";
-import randomise from "./randomiser.ts";
+import randomise from "./randomiser/randomiser.ts";
 import { socket } from "./socket.ts";
 import { StateCreator } from "zustand";
 import { CombinedSlice, PlayerSlice } from "./storeTypes.ts";
