@@ -13,7 +13,7 @@
     "server": "tsx --watch ./src/server/main.ts",
     "test": "npx playwright test",
     "uitest": "npx playwright test --ui",
-    "unittest": "vitest",
+    "vitest": "vitest",
     "report": "npx playwright show-report",
     "bundleSize": "npx vite-bundle-visualizer",
     "createStrings": "tsx ./src/server/createStrings.ts"
