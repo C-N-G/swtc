@@ -1,9 +1,15 @@
-import Char from "../../classes/char.js";
-import Player from "../../classes/player.js";
-import Role from "../../classes/role.js";
-import GameData from "../../strings/_gameData.js";
+import Char from "../../classes/char.ts";
+import Player from "../../classes/player.ts";
+import Role from "../../classes/role.ts";
+import GameData from "../../strings/_gameData.ts";
+import add from "./setupCommands/add.ts";
+import addInvariant from "./setupCommands/addInvariant.ts";
+import addStrict from "./setupCommands/addStrict.ts";
+import convert from "./setupCommands/convert.ts";
+import neighbour from "./setupCommands/neighbour.ts";
+import showAs from "./setupCommands/showas.ts";
 
-interface OperatingPlayer {
+export interface OperatingPlayer {
   index: number;
   playerObj: Player;
   strict: boolean;
@@ -18,6 +24,16 @@ export interface DebugOrderItem {
   index: number;
   role: string;
   char?: string;
+}
+
+export interface SetupCommandParams {
+  command: string;
+  type: string;
+  target: string;
+  possibleTargets: (Char | Role)[];
+  targetName: string;
+  targetShownName: string;
+  targetArray: (Char | Role)[];
 }
 
 /**
@@ -84,7 +100,7 @@ export default function randomise(playerArray: Player[], charArray: Char[], role
 
 export class Randomiser {
 
-  private TYPE_TO_TEAM: TeamConverter = {
+  TYPE_TO_TEAM: TeamConverter = {
     "Agent": "Loyalist",
     "Detrimental": "Loyalist",
     "Antagonist": "Subversive"
@@ -432,49 +448,26 @@ export class Randomiser {
       throw new Error(`unknown setup command target type: ${type}`);
     }
 
+    const setupCommandParams: SetupCommandParams = {
+      command: command,
+      type: type,
+      target: target,
+      possibleTargets: possibleTargets,
+      targetName: targetName,
+      targetShownName: targetShownName,
+      targetArray: targetArray
+    }
+
     if (this.debug) console.debug("running setup command", command, type, target);
 
     // if command is Add or AddStrict
-    if (command.includes("Add")) {
-
-      const takenSetsTarget = `${targetName}s`;
-      const playerAttribute = targetName;
-
-      if (takenSetsTarget !== "chars" && takenSetsTarget !== "roles") {
-        throw new Error(`add target not set properly, found ${takenSetsTarget} for taken set`);
-      }
-
-      if (playerAttribute !== "char" && playerAttribute !== "role") {
-        throw new Error(`add target not set properly, found ${playerAttribute} for player attribute`);
-      }
-
-      // delete initially randomised target from the taken targets
-      this.takenSets[takenSetsTarget].delete(aPlayer.playerObj[playerAttribute]);
-
-      // take into account taken targets if there are multiple possible targets
-      if (possibleTargets.length > 1) {
-        aPlayer.playerObj[playerAttribute] = this.getRandomIndex(targetArray, this.takenSets[takenSetsTarget], possibleTargets);
-      } else if (possibleTargets.length === 1 && command !== "AddInvariant") {
-        // else if there is only one possible target and no invariant it must be specific so choose it anyway
-        aPlayer.playerObj[playerAttribute] = targetArray.findIndex(target => target.id === possibleTargets[0].id);
-        this.takenSets[takenSetsTarget].add(aPlayer.playerObj[playerAttribute]);
-      } else if (possibleTargets.length === 1 && command === "AddInvariant") {
-        const targetId = targetArray.findIndex(target => target.id === possibleTargets[0].id);
-        const targetIsAlreadyInUse = this.takenSets[takenSetsTarget].has(targetId);
-        if (targetIsAlreadyInUse) {
-          const filteredSet = targetName === "char" ? null : this.roleArray.filter(role => role.type === "Agent");
-          aPlayer.playerObj[playerAttribute] = this.getRandomIndex(targetArray, this.takenSets[takenSetsTarget], filteredSet);
-        } else {
-          aPlayer.playerObj[playerAttribute] = targetId;
-          this.takenSets[takenSetsTarget].add(targetId);
-        }
-      }
-
-    } 
+    if (command === "Add") add(aPlayer, setupCommandParams, this);
+    else if (command === "AddStrict") addStrict(aPlayer, setupCommandParams, this);
+    else if (command === "AddInvariant") addInvariant(aPlayer, setupCommandParams, this);
 
     aPlayer.strict = command === "AddStrict" ? true : false;
 
-    if (command === "Convert") aPlayer.playerObj.team = GameData.teams.indexOf(target);
+    if (command === "Convert") convert(aPlayer, setupCommandParams);
     else aPlayer.playerObj.team = GameData.teams.indexOf(this.TYPE_TO_TEAM[this.roleArray[aPlayer.playerObj.role].type]);
 
     if (!aPlayer.keepSame) {
@@ -483,70 +476,9 @@ export class Randomiser {
       aPlayer.playerObj.rTeam = aPlayer.playerObj.team;
     }
 
-    if (command === "ShowAs") {
+    if (command === "ShowAs") showAs(aPlayer, setupCommandParams, this);
 
-      const takenSetsTarget = `${targetName}s`;
-      const playerAttribute = targetShownName;
-
-      if (takenSetsTarget !== "chars" && takenSetsTarget !== "roles") {
-        throw new Error(`showas target not set properly, found ${takenSetsTarget} for taken set`);
-      }
-
-      if (playerAttribute !== "rChar" && playerAttribute !== "rRole") {
-        throw new Error(`showas target not set properly, found ${playerAttribute} for player attribute`);
-      }
-
-      // take into account taken roles if there are multiple possible roles
-      if (possibleTargets.length > 1) {
-        aPlayer.playerObj[playerAttribute] = this.getRandomIndex(targetArray, this.takenSets[takenSetsTarget], possibleTargets);
-      } else {
-        // else if there is only one possible role the target must be specific so choose it anyway
-        aPlayer.playerObj[playerAttribute] = targetArray.findIndex(target => target.id === possibleTargets[0].id);
-        this.takenSets[takenSetsTarget].add(aPlayer.playerObj[playerAttribute]);
-      }
-
-      // change player team to the role they appear as
-      aPlayer.playerObj.rTeam = GameData.teams.indexOf(this.TYPE_TO_TEAM[this.roleArray[aPlayer.playerObj.rRole].type]);
-
-    } 
-
-    if (command === "Neighbour") {
-
-      const playerAttribute = targetName;
-
-      if (playerAttribute !== "char" && playerAttribute !== "role") {
-        throw new Error(`neighbour target not set properly, found ${playerAttribute} for player attribute`);
-      }
-
-      // find targets
-      const playerIndexes: number[] = [];
-      possibleTargets.forEach(target => {
-      this.randomisedPlayers.forEach((player, index) => {
-        if (targetArray[player[playerAttribute]]?.id === target.id) playerIndexes.push(index);
-      })})
-
-      if (playerIndexes.length === 0) {
-        throw new Error("Could not find the target to neighbour");
-      }
-
-      // does the player already neighbour a target?
-      const [leftIndex, rightIndex] = this.findNeighbourIndexes(aPlayer.index);
-      if (playerIndexes.some(index => index === leftIndex || index === rightIndex)) return;
-
-      // try and move the player to neighbour the target
-      let newIndex;
-      for (const index of playerIndexes) {
-        newIndex = this.getFreeNeighbourIndex(index);
-        if (newIndex === null) continue;
-        this.movePlayerToIndex(newIndex, aPlayer);
-        break;
-      }
-
-      if (newIndex === null) {
-        throw new Error("Could not place player next to target neighbour during setup command");
-      }
-      
-    }
+    if (command === "Neighbour") neighbour(aPlayer, setupCommandParams, this);
 
   }
 
