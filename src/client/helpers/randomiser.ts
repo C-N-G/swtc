@@ -14,6 +14,12 @@ interface TeamConverter {
   [team: string]: string;
 }
 
+export interface DebugOrderItem {
+  index: number;
+  role: string;
+  char?: string;
+}
+
 /**
 Selects random roles and characteristics for a given set of players
 Runs any setup commands found in the roles or characteristics selected
@@ -34,8 +40,8 @@ SETUP COMMANDS:
 players the target char or role during setup
 - AddStrict [#] [type] [target] [neighbour] - assigns one or more unassigned players 
 the following char or role during setup, and prevents that char or roles setup commands from running
-- AddInvariant [#] [type] [target] [neighbour] - assigns one or more unassigned players the target char role
-only if it hasn't already been assigned to someone
+- AddInvariant [#] [type] [target] [neighbour] - assigns one or more unassigned or assigned players the target char or role
+only if it hasn't already been assigned to someone, will make sure not to incrased detrimental or antagonist count when using this command
 - Convert [#] [target] [neighbour] - assigns one or more unassigned agent players to the target team
 - ShowAs [type] [target] - assigns this player’s shown char or role to the target
 - Neighbour [type] [target] - assigns this player a position on the board which neighbours the target
@@ -55,6 +61,11 @@ it will take into account what has already been chosen so as to not choose dupli
 
 The ShowAs and Neighbour commands support omitting the [target] parameter, 
 which will make the randomiser select anything matching the specified type.
+
+A player will be classified as dependant if any of the follow occurs:
+- they have setup commands that modifies other players
+- they were created or modified by a setup command from another player
+Dependant players will modified after they are randomised
 
  * @param playerArray 
  * @param charArray 
@@ -80,15 +91,17 @@ export class Randomiser {
   }
 
   debug: boolean;
+  debugOrder: DebugOrderItem[] | undefined;
   playerArray: Player[];
   charArray: Char[];
   roleArray: Role[];
   commandQueue: string[][];
   takenSets: {chars: Set<number>, roles: Set<number>};
   neighbourGroups: {masters: string[], minions: { [minion: string]: string }};
-  targetAntags: number;
+  dependantIds: Set<string>; // ids of players that cannot be updated later by the randomiser
   randomIndexes: number[];
   randomisedPlayers: Player[];
+  targetAntags: number;
   targetDetrimentals: number;
 
   /**
@@ -98,9 +111,10 @@ export class Randomiser {
    * @param roleArray 
    * @param debug 
    */
-  constructor(playerArray: Player[], charArray: Char[], roleArray: Role[], debug: boolean) {
+  constructor(playerArray: Player[], charArray: Char[], roleArray: Role[], debug: boolean, debugOrder?: DebugOrderItem[]) {
 
     this.debug = debug;
+    this.debugOrder = debugOrder;
 
     this.playerArray = playerArray;
     this.charArray = charArray;
@@ -109,6 +123,7 @@ export class Randomiser {
     this.commandQueue = [];
     this.takenSets = { "chars": new Set(), "roles": new Set() };
     this.neighbourGroups = {masters: [], minions: {}};
+    this.dependantIds = new Set();
     this.targetAntags = 1;
 
     // remove any narrators from indexes to place
@@ -158,6 +173,10 @@ export class Randomiser {
         this.charArray[aPlayer.playerObj.char].name
       );
 
+      if (this.debugOrder && this.debugOrder.length > 0) {
+        this.debugOrder.shift();
+      }
+
       // add commands if the role has any
       this.addSetupCommandsFromPlayer(aPlayer);
 
@@ -165,6 +184,8 @@ export class Randomiser {
       this.randomisedPlayers[aPlayer.index] = aPlayer.playerObj;
 
     }
+
+    if (this.commandQueue.length > 0) throw new Error("finished randomising players with commands left unprocessed");
 
     if (this.debug) console.debug("groups", this.neighbourGroups);
 
@@ -247,12 +268,20 @@ export class Randomiser {
     let randomIndex: number;
     while (typeof index === "undefined") {
 
-      // generate a random index
-      if (filteredIndexArray) {
+      // use debug values if found
+      if (typeof this.debugOrder !== "undefined" && typeof this.debugOrder[0] !== "undefined") {
+        const isChar = indexArray[0] instanceof Char;
+        const isRole = indexArray[0] instanceof Role;
+        let targetProperty: keyof DebugOrderItem;
+        if (isRole) targetProperty = "role";
+        else if (isChar) targetProperty = "char";
+        else throw new Error("undefined property found in debug order");
+        randomIndex = indexArray.findIndex(role => role.name === this.debugOrder![0][targetProperty]);
+        if (randomIndex === -1) throw new Error(`could not find target item from debug order: ${this.debugOrder![0][targetProperty]} ${indexArray.map(ele => ele.name)}`);
+      } else if (filteredIndexArray) { // generate a random index
         randomIndex = Math.floor(Math.random() * filteredIndexArray.length);
         randomIndex = indexArray.findIndex(role => role.name === filteredIndexArray[randomIndex].name);
-      } else {
-        // skip out the first value which is unknown
+      } else { // skip out the first value which is unknow
         randomIndex = Math.floor(Math.random() * (indexArray.length - 1) + 1);
       }
 
@@ -265,7 +294,7 @@ export class Randomiser {
       // prevent infinte loop
       if (takenIndexSet.size === indexArray.length || EveryFilteredIndexTaken) {
         if (this.debug) console.debug(Array.from(takenIndexSet).map(index => indexArray[index].name), filteredIndexArray)
-        throw Error("not enough options to uniquely randomise")
+        throw new Error("not enough options to uniquely randomise")
       }
 
     }
@@ -314,6 +343,11 @@ export class Randomiser {
         commandArray[2] = commandArray[2].replace("_", " ");// support underscores in target names
       }
 
+      // add this player id to dependant ids if it has a dependant command
+      if (this.isDependantCommand(commandArray)) {
+        this.dependantIds.add(aPlayer.playerObj.id);
+      }
+
       // if the command doesn't have a quantity then run it immediately
       if (Number.isNaN(Number(commandArray[1]))) {
 
@@ -328,7 +362,6 @@ export class Randomiser {
         this.commandQueue.push(commandArray);
 
       }
-      
 
     })
 
@@ -347,6 +380,11 @@ export class Randomiser {
   runSetupCommand(aPlayer: OperatingPlayer, sendCommand: string[]): void {
 
     const [command, type, target] = [sendCommand[0], sendCommand[1], sendCommand[2]];
+
+    // add this player id to the dependantIds if the command operating on it is a dependant command
+    if (this.isDependantCommand(sendCommand)) {
+      this.dependantIds.add(aPlayer.playerObj.id);
+    }
 
     // randomise player initially
     if (!aPlayer.keepSame) {
@@ -656,7 +694,15 @@ export class Randomiser {
    */
   getNextPosition(): number | null {
 
-    let returnIndex;
+    let returnIndex: number | null | undefined;
+
+    // use debug values if found
+    if (this.debugOrder !== undefined && this.debugOrder[0] !== undefined) {
+      returnIndex = this.debugOrder[0].index;
+      const deleteIndex = this.randomIndexes.findIndex(ele => ele === returnIndex);
+      this.randomIndexes.splice(deleteIndex, 1);
+      return returnIndex;
+    }
 
     // if no neighbour property then just return a random index
     if (this.commandQueue.length === 0 
@@ -695,7 +741,7 @@ export class Randomiser {
   createFreeSpace(desiredIndex: number): void {
 
     if (this.randomIndexes.length < 1) {
-      throw Error("not enough free spaces for neighbours");
+      throw new Error("not enough free spaces for neighbours");
     }
 
     const newIndex = this.randomIndexes.shift();
@@ -714,6 +760,16 @@ export class Randomiser {
 
     if (this.debug) console.debug("swapped player at index", desiredIndex, "to index", newIndex);
 
+  }
+
+  /**
+   * checks if setup command is classified as dependant
+   * @param commandArray 
+   * @returns bool value indicating if the command is dependant
+   */
+  isDependantCommand(commandArray: string[]): boolean {
+    const dependantCommands = ["Add", "AddStrict", "AddInvariant", "Convert"];
+    return dependantCommands.includes(commandArray[0]);
   }
 
   // function reorganisePlayers() {
