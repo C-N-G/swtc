@@ -18,12 +18,9 @@ export default function addInvariant(aPlayer: OperatingPlayer, params: SetupComm
 
   const targetId = params.targetArray.findIndex(target => target.id === params.possibleTargets[0].id);
   const targetIsAlreadyInUse = randomiser.takenSets[takenSetsTarget].has(targetId);
-  if (targetIsAlreadyInUse) { // if target is already in use then just give it a random agent role or characteristic
-    const filteredSet = params.targetName === "char" ? null : randomiser.roleArray.filter(role => role.type === "Agent");
-    aPlayer.playerObj[playerAttribute] = randomiser.getRandomIndex(params.targetArray, randomiser.takenSets[takenSetsTarget], filteredSet);
-  } else {
+  if (!targetIsAlreadyInUse) {
     aPlayer.playerObj[playerAttribute] = targetId;
     randomiser.takenSets[takenSetsTarget].add(targetId);
-  }
+  } 
 
 }
