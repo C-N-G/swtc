@@ -36,6 +36,14 @@ export interface SetupCommandParams {
   targetArray: (Char | Role)[];
 }
 
+interface SetupCommand {
+  name: string;
+  target: string;
+  type?: string;
+  quantity?: number;
+  neighbour?: string;
+}
+
 /**
 Selects random roles and characteristics for a given set of players
 Runs any setup commands found in the roles or characteristics selected
@@ -54,13 +62,13 @@ neighbours to be chosen if there is not enough free space to place the neighbour
 SETUP COMMANDS:
 - Add [#] [type] [target] [neighbour] - assigns one or more unassigned 
 players the target char or role during setup
-- AddStrict [#] [type] [target] [neighbour] - assigns one or more unassigned players 
-the following char or role during setup, and prevents that char or roles setup commands from running
 - AddInvariant [#] [type] [target] [neighbour] - assigns one or more unassigned or assigned players the target char or role
 only if it hasn't already been assigned to someone, will make sure not to incrased detrimental or antagonist count when using this command
+- AddStrict [#] [type] [target] [neighbour] - assigns one or more unassigned players 
+the following char or role during setup, and prevents that char or roles setup commands from running
 - Convert [#] [target] [neighbour] - assigns one or more unassigned agent players to the target team
-- ShowAs [type] [target] - assigns this player’s shown char or role to the target
 - Neighbour [type] [target] - assigns this player a position on the board which neighbours the target
+- ShowAs [type] [target] - assigns this player’s shown char or role to the target
 
 [#] can be 1 or higher. if the [neighbour] is specified then [#] must be 1 or 2.
 
@@ -111,7 +119,7 @@ export class Randomiser {
   playerArray: Player[];
   charArray: Char[];
   roleArray: Role[];
-  commandQueue: string[][];
+  commandQueue: SetupCommand[];
   takenSets: {chars: Set<number>, roles: Set<number>};
   neighbourGroups: {masters: string[], minions: { [minion: string]: string }};
   dependantIds: Set<string>; // ids of players that cannot be updated later by the randomiser
@@ -217,18 +225,13 @@ export class Randomiser {
 
     if (this.commandQueue.length > 0) {
 
-      const commandArray = this.commandQueue[0];
-      const commandName = commandArray[0];
-      const commandQuantity = Number(commandArray[1]);
-      const commandType = commandArray[2];
-      const commandTarget = commandName === "Convert" ? commandArray[2] : commandArray[3];
-      const sendCommand = [commandName, commandType, commandTarget];
+      const setupCommand = this.commandQueue[0];
   
-      this.runSetupCommand(aPlayer, sendCommand);
+      this.runSetupCommand(aPlayer, setupCommand);
   
       // handle command quantity
-      if (commandQuantity > 1) {
-        commandArray[1] = String(commandQuantity - 1);
+      if (setupCommand.quantity && setupCommand.quantity > 1) {
+        setupCommand.quantity--;
       } else {
         this.commandQueue.shift();
       }
@@ -342,7 +345,7 @@ export class Randomiser {
    */
   addSetupCommandsFromPlayer(aPlayer: OperatingPlayer): void {
 
-    const immediateCommandQueue: string[][] = [];
+    const immediateCommandQueue: SetupCommand[] = [];
     const char = this.charArray[aPlayer.playerObj.char].setup;
     const role = this.roleArray[aPlayer.playerObj.role].setup;
 
@@ -355,27 +358,62 @@ export class Randomiser {
       if (cmd.length < 2) return;
 
       const commandArray = cmd[1].split(" ");
-      if (commandArray[2] !== undefined) {
-        commandArray[2] = commandArray[2].replace("_", " ");// support underscores in target names
+      const commandLacksQuantity = Number.isNaN(Number(commandArray[1]));
+      const commandHasNeighbour = commandArray.includes("Neighbour");
+      const newSetupCommand: SetupCommand = { 
+        name: commandArray[0],
+        target: "",
+      };
+
+      switch (newSetupCommand.name) {
+        case "Add":
+        case "AddInvariant":
+        case "AddStrict":
+          newSetupCommand.quantity = Number(commandArray[1]);
+          newSetupCommand.type = commandArray[2];
+          newSetupCommand.target = commandArray[3];
+          if (commandHasNeighbour) {
+            newSetupCommand.neighbour = `${commandArray[4]}_${aPlayer.playerObj.id}`;
+            this.neighbourGroups.masters.push(aPlayer.playerObj.id);
+          }
+          break;
+        case "Convert":
+          newSetupCommand.quantity = Number(commandArray[1]);
+          newSetupCommand.target = commandArray[2];
+          if (commandHasNeighbour) {
+            newSetupCommand.neighbour = `${commandArray[3]}_${aPlayer.playerObj.id}`;
+            this.neighbourGroups.masters.push(aPlayer.playerObj.id);
+          }
+          break;
+
+        case "Neighbour":
+        case "ShowAs":
+          newSetupCommand.type = commandArray[1];
+          newSetupCommand.target = commandArray[2];
+          break;
+      
+        default:
+          throw new Error("could not parse setup command name");
       }
 
+      if (newSetupCommand.type !== undefined) {
+        newSetupCommand.type = newSetupCommand.type.replace("_", " ");// support underscores in target names
+      }
+      newSetupCommand.target = newSetupCommand.target.replace("_", " ");
+
       // add this player id to dependant ids if it has a dependant command
-      if (this.isDependantCommand(commandArray)) {
+      if (this.isDependantCommand(newSetupCommand)) {
         this.dependantIds.add(aPlayer.playerObj.id);
       }
 
       // if the command doesn't have a quantity then run it immediately
-      if (Number.isNaN(Number(commandArray[1]))) {
+      if (commandLacksQuantity) {
 
-        immediateCommandQueue.push(commandArray);
+        immediateCommandQueue.push(newSetupCommand);
 
       } else if (!aPlayer.strict) { // do not add commands if the command was strict
 
-        if (commandArray[4] === "Neighbour") {
-          commandArray[4] = `${commandArray[4]}_${aPlayer.playerObj.id}`;
-          this.neighbourGroups.masters.push(aPlayer.playerObj.id);
-        }
-        this.commandQueue.push(commandArray);
+        this.commandQueue.push(newSetupCommand);
 
       }
 
@@ -391,14 +429,14 @@ export class Randomiser {
   /**
    * Applies a setup commnad to a given player
    * @param Player 
-   * @param sendCommand 
+   * @param setupCommand 
    */
-  runSetupCommand(aPlayer: OperatingPlayer, sendCommand: string[]): void {
+  runSetupCommand(aPlayer: OperatingPlayer, setupCommand: SetupCommand): void {
 
-    const [command, type, target] = [sendCommand[0], sendCommand[1], sendCommand[2]];
+    const [command, type, target] = [setupCommand.name, setupCommand.type, setupCommand.target];
 
     // add this player id to the dependantIds if the command operating on it is a dependant command
-    if (this.isDependantCommand(sendCommand)) {
+    if (this.isDependantCommand(setupCommand)) {
       this.dependantIds.add(aPlayer.playerObj.id);
     }
 
@@ -450,7 +488,7 @@ export class Randomiser {
 
     const setupCommandParams: SetupCommandParams = {
       command: command,
-      type: type,
+      type: type ? type : "",
       target: target,
       possibleTargets: possibleTargets,
       targetName: targetName,
@@ -638,8 +676,8 @@ export class Randomiser {
 
     // if no neighbour property then just return a random index
     if (this.commandQueue.length === 0 
-      || typeof this.commandQueue[0][4] === "undefined"
-      || !this.commandQueue[0][4].startsWith("Neighbour")
+      || typeof this.commandQueue[0].neighbour === "undefined"
+      || !this.commandQueue[0].neighbour.startsWith("Neighbour")
       ) {
       returnIndex = this.randomIndexes.shift();
       if (returnIndex === undefined) throw new Error("got undefined index from random indexes");
@@ -647,7 +685,7 @@ export class Randomiser {
       return returnIndex;
     }
 
-    const masterId = this.commandQueue[0][4].split("_")[1];
+    const masterId = this.commandQueue[0].neighbour.split("_")[1];
     const masterIndex = this.randomisedPlayers.findIndex(player => player.id === masterId);
 
     returnIndex = this.getFreeNeighbourIndex(masterIndex);
@@ -696,12 +734,22 @@ export class Randomiser {
 
   /**
    * checks if setup command is classified as dependant
-   * @param commandArray 
+   * @param setupCommand 
    * @returns bool value indicating if the command is dependant
    */
-  isDependantCommand(commandArray: string[]): boolean {
+  isDependantCommand(setupCommand: SetupCommand): boolean {
     const dependantCommands = ["Add", "AddStrict", "AddInvariant", "Convert"];
-    return dependantCommands.includes(commandArray[0]);
+    return dependantCommands.includes(setupCommand.name);
+  }
+
+  processFinalCommands() {
+
+    // match commands to non dependant players
+
+    // this.commandQueue.forEach(command => {
+
+    // })
+
   }
 
   // function reorganisePlayers() {
