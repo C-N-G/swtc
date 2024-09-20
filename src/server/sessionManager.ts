@@ -30,10 +30,10 @@ export default class SessionManager {
 
     }
 
-    joinSession(sessionId: string, playerId: string, playerName: string): Player {
-        
+    joinSession(sessionId: string, playerId: string, playerName: string, playerPronouns?: string): Player {
+
         const session = this.sessions[sessionId];
-        return session.addPlayer(playerId, playerName);
+        return session.addPlayer(playerId, playerName, playerPronouns);
 
     }
 

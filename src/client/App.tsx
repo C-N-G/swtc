@@ -41,11 +41,11 @@ const darkTheme = createTheme({
 
 export const UserContext = createContext<Player | null>(null);
 
-const PLAYER = new Player(String(54321), "Player " + 54321, 0);
+const PLAYER = new Player(String(54321), "Player " + 54321, "", 0);
 
 const somePlayers = [PLAYER];
 for (let i = 0; i < 8; i++) {
-  const player = new Player(String(i), "Player " + i);
+  const player = new Player(String(i), "Player " + i, "test/testing");
   somePlayers.push(player);
 }
 
@@ -111,7 +111,7 @@ function App() {
         }
         const lastSession = JSON.parse(seesionItem);
         setPlayers(lastSession.players);
-        socket.timeout(5000).emit("join", lastSession.sessionId, lastSession.playerName, joinCallback);
+        socket.timeout(5000).emit("join", lastSession.sessionId, lastSession.playerName, lastSession.playerPronouns, joinCallback);
       }
 
     };

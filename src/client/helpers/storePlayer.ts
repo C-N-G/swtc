@@ -40,7 +40,8 @@ export const createPlayerSlice: StateCreator<
       localStorage.setItem("lastSession", JSON.stringify({
         players: newPlayers,
         sessionId: get().session.id,
-        playerName: foundPlayer.name
+        playerName: foundPlayer.name,
+        playerPronouns: foundPlayer.pronouns
       }));
     }
 
@@ -125,7 +126,8 @@ export const createPlayerSlice: StateCreator<
     localStorage.setItem("lastSession", JSON.stringify({
       players: newPlayers,
       sessionId: state.session.id,
-      playerName: foundPlayer.name
+      playerName: foundPlayer.name,
+      playerPronouns: foundPlayer.pronouns
     }));
 
     return {players: newPlayers};

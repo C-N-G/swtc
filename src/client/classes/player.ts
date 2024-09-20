@@ -6,6 +6,7 @@ export default class Player {
    * Player
    * @param id - unique user identifier
    * @param name - user name
+   * @param pronouns - user pronouns
    * @param type - type of user. 0 = narrator, 1 = player
    * @param label - quick label of targetted player
    * @param notes - notes of targetted player
@@ -24,6 +25,7 @@ export default class Player {
   constructor(
     public readonly id: string, 
     public name: string,
+    public pronouns: string = "",
     public type = 1,
     public label = "",
     public notes = "",

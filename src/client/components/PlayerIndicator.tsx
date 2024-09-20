@@ -137,6 +137,17 @@ function RegularPlayerIndicator({player, handleClick, vertical, chars, roles, se
           >
             {player.label && `(${player.name})`}
           </Typography>
+          <Typography variant="caption" sx={{
+            position: "absolute",
+            top: player.label ? "150%" : "110%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            wordBreak: "keep-all",
+            fontSize: "9px"
+            }}
+          >
+            {`(${player.pronouns})`}
+          </Typography>
         </Box>
         <Box sx={BUTTON_TEXT_CONTAINER_STYLE}>
           <Typography 
@@ -234,7 +245,20 @@ function NarratorPlayerIndicator({player, handleClick, vertical, chars, roles, s
         ref={setNodeRef}
         style={style}
       >
-        <Typography>{player.name}</Typography>
+        <Typography>
+          {player.name}
+          <Typography variant="caption" sx={{
+            position: "absolute",
+            top: "21%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            wordBreak: "keep-all",
+            fontSize: "9px"
+            }}
+          >
+            {`(${player.pronouns})`}
+          </Typography>
+        </Typography>
         <Box sx={BUTTON_TEXT_CONTAINER_STYLE}>
           <Typography 
             variant="subtitle2"

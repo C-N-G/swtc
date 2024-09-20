@@ -21,14 +21,15 @@ export default class Session {
 
     }
 
-    addPlayer(playerId: string, name: string): Player {
+    addPlayer(playerId: string, name: string, pronouns?: string): Player {
 
         let player;
+        const userPronouns = pronouns ? pronouns : "";
 
         if (this.players.length === 0) { // if its the first player then make them the narrator
-            player = new Player(playerId, name, 0);
+            player = new Player(playerId, name, userPronouns, 0);
         } else {
-            player = new Player(playerId, name);
+            player = new Player(playerId, name, userPronouns);
         }
 
         this.players.push(player);

@@ -53,7 +53,7 @@ export interface ServerToClientEvents {
 }
 
 export interface ClientToServerEvents {
-  join: (sessiondId: string, name: string, callback: CallbackFn) => void;
+  join: (sessiondId: string, name: string, pronouns: string | undefined, callback: CallbackFn) => void;
   host: (name: string) => void;
   phase: (data: Phase) => void;
   attribute: (data: PlayerAttributeData) => void;

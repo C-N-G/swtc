@@ -53,7 +53,7 @@ export default function swtcSocketServer(
 
   }
 
-  function onJoin(sessionId: string, name: string, callback: CallbackFn): void {
+  function onJoin(sessionId: string, name: string, pronouns: string | undefined, callback: CallbackFn): void {
 
     log("joining");
 
@@ -94,7 +94,7 @@ export default function swtcSocketServer(
     }
 
     // nomral join
-    const player = sessionManager.joinSession(sessionId, playerId, name);
+    const player = sessionManager.joinSession(sessionId, playerId, name, pronouns);
     playerName = name;
     socket.join(sessionId);
     connectedSessionId = sessionId;

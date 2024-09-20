@@ -1,6 +1,8 @@
 import {useEffect, useState} from "react";
 import {Button, Menu, MenuItem, Box, Card, Typography, TextField, Dialog, 
-  DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
+  DialogActions, DialogContent, DialogContentText, DialogTitle,
+  Autocomplete,
+  Grid} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import {socket} from "../helpers/socket.ts";
 import useStore from "../hooks/useStore.ts";
@@ -44,7 +46,8 @@ function Options() {
   const defaultInputs = {
     hostName: {value: "", error: false, errorText: ""}, 
     joinName: {value: "", error: false, errorText: ""}, 
-    joinId: {value: "", error: false, errorText: ""}
+    joinId: {value: "", error: false, errorText: ""},
+    pronouns: {value: "", error: false, errorText: ""}
   };
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLButtonElement>(null);
@@ -89,19 +92,25 @@ function Options() {
 
     const name = inputs.joinName.value;
     const id = inputs.joinId.value;
+    let pronouns: string | undefined = inputs.pronouns.value;
     
     const nameValidated = name.length >= 3 && name.length <= 16;
     const idValidated = id.length === 7;
+    const pronounsValidated = pronouns === null || pronouns.length <= 12;
     
     setInputs(prev => { 
       return {...prev, 
         joinName: {...prev.joinName, error: !nameValidated, errorText: "Must be between 3 to 16 characters"},
-        joinId: {...prev.joinId, error: !idValidated, errorText: "Must be 7 characters long"}} 
+        joinId: {...prev.joinId, error: !idValidated, errorText: "Must be 7 characters long"}, 
+        pronouns: {...prev.pronouns, error: !pronounsValidated, errorText: "Cannot be more than 12 characters long"}
+      } 
     })
     
-    if (nameValidated && idValidated) {
+    if (nameValidated && idValidated && pronounsValidated) {
 
-      socket.timeout(5000).emit("join", id, name, (error, response) => {
+      if (pronouns === null || pronouns.length === 0) pronouns = undefined;
+
+      socket.timeout(5000).emit("join", id, name, pronouns, (error, response) => {
         
         // TODO need to add local state loading during manual resuming
 
@@ -267,8 +276,34 @@ function JoinDialog({openDialog, handleClose, handleJoin, setInputs, inputs}: Jo
           To join a session, plase enter your display name.
           And the ID of the session you wish to connect to.
         </DialogContentText>
-        {textFieldBuilder("join-name", "Name", "joinName", handleJoin, true, setInputs, inputs)}
-        {textFieldBuilder("join-id", "Session ID", "joinId", handleJoin, false, setInputs, inputs)}
+        <Grid container justifyContent={"space-between"}>
+          <Grid item xs={8}>
+            {textFieldBuilder("join-name", "Name", "joinName", handleJoin, true, setInputs, inputs)}
+          </Grid>
+          <Grid item xs={3.5}>
+            <Autocomplete
+              disablePortal
+              freeSolo
+              id="join-pronouns"
+              options={["he/him", "she/her", "they/them"]}
+              renderInput={(params) => 
+                <TextField {...params} 
+                  variant="standard" 
+                  label={"Pronouns"} 
+                  margin="dense" 
+                  error={inputs["pronouns"].error}
+                  helperText={inputs["pronouns"].error ? inputs["pronouns"].errorText : ""}
+                />}
+              value={inputs["pronouns"].value}
+              onChange={(_, newValue) => {setInputs(prev => {return {...prev, ["pronouns"]: {...prev["pronouns"], value: newValue!}}})}}
+              onInputChange={(_, newValue) => {setInputs(prev => {return {...prev, ["pronouns"]: {...prev["pronouns"], value: newValue!}}})}}
+              onKeyDown={(e) => e.key === "Enter" ? handleJoin() : ""}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            {textFieldBuilder("join-id", "Session ID", "joinId", handleJoin, false, setInputs, inputs)}
+          </Grid>
+        </Grid>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleJoin}>Join</Button>

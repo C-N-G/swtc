@@ -229,7 +229,8 @@ function NarratorCharacter({user}: NarratorCharacterProps) {
         localStorage.setItem("lastSession", JSON.stringify({
           players: players,
           sessionId: sessionId,
-          playerName: localPlayer.name
+          playerName: localPlayer.name,
+          playerPronouns: localPlayer.pronouns
         }));
       }
 
