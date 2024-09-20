@@ -1,6 +1,6 @@
 import {createContext, useEffect} from "react";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import {Box, Button, Container, Grid} from "@mui/material";
+import {Container, Grid} from "@mui/material";
 import {DndContext, DragEndEvent} from "@dnd-kit/core";
 import Board from "./components/Board.tsx";
 import Phase from "./components/Phase.tsx";
@@ -9,7 +9,7 @@ import Character from "./components/Character.tsx";
 import Chat from "./components/Chat.tsx";
 import Player from "./classes/player.ts";
 import { socket } from "./helpers/socket.ts";
-import GameData from "./strings/_gameData.ts";
+
 import useStore from "./hooks/useStore.ts";
 import "./App.css"
 import { PlayerAttributeData, PlayerVoteData, SessionData, SocketCallbackResponse, TimerData } from "../server/serverTypes.ts";
@@ -41,13 +41,7 @@ const darkTheme = createTheme({
 
 export const UserContext = createContext<Player | null>(null);
 
-const PLAYER = new Player(String(54321), "Player " + 54321, "", 0);
 
-const somePlayers = [PLAYER];
-for (let i = 0; i < 8; i++) {
-  const player = new Player(String(i), "Player " + i, i % 2 === 1 ? "test/testing" : "");
-  somePlayers.push(player);
-}
 
 function App() {
 
@@ -56,14 +50,11 @@ function App() {
   const syncPlayers = useStore(state => state.syncPlayers);
   const addPlayer = useStore(state => state.addPlayer);
   const removePlayer = useStore(state => state.removePlayer);
-  const pushPlayer = useStore(state => state.pushPlayer);
-  const popPlayer = useStore(state => state.popPlayer);
+
   const addPlayerReminders = useStore(state => state.addPlayerReminders);
   const handleDragEnd = (event: DragEndEvent) => addPlayerReminders(event);
 
-  const userId = useStore(state => state.userId);
   const setUserId = useStore(state => state.setUserId);
-  const toggleDebugUser = useStore(state => state.toggleDebugUser);
 
   const displayVote = useStore(state => state.displayVote);
   const nextPhase = useStore(state => state.nextPhase);
@@ -71,7 +62,6 @@ function App() {
   const resetSession = useStore(state => state.resetSession);
   const setScenarios = useStore(state => state.setScenarios);
   const syncSession = useStore(state => state.syncSession);
-  const sessionId = useStore(state => state.session.id);
 
   const setVoting = useStore(state => state.setVoting);
   const resetUserVotes = useStore(state => state.resetUserVotes);
@@ -276,32 +266,7 @@ function App() {
         </Grid>
         <Grid item xs={4}>
           <Character />
-          <Chat>
-            CHAT W.I.P
-            {sessionId ? "" : <>
-              <Button variant="contained" onClick={() => {
-                setUserId("54321");
-                setPlayers([...somePlayers]);
-                setScenarios([GameData.scenarios[0]]);
-              }}>
-                Add Dummy Players
-              </Button>
-              {userId === "54321" || userId === "0" ? <>
-                <Box>
-                  <Button size="small" variant="contained" onClick={() => pushPlayer()}>
-                    +1
-                  </Button>
-                  <Button size="small" variant="contained" onClick={() => popPlayer()}>
-                    -1
-                  </Button>
-                </Box>
-                <Button size="small" variant="contained" onClick={() => toggleDebugUser()}>
-                  Change Player Type
-                </Button>
-              </> : ""}
-            </>}
-
-          </Chat>
+          <Chat />
         </Grid>
       </Grid>
       
