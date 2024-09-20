@@ -2,6 +2,7 @@
 - added pronouns
   - added optional pronouns selection to the join window
   - pronouns will be shown below the player name on the player indicator for both players and narrators
+  - pronouns can also be seen below the player name in the player details window
 ---
 
 ### 03/09/2024 v0.6.1
