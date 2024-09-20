@@ -111,13 +111,15 @@ function RegularPlayerDetails({player, handleViewPlayerClick, chars, roles}: Reg
             {player.name}
           </Typography>
           <Typography variant="caption" sx={{
-              position: "absolute",
-              top: "98%",
-              left: "50%",
-              transform: "translate(-50%, -50%)"
-              }}
+            position: "absolute",
+            top: "98%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            wordBreak: "keep-all",
+            whiteSpace: "nowrap"
+            }}
           >
-            ({GameData.states[player.rState]})
+            {`(${GameData.states[player.rState]})${player.pronouns ? ` (${player.pronouns})` : ""}`}
           </Typography>
           </Box>
           <TextField sx={{margin: "1rem"}}
@@ -210,7 +212,18 @@ function NarratorDetails({player, handleDismissalClick, chars, roles}: NarratorD
   return (
     <Grid container alignContent="flex-start" sx={{m: 1}} rowSpacing={1}>
       <Grid item xs={6}>
-        <Typography variant="h5" >{player.name}</Typography>
+        <Box position={"relative"}>
+          <Typography variant="h5" >{player.name}</Typography>
+          <Typography variant="caption" sx={{
+            position: "absolute",
+            top: "110%",
+            left: "50%",
+            transform: "translate(-50%, -50%)"
+            }}
+          >
+            {player.pronouns && `(${player.pronouns})`}
+          </Typography>
+        </Box>
       </Grid>
       <Grid item xs={6}>
         <Button variant="outlined" onClick={() => {handleDismissalClick(player.id)}}>Start Dismissal</Button>

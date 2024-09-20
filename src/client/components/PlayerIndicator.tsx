@@ -146,7 +146,7 @@ function RegularPlayerIndicator({player, handleClick, vertical, chars, roles, se
             fontSize: "9px"
             }}
           >
-            {`(${player.pronouns})`}
+            {player.pronouns && `(${player.pronouns})`}
           </Typography>
         </Box>
         <Box sx={BUTTON_TEXT_CONTAINER_STYLE}>
@@ -256,7 +256,7 @@ function NarratorPlayerIndicator({player, handleClick, vertical, chars, roles, s
             fontSize: "9px"
             }}
           >
-            {`(${player.pronouns})`}
+            {player.pronouns && `(${player.pronouns})`}
           </Typography>
         </Typography>
         <Box sx={BUTTON_TEXT_CONTAINER_STYLE}>

@@ -45,7 +45,7 @@ const PLAYER = new Player(String(54321), "Player " + 54321, "", 0);
 
 const somePlayers = [PLAYER];
 for (let i = 0; i < 8; i++) {
-  const player = new Player(String(i), "Player " + i, "test/testing");
+  const player = new Player(String(i), "Player " + i, i % 2 === 1 ? "test/testing" : "");
   somePlayers.push(player);
 }
 
