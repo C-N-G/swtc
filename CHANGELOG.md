@@ -1,3 +1,9 @@
+### xx/xx/xxxx v0.6.2
+- added pronouns
+  - added optional pronouns selection to the join window
+  - pronouns will be shown below the player name on the player indicator for both players and narrators
+---
+
 ### 03/09/2024 v0.6.1
 - changed day night order from day 1, night 1, day 2 ect. to night 1, day 1, night 2 ect.
 - roles added or removed:

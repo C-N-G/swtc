@@ -289,8 +289,8 @@ function JoinDialog({openDialog, handleClose, handleJoin, setInputs, inputs}: Jo
               renderInput={(params) => 
                 <TextField {...params} 
                   variant="standard" 
-                  label={"Pronouns"} 
-                  margin="dense" 
+                  label={"Pronouns (optional)"}
+                  margin="dense"
                   error={inputs["pronouns"].error}
                   helperText={inputs["pronouns"].error ? inputs["pronouns"].errorText : ""}
                 />}
