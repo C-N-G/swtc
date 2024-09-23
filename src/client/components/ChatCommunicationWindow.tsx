@@ -3,11 +3,13 @@ import { useState } from "react";
 import ChatMessage from "../classes/chatMessage";
 import { OpenChatTab } from "../helpers/enumTypes";
 import ChatBaseWindow from "./ChatBaseWindow";
+import useStore from "../hooks/useStore";
 
 function ChatCommunicationWindow({openTab}: {openTab: OpenChatTab}) {
 
-  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [messageValue, setMessageValue] = useState("");
+  const chatHistory = useStore(state => state.chat);
+  const addChatMessage = useStore(state => state.addChatMessage);
 
   function handleSend() {
     const messageExists = messageValue.length > 0;
@@ -16,7 +18,7 @@ function ChatCommunicationWindow({openTab}: {openTab: OpenChatTab}) {
       "test",
       "test",
     )
-    if (messageExists) setChatHistory(prev => ([...prev, newChatMessage]));
+    if (messageExists) addChatMessage(newChatMessage, "chat");
     setMessageValue("");
   }
 
