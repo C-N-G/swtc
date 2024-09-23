@@ -1,12 +1,15 @@
-body {
+html, body {
   margin: 0;
-  overflow: hidden;
+  height: 100%;
+}
+
+body {
+  /* overflow: hidden; */
   /* background: var(--sl-color-gray-6); */
   background: linear-gradient(
     var(--sl-color-gray-3),
     var(--sl-color-black)
   );
-  height: 110vh;
   scrollbar-color: var(--sl-color-accent) var(--sl-color-gray-4);
 }
 
