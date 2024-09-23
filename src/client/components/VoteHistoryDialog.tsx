@@ -23,7 +23,7 @@ function VoteHistoryDialog({openDialog, setOpenDialog}: VoteHistoryDialogProps) 
     position: "sticky",
     top: 0,
     zIndex: 1,
-    background: "white"
+    background: "var(--sl-color-gray-5)",
   }
 
   function handleChange(_: React.SyntheticEvent<Element, Event>, newValue: number) {
