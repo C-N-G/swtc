@@ -17,3 +17,9 @@ export enum OpenCharacterDialog {
   LoadScenario,
   VoteHistory,
 }
+
+export enum OpenChatTab {
+  Chat,
+  Log,
+  Debug,
+}

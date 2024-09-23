@@ -6,6 +6,7 @@ import { PlayerOrderItem } from "./nightOrders.ts";
 import { MouseEvent } from "react";
 import { SessionData } from "../../server/serverTypes.ts";
 import Scenario from "../classes/scenario.ts";
+import ChatMessage from "../classes/chatMessage.ts";
 
 export interface CurrentSession {
   id: string | null;
@@ -145,6 +146,12 @@ export interface NightOrderSlice {
   removeAllCompletedOrders: () => void;
 }
 
+export interface ChatSlice {
+  chat: ChatMessage[];
+  log: ChatMessage[];
+  addChatMessage: (msg: ChatMessage, id: string) => void;
+}
+
 export type CombinedSlice = 
   SessionSlice 
   & UserIdSlice
@@ -154,4 +161,5 @@ export type CombinedSlice =
   & PurgedOrdersSlice
   & VotesSlice
   & TimersSlice
-  & NightOrderSlice;
+  & NightOrderSlice
+  & ChatSlice;

@@ -9,6 +9,7 @@ import { createSessionSlice } from "../helpers/storeSession.ts";
 import { createTimersSlice } from "../helpers/storeTimers.ts";
 import { createNightOrderSlice } from "../helpers/storeNightOrders.ts";
 import { CombinedSlice } from "../helpers/storeTypes.ts";
+import { createChatSlice } from "../helpers/storeChat.ts";
 
 const useStore = create<CombinedSlice>()((...a) => ({
 
@@ -21,6 +22,7 @@ const useStore = create<CombinedSlice>()((...a) => ({
   ...createSessionSlice(...a),
   ...createTimersSlice(...a),
   ...createNightOrderSlice(...a),
+  ...createChatSlice(...a),
 
 }))
 
