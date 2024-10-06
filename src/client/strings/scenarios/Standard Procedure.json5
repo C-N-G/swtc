@@ -2,10 +2,10 @@
   "name": "Standard Procedure",
   "flavour": "“Attention, following the death of Agent Johnson the compound is now on high alert. The standard procedures for such a situation are now in effect until the culprit is found and eliminated.”",
   "roles": [
+    "Analyst",
     "Assistant",
     "Bodyguard",
     "Clairvoyant",
-    "Cook",
     "Coordinator",
     "Investigator",
     "Psychologist",
@@ -39,9 +39,9 @@
     "Methodical",
     "Meticulous",
     "Obnoxious",
-    "Observant",
     "Perceptive",
     "Persevering",
+    "Shrewd",
     "Trustworthy"
   ]
 }

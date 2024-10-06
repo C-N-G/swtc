@@ -1,0 +1,13 @@
+{
+  "name": "Shrewd",
+  "flavour": "Placeholder Flavour",
+  "ability": "Once per game, during the night, you may choose a player: you learn if the Narrator thinks that player's team is winning.\n",
+  "orderType": "char_with_recurring_info",
+  "reminders": [
+    [
+      "🤔",
+      "#FFFF00",
+      "Shrewd: Chose this player."
+    ]
+  ]
+}

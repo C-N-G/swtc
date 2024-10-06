@@ -1,7 +1,7 @@
 {
   "name": "Obnoxious",
   "flavour": "Placeholder Flavour",
-  "ability": "The first person (not yourself) to choose you with their ability becomes malfunctioning.\n",
+  "ability": "The first player (not yourself) to choose you with their ability during the night is malfunctioning until the day.\n",
   "reminders": [
     [
       "💩",

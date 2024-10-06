@@ -3,7 +3,7 @@
   "team": "Loyalist",
   "type": "Agent",
   "flavour": "Placeholder Flavour",
-  "ability": "Each night, you learn a player who is malfunctioning or that no one is malfunctioning.\n",
+  "ability": "Each night, you learn how many living players are malfunctioning or confused.\n",
   "orderType": "role_with_recurring_info",
   "attributes": [
     "Human"
