@@ -149,7 +149,7 @@ export interface NightOrderSlice {
 export interface ChatSlice {
   chat: ChatMessage[];
   log: ChatMessage[];
-  addChatMessage: (msg: ChatMessage, id: string) => void;
+  addChatMessage: (msg: ChatMessage, chatId: string) => void;
 }
 
 export type CombinedSlice = 

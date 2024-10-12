@@ -2,6 +2,7 @@ import { DisconnectReason } from "socket.io";
 import Player from "../client/classes/player.ts";
 import { Phase, PlayerVoteItem } from "../client/helpers/storeTypes.ts";
 import Scenario from "../client/classes/scenario.ts";
+import ChatMessage from "../client/classes/chatMessage.ts";
 
 export interface TimerData {
   name: string;
@@ -48,6 +49,7 @@ export interface ServerToClientEvents {
   attribute: (data: PlayerAttributeData) => void;
   vote: (data: PlayerVoteData) => void;
   scenario: (data: Scenario[]) => void;
+  chat: (msg: ChatMessage, chatId: string) => void;
   timer: (data: TimerData) => void;
   left: (playerId: string) => void;
 }
@@ -59,6 +61,7 @@ export interface ClientToServerEvents {
   attribute: (data: PlayerAttributeData) => void;
   vote: (data: PlayerVoteData) => void;
   scenario: (data: Scenario[]) => void;
+  chat: (msg: ChatMessage, chatId: string, callback: CallbackFn) => void;
   sync: (data: {players: Player[], scenarios: Scenario[]}, callback: CallbackFn) => void;
   disconnect: (reason: DisconnectReason, details: {message: string, description: string, context: string}) => void;
   leave: () => void;

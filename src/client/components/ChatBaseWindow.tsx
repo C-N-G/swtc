@@ -1,8 +1,8 @@
 import {Box, List, ListItem, ListItemText, Stack, Typography} from '@mui/material';
-import { useEffect, useRef } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import ChatMessage from '../classes/chatMessage';
 
-function ChatBaseWindow({chatHistory}: {chatHistory: ChatMessage[]}) {
+const ChatBaseWindow = memo(function ChatBaseWindow({chatHistory}: {chatHistory: ChatMessage[]}) {
   
   const chatRef = useRef<HTMLDivElement>(null);
 
@@ -47,6 +47,6 @@ function ChatBaseWindow({chatHistory}: {chatHistory: ChatMessage[]}) {
       })}
     </List>
   </Box>
-}
+})
 
 export default ChatBaseWindow

@@ -10,11 +10,12 @@ export const createChatSlice: StateCreator<
   chat: [],
   log: [],
 
-  addChatMessage: (msg, id) => set(state => {
-    let chatToSend: keyof CombinedSlice;
-    if (id.toLowerCase() === "chat") chatToSend = "chat";
-    else if (id.toLowerCase() === "log") chatToSend = "log";
+  addChatMessage: (msg, chatId) => set(state => {
+    let chatToSend: keyof ChatSlice;
+    if (chatId.toLowerCase() === "chat") chatToSend = "chat";
+    else if (chatId.toLowerCase() === "log") chatToSend = "log";
     else chatToSend = "chat";
+    msg.timeStamp = new Date(msg.timeStamp);
     return {[chatToSend]: [...state[chatToSend], msg]}
   }),
 })

@@ -23,6 +23,7 @@ const config = {
     [5,2,5], // 14
     [4,3,5], // 15
     [5,3,5], // 16
-  ]
+  ],
+  max_chat_message_length: 250,
 }
 export default config;

@@ -14,6 +14,7 @@ import useStore from "./hooks/useStore.ts";
 import "./App.css"
 import { PlayerAttributeData, PlayerVoteData, SessionData, SocketCallbackResponse, TimerData } from "../server/serverTypes.ts";
 import Scenario from "./classes/scenario.ts";
+import ChatMessage from "./classes/chatMessage.ts";
 
 const darkTheme = createTheme({
   palette: {
@@ -73,6 +74,8 @@ function App() {
   const setTimer = useStore(state => state.setTimer);
   const startTimer = useStore(state => state.startTimer);
   const stopTimer = useStore(state => state.stopTimer);
+
+  const addChatMessage = useStore(state => state.addChatMessage);
 
   const user = useStore(state => state.getUser()); // the users player object
 
@@ -195,6 +198,10 @@ function App() {
       
     }
 
+    function onChat(msg: ChatMessage, chatId: string) {
+      addChatMessage(msg, chatId);
+    }
+
     function onSync(session: SessionData, userId: string | null | undefined) {
 
       if (userId !== undefined) {
@@ -226,6 +233,7 @@ function App() {
     socket.on("scenario", onScenario);
     socket.on("vote", onVote);
     socket.on("timer", onTimer);
+    socket.on("chat", onChat);
     socket.on("sync", onSync);
     socket.on("joined", onJoined);
     socket.on("left", onLeft);
@@ -239,6 +247,7 @@ function App() {
       socket.off("scenario", onScenario);
       socket.off("vote", onVote);
       socket.off("timer", onTimer);
+      socket.off("chat", onChat);
       socket.off("sync", onSync);
       socket.off("joined", onJoined);
       socket.off("left", onLeft);
@@ -247,7 +256,7 @@ function App() {
   }, [handlePlayerDataChange, setPlayers, syncPlayers, addPlayer, removePlayer, 
     nextPhase, setUserId, displayVote, resetSession, setScenarios, syncSession, 
     setVoting, resetUserVotes, addVoteToList, setAccuser, setNominated, setVotes, 
-    startTimer, stopTimer, setTimer, user]);
+    startTimer, stopTimer, setTimer, addChatMessage, user]);
 
   return (
     <ThemeProvider theme={darkTheme}>

@@ -5,6 +5,7 @@ import { Phase } from "../client/helpers/storeTypes.ts";
 import Player from "../client/classes/player.ts";
 import { CallbackFn, ClientToServerEvents, PlayerVoteData, ServerToClientEvents, SessionData, TimerData } from "./serverTypes.ts";
 import Scenario from "../client/classes/scenario.ts";
+import ChatMessage from "../client/classes/chatMessage.ts";
 
 
 const sessionManager = new SessionManager();
@@ -199,6 +200,22 @@ export default function swtcSocketServer(
 
   }
 
+  function onChat(msg: ChatMessage, chatId: string, callback: CallbackFn) {
+
+    if (connectedSessionId === null) return;
+    const session = sessionManager.getSession(connectedSessionId);
+    if (!session) return callback({status: "error", error: "no session found"});
+
+    if (msg.value.length > config.max_chat_message_length) {
+      log("error forwarding chat message: mesage too long");
+      return callback({status: "error", error: "message too long"});
+    }
+
+    server.to(connectedSessionId).emit("chat", msg, chatId);
+    callback({status: "ok"});
+
+  }
+
   function onSync(data: {players: Player[], scenarios: Scenario[]}, callback: CallbackFn) {
 
     log("syncing client state to server");
@@ -222,7 +239,7 @@ export default function swtcSocketServer(
     socket.to(connectedSessionId).emit("sync", returnData); // won't send to sender
     log("synced state successfully");
     callback({status: "ok"});
-
+    
   }
 
   function onDisconnect(reason: DisconnectReason, details: {message: string, description: string, context: string}) {
@@ -326,6 +343,7 @@ export default function swtcSocketServer(
   socket.on("disconnect", onDisconnect);
   socket.on("leave", onLeave);
   socket.on("timer", onTimer);
+  socket.on("chat", onChat);
   socket.on("resume", onResumeTest);
 
 }
