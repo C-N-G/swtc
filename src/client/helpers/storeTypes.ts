@@ -146,9 +146,14 @@ export interface NightOrderSlice {
   removeAllCompletedOrders: () => void;
 }
 
+interface ChatGroup {
+  id: string;
+  messages: ChatMessage[];
+  members: string[];
+}
+
 export interface ChatSlice {
-  chat: ChatMessage[];
-  log: ChatMessage[];
+  chats: { [id: string]: ChatGroup };
   addChatMessage: (msg: ChatMessage, chatId: string) => void;
 }
 

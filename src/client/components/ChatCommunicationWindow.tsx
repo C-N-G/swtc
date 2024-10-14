@@ -11,7 +11,7 @@ import { socket } from "../helpers/socket";
 function ChatCommunicationWindow({openTab}: {openTab: OpenChatTab}) {
 
   const [messageValue, setMessageValue] = useState("");
-  const chatHistory = useStore(state => state.chat);
+  const chatHistory = useStore(state => state.chats["global"].messages);
   // const addChatMessage = useStore(state => state.addChatMessage);
   const sessionId = useStore(state => state.session.id);
   const user = useContext(UserContext);
@@ -25,7 +25,7 @@ function ChatCommunicationWindow({openTab}: {openTab: OpenChatTab}) {
       "sent",
     )
     if (messageExists && messageIsShortEnough) {
-      socket.timeout(5000).emit("chat", newChatMessage, "chat", (error, response) => {
+      socket.timeout(5000).emit("chat", newChatMessage, "global", (error, response) => {
         if (error) return console.log("Chat Error: server timeout");
         if (response?.error) return console.log("Chat Error:", response.error);
       })

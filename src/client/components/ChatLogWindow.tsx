@@ -5,7 +5,7 @@ import useStore from "../hooks/useStore";
 
 function ChatLogWindow({openTab}: {openTab: OpenChatTab}) {
   
-  const chatHistory = useStore(state => state.log);
+  const chatHistory = useStore(state => state.chats["log"].messages);
 
   return <Box sx={{
     flexGrow: "1", 
