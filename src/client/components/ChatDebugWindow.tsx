@@ -46,13 +46,13 @@ function ChatDebugWindow({openTab}: {openTab: OpenChatTab}) {
         <Box>
           <Button size="small" variant="contained" onClick={() => {
             pushPlayer()
-            addChatMessage(new ChatMessage("Player Added", "System", "test"), "log")
+            addChatMessage(new ChatMessage("Player Added", "System", "sent"), "log")
             }}>
             +1
           </Button>
           <Button size="small" variant="contained" onClick={() => {
             popPlayer()
-            addChatMessage(new ChatMessage("Player Removed", "System", "test"), "log")
+            addChatMessage(new ChatMessage("Player Removed", "System", "sent"), "log")
             }}>
             -1
           </Button>
