@@ -1,7 +1,7 @@
 import Player from "../client/classes/player.ts";
 import Scenario from "../client/classes/scenario.ts";
 import { Phase, PlayerVoteItem } from "../client/helpers/storeTypes.ts";
-import { SessionData, TimerData } from "./serverTypes.ts";
+import { ChatServerData, SessionData, TimerData } from "./serverTypes.ts";
 
 
 export default class Session {
@@ -16,6 +16,7 @@ export default class Session {
         private phase: Phase = {cycle: "Night", round: 1},
         private scenarios: Scenario[] = [],
         private timers: {[id: string]: TimerData} = {},
+        private chats: {[id: string]: ChatServerData} = {},
         public disconnectTimers: {[id: string]: NodeJS.Timeout} = {}
     ) {
 
@@ -132,6 +133,39 @@ export default class Session {
 
     }
 
+    getChatMembers(id: string): string[] {
+
+      return this.chats[id].members;
+
+    }
+
+    createNewChat(id: string): void {
+
+      this.chats[id] = {
+        id: id,
+        members: [],
+      };
+
+    }
+
+    removeChat(id: string): void {
+
+      delete this.chats[id];
+
+    }
+
+    addMemberToChat(memberId: string, chatId: string): void {
+
+      this.chats[chatId].members.push(memberId);
+
+    }
+
+    removeMemberFromChat(memberId: string, chatId: string): void{
+
+      this.chats[chatId].members = this.chats[chatId].members.filter(m => m !== memberId);
+
+    }
+
     getData(): SessionData {
 
         return {
@@ -144,7 +178,8 @@ export default class Session {
                 voting: this.isVoting },
             phase: this.phase,
             scenarios: this.scenarios,
-            timers: this.timers
+            timers: this.timers,
+            chats: this.chats,
         }
 
     }

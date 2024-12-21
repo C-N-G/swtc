@@ -12,9 +12,8 @@ import { socket } from "./helpers/socket.ts";
 
 import useStore from "./hooks/useStore.ts";
 import "./App.css"
-import { PlayerAttributeData, PlayerVoteData, SessionData, SocketCallbackResponse, TimerData } from "../server/serverTypes.ts";
+import { ChatActionData, PlayerAttributeData, PlayerVoteData, SessionData, SocketCallbackResponse, TimerData } from "../server/serverTypes.ts";
 import Scenario from "./classes/scenario.ts";
-import ChatMessage from "./classes/chatMessage.ts";
 
 const darkTheme = createTheme({
   palette: {
@@ -76,6 +75,11 @@ function App() {
   const stopTimer = useStore(state => state.stopTimer);
 
   const addChatMessage = useStore(state => state.addChatMessage);
+  const createNewChat = useStore(state => state.createNewChat);
+  const removeChat = useStore(state => state.removeChat);
+  const addMemberToChat = useStore(state => state.addMemberToChat);
+  const removeMemberFromChat = useStore(state => state.removeMemberFromChat);
+  const syncChats = useStore(state => state.syncChats);
 
   const user = useStore(state => state.getUser()); // the users player object
 
@@ -198,8 +202,29 @@ function App() {
       
     }
 
-    function onChat(msg: ChatMessage, chatId: string) {
-      addChatMessage(msg, chatId);
+    function onChat(data: ChatActionData) {
+      switch (data.action) {
+        case "addChatMessage":
+          if (data.message) addChatMessage(data.message, data.chatId);
+          else throw new Error("error adding empty message");
+          break;
+        case "createNewChat":
+          if (data.members && data.members.length >= 2) createNewChat(data.chatId, data.members);
+          else throw new Error("error creating chat with not enough members ")
+          break;
+        case "removeChat":
+          removeChat(data.chatId);
+          break;
+        case "addMemberToChat":
+          if (data.memberId) addMemberToChat(data.chatId, data.memberId);
+          break;
+        case "removeMemberFromChat":
+          if (data.memberId) removeMemberFromChat(data.chatId, data.memberId)
+          break;
+        default:
+          break;
+      }
+      
     }
 
     function onSync(session: SessionData, userId: string | null | undefined) {
@@ -215,6 +240,7 @@ function App() {
       if (session.phase !== undefined) nextPhase(session.phase);
       if (session.votes !== undefined) setVotes(session.votes);
       if (session.timers !== undefined) for (const timerData in session.timers) onTimer(session.timers[timerData]);
+      if (session.chats !== undefined) syncChats(session.chats);
 
     }
 
@@ -256,7 +282,8 @@ function App() {
   }, [handlePlayerDataChange, setPlayers, syncPlayers, addPlayer, removePlayer, 
     nextPhase, setUserId, displayVote, resetSession, setScenarios, syncSession, 
     setVoting, resetUserVotes, addVoteToList, setAccuser, setNominated, setVotes, 
-    startTimer, stopTimer, setTimer, addChatMessage, user]);
+    startTimer, stopTimer, setTimer, addChatMessage, user, createNewChat, 
+    removeChat, addMemberToChat, removeMemberFromChat, syncChats]);
 
   return (
     <ThemeProvider theme={darkTheme}>

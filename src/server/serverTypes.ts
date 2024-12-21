@@ -22,6 +22,7 @@ export interface SessionData {
     phase: Phase;
     scenarios: Scenario[];
     timers: {[id: string]: TimerData};
+    chats: {[id: string]: ChatServerData};
 }
 
 export type CallbackFn = (res: SocketCallbackResponse) => void;
@@ -42,6 +43,19 @@ export interface PlayerVoteData {
   onlyPlayer?: boolean;
 }
 
+export interface ChatActionData {
+  action: string;
+  chatId: string;
+  memberId?: string;
+  members?: string[];
+  message?: ChatMessage;
+}
+
+export interface ChatServerData {
+  id: string;
+  members: string[];
+}
+
 export interface ServerToClientEvents {
   sync: (session: SessionData, userId?: string | null) => void;
   joined: (player: Player) => void;
@@ -49,7 +63,7 @@ export interface ServerToClientEvents {
   attribute: (data: PlayerAttributeData) => void;
   vote: (data: PlayerVoteData) => void;
   scenario: (data: Scenario[]) => void;
-  chat: (msg: ChatMessage, chatId: string) => void;
+  chat: (data: ChatActionData) => void;
   timer: (data: TimerData) => void;
   left: (playerId: string) => void;
 }
@@ -61,7 +75,7 @@ export interface ClientToServerEvents {
   attribute: (data: PlayerAttributeData) => void;
   vote: (data: PlayerVoteData) => void;
   scenario: (data: Scenario[]) => void;
-  chat: (msg: ChatMessage, chatId: string, callback: CallbackFn) => void;
+  chat: (data: ChatActionData, callback: CallbackFn) => void;
   sync: (data: {players: Player[], scenarios: Scenario[]}, callback: CallbackFn) => void;
   disconnect: (reason: DisconnectReason, details: {message: string, description: string, context: string}) => void;
   leave: () => void;

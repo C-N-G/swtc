@@ -3,9 +3,8 @@ import config from "../appConfig.ts";
 import { DisconnectReason, Namespace, Socket } from "socket.io";
 import { Phase } from "../client/helpers/storeTypes.ts";
 import Player from "../client/classes/player.ts";
-import { CallbackFn, ClientToServerEvents, PlayerVoteData, ServerToClientEvents, SessionData, TimerData } from "./serverTypes.ts";
+import { CallbackFn, ChatActionData, ClientToServerEvents, PlayerVoteData, ServerToClientEvents, SessionData, TimerData } from "./serverTypes.ts";
 import Scenario from "../client/classes/scenario.ts";
-import ChatMessage from "../client/classes/chatMessage.ts";
 
 
 const sessionManager = new SessionManager();
@@ -200,18 +199,18 @@ export default function swtcSocketServer(
 
   }
 
-  function onChat(msg: ChatMessage, chatId: string, callback: CallbackFn) {
+  function onChat(data: ChatActionData, callback: CallbackFn) {
 
     if (connectedSessionId === null) return;
     const session = sessionManager.getSession(connectedSessionId);
     if (!session) return callback({status: "error", error: "no session found"});
 
-    if (msg.value.length > config.max_chat_message_length) {
+    if (data.message && data.message.value.length > config.max_chat_message_length) {
       log("error forwarding chat message: mesage too long");
       return callback({status: "error", error: "message too long"});
     }
-
-    server.to(connectedSessionId).emit("chat", msg, chatId);
+      
+    server.to(connectedSessionId).emit("chat", data);
     callback({status: "ok"});
 
   }

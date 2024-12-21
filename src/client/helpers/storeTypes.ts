@@ -4,7 +4,7 @@ import Char from "../classes/char.ts";
 import Role from "../classes/role.ts";
 import { PlayerOrderItem } from "./nightOrders.ts";
 import { MouseEvent } from "react";
-import { SessionData } from "../../server/serverTypes.ts";
+import { ChatServerData, SessionData } from "../../server/serverTypes.ts";
 import Scenario from "../classes/scenario.ts";
 import ChatMessage from "../classes/chatMessage.ts";
 
@@ -146,7 +146,7 @@ export interface NightOrderSlice {
   removeAllCompletedOrders: () => void;
 }
 
-interface ChatGroup {
+export interface ChatGroup {
   id: string;
   messages: ChatMessage[];
   members: string[];
@@ -155,6 +155,11 @@ interface ChatGroup {
 export interface ChatSlice {
   chats: { [id: string]: ChatGroup };
   addChatMessage: (msg: ChatMessage, chatId: string) => void;
+  createNewChat: (chatId: string, members?: string[]) => void;
+  removeChat: (chatId: string) => void;
+  addMemberToChat: (chatId: string, memberId: string) => void;
+  removeMemberFromChat: (chatId: string, memberId: string) => void;
+  syncChats: (chatData: {[id: string]: ChatServerData}) => void;
 }
 
 export type CombinedSlice = 
