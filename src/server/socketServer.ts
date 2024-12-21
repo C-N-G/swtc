@@ -96,6 +96,13 @@ export default function swtcSocketServer(
     // nomral join
     const player = sessionManager.joinSession(sessionId, playerId, name, pronouns);
     playerName = name;
+    const narrator = session.players.find(player => player.type === 0);
+    if (narrator) {
+      const newChatId = `${playerName.toLowerCase()}-${narrator.name.toLowerCase()}`;
+      session.createNewChat(newChatId);
+      session.addMemberToChat(newChatId, narrator.id);
+      session.addMemberToChat(newChatId, player.id);
+    }
     socket.join(sessionId);
     connectedSessionId = sessionId;
     socket.to(sessionId).emit("joined", player);
@@ -328,7 +335,6 @@ export default function swtcSocketServer(
     socket.emit("sync", {...blankSession.getData(), id: null}, null);
     if (blankSession.id === null) return;
     sessionManager.removeSession(blankSession.id);
-
 
   }
 

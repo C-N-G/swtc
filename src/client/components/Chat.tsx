@@ -3,14 +3,23 @@ import { useState } from 'react';
 import { OpenChatTab } from '../helpers/enumTypes.ts';
 import ChatDebugWindow from './ChatDebugWindow.tsx';
 import ChatCommWindow from './ChatCommWindow.tsx';
+import useStore from '../hooks/useStore.ts';
 
 function Chat() {
 
   const [openTab, setOpenTab] = useState<OpenChatTab>(OpenChatTab.Global);
-
-  const [privateChannels, setPrivateChannels] = useState([]);
+  const currentPrivateChatId = useStore(state => state.currentPrivateChatId);
 
   // add private talking channels for players to view and use
+  // add button in top right of private chat window to select from list of possible group chats
+  // add quick helpers for narrator to open specific group chats
+  /**
+   * DONE when a player joins, a channel is made between them and the narrator
+   * TODO when a player leaves or dcs the channels are cleaned up
+   * DONE players get that private chat set as their open current private chat
+   * TODO there should be a selector in the private chat to be able to select different chat channels you are a part of
+   * TODO narrator needs a button in the player details view which will set that chat to their private chat
+   */
 
   function handleTabChange(_: unknown, newValue: number) {
     setOpenTab(newValue);
@@ -49,7 +58,7 @@ function Chat() {
         </Tabs>
       </Box>
       <ChatCommWindow openTab={openTab} thisTabId={OpenChatTab.Global} enableInput={true} chatId="global" />
-      {privateChannels.length > 0 && <ChatCommWindow openTab={openTab} thisTabId={OpenChatTab.Private} enableInput={true} chatId="global" />}
+      <ChatCommWindow openTab={openTab} thisTabId={OpenChatTab.Private} enableInput={true} chatId={currentPrivateChatId} />
       <ChatCommWindow openTab={openTab} thisTabId={OpenChatTab.Log} enableInput={false} chatId="log" />
       <ChatDebugWindow openTab={openTab}/>
     </Card>

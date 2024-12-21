@@ -19,6 +19,7 @@ export const createChatSlice: StateCreator<
       members: [],
     }
   },
+  currentPrivateChatId: "",
 
   addChatMessage: (msg, chatId) => set(state => {
     let chatToSend: keyof ChatSlice["chats"];
@@ -73,8 +74,27 @@ export const createChatSlice: StateCreator<
     for (const key in chatData) {
       (chatData[key] as ChatGroup).messages = [];
     }
+    const narrator = state.players.find(player => player.type === 0);
+    const player = state.getUser();
     const newData: {[id: string]: ChatGroup} = chatData as {[id: string]: ChatGroup};
+    console.log("syncing chats")
+    if (player && narrator && player.type === 1) {
+      console.log("syncing chats player and narrator exist")
+      console.log("checking chats", Object.keys(chatData))
+      const chatIdToSet = `${player.name.toLowerCase()}-${narrator.name.toLowerCase()}`;
+      if (Object.keys(chatData).includes(chatIdToSet)){
+        console.log("syncing chats chatId exists too")
+        return {
+          chats: {...state.chats, ...newData},
+          currentPrivateChatId: chatIdToSet,
+        };
+      }
+    }
     return {chats: {...state.chats, ...newData}};
+  }),
+
+  setCurrentPrivateChat: (chatId) => set(() => {
+    return {currentPrivateChatId: chatId};
   }),
 
 })

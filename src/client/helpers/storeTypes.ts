@@ -154,12 +154,14 @@ export interface ChatGroup {
 
 export interface ChatSlice {
   chats: { [id: string]: ChatGroup };
+  currentPrivateChatId: string;
   addChatMessage: (msg: ChatMessage, chatId: string) => void;
   createNewChat: (chatId: string, members?: string[]) => void;
   removeChat: (chatId: string) => void;
   addMemberToChat: (chatId: string, memberId: string) => void;
   removeMemberFromChat: (chatId: string, memberId: string) => void;
   syncChats: (chatData: {[id: string]: ChatServerData}) => void;
+  setCurrentPrivateChat: (chatId: string) => void;
 }
 
 export type CombinedSlice = 

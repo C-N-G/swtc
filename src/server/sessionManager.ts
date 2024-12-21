@@ -34,6 +34,7 @@ export default class SessionManager {
 
         const session = this.sessions[sessionId];
         return session.addPlayer(playerId, playerName, playerPronouns);
+        
 
     }
 

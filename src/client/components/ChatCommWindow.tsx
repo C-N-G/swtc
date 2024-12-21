@@ -17,6 +17,13 @@ interface ChatTextWindowProps {
 
 function ChatCommWindow({openTab, thisTabId, enableInput, chatId}: ChatTextWindowProps) {
 
+  const chats = useStore(state => state.chats);
+  let doNotRender = false;
+  if (Object.keys(chats).includes(chatId) === false) {
+    chatId = "global"
+    doNotRender = true;
+  }
+
   const [messageValue, setMessageValue] = useState("");
   const chatHistory = useStore(state => state.chats[chatId].messages);
   // const addChatMessage = useStore(state => state.addChatMessage);
@@ -34,7 +41,7 @@ function ChatCommWindow({openTab, thisTabId, enableInput, chatId}: ChatTextWindo
     const data = {
       action: "addChatMessage",
       message: newChatMessage,
-      chatId: "global"
+      chatId: chatId,
     }
     if (messageExists && messageIsShortEnough) {
       socket.timeout(5000).emit("chat", data, (error, response) => {
@@ -45,6 +52,8 @@ function ChatCommWindow({openTab, thisTabId, enableInput, chatId}: ChatTextWindo
     }
     setMessageValue("");
   }
+
+  if (doNotRender) return;
 
   return <Box sx={{
     flexGrow: "1", 

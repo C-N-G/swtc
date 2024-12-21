@@ -154,13 +154,13 @@ export default class Session {
 
     }
 
-    addMemberToChat(memberId: string, chatId: string): void {
+    addMemberToChat(chatId: string, memberId: string): void {
 
       this.chats[chatId].members.push(memberId);
 
     }
 
-    removeMemberFromChat(memberId: string, chatId: string): void{
+    removeMemberFromChat(chatId: string, memberId: string): void{
 
       this.chats[chatId].members = this.chats[chatId].members.filter(m => m !== memberId);
 
