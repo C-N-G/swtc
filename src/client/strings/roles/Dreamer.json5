@@ -1,0 +1,12 @@
+{
+  "name": "Dreamer",
+  "team": "Loyalist",
+  "type": "Agent",
+  "flavour": "Placeholder Flavour",
+  "ability": "Each night, you learn two statements, only one of which is true.\n",
+  "orderType": "role_with_recurring_info",
+  "attributes": [
+    "Human",
+    "Psychic"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "Necromancer",
+  "team": "Subversive",
+  "type": "Antagonist",
+  "flavour": "Spirits gather round me, hearken to my call; I chain you to these bones, one, many, or all!",
+  "ability": "Each night, after the first, you may choose a dead player: they learn they were chosen by the Necromancer and they join your team.\n",
+  "orderType": "role_converts_others",
+  "attributes": [
+    "Human",
+    "Psychic"
+  ],
+  "reminders": [
+    [
+      "🩻",
+      "#FF0000",
+      "Necromancer: Chose this player."
+    ]
+  ]
+}

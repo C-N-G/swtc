@@ -1,0 +1,25 @@
+{
+  "name": "Vessel",
+  "team": "Subversive",
+  "type": "Antagonist",
+  "flavour": "For I am merely a ship to sail, a cup to drink out of, a vessel for a higher power.",
+  "ability": "Each night, after the first, you must choose a player: that player dies. The first time this game that a Vessel is killed by their own ability, a player of their choice becomes a Vessel on their team.\n",
+  "orderType": "role_converts_others_or_kills",
+  "attributes": [
+    "Human",
+    "Psychic",
+    "Spirit"
+  ],
+  "reminders": [
+    [
+      "👻",
+      "#FF0000",
+      "Vessel: Chose this player."
+    ],
+    [
+      "👻",
+      "#FF0000",
+      "Vessel: Became the Vessel."
+    ]
+  ]
+}

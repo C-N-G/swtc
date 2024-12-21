@@ -1,0 +1,18 @@
+{
+  "name": "Medic",
+  "team": "Loyalist",
+  "type": "Agent",
+  "flavour": "Placeholder Flavour",
+  "ability": "Once per game, during the night, if any players have died tonight, you learn who, and may choose one to resurrect.\n",
+  "orderType": "role_resurrects_others",
+  "attributes": [
+    "Human"
+  ],
+  "reminders": [
+    [
+      "🚑",
+      "#0000FF",
+      "Medic: Chose this player."
+    ]
+  ]
+}

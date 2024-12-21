@@ -1,0 +1,18 @@
+{
+  "name": "Mortician",
+  "team": "Loyalist",
+  "type": "Agent",
+  "flavour": "Placeholder Flavour",
+  "ability": "Each night, after the first, you learn if the player who most recently died from dismissal was Human.\n",
+  "orderType": "role_with_late_info",
+  "attributes": [
+    "Human"
+  ],
+  "reminders": [
+    [
+      "⚰️",
+      "#0000FF",
+      "Mortician: Learnt if this player was Human."
+    ]
+  ]
+}

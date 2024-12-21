@@ -1,0 +1,12 @@
+{
+  "name": "Prideful",
+  "flavour": "Placeholder Flavour",
+  "ability": "You can't die during the night. If you are obsessed about being Prideful you lose this ability.\n",
+  "reminders": [
+    [
+      "😏",
+      "#FFFF00",
+      "Prideful: Lost their ability."
+    ]
+  ]
+}

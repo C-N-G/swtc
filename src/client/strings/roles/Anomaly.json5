@@ -1,0 +1,19 @@
+{
+  "name": "Anomaly",
+  "team": "Unknown",
+  "type": "Detrimental",
+  "flavour": "weWEwe wereWEREwere alwaysALWAYSalways hereHEREhere.",
+  "ability": "Each night, you must choose a player (not yourself): you join their opposing team. You do not know which team you are on.\n",
+  "orderType": "role_converts_self",
+  "attributes": [
+    "Psychic",
+    "Spirit"
+  ],
+  "reminders": [
+    [
+      "🌀",
+      "#702963",
+      "Anomaly: Chose this player."
+    ]
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "Honest",
+  "flavour": "Placeholder Flavour",
+  "ability": "If you are obsessed about being Honest, a different player will learn your characteristic each night, until there is no one left.\n",
+  "orderType": "char_with_recurring_info",
+  "reminders": [
+    [
+      "🫂",
+      "#FFFF00",
+      "Honest: This player learnt who was Honest."
+    ]
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Postcog",
+  "team": "Loyalist",
+  "type": "Agent",
+  "flavour": "Placeholder Flavour",
+  "ability": "Each night, the Narrator asks you a question, you learn if you answered correctly.\n",
+  "orderType": "role_with_recurring_info",
+  "attributes": [
+    "Human",
+    "Psychic"
+  ]
+}

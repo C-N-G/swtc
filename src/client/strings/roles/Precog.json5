@@ -1,0 +1,12 @@
+{
+  "name": "Precog",
+  "team": "Loyalist",
+  "type": "Agent",
+  "flavour": "Placeholder Flavour",
+  "ability": "You start knowing the answer to a single yes or no question of your choice.\n",
+  "orderType": "role_with_starting_info",
+  "attributes": [
+    "Human",
+    "Psychic"
+  ]
+}
