@@ -8,10 +8,17 @@ import { UserContext } from "../App";
 import config from "../../appConfig";
 import { socket } from "../helpers/socket";
 
-function ChatCommunicationWindow({openTab}: {openTab: OpenChatTab}) {
+interface ChatTextWindowProps {
+  openTab: OpenChatTab;
+  thisTabId: OpenChatTab;
+  enableInput: boolean;
+  chatId: string;
+}
+
+function ChatCommWindow({openTab, thisTabId, enableInput, chatId}: ChatTextWindowProps) {
 
   const [messageValue, setMessageValue] = useState("");
-  const chatHistory = useStore(state => state.chats["global"].messages);
+  const chatHistory = useStore(state => state.chats[chatId].messages);
   // const addChatMessage = useStore(state => state.addChatMessage);
   const sessionId = useStore(state => state.session.id);
   const user = useContext(UserContext);
@@ -24,11 +31,16 @@ function ChatCommunicationWindow({openTab}: {openTab: OpenChatTab}) {
       user ? user.name : "unknown",
       "sent",
     )
+    const data = {
+      action: "addChatMessage",
+      message: newChatMessage,
+      chatId: "global"
+    }
     if (messageExists && messageIsShortEnough) {
-      socket.timeout(5000).emit("chat", newChatMessage, "global", (error, response) => {
+      socket.timeout(5000).emit("chat", data, (error, response) => {
         if (error) return console.log("Chat Error: server timeout");
         if (response?.error) return console.log("Chat Error:", response.error);
-      })
+      });
       // addChatMessage(newChatMessage, "chat");
     }
     setMessageValue("");
@@ -37,12 +49,12 @@ function ChatCommunicationWindow({openTab}: {openTab: OpenChatTab}) {
   return <Box sx={{
     flexGrow: "1", 
     position: "relative", 
-    display: openTab !== OpenChatTab.Chat ? "none" : "flex", 
+    display: openTab !== thisTabId ? "none" : "flex", 
     flexDirection: "column",
     height: "calc(100% - 30px)"
   }}>
     <ChatBaseWindow chatHistory={chatHistory} />
-    <TextField 
+    {enableInput && <TextField 
       sx={{borderTop: "2px solid var(--sl-color-accent)"}}
       variant="standard"
       size="small"
@@ -52,8 +64,8 @@ function ChatCommunicationWindow({openTab}: {openTab: OpenChatTab}) {
       value={messageValue}
       onChange={(e) => setMessageValue(e.target.value)}
       onKeyDown={(e) => e.key === "Enter" ? handleSend() : false}
-    />
+    /> }
   </Box>
 }
 
-export default ChatCommunicationWindow;
+export default ChatCommWindow;

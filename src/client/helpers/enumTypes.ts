@@ -19,7 +19,8 @@ export enum OpenCharacterDialog {
 }
 
 export enum OpenChatTab {
-  Chat,
+  Global,
+  Private,
   Log,
   Debug,
 }

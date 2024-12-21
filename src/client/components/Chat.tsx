@@ -2,12 +2,15 @@ import {Box, Card, Tab, Tabs} from '@mui/material';
 import { useState } from 'react';
 import { OpenChatTab } from '../helpers/enumTypes.ts';
 import ChatDebugWindow from './ChatDebugWindow.tsx';
-import ChatCommunicationWindow from './ChatCommunicationWindow.tsx';
-import ChatLogWindow from './ChatLogWindow.tsx';
+import ChatCommWindow from './ChatCommWindow.tsx';
 
 function Chat() {
 
-  const [openTab, setOpenTab] = useState<OpenChatTab>(OpenChatTab.Chat);
+  const [openTab, setOpenTab] = useState<OpenChatTab>(OpenChatTab.Global);
+
+  const [privateChannels, setPrivateChannels] = useState([]);
+
+  // add private talking channels for players to view and use
 
   function handleTabChange(_: unknown, newValue: number) {
     setOpenTab(newValue);
@@ -39,13 +42,15 @@ function Chat() {
     }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs sx={TABS_TYLE} value={openTab} onChange={handleTabChange} variant={"fullWidth"}>
-          <Tab sx={TAB_STYLE} label="Chat" />
+          <Tab sx={TAB_STYLE} label="Global" />
+          <Tab sx={TAB_STYLE} label="Private" />
           <Tab sx={TAB_STYLE} label="Log" />
           <Tab sx={TAB_STYLE} label="Debug" />
         </Tabs>
       </Box>
-      <ChatCommunicationWindow openTab={openTab} />
-      <ChatLogWindow openTab={openTab}/>
+      <ChatCommWindow openTab={openTab} thisTabId={OpenChatTab.Global} enableInput={true} chatId="global" />
+      {privateChannels.length > 0 && <ChatCommWindow openTab={openTab} thisTabId={OpenChatTab.Private} enableInput={true} chatId="global" />}
+      <ChatCommWindow openTab={openTab} thisTabId={OpenChatTab.Log} enableInput={false} chatId="log" />
       <ChatDebugWindow openTab={openTab}/>
     </Card>
   );
