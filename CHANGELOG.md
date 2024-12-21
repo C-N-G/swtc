@@ -1,4 +1,12 @@
-### xx/xx/xxxx v0.6.2
+### 15/10/2024 v0.6.3
+- added initial chat functinoality
+  - added global chat accessable for all users
+  - added event log also accessable for all users
+    - currently only logs adding and removing players with the debug menu
+  - added support for different chat channels
+---
+
+### 20/09/2024 v0.6.2
 - added pronouns
   - added optional pronouns selection to the join window
   - pronouns will be shown below the player name on the player indicator for both players and narrators
