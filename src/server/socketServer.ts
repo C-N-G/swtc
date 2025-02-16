@@ -98,10 +98,19 @@ export default function swtcSocketServer(
     playerName = name;
     const narrator = session.players.find(player => player.type === 0);
     if (narrator) {
-      const newChatId = `${playerName.toLowerCase()}-${narrator.name.toLowerCase()}`;
+      const newChatId = `${player.id}_${narrator.id}`;
       session.createNewChat(newChatId);
       session.addMemberToChat(newChatId, narrator.id);
       session.addMemberToChat(newChatId, player.id);
+      const chatAction = {
+        action: "createNewChat",
+        chatId: newChatId,
+        members: [
+          player.id,
+          narrator.id
+        ]
+      };
+      socket.to(narrator.id).emit("chat", chatAction);
     }
     socket.join(sessionId);
     connectedSessionId = sessionId;

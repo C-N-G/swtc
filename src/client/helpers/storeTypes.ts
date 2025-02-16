@@ -7,6 +7,7 @@ import { MouseEvent } from "react";
 import { ChatServerData, SessionData } from "../../server/serverTypes.ts";
 import Scenario from "../classes/scenario.ts";
 import ChatMessage from "../classes/chatMessage.ts";
+import { OpenChatTab } from "./enumTypes.ts";
 
 export interface CurrentSession {
   id: string | null;
@@ -150,11 +151,13 @@ export interface ChatGroup {
   id: string;
   messages: ChatMessage[];
   members: string[];
+  unread: boolean;
 }
 
 export interface ChatSlice {
   chats: { [id: string]: ChatGroup };
   currentPrivateChatId: string;
+  openChatTab: OpenChatTab;
   addChatMessage: (msg: ChatMessage, chatId: string) => void;
   createNewChat: (chatId: string, members?: string[]) => void;
   removeChat: (chatId: string) => void;
@@ -162,6 +165,8 @@ export interface ChatSlice {
   removeMemberFromChat: (chatId: string, memberId: string) => void;
   syncChats: (chatData: {[id: string]: ChatServerData}) => void;
   setCurrentPrivateChat: (chatId: string) => void;
+  setChatAsRead: (chatId: string) => void;
+  setOpenChatTab: (tab: OpenChatTab) => void;
 }
 
 export type CombinedSlice = 
