@@ -1,4 +1,4 @@
-import {useState, useMemo} from "react";
+import {useState, useMemo, useContext} from "react";
 import {Card, Stack, MenuItem, SelectChangeEvent} from "@mui/material";
 import PlayerIndicator from "./PlayerIndicator.tsx";
 import DynamicWindow from "./DynamicWindow.tsx";
@@ -13,6 +13,8 @@ import config from "../../appConfig.ts";
 import { OpenBoardDialog as OpenDialog } from "../helpers/enumTypes.ts";
 import ViewPlayerDialog from "./ViewPlayerDialog.tsx";
 import DismissalDialog from "./DismissalDialog.tsx";
+import { UserContext } from "../App.tsx";
+import { isNarrator } from "../helpers/util.ts";
 
 function Board() {
 
@@ -45,6 +47,10 @@ function Board() {
   const setNominated = useStore(state => state.setNominated);
   const addVotesToHistory = useStore(state => state.addVotesToHistory);
 
+  const setCurrentPrivateChat = useStore(state => state.setCurrentPrivateChat);
+
+  const user = useContext(UserContext);
+
   function createIndicator(player: Player, index: number, vertical: boolean) {
 
     return <PlayerIndicator key={index} 
@@ -69,6 +75,11 @@ function Board() {
     } else {
       displayDetails();
       selectPlayer(targetId);
+    }
+
+    if (user && isNarrator(user)) {
+      const chatId = `${targetId}_${user.id}`;
+      setCurrentPrivateChat(chatId);
     }
 
   }
