@@ -1,5 +1,5 @@
 import {Box, Card, Tab, Tabs} from '@mui/material';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { OpenChatTab } from '../helpers/enumTypes.ts';
 import ChatDebugWindow from './ChatDebugWindow.tsx';
 import ChatCommWindow from './ChatCommWindow.tsx';
