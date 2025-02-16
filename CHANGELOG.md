@@ -1,3 +1,8 @@
+### 00/00/00 v0.6.4
+- added private chat selection for narrator based on player indicator selecting
+- added unread chat notifications
+---
+
 ### 15/10/2024 v0.6.3
 - added initial chat functinoality
   - added global chat accessable for all users
