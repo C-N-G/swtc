@@ -40,13 +40,13 @@ function Chat() {
   // make it so whoever the narrator selected last is the selected private chat
   /**
    * DONE when a player joins, a channel is made between them and the narrator
-   * TODO when a player leaves or dcs the channels are cleaned up
+   * DONE make narrator text notifications appear next to player indicators
    * DONE players get that private chat set as their open current private chat
-   * TODO there should be a selector in the private chat to be able to select different chat channels you are a part of
-   * TODO narrator needs a button in the player details view which will set that chat to their private chat
    * 
+   * TODO when a player leaves or dcs the channels are cleaned up
    * TODO add logging
-   * TODO make narrator text notifications appear next to player indicators
+   * TODO for the narrator put the player name as the chat tab text
+   * TODO make chat creation happen on message arrival for the narrator
    */
 
   function handleTabChange(_: unknown, newValue: number) {

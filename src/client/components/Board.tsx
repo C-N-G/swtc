@@ -10,7 +10,7 @@ import useCountDown from "../hooks/useCountDown.ts";
 import useStore from "../hooks/useStore.ts";
 import Player from "../classes/player.ts";
 import config from "../../appConfig.ts";
-import { OpenBoardDialog as OpenDialog } from "../helpers/enumTypes.ts";
+import { OpenChatTab, OpenBoardDialog as OpenDialog } from "../helpers/enumTypes.ts";
 import ViewPlayerDialog from "./ViewPlayerDialog.tsx";
 import DismissalDialog from "./DismissalDialog.tsx";
 import { UserContext } from "../App.tsx";
@@ -48,6 +48,9 @@ function Board() {
   const addVotesToHistory = useStore(state => state.addVotesToHistory);
 
   const setCurrentPrivateChat = useStore(state => state.setCurrentPrivateChat);
+  const openChatTab = useStore(state => state.openChatTab);
+  const setChatAsRead = useStore(state => state.setChatAsRead);
+  const getPrivateNarratorChatId = useStore(state => state.getPrivateNarratorChatId);
 
   const user = useContext(UserContext);
 
@@ -78,8 +81,9 @@ function Board() {
     }
 
     if (user && isNarrator(user)) {
-      const chatId = `${targetId}_${user.id}`;
+      const chatId = getPrivateNarratorChatId(targetId);
       setCurrentPrivateChat(chatId);
+      if (openChatTab === OpenChatTab.Private) setChatAsRead(chatId);
     }
 
   }
