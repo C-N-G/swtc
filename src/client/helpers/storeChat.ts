@@ -8,7 +8,7 @@ export const createChatSlice: StateCreator<
   [],
   [],
   ChatSlice
-> = (set) => ({
+> = (set, get) => ({
   chats: {
     "global": {
       id: "global",
@@ -27,24 +27,38 @@ export const createChatSlice: StateCreator<
   openChatTab: OpenChatTab.Global,
 
   addChatMessage: (msg, chatId) => set(state => {
-    let chatToSend: keyof ChatSlice["chats"];
-    if (Object.keys(state.chats).includes(chatId)) chatToSend = chatId;
-    else chatToSend = "global";
+    chatId = chatId.toLowerCase();
+    if (!Object.keys(state.chats).includes(chatId)) return {};
+    const chatToSend: keyof ChatSlice["chats"] = chatId;
     msg.timeStamp = new Date(msg.timeStamp);
-    const makeUnread = 
-      chatToSend === "global" && state.openChatTab === OpenChatTab.Global ||
-      chatToSend === "log" && state.openChatTab === OpenChatTab.Log ||
-      chatToSend !== "global" && chatToSend !== "log" && !isNarrator(state.getUser()) && state.openChatTab === OpenChatTab.Private
+    const isGlobalOpenAndTarget = chatToSend === "global" && state.openChatTab === OpenChatTab.Global;
+    const isLogOpenAndTarget = chatToSend === "log" && state.openChatTab === OpenChatTab.Log;
+    const isPrivate = chatToSend !== "global" && chatToSend !== "log";
+    const isPlayerPrivateOpenAndTarget = 
+      isPrivate &&
+      !isNarrator(state.getUser()) && 
+      state.openChatTab === OpenChatTab.Private;
+    const isNarratorPrivateOpenAndTarget =
+      isPrivate &&
+      isNarrator(state.getUser()) && 
+      state.openChatTab === OpenChatTab.Private;
+      state.currentPrivateChatId === chatId;
+    const isRead = 
+      isGlobalOpenAndTarget || 
+      isLogOpenAndTarget || 
+      isPlayerPrivateOpenAndTarget || 
+      isNarratorPrivateOpenAndTarget;
     return {chats: {
       ...state.chats, [chatToSend]: {
         ...state.chats[chatToSend], 
         messages: [...state.chats[chatToSend].messages, msg],
-        unread: !makeUnread
+        unread: !isRead
       }
     }}
   }),
 
   createNewChat: (chatId, members) => set(state => {
+    chatId = chatId.toLowerCase();
     const newChat: ChatGroup = {
       id: chatId,
       messages: [],
@@ -58,6 +72,7 @@ export const createChatSlice: StateCreator<
   }),
 
   removeChat: (chatId) => set(state => {
+    chatId = chatId.toLowerCase();
     if (Object.keys(state.chats).includes(chatId) === false) {
       throw new Error("could not find chat to delete");
     }
@@ -66,6 +81,7 @@ export const createChatSlice: StateCreator<
   }),
 
   addMemberToChat: (chatId, memberId) => set(state => {
+    chatId = chatId.toLowerCase();
     if (Object.keys(state.chats).includes(chatId) === false) {
       throw new Error("could not find chat to add member to");
     }
@@ -76,6 +92,7 @@ export const createChatSlice: StateCreator<
   }),
 
   removeMemberFromChat: (chatId, memberId) => set(state => {
+    chatId = chatId.toLowerCase();
     if (Object.keys(state.chats).includes(chatId) === false) {
       throw new Error("could not find chat to remove member from");
     }
@@ -94,7 +111,7 @@ export const createChatSlice: StateCreator<
     const player = state.getUser();
     const newData: {[id: string]: ChatGroup} = chatData as {[id: string]: ChatGroup};
     if (player && narrator && player.type === 1) {
-      const chatIdToSet = `${player.id}_${narrator.id}`;
+      const chatIdToSet = `${player.name.toLowerCase()}_${narrator.name.toLowerCase()}`;
       if (Object.keys(chatData).includes(chatIdToSet)){
         return {
           chats: {...state.chats, ...newData},
@@ -106,6 +123,7 @@ export const createChatSlice: StateCreator<
   }),
 
   setCurrentPrivateChat: (chatId) => set(state => {
+    chatId = chatId.toLowerCase();
     const chatIdExists = Object.hasOwn(state.chats, chatId);
     if (chatIdExists) {
       return {currentPrivateChatId: chatId};
@@ -115,9 +133,9 @@ export const createChatSlice: StateCreator<
   }),
 
   setChatAsRead: (chatId) => set(state => {
-    let chatToUpdate: keyof ChatSlice["chats"];
-    if (Object.keys(state.chats).includes(chatId)) chatToUpdate = chatId;
-    else throw new Error(`could not find chat to update: ${chatId}`);
+    chatId = chatId.toLowerCase();
+    if (!Object.keys(state.chats).includes(chatId)) return {}
+    const chatToUpdate: keyof ChatSlice["chats"] = chatId;
     return {chats: {
       ...state.chats,
       [chatToUpdate]: {
@@ -129,6 +147,12 @@ export const createChatSlice: StateCreator<
 
   setOpenChatTab: (tab: OpenChatTab) => set(() => {
     return {openChatTab: tab};
-  })
+  }),
+
+  getPrivateNarratorChatId: (playerId: string) => {
+    const player = get().players.find(player => player.id === playerId);
+    const narrator = get().players.find(player => player.id === get().userId);
+    return `${player?.name.toLowerCase()}_${narrator?.name.toLowerCase()}`;
+  }
 
 })
