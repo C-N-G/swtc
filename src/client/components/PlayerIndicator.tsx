@@ -10,6 +10,7 @@ import Char from "../classes/char.ts";
 import Role from "../classes/role.ts";
 import { DisplaySlice } from "../helpers/storeTypes.ts";
 import NightOrderIndicator from "./NightOrderIndicator.tsx";
+import useStore from "../hooks/useStore.ts";
 
 
 
@@ -24,7 +25,7 @@ const PlayerIndicator = memo(function PlayerIndicator(props: PlayerIndicatorProp
   const getUserTypeCheckedComponent = () => {
 
     if (user?.type === 0) {
-      return <NarratorPlayerIndicator {...props}/>
+      return <NarratorPlayerIndicator {...props} />
     } else if (user?.type === 1) {
       return <RegularPlayerIndicator {...props} />
     } else {
@@ -186,6 +187,9 @@ interface NarratorPlayerIndicator {
 
 function NarratorPlayerIndicator({player, handleClick, vertical, chars, roles, selected}: NarratorPlayerIndicator) {
 
+  const chats = useStore(state => state.chats);
+  const getPrivateNarratorChatId = useStore(state => state.getPrivateNarratorChatId);
+
   const {isOver, setNodeRef} = useDroppable({
     id: "droppable-|-" + player.id
   });
@@ -214,6 +218,34 @@ function NarratorPlayerIndicator({player, handleClick, vertical, chars, roles, s
     )
   }
 
+  const chatId = getPrivateNarratorChatId(player?.id);
+  const isUnread = chats[chatId]?.unread;
+
+  const unreadNotification = (
+  <Box
+    sx={{
+      background: "var(--sl-color-accent)",
+      p: 0.1,
+      border: "var(--sl-color-gray-5) solid 1px",
+      borderRadius: 1,
+      boxSizing: "border-box",
+      fontFamily: "monospace",
+      fontWeight: 800,
+      fontSize: "1rem",
+      height: "1.4rem",
+      aspectRatio: "1/1",
+      userSelect: "none",
+      textAlign: "center",
+      position: "absolute",
+      bottom: "2px",
+      right: "2px",
+      zIndex: 1
+    }}
+  >
+    ?
+  </Box>
+  )
+
   return (
     <Box sx={BUTTON_CONTAINER_STYLE(vertical)}>
       <Stack spacing={{xs: 0.4}} sx={{
@@ -238,6 +270,7 @@ function NarratorPlayerIndicator({player, handleClick, vertical, chars, roles, s
       }}>
         {player.nightOrders.map(nightOrder => (<NightOrderIndicator key={nightOrder.id} nightOrder={nightOrder}/>))}
       </Stack>
+      {isUnread && unreadNotification}
       <Button 
         variant="contained" 
         onClick={() => {handleClick(player.id)}} 
