@@ -118,6 +118,8 @@ export const createPhaseSlice: StateCreator<
       newRound = state.phase.round + 1;
     }
 
+    get().addLogMessage(`Entering ${newCycle} ${newRound}`);
+
     if (typeof newCycle === "undefined" || typeof newRound === "undefined") {
       throw new Error("error progressing phase, new phase was not defined");
     }

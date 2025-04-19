@@ -44,10 +44,10 @@ function Chat() {
    * DONE make narrator text notifications appear next to player indicators
    * DONE players get that private chat set as their open current private chat
    * DONE for the narrator put the player name as the chat tab text
+   * DONE add logging
    * 
-   * TODO add logging
    * TODO when a player leaves or dcs the channels are cleaned up
-   * TODO make chat creation happen on message arrival for the narrator
+   * TODO make chat creation happen on message arrival for the narrator ? Why tho?
    */
 
   function handleTabChange(_: unknown, newValue: number) {

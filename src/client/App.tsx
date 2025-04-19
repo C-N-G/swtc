@@ -50,6 +50,7 @@ function App() {
   const syncPlayers = useStore(state => state.syncPlayers);
   const addPlayer = useStore(state => state.addPlayer);
   const removePlayer = useStore(state => state.removePlayer);
+  const getPlayer = useStore(state => state.getPlayer);
 
   const addPlayerReminders = useStore(state => state.addPlayerReminders);
   const handleDragEnd = (event: DragEndEvent) => addPlayerReminders(event);
@@ -80,6 +81,7 @@ function App() {
   const addMemberToChat = useStore(state => state.addMemberToChat);
   const removeMemberFromChat = useStore(state => state.removeMemberFromChat);
   const syncChats = useStore(state => state.syncChats);
+  const addLogMessage = useStore(state => state.addLogMessage);
 
   const user = useStore(state => state.getUser()); // the users player object
 
@@ -157,6 +159,10 @@ function App() {
 
     function onAttribute(data: PlayerAttributeData) {
       handlePlayerDataChange(data.targetId, data.targetProperty, data.targetValue, true);
+      if (data.targetProperty === "rState" && data.targetValue === 0) {
+        const player = getPlayer(data.targetId);
+        addLogMessage(`${player?.name} was found dead`);
+      }
     }
 
     function onScenario(data: Scenario[]) {
@@ -185,6 +191,16 @@ function App() {
       
       if (Object.hasOwn(data, "nominatedPlayer") && data.nominatedPlayer !== undefined){
         setNominated(data.nominatedPlayer);
+      }
+
+      if (data.voting && data.accusingPlayer && data.nominatedPlayer) {
+        const accuser = getPlayer(data.accusingPlayer);
+        const nominated = getPlayer(data.nominatedPlayer);
+        addLogMessage(`${accuser?.name} has nominated ${nominated?.name} for dismissal`);
+      }
+
+      if (data.voting === false) {
+        addLogMessage(`Dismissal has ended`);
       }
       
     }
@@ -246,10 +262,12 @@ function App() {
 
     function onJoined(player: Player) {
       addPlayer(player);
+      addLogMessage(`${player.name} joined`);
     }
 
-    function onLeft(playerId: string) {
+    function onLeft(playerId: string, playerName: string) {
       removePlayer(playerId);
+      addLogMessage(`${playerName} left`);
     }
 
     socket.on("connect", onConnect);
@@ -283,7 +301,8 @@ function App() {
     nextPhase, setUserId, displayVote, resetSession, setScenarios, syncSession, 
     setVoting, resetUserVotes, addVoteToList, setAccuser, setNominated, setVotes, 
     startTimer, stopTimer, setTimer, addChatMessage, user, createNewChat, 
-    removeChat, addMemberToChat, removeMemberFromChat, syncChats]);
+    removeChat, addMemberToChat, removeMemberFromChat, syncChats, addLogMessage, 
+    getPlayer]);
 
   return (
     <ThemeProvider theme={darkTheme}>

@@ -2,6 +2,7 @@ import { StateCreator } from "zustand";
 import { CombinedSlice, ChatSlice, ChatGroup } from "./storeTypes.ts";
 import { OpenChatTab } from "./enumTypes.ts";
 import { isNarrator } from "./util.ts";
+import ChatMessage from "../classes/chatMessage.ts";
 
 export const createChatSlice: StateCreator<
   CombinedSlice,
@@ -56,6 +57,11 @@ export const createChatSlice: StateCreator<
       }
     }}
   }),
+
+  addLogMessage: (msg) => {
+    console.log("adding message", msg);
+    get().addChatMessage(new ChatMessage(msg, "System", "sent"), "log");
+  },
 
   createNewChat: (chatId, members) => set(state => {
     chatId = chatId.toLowerCase();

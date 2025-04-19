@@ -65,7 +65,7 @@ export interface ServerToClientEvents {
   scenario: (data: Scenario[]) => void;
   chat: (data: ChatActionData) => void;
   timer: (data: TimerData) => void;
-  left: (playerId: string) => void;
+  left: (playerId: string, playerName: string) => void;
 }
 
 export interface ClientToServerEvents {

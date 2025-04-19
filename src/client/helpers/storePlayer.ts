@@ -201,4 +201,8 @@ export const createPlayerSlice: StateCreator<
     const players = get().players;
     return players.filter(player => player.type === 1);
   },
+
+  getPlayer: (playerId: string) => {
+    return get().players.find(player => player.id === playerId);
+  }
 })

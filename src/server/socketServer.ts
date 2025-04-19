@@ -309,7 +309,7 @@ export default function swtcSocketServer(
         // remove player after timer
         sessionManager.leaveSession(connectedSessionId, playerId);
         if (sessionManager.sessionExists(connectedSessionId)) {
-          server.to(connectedSessionId).emit("left", playerId);
+          server.to(connectedSessionId).emit("left", playerId, playerName ?? "Player");
         }
         delete session.disconnectTimers[player.name];
         log(`removed from session ${connectedSessionId}`);
@@ -334,7 +334,7 @@ export default function swtcSocketServer(
     socket.leave(connectedSessionId);
 
     // tell the players in the left session player has left
-    server.to(connectedSessionId).emit("left", playerId);
+    server.to(connectedSessionId).emit("left", playerId, playerName ?? "Player");
     log(`left session ${connectedSessionId}`);
     connectedSessionId = null;
     playerName = undefined;

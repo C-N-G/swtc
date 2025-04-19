@@ -63,6 +63,7 @@ export interface PlayerSlice {
   popPlayer: () => void;
   getUser: () => Player | null;
   getDrawPlayers: () => Player[];
+  getPlayer: (playerId: string) => Player | undefined;
 }
 
 export interface PurgedOrdersSlice {
@@ -159,6 +160,7 @@ export interface ChatSlice {
   currentPrivateChatId: string;
   openChatTab: OpenChatTab;
   addChatMessage: (msg: ChatMessage, chatId: string) => void;
+  addLogMessage: (msg: string) => void;
   createNewChat: (chatId: string, members?: string[]) => void;
   removeChat: (chatId: string) => void;
   addMemberToChat: (chatId: string, memberId: string) => void;
