@@ -1,6 +1,9 @@
-### 00/00/00 v0.6.4
-- added private chat selection for narrator based on player indicator selecting
-- added unread chat notifications
+### 19/04/2025 v0.6.4
+- added player chat selection for narrator based on player indicator selecting
+- added unread chat notifications on the player indicators for the narrator
+- added event logging for various game events
+- added narrator chat tab for the player to communicate with the narrator
+- added automatic narrator chat opening when a new message is received
 ---
 
 ### 15/10/2024 v0.6.3
