@@ -33,6 +33,7 @@ function Chat() {
   const setChatAsRead = useStore(state => state.setChatAsRead);
   const openChatTab = useStore(state => state.openChatTab);
   const setOpenChatTab = useStore(state => state.setOpenChatTab);
+  const getOtherChatUser = useStore(state => state.getOtherChatUser);
 
   // add private talking channels for players to view and use
   // add button in top right of private chat window to select from list of possible group chats
@@ -42,10 +43,10 @@ function Chat() {
    * DONE when a player joins, a channel is made between them and the narrator
    * DONE make narrator text notifications appear next to player indicators
    * DONE players get that private chat set as their open current private chat
+   * DONE for the narrator put the player name as the chat tab text
    * 
-   * TODO when a player leaves or dcs the channels are cleaned up
    * TODO add logging
-   * TODO for the narrator put the player name as the chat tab text
+   * TODO when a player leaves or dcs the channels are cleaned up
    * TODO make chat creation happen on message arrival for the narrator
    */
 
@@ -67,7 +68,17 @@ function Chat() {
     return isUnread ? UNREAD_STYLE : {};
   }
 
-  const privateLabel = isNarrator(user) ? "Player" : "Narrator";
+  let privateLabel;
+  if (isNarrator(user)) {
+    if (!currentPrivateChatId) {
+      privateLabel = "Player"
+    } else {
+      const otherChatUser = getOtherChatUser(currentPrivateChatId);
+      privateLabel = otherChatUser.label || otherChatUser.name || "Unknown";
+    }
+  } else {
+    privateLabel = "Narrator"
+  }
 
   return (
     <Card sx={{

@@ -168,6 +168,7 @@ export interface ChatSlice {
   setChatAsRead: (chatId: string) => void;
   setOpenChatTab: (tab: OpenChatTab) => void;
   getPrivateNarratorChatId: (playerId: string) => string;
+  getOtherChatUser: (chatId: string) => Player;
 }
 
 export type CombinedSlice = 

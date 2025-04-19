@@ -153,6 +153,15 @@ export const createChatSlice: StateCreator<
     const player = get().players.find(player => player.id === playerId);
     const narrator = get().players.find(player => player.id === get().userId);
     return `${player?.name.toLowerCase()}_${narrator?.name.toLowerCase()}`;
+  },
+
+  getOtherChatUser: (chatId: string) => {
+    const chat = get().chats[chatId];
+    const otherChatIds = chat.members.filter(id => get().userId !== id);
+    if (otherChatIds.length > 1) throw new Error("too many other chat uesrs to get");
+    const otherPlayer = get().players.find(player => player.id === otherChatIds[0]);
+    if (!otherPlayer) throw new Error("could not find other chat user in players");
+    return otherPlayer;
   }
 
 })
