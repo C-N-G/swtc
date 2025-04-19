@@ -35,31 +35,37 @@ export const createChatSlice: StateCreator<
     const isGlobalOpenAndTarget = chatToSend === "global" && state.openChatTab === OpenChatTab.Global;
     const isLogOpenAndTarget = chatToSend === "log" && state.openChatTab === OpenChatTab.Log;
     const isPrivate = chatToSend !== "global" && chatToSend !== "log";
+    const isPlayer = !isNarrator(state.getUser());
+    const pivateChatIsNotOpen = state.openChatTab !== OpenChatTab.Private;
     const isPlayerPrivateOpenAndTarget = 
       isPrivate &&
-      !isNarrator(state.getUser()) && 
+      isPlayer && 
       state.openChatTab === OpenChatTab.Private;
     const isNarratorPrivateOpenAndTarget =
       isPrivate &&
-      isNarrator(state.getUser()) && 
+      !isPlayer && 
       state.openChatTab === OpenChatTab.Private;
       state.currentPrivateChatId === chatId;
+    const shouldOpenNarratorChat = isPlayer && isPrivate && pivateChatIsNotOpen;
     const isRead = 
       isGlobalOpenAndTarget || 
       isLogOpenAndTarget || 
       isPlayerPrivateOpenAndTarget || 
-      isNarratorPrivateOpenAndTarget;
-    return {chats: {
+      isNarratorPrivateOpenAndTarget || 
+      shouldOpenNarratorChat;
+    return {
+      chats: {
       ...state.chats, [chatToSend]: {
         ...state.chats[chatToSend], 
         messages: [...state.chats[chatToSend].messages, msg],
         unread: !isRead
-      }
-    }}
+        }
+      },
+      openChatTab: shouldOpenNarratorChat ? OpenChatTab.Private : state.openChatTab
+    }
   }),
 
   addLogMessage: (msg) => {
-    console.log("adding message", msg);
     get().addChatMessage(new ChatMessage(msg, "System", "sent"), "log");
   },
 
