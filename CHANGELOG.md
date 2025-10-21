@@ -1,3 +1,7 @@
+### xxx/xx/xxxx v0.6.5
+- added team property loading from game role data
+---
+
 ### 19/04/2025 v0.6.4
 - added player chat selection for narrator based on player indicator selecting
 - added unread chat notifications on the player indicators for the narrator

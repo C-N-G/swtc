@@ -16,10 +16,6 @@ export interface OperatingPlayer {
   keepSame: boolean
 }
 
-interface TeamConverter {
-  [team: string]: string;
-}
-
 export interface DebugOrderItem {
   index: number;
   role: string;
@@ -107,12 +103,6 @@ export default function randomise(playerArray: Player[], charArray: Char[], role
 }
 
 export class Randomiser {
-
-  TYPE_TO_TEAM: TeamConverter = {
-    "Agent": "Loyalist",
-    "Detrimental": "Loyalist",
-    "Antagonist": "Subversive"
-  }
 
   debug: boolean;
   debugOrder: DebugOrderItem[] | undefined;
@@ -248,8 +238,8 @@ export class Randomiser {
       // randomise player
       aPlayer.playerObj.char = aPlayer.playerObj.rChar = this.getRandomIndex(this.charArray, this.takenSets.chars);
       aPlayer.playerObj.role = aPlayer.playerObj.rRole = this.getRandomIndex(this.roleArray, this.takenSets.roles, this.getTargetRoles());
-      const playerRoleType = this.roleArray[aPlayer.playerObj.role].type as keyof TeamConverter
-      aPlayer.playerObj.team = aPlayer.playerObj.rTeam = GameData.teams.indexOf(this.TYPE_TO_TEAM[playerRoleType]);
+      const playerRoleTeam = this.roleArray[aPlayer.playerObj.role].team;
+      aPlayer.playerObj.team = aPlayer.playerObj.rTeam = GameData.teams.indexOf(playerRoleTeam);
 
     }
 
@@ -503,7 +493,7 @@ export class Randomiser {
     aPlayer.strict = command === "AddStrict" ? true : false;
 
     if (command === "Convert") convert(aPlayer, setupCommandParams);
-    else aPlayer.playerObj.team = GameData.teams.indexOf(this.TYPE_TO_TEAM[this.roleArray[aPlayer.playerObj.role].type]);
+    else aPlayer.playerObj.team = GameData.teams.indexOf(this.roleArray[aPlayer.playerObj.role].team);
 
     if (!aPlayer.keepSame) {
       aPlayer.playerObj.rChar = aPlayer.playerObj.char;
@@ -837,7 +827,7 @@ export class Randomiser {
         let searchAppears = false;
         if (aPlayer) {
           // check if role has an appears which matches this team
-          const appearsForThisTeam = this.TYPE_TO_TEAM[this.roleArray[aPlayer.playerObj.role].type] === role.appears.for;
+          const appearsForThisTeam = this.roleArray[aPlayer.playerObj.role].team === role.appears.for;
           // check if the appears matches the target
           const roleAppearsMatchesTarget = role.appears.asType === target || role.appears.asTeam === target;
           // only check appears if command is neighbour
@@ -845,7 +835,7 @@ export class Randomiser {
         }
         return role.name === target // target name
         || role.type === target // target type
-        || this.TYPE_TO_TEAM[role.type] === target //target team
+        || role.team === target //target team
         || role.attributes.includes(target) // target attribute
         || searchAppears // target 
       })

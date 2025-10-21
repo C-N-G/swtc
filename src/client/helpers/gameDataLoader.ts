@@ -74,6 +74,7 @@ export default function gameDataLoader(load_obj: GameDataStore, files: RawImport
         eleId,
         roleData.name,
         roleData.type,
+        roleData.team,
         roleData.flavour,
         roleData.ability,
         roleData.orderType,

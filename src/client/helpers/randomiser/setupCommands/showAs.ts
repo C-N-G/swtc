@@ -24,6 +24,6 @@ export default function showAs(aPlayer: OperatingPlayer, params: SetupCommandPar
   }
 
   // change player team to the role they appear as
-  aPlayer.playerObj.rTeam = GameData.teams.indexOf(randomiser.TYPE_TO_TEAM[randomiser.roleArray[aPlayer.playerObj.rRole].type]);
+  aPlayer.playerObj.rTeam = GameData.teams.indexOf(randomiser.roleArray[aPlayer.playerObj.rRole].team);
 
 }
