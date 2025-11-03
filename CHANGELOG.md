@@ -1,5 +1,6 @@
 ### xxx/xx/xxxx v0.6.5
 - added team property loading from game role data
+- added support for "Either" team property on roles
 ---
 
 ### 19/04/2025 v0.6.4

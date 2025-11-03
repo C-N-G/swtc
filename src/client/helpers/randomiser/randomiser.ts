@@ -238,7 +238,11 @@ export class Randomiser {
       // randomise player
       aPlayer.playerObj.char = aPlayer.playerObj.rChar = this.getRandomIndex(this.charArray, this.takenSets.chars);
       aPlayer.playerObj.role = aPlayer.playerObj.rRole = this.getRandomIndex(this.roleArray, this.takenSets.roles, this.getTargetRoles());
-      const playerRoleTeam = this.roleArray[aPlayer.playerObj.role].team;
+      let playerRoleTeam = this.roleArray[aPlayer.playerObj.role].team;
+      if (playerRoleTeam === "Either") {
+        const fiftyFifty = Math.random() > 0.5;
+        playerRoleTeam = fiftyFifty ? "Loyalist" : "Subversive";
+      }
       aPlayer.playerObj.team = aPlayer.playerObj.rTeam = GameData.teams.indexOf(playerRoleTeam);
 
     }
