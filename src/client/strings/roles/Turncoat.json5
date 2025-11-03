@@ -2,7 +2,7 @@
   "name": "Turncoat",
   "team": "Either",
   "type": "Detrimental",
-  "flavour": "Placeholder Flavour",
+  "flavour": "Which way? This way, or that way? I say, whichever way the wind blows.",
   "ability": "Each night, after the first, you change team.\n",
   "orderType": "role_converts_self",
   "attributes": [

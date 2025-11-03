@@ -3,7 +3,7 @@
   "team": "Loyalist",
   "type": "Detrimental",
   "flavour": "Give them some truth.",
-  "ability": "Each night, the Antagonists learn an Agent player and their role, until there are no more left to learn.\n",
+  "ability": "Each night, an Antagonist learns an Agent player and their role, until there are no more left to learn.\n",
   "orderType": "role_with_recurring_info",
   "attributes": [
     "Human"

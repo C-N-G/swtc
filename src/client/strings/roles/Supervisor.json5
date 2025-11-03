@@ -1,0 +1,10 @@
+{
+  "name": "Supervisor",
+  "team": "Loyalist",
+  "type": "Agent",
+  "flavour": "I'm your boss, you idiots!",
+  "ability": "On your first day, your role is announced to all players.\n",
+  "attributes": [
+    "Human"
+  ]
+}

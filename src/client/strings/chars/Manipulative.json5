@@ -1,0 +1,12 @@
+{
+  "name": "Manipulative",
+  "flavour": "Placeholder Flavour",
+  "ability": "If you are dismissed as the result of a nomination, the player who nominated you is dismissed instead.\n",
+  "reminders": [
+    [
+      "🐍",
+      "#FFFF00",
+      "Manipulative: Has used their ability."
+    ]
+  ]
+}

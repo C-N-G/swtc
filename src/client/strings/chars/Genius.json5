@@ -1,0 +1,18 @@
+{
+  "name": "Genius",
+  "flavour": "Placeholder Flavour",
+  "ability": "Each night, you learn a role or characteristic (not yourself) that is in play, until there are no more left to learn.\n",
+  "orderType": "char_with_recurring_info",
+  "reminders": [
+    [
+      "🧠",
+      "#FFFF00",
+      "Genius: Learnt this player's role is in play."
+    ],
+    [
+      "🧠",
+      "#FFFF00",
+      "Genius: Learnt this player's characteristic is in play."
+    ]
+  ]
+}

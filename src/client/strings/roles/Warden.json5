@@ -2,8 +2,8 @@
   "name": "Warden",
   "team": "Loyalist",
   "type": "Agent",
-  "flavour": "Placeholder Flavour",
-  "ability": "Each night, you must choose a player: if you choose the Prisoner, they become an Agent role of their choice.\n",
+  "flavour": "There you are! Desperate times call for desperate measures. Grab a gun and let's go!",
+  "ability": "Each night, you must choose a player: if you choose the Prisoner, they learn this and become an Agent role of their choice.\n",
   "orderType": "role_converts_others",
   "attributes": [
     "Human"

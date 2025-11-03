@@ -1,7 +1,7 @@
 {
   "name": "Empathetic",
   "flavour": "Placeholder Flavour",
-  "ability": "You start knowing how many players (not yourself) are Psychic.\n",
+  "ability": "On your first night, you learn how many players (not yourself) are Psychic.\n",
   "orderType": "char_with_starting_info",
   "attributes": [
     "Psychic"

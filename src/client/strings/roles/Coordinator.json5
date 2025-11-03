@@ -3,7 +3,7 @@
   "team": "Loyalist",
   "type": "Agent",
   "flavour": "Listen, I know your family just got eaten, but can you please explain why you’re underperforming in all key metrics?",
-  "ability": "You start knowing that 1 of 3 players is a specific Detrimental role or that 0 are in-play.\n",
+  "ability": "On your first night, you learn that 1 of 3 players is a specific Detrimental role or that 0 are in-play.\n",
   "orderType": "role_with_starting_info",
   "attributes": [
     "Human"

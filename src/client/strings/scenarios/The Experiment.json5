@@ -1,6 +1,9 @@
 {
   "name": "The Experiment",
   "flavour": "“What the-”",
+  "location": [
+    "The Catacombs - Compound 3"
+  ],
   "roles": [
     "Clairvoyant",
     "Coordinator",

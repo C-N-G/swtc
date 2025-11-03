@@ -1,0 +1,13 @@
+{
+  "name": "Reflective",
+  "flavour": "Placeholder Flavour",
+  "ability": "Each night, after the first, you learn the team of a player who voted on you during the previous day.\n",
+  "orderType": "char_with_recurring_info",
+  "reminders": [
+    [
+      "🪞",
+      "#FFFF00",
+      "Reflective: Learnt this player's team."
+    ]
+  ]
+}

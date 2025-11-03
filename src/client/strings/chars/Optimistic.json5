@@ -1,0 +1,12 @@
+{
+  "name": "Optimistic",
+  "flavour": "Placeholder Flavour",
+  "ability": "Once per game, if your team would for any reason lose, it doesn't for one more day, even if you're dead.\n",
+  "reminders": [
+    [
+      "🌈",
+      "#FFFF00",
+      "Optimistic: Has used their ability."
+    ]
+  ]
+}

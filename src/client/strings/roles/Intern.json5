@@ -1,0 +1,18 @@
+{
+  "name": "Intern",
+  "team": "Loyalist",
+  "type": "Detrimental",
+  "flavour": "Assistant? No, sir. I'm just an intern.",
+  "ability": "Each night, you must choose a player (not yourself): your voting power is 0, but the player you chose the previous night gains 1 vote power.\n",
+  "orderType": "role_misc_action",
+  "attributes": [
+    "Human"
+  ],
+  "reminders": [
+    [
+      "📝",
+      "#702963",
+      "Intern: Chose this player."
+    ]
+  ]
+}

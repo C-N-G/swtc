@@ -2,7 +2,7 @@
   "name": "Investigator",
   "team": "Loyalist",
   "type": "Agent",
-  "flavour": "Placeholder Flavour",
+  "flavour": "I spy with my little eye something beginning with...",
   "ability": "Each night, you must choose a player and an Agent role: you learn if they are this Agent role.\n",
   "orderType": "role_with_recurring_info",
   "attributes": [

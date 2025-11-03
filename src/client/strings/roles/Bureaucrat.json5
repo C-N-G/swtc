@@ -1,0 +1,18 @@
+{
+  "name": "Bureaucrat",
+  "team": "Loyalist",
+  "type": "Agent",
+  "flavour": "“Yes sir, all your papers are in order. Wait... your signature doesn't match.”",
+  "ability": "Each night, after the first, you learn the team of a player that nominated during the day, you do not learn which player.\n",
+  "orderType": "role_with_recurring_info",
+  "attributes": [
+    "Human"
+  ],
+  "reminders": [
+    [
+      "🗳️",
+      "#0000FF",
+      "Bureaucrat: Learnt this player's team."
+    ]
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "Archivist",
+  "team": "Loyalist",
+  "type": "Detrimental",
+  "flavour": "“All the files are in order; everything has been organized and sorted. I've got the key right here!”",
+  "ability": "If you die, the Antagonist learns every player's identity during the night.\n",
+  "attributes": [
+    "Human"
+  ],
+  "reminders": [
+    [
+      "📖",
+      "#702963",
+      "Archivist: Learnt every player's identity."
+    ]
+  ]
+}

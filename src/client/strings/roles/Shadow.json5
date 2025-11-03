@@ -3,7 +3,7 @@
   "team": "Loyalist",
   "type": "Agent",
   "flavour": "Why you, and not me? Why shouldn't it be me? WHY?",
-  "ability": "You start knowing an in-play Agent role. If you were obsessed that you were this role, you gain their ability when they die.\n",
+  "ability": "On your first night, you learn an in play Agent role. If you were obsessed that you were this role, you gain their ability when they die.\n",
   "orderType": "role_with_starting_info",
   "attributes": [
     "Psychic",

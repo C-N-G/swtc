@@ -7,6 +7,11 @@
   "attributes": [
     "Human"
   ],
+  "setup": [
+    [
+      "You appear as a Subversive Antagonist to all Loyalist players, except the Warden."
+    ]
+  ],
   "appears": {
     "asType": "Antagonist",
     "asTeam": "Subversive",

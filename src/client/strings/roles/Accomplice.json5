@@ -3,15 +3,11 @@
   "team": "Subversive",
   "type": "Detrimental",
   "flavour": "My fingerprints? No, you must be mistaken.",
-  "ability": "You are confused about being an Agent.\n",
+  "ability": "You are confused about being an Agent. On your first night, all Antagonists learn who you are.\n",
   "attributes": [
     "Human"
   ],
   "setup": [
-    [
-      "You are confused about being an Agent.",
-      "ShowAs Role Agent"
-    ],
     [
       "You neighbour the Antagonist.",
       "Neighbour Role Antagonist"

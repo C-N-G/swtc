@@ -47,7 +47,10 @@ function Chat() {
    * DONE add logging
    * 
    * TODO when a player leaves or dcs the channels are cleaned up
-   * TODO make chat creation happen on message arrival for the narrator ? Why tho?
+   * TODO make chat creation happen on message arrival for the narrator? If the state doesn't get cleared then it can cause a crash when hosting after leaving.
+   * TODO unread status wasn't being cleared when switching chats as the narrator
+   * TOOD make chats work after reconnecting - stop using websocket id
+   * TODO make the message list a virtualised list
    */
 
   function handleTabChange(_: unknown, newValue: number) {

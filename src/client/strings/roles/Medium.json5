@@ -2,8 +2,8 @@
   "name": "Medium",
   "team": "Loyalist",
   "type": "Agent",
-  "flavour": "Placeholder Flavour",
-  "ability": "Each night, after the first, you may choose a dead player: you learn their role.\n",
+  "flavour": "I am in communion with the deceased, their powerful spirits are restless! I hear their voices... one of them used to occupy a position of power in this compound. SILENCE! They are speaking to me! \"I used to clean the toilet stalls.\" Oh...",
+  "ability": "Each night, after the first, if a player is dead, you must choose a player: if they are dead, you learn their role. If they are alive, you learn they are alive.\n",
   "orderType": "role_with_late_info",
   "attributes": [
     "Human",

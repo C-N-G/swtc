@@ -3,7 +3,7 @@
   "team": "Subversive",
   "type": "Antagonist",
   "flavour": "What?! It’s not me!",
-  "ability": "You start knowing 3 not in-play roles. Each night, after the first, you must choose a player: that player dies.\n",
+  "ability": "On your first night, you learn 3 not in-play roles. Each night, after the first, you must choose a player: that player dies.\n",
   "orderType": "role_kills_others",
   "attributes": [
     "Human"

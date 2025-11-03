@@ -1,0 +1,19 @@
+{
+  "name": "Prophet",
+  "team": "Loyalist",
+  "type": "Agent",
+  "flavour": "And in those days of spring, when the flowers bloom, you shall wither and be lost.",
+  "ability": "Once per game, during the day, you may publicly make a statement. If this statement is true during the night, you die that night.\n",
+  "orderType": "role_kills_self",
+  "attributes": [
+    "Human",
+    "Psychic"
+  ],
+  "reminders": [
+    [
+      "👁️",
+      "#0000FF",
+      "Prophet: Used their ability."
+    ]
+  ]
+}

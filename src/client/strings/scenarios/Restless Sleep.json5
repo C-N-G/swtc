@@ -1,0 +1,49 @@
+{
+  "name": "Restless Sleep",
+  "flavour": "“Placeholder flavour.”",
+  "location": [
+    "The Forum - Compound 12"
+  ],
+  "roles": [
+    "Bureaucrat",
+    "Clairvoyant",
+    "Coordinator",
+    "Dreamer",
+    "Investigator",
+    "Oathkeeper",
+    "Postcog",
+    "Precog",
+    "Prophet",
+    "Quartermaster",
+    "Supervisor",
+    "Telepath",
+    "Archivist",
+    "Executioner",
+    "Intern",
+    "Phantom",
+    "VIP",
+    "Prisoner",
+    "Tulpa",
+    "Underachiever"
+  ],
+  "chars": [
+    "Charitable",
+    "Cunning",
+    "Defiant",
+    "Empathetic",
+    "Forthright",
+    "Genius",
+    "Greedy",
+    "Manipulative",
+    "Mysterious",
+    "Observant",
+    "Optimistic",
+    "Patient",
+    "Punctual",
+    "Reckless",
+    "Reflective",
+    "Deceitful",
+    "Trustworthy",
+    "Vigilant"
+  ]
+}

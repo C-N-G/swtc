@@ -2,7 +2,7 @@
   "name": "Psychologist",
   "team": "Loyalist",
   "type": "Agent",
-  "flavour": "Placeholder Flavour",
+  "flavour": "I'm sorry, but it's the opinion of the entire staff that Agent Johnson is clinically insane.",
   "ability": "Each night, you must choose a player: you learn their characteristic.\n",
   "orderType": "role_with_recurring_info",
   "attributes": [

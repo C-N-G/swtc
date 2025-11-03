@@ -2,7 +2,7 @@
   "name": "Dreamer",
   "team": "Loyalist",
   "type": "Agent",
-  "flavour": "Placeholder Flavour",
+  "flavour": "But I have not seen you in so long! You were gone, but now you appear to me, and only in my deepest dreams should I see you, and yet my eyes do not deceive me! You stand before me, in the turgid light of my waking life, and I, with naked heart, gaze upon you. Though I cannot help but ponder, maybe it is not I who is dreaming, but you.",
   "ability": "Each night, you learn two statements, only one of which is true.\n",
   "orderType": "role_with_recurring_info",
   "attributes": [

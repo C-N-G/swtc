@@ -1,0 +1,23 @@
+{
+  "name": "Pawn",
+  "team": "Subversive",
+  "type": "Detrimental",
+  "flavour": "Chess? I'm more of a checkers player myself.",
+  "ability": "On your first night, all Antagonists learn who you are.\n",
+  "attributes": [
+    "Human"
+  ],
+  "setup": [
+    [
+      "You are confused about being an Agent.",
+      "ShowAs Role Agent"
+    ]
+  ],
+  "reminders": [
+    [
+      "♟️",
+      "#702963",
+      "Pawn: Is the Pawn."
+    ]
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "name": "Executioner",
+  "team": "Loyalist",
+  "type": "Detrimental",
+  "flavour": "Perverse incentive? I have no idea what you mean.",
+  "ability": "You must vote yes on every nomination for dismissal.\n",
+  "attributes": [
+    "Human"
+  ]
+}

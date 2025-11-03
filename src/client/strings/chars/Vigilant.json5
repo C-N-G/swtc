@@ -1,0 +1,6 @@
+{
+  "name": "Vigilant",
+  "flavour": "Placeholder Flavour",
+  "ability": "Each night, you learn how many of your neighbours were chosen by other players.\n",
+  "orderType": "char_with_recurring_info"
+}
