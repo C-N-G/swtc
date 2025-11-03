@@ -23,9 +23,12 @@ function ScenarioDialog({openDialog, handleClose, chars, roles}: ScenarioDialogP
   }
 
   const listMaker = (ele: Char | Role, index: number) => {
-    const attributes = ele.attributes.length > 0 ? `[${ele.attributes.join(", ")}]` : "";
+    const attributes = ele.attributes.length > 0 ? <Typography variant="caption">{`[${ele.attributes.join(", ")}]`}</Typography> : "";
     const name = <Typography component="span" fontWeight="bold">{ele.name}</Typography>
-    const primary = <Typography>{name} {attributes}</Typography>
+    const roleIsDetrimental = ele instanceof Role && ele.type === "Detrimental";
+    const team = roleIsDetrimental ? <Typography variant="caption">{ele.team}</Typography> : "";
+    const spacer = !!attributes && !!team ? "-" : "";
+    const primary = <Typography>{name} {spacer} {attributes} {team}</Typography>
     return (
       <ListItem disablePadding key={index}>
         <ListItemText 
