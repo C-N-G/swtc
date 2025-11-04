@@ -1,6 +1,7 @@
-### xxx/xx/xxxx v0.6.5
+### 03/11/2025 v0.6.5
 - added team property loading from game role data
 - added support for "Either" team property on roles
+- added team display for detrimental roles in the scenario viewer
 ---
 
 ### 19/04/2025 v0.6.4
