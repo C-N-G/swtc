@@ -775,7 +775,7 @@ export class Randomiser {
         const targetType = targetIsDetrimental ? "Detrimental" : "Agent";
 
         // for detrimental targets
-        const targetPlayers = this.randomisedPlayers.filter(player => GameData.roles[player.role].type === targetType);
+        const targetPlayers = this.randomisedPlayers.filter(player =>  this.roleArray[player.role].type === targetType);
         const independantTargetPlayers = targetPlayers.filter(player => this.dependantIds.has(player.id) === false);
         if (independantTargetPlayers.length === 0) throw new Error("could not run final setup commands, no independant players available");
         const playerIndex = this.randomisedPlayers.findIndex(player => player.id === independantTargetPlayers[0].id);
