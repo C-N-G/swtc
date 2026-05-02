@@ -15,7 +15,11 @@ export default function showAs(aPlayer: OperatingPlayer, params: SetupCommandPar
   }
 
   // take into account taken roles if there are multiple possible roles
-  if (params.possibleTargets.length > 1) {
+  if (params.target === "InPlay") {
+    const targetIndex = Math.floor(Math.random() * params.possibleTargets.length);
+    const chosenPossibleTarget = params.possibleTargets[targetIndex];
+    aPlayer.playerObj[playerAttribute] = params.targetArray.findIndex(target => target.id === chosenPossibleTarget.id);
+  } else if (params.possibleTargets.length > 1) {
     aPlayer.playerObj[playerAttribute] = randomiser.getRandomIndex(params.targetArray, randomiser.takenSets[takenSetsTarget], params.possibleTargets);
   } else {
     // else if there is only one possible role the target must be specific so choose it anyway

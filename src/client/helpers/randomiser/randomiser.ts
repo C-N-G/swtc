@@ -35,6 +35,7 @@ export interface SetupCommandParams {
 interface SetupCommand {
   name: string;
   target: string;
+  originIndex: number; // which player index the command originated from
   type?: string;
   quantity?: number;
   neighbour?: string;
@@ -72,6 +73,7 @@ the following char or role during setup, and prevents that char or roles setup c
 
 [target] can be a role name, role type, role team, 
 role attribute, char name, or char attribute.
+ShowAs also supports the InPlay target
 
 [neighbour] specifies if the command should select neighbours to target.
 
@@ -85,7 +87,8 @@ which will make the randomiser select anything matching the specified type.
 A player will be classified as dependant if any of the follow occurs:
 - they have setup commands that modifies other players
 - they were created or modified by a setup command from another player
-Dependant players will modified after they are randomised
+Dependant players should not be modified after they are randomised
+as doing so can lead to nonsense game state where a role creates another role and then the creator gets erased
 
  * @param playerArray 
  * @param charArray 
@@ -205,7 +208,7 @@ export class Randomiser {
     
     if (this.debug) {
       console.debug("groups", this.neighbourGroups);
-      console.debug("roles", this.randomisedPlayers.map(player => GameData.roles[player.role].name));
+      console.debug("roles", this.randomisedPlayers.map(player => this.roleArray[player.role].name));
     }
 
     return this.randomisedPlayers;
@@ -362,6 +365,7 @@ export class Randomiser {
       const newSetupCommand: SetupCommand = { 
         name: commandArray[0],
         target: "",
+        originIndex: aPlayer.index
       };
 
       switch (newSetupCommand.name) {
@@ -406,12 +410,12 @@ export class Randomiser {
       }
 
       // if the command doesn't have a quantity then run it immediately
-      if (commandLacksQuantity) {
+      if (this.shouldRunCommandImmediately(commandLacksQuantity, newSetupCommand)) {
 
         immediateCommandQueue.push(newSetupCommand);
 
       } // push commands that should only run at the end to the final command queue
-      else if (!aPlayer.strict && ["AddInvariant", "Neighbour"].includes(newSetupCommand.name)) { 
+      else if (this.shouldRunCommandLater(aPlayer, newSetupCommand)) { 
         
         this.finalCommandQueue.push(newSetupCommand);
 
@@ -742,7 +746,8 @@ export class Randomiser {
    */
   isDependantCommand(setupCommand: SetupCommand): boolean {
     const dependantCommands = ["Add", "AddStrict", "AddInvariant", "Convert"];
-    return dependantCommands.includes(setupCommand.name);
+    const dependantTargets = ["InPlay"];
+    return dependantCommands.includes(setupCommand.name) || dependantTargets.includes(setupCommand.target);
   }
 
   /**
@@ -769,16 +774,37 @@ export class Randomiser {
     commands.forEach(setupCommand => {
 
       const targetIsARole = setupCommand.type && setupCommand.type === "Role";
-      const possibleTargets = this.getPossibleTargets(targetIsARole ? "role" : "char", setupCommand.target, setupCommand.name);
+      const targetIsInPlay = setupCommand.target === "InPlay";
+      let originPlayer, playerIndex;
+
+      if (targetIsInPlay) {
+        originPlayer = {
+          index: setupCommand.originIndex,
+          playerObj: this.randomisedPlayers[setupCommand.originIndex],
+          strict: true, // if it runs a command at the end of the queue then always run it strict
+          keepSame: true, // since the player has already been randomised keep it that way initially
+        } as OperatingPlayer;
+      }
+
+      const possibleTargets = this.getPossibleTargets(targetIsARole ? "role" : "char", setupCommand.target, setupCommand.name, originPlayer);
+
       if (targetIsARole) {
         const targetIsDetrimental = (possibleTargets[0] as Role).type === "Detrimental";
         const targetType = targetIsDetrimental ? "Detrimental" : "Agent";
-
-        // for detrimental targets
-        const targetPlayers = this.randomisedPlayers.filter(player =>  this.roleArray[player.role].type === targetType);
-        const independantTargetPlayers = targetPlayers.filter(player => this.dependantIds.has(player.id) === false);
-        if (independantTargetPlayers.length === 0) throw new Error("could not run final setup commands, no independant players available");
-        const playerIndex = this.randomisedPlayers.findIndex(player => player.id === independantTargetPlayers[0].id);
+        
+        // get playerIndex to run the command on
+        if (targetIsInPlay) {
+          // currently the only InPlay target is only used with the ShowAs command
+          // where we want to up date the player who ran the command
+          playerIndex = setupCommand.originIndex;
+        } else {
+          const targetPlayers = this.randomisedPlayers.filter(player => this.roleArray[player.role].type === targetType);
+          const independantTargetPlayers = targetPlayers.filter(player => this.dependantIds.has(player.id) === false);
+          if (independantTargetPlayers.length === 0) throw new Error("could not run final setup commands, no independant players available");
+          playerIndex = this.randomisedPlayers.findIndex(player => player.id === independantTargetPlayers[0].id);
+        }
+        
+        
         const aPlayer: OperatingPlayer = {
           index: playerIndex,
           playerObj: this.randomisedPlayers[playerIndex],
@@ -821,12 +847,25 @@ export class Randomiser {
     let possibleTargets: (Char | Role)[] = [];
 
     if (type === "char") {
+      if (target === "InPlay") {
+        const charsInPlay = this.randomisedPlayers.map(player => player.char);
+        possibleTargets = this.charArray.filter((_, i) => charsInPlay.includes(i));
+        return possibleTargets;
+      }
       // if no target given then use anything
       possibleTargets = target === undefined ? this.charArray : this.charArray.filter(char => 
         char.name === target // target name
         || char.attributes.includes(target) // target attributes
       )
-    } else if (type === "role") {
+      return possibleTargets;
+    } 
+    
+    if (type === "role") {
+      if (target === "InPlay" && aPlayer) {
+        const rolesInPlay = this.randomisedPlayers.filter(player => player.id !== aPlayer.playerObj.id).map(player => player.role);
+        possibleTargets = this.roleArray.filter((_, i) => rolesInPlay.includes(i) && i !== 0);
+        return possibleTargets;
+      }
       possibleTargets = target === undefined ? this.roleArray : this.roleArray.filter(role => {
         let searchAppears = false;
         if (aPlayer) {
@@ -847,6 +886,17 @@ export class Randomiser {
 
     return possibleTargets;
 
+  }
+
+  shouldRunCommandLater(aPlayer: OperatingPlayer, newSetupCommand: SetupCommand): boolean {
+    if (aPlayer.strict) return false;
+    if (["AddInvariant", "Neighbour"].includes(newSetupCommand.name)) return true;
+    if (newSetupCommand.target === "InPlay") return true;
+    return false;
+  }
+
+  shouldRunCommandImmediately(commandLacksQuantity: boolean, newSetupCommand: SetupCommand): boolean {
+    return commandLacksQuantity && newSetupCommand.target !== "InPlay";
   }
 
   // function reorganisePlayers() {
