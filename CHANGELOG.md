@@ -1,3 +1,7 @@
+### 02/05/2026 v0.6.6
+- added InPlay target support for ShowAs setup command
+---
+
 ### 03/11/2025 v0.6.5
 - added team property loading from game role data
 - added support for "Either" team property on roles
