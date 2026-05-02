@@ -1,6 +1,6 @@
 {
   "name": "Empathetic",
-  "flavour": "Placeholder Flavour",
+  "flavour": "A whisper reverberates within them; I feel it too.",
   "ability": "On your first night, you learn how many players (not yourself) are Psychic.\n",
   "orderType": "char_with_starting_info",
   "attributes": [

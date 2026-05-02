@@ -1,12 +1,12 @@
 {
   "name": "Cunning",
-  "flavour": "Placeholder Flavour",
-  "ability": "Once per game, during the night, if you were chosen by another player's ability you may choose another player to redirect it to.\n",
+  "flavour": "No, I'm not a linguist",
+  "ability": "Once per game, if you are the target of an ability, another player is targeted instead.\n",
   "reminders": [
     [
       "🦊",
       "#FFFF00",
-      "Cunning: Chose this player."
+      "Cunning: Redirected to this Player."
     ]
   ]
 }

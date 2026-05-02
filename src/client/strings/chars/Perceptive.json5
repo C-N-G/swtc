@@ -1,6 +1,6 @@
 {
   "name": "Perceptive",
-  "flavour": "Placeholder Flavour",
+  "flavour": "I saw that scar on your hand when you first arrived, do you mind telling me how you got it?",
   "ability": "On your first night, you learn that 1 of 3 players (not yourself) is a specific characteristic.\n",
   "orderType": "char_with_starting_info",
   "reminders": [

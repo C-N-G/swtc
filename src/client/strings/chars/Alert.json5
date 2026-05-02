@@ -1,7 +1,7 @@
 {
   "name": "Alert",
-  "flavour": "Placeholder Flavour",
-  "ability": "During the night, once per game, when you’re chosen by a player (not yourself), you learn who they are, even if their ability would kill you.\n",
+  "flavour": "Hm? What was that sound? There it is again! No, no, it wasn't just the wind!",
+  "ability": "During the night, once per game, when you’re chosen by a player (not yourself), you learn who chose you.\n",
   "reminders": [
     [
       "🚨",

@@ -1,6 +1,6 @@
 {
   "name": "Vigilant",
-  "flavour": "Placeholder Flavour",
+  "flavour": "Be ever vigilant, be ever on guard, for those close to you are those most at risk.",
   "ability": "Each night, you learn how many of your neighbours were chosen by other players.\n",
   "orderType": "char_with_recurring_info"
 }

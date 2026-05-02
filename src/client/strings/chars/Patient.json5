@@ -1,5 +1,12 @@
 {
   "name": "Patient",
-  "flavour": "Placeholder Flavour",
-  "ability": "For every day that you don't vote, your vote power increases by +1.\n"
+  "flavour": "Take a seat, and watch the world go by. When our time is here, it will be so.",
+  "ability": "Each day that you don't vote, your vote power increases by +1. If you vote, you lose this ability.\n",
+  "reminders": [
+    [
+      "🧘",
+      "#FFFF00",
+      "Patient: Has used their ability."
+    ]
+  ]
 }

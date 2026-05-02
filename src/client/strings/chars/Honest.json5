@@ -1,6 +1,6 @@
 {
   "name": "Honest",
-  "flavour": "Placeholder Flavour",
+  "flavour": "Honesty is the best policy, so in the spirit of honesty, let me assure you: I am an honest individual.",
   "ability": "If you are obsessed about being Honest, a different player will learn your characteristic each night, until there is no one left.\n",
   "orderType": "char_with_recurring_info",
   "reminders": [

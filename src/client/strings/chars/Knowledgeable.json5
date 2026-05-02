@@ -1,6 +1,6 @@
 {
   "name": "Knowledgeable",
-  "flavour": "Placeholder Flavour",
+  "flavour": "I make it my business to know things.",
   "ability": "On your first night, you learn whether a role of your choice is in play or not.\n",
   "orderType": "char_with_starting_info",
   "reminders": [

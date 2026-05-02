@@ -1,6 +1,6 @@
 {
   "name": "Critical",
-  "flavour": "Placeholder Flavour",
+  "flavour": "I must admit, it does seem rather derivative. Can't you do something else?",
   "ability": "Once per game, during the night, you may choose a player: you learn if they have an ability that interacts with obsession.\n",
   "orderType": "role_with_recurring_info",
   "reminders": [

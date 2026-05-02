@@ -1,6 +1,6 @@
 {
   "name": "Genius",
-  "flavour": "Placeholder Flavour",
+  "flavour": "It's all rather simple.",
   "ability": "Each night, you learn a role or characteristic (not yourself) that is in play, until there are no more left to learn.\n",
   "orderType": "char_with_recurring_info",
   "reminders": [

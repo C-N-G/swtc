@@ -2,7 +2,7 @@
   "name": "Exorcist",
   "team": "Loyalist",
   "type": "Agent",
-  "flavour": "You see, a Spirit is just a coalescence of psychic energy, and with the right equipment, it's possible to... smooth out that discrepancy, so to speak. Does busting these Ghosts apart make me feel good? Not really, it's just my job.",
+  "flavour": "You see, a Spirit is just a coalescence of psychic energy, and with the right equipment, it's possible to... smooth out that discrepancy, so to speak.",
   "ability": "Once per game, during the day, you may publicly choose a player: if they are a Spirit, they die.\n",
   "attributes": [
     "Human",
