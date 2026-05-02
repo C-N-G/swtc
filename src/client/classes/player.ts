@@ -10,14 +10,14 @@ export default class Player {
    * @param type - type of user. 0 = narrator, 1 = player
    * @param label - quick label of targetted player
    * @param notes - notes of targetted player
-   * @param char - player characteristic
-   * @param role - player role
-   * @param state - player state. 0 = dead, 1 = alive
-   * @param team - player team
-   * @param rChar - real player characteristic that is networked by the narrator
-   * @param rRole - real player role that is networked by the narrator
-   * @param rState - real player state that is networked by the narrator
-   * @param rTeam - real player team that is networked by the narrator
+   * @param char - player characteristic              (True State)
+   * @param role - player role                        (True State)
+   * @param state - player state. 0 = dead, 1 = alive (True State)
+   * @param team - player team                        (True State)
+   * @param rChar - real player characteristic that is networked by the narrator  (Shown State)
+   * @param rRole - real player role that is networked by the narrator            (Shown State)
+   * @param rState - real player state that is networked by the narrator          (Shown State)
+   * @param rTeam - real player team that is networked by the narrator            (Shown State)
    * @param VotePower - the Voting power for this player
    * @param reminders - visual reminder ids tied to this player
    * @param nightOrders - the night order numbers for this players chars and roles
