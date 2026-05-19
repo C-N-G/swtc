@@ -1,5 +1,6 @@
 ### 02/05/2026 v0.6.6
 - added InPlay target support for ShowAs setup command
+- fixed "Either" team target failing to correctly set a team in some situations when randomising
 ---
 
 ### 03/11/2025 v0.6.5

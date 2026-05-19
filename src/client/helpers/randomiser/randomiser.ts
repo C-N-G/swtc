@@ -241,12 +241,7 @@ export class Randomiser {
       // randomise player
       aPlayer.playerObj.char = aPlayer.playerObj.rChar = this.getRandomIndex(this.charArray, this.takenSets.chars);
       aPlayer.playerObj.role = aPlayer.playerObj.rRole = this.getRandomIndex(this.roleArray, this.takenSets.roles, this.getTargetRoles());
-      let playerRoleTeam = this.roleArray[aPlayer.playerObj.role].team;
-      if (playerRoleTeam === "Either") {
-        const fiftyFifty = Math.random() > 0.5;
-        playerRoleTeam = fiftyFifty ? "Loyalist" : "Subversive";
-      }
-      aPlayer.playerObj.team = aPlayer.playerObj.rTeam = GameData.teams.indexOf(playerRoleTeam);
+      aPlayer.playerObj.team = aPlayer.playerObj.rTeam = this.getTeamForPlayerRole(aPlayer);
 
     }
 
@@ -501,7 +496,7 @@ export class Randomiser {
     aPlayer.strict = command === "AddStrict" ? true : false;
 
     if (command === "Convert") convert(aPlayer, setupCommandParams);
-    else aPlayer.playerObj.team = GameData.teams.indexOf(this.roleArray[aPlayer.playerObj.role].team);
+    else aPlayer.playerObj.team = this.getTeamForPlayerRole(aPlayer);
 
     if (!aPlayer.keepSame) {
       aPlayer.playerObj.rChar = aPlayer.playerObj.char;
@@ -897,6 +892,15 @@ export class Randomiser {
 
   shouldRunCommandImmediately(commandLacksQuantity: boolean, newSetupCommand: SetupCommand): boolean {
     return commandLacksQuantity && newSetupCommand.target !== "InPlay";
+  }
+
+  getTeamForPlayerRole(aPlayer: OperatingPlayer): number {
+    let playerRoleTeam = this.roleArray[aPlayer.playerObj.role].team;
+    if (playerRoleTeam === "Either") {
+      const fiftyFifty = Math.random() > 0.5;
+      playerRoleTeam = fiftyFifty ? "Loyalist" : "Subversive";
+    }
+    return GameData.teams.indexOf(playerRoleTeam);
   }
 
   // function reorganisePlayers() {

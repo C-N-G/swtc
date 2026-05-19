@@ -1,5 +1,3 @@
-import Role from "../../../classes/role";
-import GameData from "../../../strings/_gameData";
 import { OperatingPlayer, Randomiser, SetupCommandParams } from "../randomiser";
 
 export default function addInvariant(aPlayer: OperatingPlayer, params: SetupCommandParams, randomiser: Randomiser) {
@@ -29,8 +27,7 @@ export default function addInvariant(aPlayer: OperatingPlayer, params: SetupComm
     aPlayer.playerObj[playerAttribute] = targetId;
     aPlayer.playerObj[playerRealAttribute] = targetId;
     if (playerAttribute === "role") {
-      const team = (params.targetArray[targetId] as Role).team;
-      aPlayer.playerObj["team"] = GameData.teams.indexOf(team);
+      aPlayer.playerObj.team = randomiser.getTeamForPlayerRole(aPlayer);
     }
     randomiser.takenSets[takenSetsTarget].add(targetId);
   } 
