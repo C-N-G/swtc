@@ -22,6 +22,18 @@ body {
   --sl-color-loyalist-accent: #1975d2;
   --sl-color-loyalist-accent-high: #17aaff;
 
+  --sl-color-antagonist-accent-low: #926614;
+  --sl-color-antagonist-accent: #d2a119;
+  --sl-color-antagonist-accent-high: #ffc917;
+
+  --sl-color-detrimental-accent-low: #641492;
+  --sl-color-detrimental-accent: #9e19d2;
+  --sl-color-detrimental-accent-high: #b617ff;
+
+  --sl-color-agent-accent-low: #161492;
+  --sl-color-agent-accent: #2519d2;
+  --sl-color-agent-accent-high: #172eff;
+
   --sl-color-unknown-accent-low: #373638;
   --sl-color-unknown-accent: #6f6b70;
   --sl-color-unknown-accent-high: #a19fa1;

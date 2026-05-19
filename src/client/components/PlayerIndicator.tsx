@@ -47,19 +47,43 @@ const PlayerIndicator = memo(function PlayerIndicator(props: PlayerIndicatorProp
 
 export default PlayerIndicator
 
+const getButtonBackground = (state: "hover" | "normal", team: number, roleType: string): string => {
+  let teamColour: string;
+  let roleTypeColour: string;
+  if (state === "hover") {
+    teamColour = team === 2 ? "var(--sl-color-accent-low)" : team === 1 ? "var(--sl-color-loyalist-accent-low)" : "var(--sl-color-unknown-accent-low)";
+    if (roleType === "Detrimental") {
+      roleTypeColour = "var(--sl-color-detrimental-accent-low)"
+    } else if (roleType === "Antagonist") {
+      roleTypeColour = "var(--sl-color-antagonist-accent-low)"
+    } else { // agent
+      roleTypeColour = "var(--sl-color-agent-accent-low)"
+    }
+  } else { // normal
+    teamColour = team === 2 ? "var(--sl-color-accent)" : team === 1 ? "var(--sl-color-loyalist-accent)" : "var(--sl-color-unknown-accent)";
+    if (roleType === "Detrimental") {
+      roleTypeColour = "var(--sl-color-detrimental-accent)"
+    } else if (roleType === "Antagonist") {
+      roleTypeColour = "var(--sl-color-antagonist-accent)"
+    } else { // agent
+      roleTypeColour = "var(--sl-color-agent-accent)"
+    }
+  }
 
+  return `linear-gradient(to bottom right, ${roleTypeColour} 15%, ${teamColour} 17%)`;
+}
 
-const BUTTON_STYLE = (team: number, rState: number, isSelected: boolean) => ({
+const BUTTON_STYLE = (team: number, rState: number, isSelected: boolean, roleType: string) => ({
   aspectRatio: "1/1",
   margin: "5px",
   px: "4px",
   flexDirection: "column",
   justifyContent: "flex-start",
   overflow: "clip",
-  background: team === 2 ? "var(--sl-color-accent)" : team === 1 ? "var(--sl-color-loyalist-accent)" : "var(--sl-color-unknown-accent)",
+  background: getButtonBackground("normal", team, roleType),
   backgroundImage: rState === 0 ? "linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,0.5), rgba(0,0,0,1))" : "",
   ":hover": {
-    background: team === 2 ? "var(--sl-color-accent-low)" : team === 1 ? "var(--sl-color-loyalist-accent-low)" : "var(--sl-color-unknown-accent-low)",
+    background: getButtonBackground("hover", team, roleType),
     backgroundImage: rState === 0 ? "linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.5), rgba(0,0,0,1))" : "",
     boxShadow: isSelected ? "inset 0 0 10px 7px rgba(0,0,0,0.8)" : "",
   },
@@ -124,7 +148,11 @@ function RegularPlayerIndicator({player, handleClick, vertical, chars, roles, se
 
   return (
     <Box sx={BUTTON_CONTAINER_STYLE(vertical)}>
-      <Button variant="contained" onClick={() => {handleClick(player.id)}} sx={BUTTON_STYLE(player.team, player.rState, thisPlayerSelected)}>
+      <Button 
+        variant="contained" 
+        onClick={() => {handleClick(player.id)}} 
+        sx={BUTTON_STYLE(player.team, player.rState, thisPlayerSelected, GameData.hackValue(roles[player.role]?.type))}
+      >
         <Box sx={{position: "relative", width: "100%"}}>
           <Typography>{getName(player.name, player.label)}</Typography>
           <Typography variant="caption" sx={{
@@ -274,7 +302,7 @@ function NarratorPlayerIndicator({player, handleClick, vertical, chars, roles, s
       <Button 
         variant="contained" 
         onClick={() => {handleClick(player.id)}} 
-        sx={BUTTON_STYLE(player.team, player.rState, thisPlayerSelected)}
+        sx={BUTTON_STYLE(player.team, player.rState, thisPlayerSelected, GameData.hackValue(roles[player.role]?.type))}
         ref={setNodeRef}
         style={style}
       >
