@@ -1,7 +1,11 @@
+### 19/05/2026 v0.6.7
+- added support for InPlayAgent and InPlayDetrimental target roles
+- added placecholder role type colour ui to the player indicator
+- fixed "Either" team target failing to correctly set a team in some situations when randomising
+---
+
 ### 02/05/2026 v0.6.6
 - added InPlay target support for ShowAs setup command
-- added support for InPlayAgent and InPlayDetrimental target roles
-- fixed "Either" team target failing to correctly set a team in some situations when randomising
 ---
 
 ### 03/11/2025 v0.6.5
