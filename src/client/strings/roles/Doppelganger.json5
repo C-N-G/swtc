@@ -12,7 +12,7 @@
   "setup": [
     [
       "You are confused about being an in-play Agent.",
-      "ShowAs Role InPlay"
+      "ShowAs Role InPlayAgent"
     ]
   ],
   "reminders": [

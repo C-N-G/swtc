@@ -1,4 +1,3 @@
-import GameData from "../../../strings/_gameData";
 import { OperatingPlayer, Randomiser, SetupCommandParams } from "../randomiser";
 
 export default function showAs(aPlayer: OperatingPlayer, params: SetupCommandParams, randomiser: Randomiser) {
@@ -15,7 +14,7 @@ export default function showAs(aPlayer: OperatingPlayer, params: SetupCommandPar
   }
 
   // take into account taken roles if there are multiple possible roles
-  if (params.target === "InPlay") {
+  if (params.target.startsWith("InPlay")) {
     const targetIndex = Math.floor(Math.random() * params.possibleTargets.length);
     const chosenPossibleTarget = params.possibleTargets[targetIndex];
     aPlayer.playerObj[playerAttribute] = params.targetArray.findIndex(target => target.id === chosenPossibleTarget.id);
@@ -28,6 +27,6 @@ export default function showAs(aPlayer: OperatingPlayer, params: SetupCommandPar
   }
 
   // change player team to the role they appear as
-  aPlayer.playerObj.rTeam = GameData.teams.indexOf(randomiser.roleArray[aPlayer.playerObj.rRole].team);
+  aPlayer.playerObj.rTeam = randomiser.getTeamForRole(aPlayer.playerObj.rRole);
 
 }

@@ -73,7 +73,7 @@ the following char or role during setup, and prevents that char or roles setup c
 
 [target] can be a role name, role type, role team, 
 role attribute, char name, or char attribute.
-ShowAs also supports the InPlay target
+ShowAs also supports the InPlay/InPlayAgent/InPlayDetrimental targets
 
 [neighbour] specifies if the command should select neighbours to target.
 
@@ -241,7 +241,7 @@ export class Randomiser {
       // randomise player
       aPlayer.playerObj.char = aPlayer.playerObj.rChar = this.getRandomIndex(this.charArray, this.takenSets.chars);
       aPlayer.playerObj.role = aPlayer.playerObj.rRole = this.getRandomIndex(this.roleArray, this.takenSets.roles, this.getTargetRoles());
-      aPlayer.playerObj.team = aPlayer.playerObj.rTeam = this.getTeamForPlayerRole(aPlayer);
+      aPlayer.playerObj.team = aPlayer.playerObj.rTeam = this.getTeamForRole(aPlayer.playerObj.role);
 
     }
 
@@ -496,7 +496,7 @@ export class Randomiser {
     aPlayer.strict = command === "AddStrict" ? true : false;
 
     if (command === "Convert") convert(aPlayer, setupCommandParams);
-    else aPlayer.playerObj.team = this.getTeamForPlayerRole(aPlayer);
+    else aPlayer.playerObj.team = this.getTeamForRole(aPlayer.playerObj.role);
 
     if (!aPlayer.keepSame) {
       aPlayer.playerObj.rChar = aPlayer.playerObj.char;
@@ -741,7 +741,7 @@ export class Randomiser {
    */
   isDependantCommand(setupCommand: SetupCommand): boolean {
     const dependantCommands = ["Add", "AddStrict", "AddInvariant", "Convert"];
-    const dependantTargets = ["InPlay"];
+    const dependantTargets = ["InPlay", "InPlayAgent"];
     return dependantCommands.includes(setupCommand.name) || dependantTargets.includes(setupCommand.target);
   }
 
@@ -769,7 +769,7 @@ export class Randomiser {
     commands.forEach(setupCommand => {
 
       const targetIsARole = setupCommand.type && setupCommand.type === "Role";
-      const targetIsInPlay = setupCommand.target === "InPlay";
+      const targetIsInPlay = setupCommand.target.startsWith("InPlay");
       let originPlayer, playerIndex;
 
       if (targetIsInPlay) {
@@ -856,9 +856,14 @@ export class Randomiser {
     } 
     
     if (type === "role") {
-      if (target === "InPlay" && aPlayer) {
+      if (target.startsWith("InPlay") && aPlayer) {
         const rolesInPlay = this.randomisedPlayers.filter(player => player.id !== aPlayer.playerObj.id).map(player => player.role);
         possibleTargets = this.roleArray.filter((_, i) => rolesInPlay.includes(i) && i !== 0);
+        if (target.endsWith("Agent")) {
+          possibleTargets = (possibleTargets as Role[]).filter(role => role.type === "Agent")
+        } else if (target.endsWith("Detrimental")) {
+          possibleTargets = (possibleTargets as Role[]).filter(role => role.type === "Detrimental")
+        }
         return possibleTargets;
       }
       possibleTargets = target === undefined ? this.roleArray : this.roleArray.filter(role => {
@@ -886,16 +891,16 @@ export class Randomiser {
   shouldRunCommandLater(aPlayer: OperatingPlayer, newSetupCommand: SetupCommand): boolean {
     if (aPlayer.strict) return false;
     if (["AddInvariant", "Neighbour"].includes(newSetupCommand.name)) return true;
-    if (newSetupCommand.target === "InPlay") return true;
+    if (newSetupCommand.target.startsWith("InPlay")) return true;
     return false;
   }
 
   shouldRunCommandImmediately(commandLacksQuantity: boolean, newSetupCommand: SetupCommand): boolean {
-    return commandLacksQuantity && newSetupCommand.target !== "InPlay";
+    return commandLacksQuantity && newSetupCommand.target.startsWith("InPlay") === false;
   }
 
-  getTeamForPlayerRole(aPlayer: OperatingPlayer): number {
-    let playerRoleTeam = this.roleArray[aPlayer.playerObj.role].team;
+  getTeamForRole(roleIndex: number): number {
+    let playerRoleTeam = this.roleArray[roleIndex].team;
     if (playerRoleTeam === "Either") {
       const fiftyFifty = Math.random() > 0.5;
       playerRoleTeam = fiftyFifty ? "Loyalist" : "Subversive";

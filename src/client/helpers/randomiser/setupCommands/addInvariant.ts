@@ -27,7 +27,7 @@ export default function addInvariant(aPlayer: OperatingPlayer, params: SetupComm
     aPlayer.playerObj[playerAttribute] = targetId;
     aPlayer.playerObj[playerRealAttribute] = targetId;
     if (playerAttribute === "role") {
-      aPlayer.playerObj.team = randomiser.getTeamForPlayerRole(aPlayer);
+      aPlayer.playerObj.team = randomiser.getTeamForRole(aPlayer.playerObj.role);
     }
     randomiser.takenSets[takenSetsTarget].add(targetId);
   } 
