@@ -1,0 +1,7 @@
+{
+    name: 'The Forum - Compound 12',
+    flavour: '“Those who have nothing to hide have nothing to fear.”',
+    config: {
+        allow_public_votes: true,
+    },
+}

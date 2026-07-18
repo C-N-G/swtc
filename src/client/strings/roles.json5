@@ -1,15 +1,15 @@
 // default roles even when no scenario is selected
 {
-  "name": "Unknown",
-  "type": "",
-  "description": "",
-  "ability": "",
-  "orderType": "",
-  "appears": {"asType": "", "asTeam": "", "for": ""},
-  "setup": [],
-  "attributes": [],
-  "additional": [],
-  "reminders": []
+    name: 'Unknown',
+    type: '',
+    description: '',
+    ability: '',
+    orderType: '',
+    appears: { asType: '', asTeam: '', for: '' },
+    setup: [],
+    attributes: [],
+    additional: [],
+    reminders: [],
 }
 /*
 

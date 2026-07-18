@@ -1,0 +1,8 @@
+{
+    name: 'The Catacombs - Compound 3',
+    flavour: '“And now we know no bounds, not in this life nor the next.”',
+    config: {
+        allow_dead_player_voting: true,
+        allow_dead_player_nominating: true,
+    },
+}

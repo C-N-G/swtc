@@ -1,73 +1,65 @@
-import Char from "../classes/char.js";
-import Reminder from "../classes/reminder.js";
-import Role from "../classes/role.js";
-import loader, { GameDataStore, RawImportData } from "../helpers/gameDataLoader.js";
+import Char from '../classes/char.js';
+import Reminder from '../classes/reminder.js';
+import Role from '../classes/role.js';
+import loader, { GameDataStore, RawImportData } from '../helpers/gameDataLoader.js';
 
-const stringFiles = import.meta.glob(["./*.json5", "./*/*.json5"], {
-  query: "?raw",
-  import: "default",
-  eager: true,
+const stringFiles = import.meta.glob(['./*.json5', './*/*.json5'], {
+    query: '?raw',
+    import: 'default',
+    eager: true,
 }) as RawImportData;
 
 const GameData: GameDataStore = {
-  chars: [],
-  roles: [],
-  nightOrder: [],
-  states: [],
-  teams: [],
-  scenarios: [],
-  reminders: [],
+    chars: [],
+    roles: [],
+    locations: [],
+    nightOrder: [],
+    states: [],
+    teams: [],
+    scenarios: [],
+    reminders: [],
 
-  filterByScenario(scenarioArray, type, full) {
+    filterByScenario(scenarioArray, type, full) {
+        const enabledSet = new Set(scenarioArray.map((scenario) => scenario[type]).flat());
 
-    const enabledSet = new Set(scenarioArray.map(scenario => scenario[type]).flat());
+        const return_data = this[type] // hack - leave unknown out of the filtering
+            .filter((ele) => enabledSet.has(ele.id) || ele.name === 'Unknown');
 
-    const return_data = this[type] // hack - leave unknown out of the filtering
-    .filter(ele => enabledSet.has(ele.id) || ele.name === "Unknown")
+        // full will include all the role and char data, instead of just the name
+        return full ? return_data : return_data.map((role) => role.name);
+    },
 
-    // full will include all the role and char data, instead of just the name
-    return full ? return_data : return_data.map(role => role.name);
-    
-  },
+    getFilteredReminders(charArray, roleArray) {
+        const reminderArray: Reminder[] = [];
 
-  getFilteredReminders(charArray, roleArray) {
+        charArray.concat(roleArray).forEach((ele) => {
+            if (ele.reminders?.length > 0) {
+                reminderArray.push(...ele.reminders);
+            }
+        });
 
-    const reminderArray: Reminder[] = [];
+        return reminderArray;
+    },
 
-    charArray.concat(roleArray).forEach(ele => {
-      if (ele.reminders?.length > 0) {
-        reminderArray.push(...ele.reminders);
-      }
-    })
+    getFilteredValues(scenarioArray) {
+        const charArray = this.filterByScenario(scenarioArray, 'chars', false) as string[];
+        const roleArray = this.filterByScenario(scenarioArray, 'roles', false) as string[];
+        return [charArray, roleArray];
+    },
 
-    return reminderArray;
+    getFullFilteredValues(scenarioArray) {
+        const charArray = this.filterByScenario(scenarioArray, 'chars', true) as Char[];
+        const roleArray = this.filterByScenario(scenarioArray, 'roles', true) as Role[];
+        return [charArray, roleArray];
+    },
 
-  },
-
-  getFilteredValues(scenarioArray) {
-
-    const charArray = this.filterByScenario(scenarioArray, "chars", false) as string[];
-    const roleArray = this.filterByScenario(scenarioArray, "roles", false) as string[];
-    return [charArray, roleArray];
-
-  },
-
-  getFullFilteredValues(scenarioArray) {
-
-    const charArray = this.filterByScenario(scenarioArray, "chars", true) as Char[];
-    const roleArray = this.filterByScenario(scenarioArray, "roles", true) as Role[];
-    return [charArray, roleArray];
-
-  },
-
-  hackValue(input) {
-    return typeof input === "undefined" ? "Unknown" : input; 
-  }
-
-}
+    hackValue(input) {
+        return typeof input === 'undefined' ? 'Unknown' : input;
+    },
+};
 
 loader(GameData, stringFiles);
 
-console.log("GameData loaded", GameData);
+console.log('GameData loaded', GameData);
 
 export default GameData;
