@@ -31,7 +31,6 @@ export const createAudioPlayerSlice: StateCreator<CombinedSlice, [], [], AudioPl
 
     playAudio: (track) =>
         set((state) => {
-            console.log('paying sound', track);
             if (!Object.values(SOUNDS).includes(track)) return {};
             if (state.currentTrack) {
                 state.currentTrack.pause();
