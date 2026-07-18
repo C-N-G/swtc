@@ -1,6 +1,7 @@
 export interface LocationData {
     name: string;
     flavour: string;
+    effect: string;
     config: { [setting: string]: boolean };
 }
 
@@ -19,6 +20,7 @@ export default class Location {
         public readonly id: string,
         public name: string,
         public flavour: string,
+        public effect: string,
         public config: LocationSettings,
     ) {}
 }

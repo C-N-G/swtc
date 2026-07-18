@@ -121,6 +121,7 @@ export default function gameDataLoader(load_obj: GameDataStore, files: RawImport
                         String(eleId),
                         locationData.name,
                         locationData.flavour,
+                        locationData.effect,
                         locationConfig,
                     ),
                 );
