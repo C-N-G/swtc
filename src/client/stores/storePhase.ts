@@ -103,7 +103,7 @@ export const createPhaseSlice: StateCreator<CombinedSlice, [], [], PhaseSlice> =
     nextPhase: (newPhase) =>
         set((state) => {
             if (typeof newPhase !== 'undefined') {
-                const roundAudioKey = Math.min(newPhase.round, 5);
+                const roundAudioKey = Math.min(newPhase.round, newPhase.cycle === 'Night' ? 6 : 5);
                 const audioKey =
                     `${newPhase.cycle.toUpperCase()}_${roundAudioKey}` as keyof typeof SOUNDS;
                 get().playAudio(SOUNDS[audioKey]);
@@ -126,7 +126,7 @@ export const createPhaseSlice: StateCreator<CombinedSlice, [], [], PhaseSlice> =
                 throw new Error('error progressing phase, new phase was not defined');
             }
 
-            const roundAudioKey = Math.min(newRound, 5);
+            const roundAudioKey = Math.min(newRound, newCycle === 'Night' ? 6 : 5);
             const audioKey = `${newCycle.toUpperCase()}_${roundAudioKey}` as keyof typeof SOUNDS;
             get().playAudio(SOUNDS[audioKey]);
 
