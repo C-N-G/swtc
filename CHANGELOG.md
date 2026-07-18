@@ -7,6 +7,7 @@
     - added location loading support internally
     - added location support to scenario creator
     - added location config system
+    - added location to scenario viewer
 
 ---
 
