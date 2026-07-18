@@ -5,15 +5,13 @@ export interface LocationData {
     config: { [setting: string]: boolean };
 }
 
-export interface LocationSettings {
-    [setting: string]: boolean;
-}
-
-export const DEFAULT_LOCATION_SETTINGS: LocationSettings = {
+export const DEFAULT_LOCATION_SETTINGS = {
     allow_public_votes: false,
     allow_dead_player_voting: false,
     allow_dead_player_nominating: false,
 };
+
+export type LocationSettings = Record<keyof typeof DEFAULT_LOCATION_SETTINGS, boolean>;
 
 export default class Location {
     constructor(
