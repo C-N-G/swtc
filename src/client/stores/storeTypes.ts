@@ -8,6 +8,7 @@ import { ChatServerData, SessionData } from '../../server/serverTypes.ts';
 import Scenario from '../classes/scenario.ts';
 import ChatMessage from '../classes/chatMessage.ts';
 import { OpenChatTab } from '../helpers/enumTypes.ts';
+import { LocationSettings } from '../classes/location.ts';
 
 export interface CurrentSession {
     id: string | null;
@@ -20,6 +21,7 @@ export interface SessionSlice {
     resetSession: () => void;
     setScenarios: (newScenarios: Scenario[], newSync?: boolean) => void;
     syncSession: (newSession: SessionData) => void;
+    getLocationSettings: () => LocationSettings;
     syncOff: () => void;
     syncOn: () => void;
 }

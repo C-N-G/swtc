@@ -1,45 +1,47 @@
-import { StateCreator } from "zustand";
-import { CombinedSlice, SessionSlice } from "./storeTypes.ts";
+import { StateCreator } from 'zustand';
+import { CombinedSlice, SessionSlice } from './storeTypes.ts';
 
-
-export const createSessionSlice: StateCreator<
-  CombinedSlice,
-  [],
-  [],
-  SessionSlice
-> = (set) => ({
-  session: {
-    id: null,
-    sync: false,
-    scenarios: [],
-  },
-
-  resetSession: () => set(() => ({
+export const createSessionSlice: StateCreator<CombinedSlice, [], [], SessionSlice> = (
+    set,
+    get,
+) => ({
     session: {
-      id: null,
-      sync: null,
-      scenarios: []
-    }
-  })),
+        id: null,
+        sync: false,
+        scenarios: [],
+    },
 
-  setScenarios: (newScenarios, newSync) => set(state => ({
-    session: {
-      ...state.session,
-      scenarios: newScenarios,
-      sync: newSync !== undefined ? newSync : state.session.sync
-    }
-  })),
+    resetSession: () =>
+        set(() => ({
+            session: {
+                id: null,
+                sync: null,
+                scenarios: [],
+            },
+        })),
 
-  syncSession: (newSession) => set(state => ({
-      session: {
-        ...state.session,
-        id: (newSession.id || newSession.id === null) ? newSession.id : state.session.id,
-        scenarios: newSession.scenarios ? newSession.scenarios : state.session.scenarios
-      }
-  })),
+    setScenarios: (newScenarios, newSync) =>
+        set((state) => ({
+            session: {
+                ...state.session,
+                scenarios: newScenarios,
+                sync: newSync !== undefined ? newSync : state.session.sync,
+            },
+        })),
 
-  syncOff: () => set(state => ({session: { ...state.session, sync: false}})),
-  syncOn: () => set(state => ({session: { ...state.session, sync: true}})),
-  
+    syncSession: (newSession) =>
+        set((state) => ({
+            session: {
+                ...state.session,
+                id: newSession.id || newSession.id === null ? newSession.id : state.session.id,
+                scenarios: newSession.scenarios ? newSession.scenarios : state.session.scenarios,
+            },
+        })),
 
-})
+    getLocationSettings: () => {
+        return get().session.scenarios[0].location.config;
+    },
+
+    syncOff: () => set((state) => ({ session: { ...state.session, sync: false } })),
+    syncOn: () => set((state) => ({ session: { ...state.session, sync: true } })),
+});
