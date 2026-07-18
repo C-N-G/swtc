@@ -1,5 +1,6 @@
 import { StateCreator } from 'zustand';
 import { CombinedSlice, SessionSlice } from './storeTypes.ts';
+import { DEFAULT_LOCATION_SETTINGS } from '../classes/location.ts';
 
 export const createSessionSlice: StateCreator<CombinedSlice, [], [], SessionSlice> = (
     set,
@@ -39,7 +40,7 @@ export const createSessionSlice: StateCreator<CombinedSlice, [], [], SessionSlic
         })),
 
     getLocationSettings: () => {
-        return get().session.scenarios[0].location.config;
+        return get().session?.scenarios?.[0]?.location?.config ?? DEFAULT_LOCATION_SETTINGS;
     },
 
     syncOff: () => set((state) => ({ session: { ...state.session, sync: false } })),
