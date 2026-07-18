@@ -16,6 +16,81 @@ import { socket } from '../helpers/socket.ts';
 import useStore from '../hooks/useStore.ts';
 import Player from '../classes/player.ts';
 
+interface VoteListProps {
+    full?: boolean;
+}
+
+function VoteList({ full }: VoteListProps) {
+    const list = useStore((state) => state.votes.list);
+
+    const voters = list.filter((aVote) => aVote.vote === 1);
+    const voterTotal = voters.reduce((acc, cur) => acc + cur.power, 0);
+    const voterList = voters.map((aVote, index) => {
+        return (
+            <ListItem sx={{ py: 0 }} key={index}>
+                <ListItemText
+                    primary={`${aVote.name} ${aVote.power !== 1 ? 'x' + String(aVote.power) : ''}`}
+                />
+            </ListItem>
+        );
+    });
+
+    const abstainers = list.filter((aVote) => aVote.vote === 0);
+    const abstainerTotal = abstainers.reduce((acc, cur) => acc + cur.power, 0);
+    const abstainerList = abstainers.map((aVote, index) => {
+        return (
+            <ListItem sx={{ py: 0 }} key={index}>
+                <ListItemText
+                    primary={`${aVote.name} ${aVote.power !== 1 ? 'x' + String(aVote.power) : ''}`}
+                />
+            </ListItem>
+        );
+    });
+
+    return (
+        <>
+            <Grid
+                item
+                xs={6}
+                height={full ? '100%' : '80%'}
+                sx={{ display: 'flex', flexDirection: 'column', p: 1 }}
+            >
+                <Typography>{voterTotal} Voted</Typography>
+                <Card sx={{ flexGrow: '1', backgroundColor: 'var(--sl-color-gray-3)' }}>
+                    <List
+                        sx={{
+                            overflow: 'auto',
+                            maxHeight: '100%',
+                            p: 0,
+                        }}
+                    >
+                        {voterList}
+                    </List>
+                </Card>
+            </Grid>
+            <Grid
+                item
+                xs={6}
+                height={full ? '100%' : '80%'}
+                sx={{ display: 'flex', flexDirection: 'column', p: 1 }}
+            >
+                <Typography>{abstainerTotal} Abstained</Typography>
+                <Card sx={{ flexGrow: '1', backgroundColor: 'var(--sl-color-gray-3)' }}>
+                    <List
+                        sx={{
+                            overflow: 'auto',
+                            maxHeight: '100%',
+                            p: 0,
+                        }}
+                    >
+                        {abstainerList}
+                    </List>
+                </Card>
+            </Grid>
+        </>
+    );
+}
+
 type VoteProps = NarratorVoteProps & PlayerVoteProps;
 
 function Vote(props: VoteProps) {
@@ -72,17 +147,23 @@ function PlayerVote({ nominatedPlayer, accusingPlayer, user }: PlayerVoteProps &
         <Stack sx={{ flexGrow: 1, m: 4 }} justifyContent="space-between">
             <Typography variant="h4">{nominatedName}</Typography>
             <Typography>Nominated by: {accusingName}</Typography>
-            <TextField
-                id="player-notes"
-                label="Player Notes"
-                multiline
-                rows={7}
-                fullWidth
-                value={nominatedPlayer?.notes}
-                onChange={(event) =>
-                    handlePlayerDataChange(nominatedPlayer?.id, 'notes', event.target.value)
-                }
-            />
+            {locationSettings.allow_public_votes ? (
+                <Grid container sx={{ flexGrow: 1 }}>
+                    <VoteList full />
+                </Grid>
+            ) : (
+                <TextField
+                    id="player-notes"
+                    label="Player Notes"
+                    multiline
+                    rows={7}
+                    fullWidth
+                    value={nominatedPlayer?.notes}
+                    onChange={(event) =>
+                        handlePlayerDataChange(nominatedPlayer?.id, 'notes', event.target.value)
+                    }
+                />
+            )}
             <Stack direction="row" justifyContent="space-between" alignItems="center">
                 <Button
                     disabled={voteTimer.state === 'stopped' || isVotingDisabled}
@@ -144,32 +225,6 @@ function NarratorVote({
             });
     }
 
-    const list = useStore((state) => state.votes.list);
-
-    const voters = list.filter((aVote) => aVote.vote === 1);
-    const voterTotal = voters.reduce((acc, cur) => acc + cur.power, 0);
-    const voterList = voters.map((aVote, index) => {
-        return (
-            <ListItem sx={{ py: 0 }} key={index}>
-                <ListItemText
-                    primary={`${aVote.name} ${aVote.power !== 1 ? 'x' + String(aVote.power) : ''}`}
-                />
-            </ListItem>
-        );
-    });
-
-    const abstainers = list.filter((aVote) => aVote.vote === 0);
-    const abstainerTotal = abstainers.reduce((acc, cur) => acc + cur.power, 0);
-    const abstainerList = abstainers.map((aVote, index) => {
-        return (
-            <ListItem sx={{ py: 0 }} key={index}>
-                <ListItemText
-                    primary={`${aVote.name} ${aVote.power !== 1 ? 'x' + String(aVote.power) : ''}`}
-                />
-            </ListItem>
-        );
-    });
-
     const nominatedName = nominatedPlayer?.name ? nominatedPlayer.name : 'Unknown';
     const accusingName = accusingPlayer?.name ? accusingPlayer.name : 'Unknown';
 
@@ -201,34 +256,7 @@ function NarratorVote({
             <Grid item xs={12} height="8%">
                 <Typography>Nominated by: {accusingName}</Typography>
             </Grid>
-            <Grid item xs={6} height="80%" sx={{ display: 'flex', flexDirection: 'column', p: 1 }}>
-                <Typography>{voterTotal} Voted</Typography>
-                <Card sx={{ flexGrow: '1', backgroundColor: 'var(--sl-color-gray-3)' }}>
-                    <List
-                        sx={{
-                            overflow: 'auto',
-                            maxHeight: '100%',
-                            p: 0,
-                        }}
-                    >
-                        {voterList}
-                    </List>
-                </Card>
-            </Grid>
-            <Grid item xs={6} height="80%" sx={{ display: 'flex', flexDirection: 'column', p: 1 }}>
-                <Typography>{abstainerTotal} Abstained</Typography>
-                <Card sx={{ flexGrow: '1', backgroundColor: 'var(--sl-color-gray-3)' }}>
-                    <List
-                        sx={{
-                            overflow: 'auto',
-                            maxHeight: '100%',
-                            p: 0,
-                        }}
-                    >
-                        {abstainerList}
-                    </List>
-                </Card>
-            </Grid>
+            <VoteList />
         </Grid>
     );
 }
