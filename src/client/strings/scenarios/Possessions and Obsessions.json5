@@ -1,9 +1,7 @@
 {
   "name": "Possessions and Obsessions",
   "flavour": "“It must be mine, give it to me! It should be mine, give it to me!”",
-  "location": [
-    "The Catacombs - Compound 3"
-  ],
+  "location": "The Catacombs - Compound 3",
   "roles": [
     "Clairvoyant",
     "Coordinator",

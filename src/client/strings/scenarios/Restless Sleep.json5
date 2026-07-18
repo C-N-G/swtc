@@ -1,9 +1,7 @@
 {
   "name": "Restless Sleep",
   "flavour": "“Tossing and turning, all the long night through; Now there are many, but soon there will be few.”",
-  "location": [
-    "The Forum - Compound 12"
-  ],
+  "location": "The Forum - Compound 12",
   "roles": [
     "Bureaucrat",
     "Clairvoyant",

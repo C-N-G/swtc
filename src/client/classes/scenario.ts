@@ -5,7 +5,7 @@ export interface ScenarioData {
     flavour: string;
     chars: string[];
     roles: string[];
-    location: string[]; // TODO should only allow one location
+    location: string;
 }
 
 export default class Scenario {

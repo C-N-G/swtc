@@ -176,14 +176,9 @@ export default function gameDataLoader(load_obj: GameDataStore, files: RawImport
             })
             .filter((role) => Boolean(role));
 
-        const convertedLocation = scenario.location
-            .map((location) => {
-                const foundLocation = load_target.locations.find(
-                    (searchLocation) => searchLocation.name === location,
-                );
-                return foundLocation;
-            })
-            .filter((location) => Boolean(location))[0];
+        const convertedLocation = load_target.locations.find(
+            (searchLocation) => searchLocation.name === scenario.location,
+        );
 
         return new Scenario(
             String(load_target.scenarios.length),

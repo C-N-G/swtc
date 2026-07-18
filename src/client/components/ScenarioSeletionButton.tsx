@@ -84,9 +84,9 @@ function ScenarioSelectionButton({
             const rolesFound = savedScenarios[scenarioId].roles.every((roleName) => {
                 return GameData.roles.some((role) => role.name === roleName);
             });
-            const locationFound = savedScenarios[scenarioId].location.every((locationName) => {
-                return GameData.locations.some((location) => location.name === locationName);
-            });
+            const locationFound = GameData.locations.some(
+                (location) => location.name === savedScenarios[scenarioId].location,
+            );
 
             let updateScenario = false;
             const scenariosToPush: Scenario[] = [];
@@ -102,7 +102,7 @@ function ScenarioSelectionButton({
                         (roleName) => GameData.roles.find((role) => role.name === roleName)!.id,
                     ),
                     GameData.locations.find(
-                        (ele) => ele.name === savedScenarios[scenarioId].location[0],
+                        (ele) => ele.name === savedScenarios[scenarioId].location,
                     )!,
                 );
                 scenariosToPush.push(data);

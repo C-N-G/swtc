@@ -124,7 +124,7 @@ function ScenarioLoadingDialog({
                 loadedScenario.roles.map(
                     (role) => GameData.roles.find((ele) => ele.name === role)!.id,
                 ),
-                GameData.locations.find((ele) => ele.name === loadedScenario.location[0])!,
+                GameData.locations.find((ele) => ele.name === loadedScenario.location)!,
             ),
         );
 
