@@ -8,6 +8,9 @@
     - added location support to scenario creator
     - added location config system
     - added location to scenario viewer
+    - allowed dead player voting via setting
+    - allowed dead player nominating via setting
+    - allowed public voting via setting
 
 ---
 
