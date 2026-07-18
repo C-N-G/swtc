@@ -1,358 +1,434 @@
-import {memo, useContext} from "react";
-import {Box, Button, Stack, Typography} from '@mui/material';
-import {UserContext} from "../App.tsx";
-import {useDroppable} from "@dnd-kit/core";
-import GameData from "../strings/_gameData.ts"
-import Reminder from "./Reminder.tsx";
-import Draggable from "./Draggable.tsx";
-import Player from "../classes/player.ts";
-import Char from "../classes/char.ts";
-import Role from "../classes/role.ts";
-import { DisplaySlice } from "../helpers/storeTypes.ts";
-import NightOrderIndicator from "./NightOrderIndicator.tsx";
-import useStore from "../hooks/useStore.ts";
+import { memo, useContext } from 'react';
+import { Box, Button, Stack, Typography } from '@mui/material';
+import { UserContext } from '../App.tsx';
+import { useDroppable } from '@dnd-kit/core';
+import GameData from '../strings/_gameData.ts';
+import Reminder from './Reminder.tsx';
+import Draggable from './Draggable.tsx';
+import Player from '../classes/player.ts';
+import Char from '../classes/char.ts';
+import Role from '../classes/role.ts';
+import { DisplaySlice } from '../stores/storeTypes.ts';
+import NightOrderIndicator from './NightOrderIndicator.tsx';
+import useStore from '../hooks/useStore.ts';
 
+type PlayerIndicatorProps = RegularPlayerIndicatorProps &
+    NarratorPlayerIndicator & {
+        display: number;
+    };
 
+const PlayerIndicator = memo(
+    function PlayerIndicator(props: PlayerIndicatorProps) {
+        const user = useContext(UserContext);
 
-type PlayerIndicatorProps = RegularPlayerIndicatorProps & NarratorPlayerIndicator & { 
-  display: number 
-}
+        const getUserTypeCheckedComponent = () => {
+            if (user?.type === 0) {
+                return <NarratorPlayerIndicator {...props} />;
+            } else if (user?.type === 1) {
+                return <RegularPlayerIndicator {...props} />;
+            } else {
+                return false;
+            }
+        };
 
-const PlayerIndicator = memo(function PlayerIndicator(props: PlayerIndicatorProps) {
+        return getUserTypeCheckedComponent();
+    },
+    (oldProps, newProps) => {
+        const result =
+            oldProps.player === newProps.player &&
+            oldProps.display === newProps.display &&
+            oldProps.selected === newProps.selected;
 
-  const user = useContext(UserContext);
+        return result;
+    },
+);
 
-  const getUserTypeCheckedComponent = () => {
+export default PlayerIndicator;
 
-    if (user?.type === 0) {
-      return <NarratorPlayerIndicator {...props} />
-    } else if (user?.type === 1) {
-      return <RegularPlayerIndicator {...props} />
+const getButtonBackground = (state: 'hover' | 'normal', team: number, roleType: string): string => {
+    let teamColour: string;
+    let roleTypeColour: string;
+    if (state === 'hover') {
+        teamColour =
+            team === 2
+                ? 'var(--sl-color-accent-low)'
+                : team === 1
+                  ? 'var(--sl-color-loyalist-accent-low)'
+                  : 'var(--sl-color-unknown-accent-low)';
+        if (roleType === 'Detrimental') {
+            roleTypeColour = 'var(--sl-color-detrimental-accent-low)';
+        } else if (roleType === 'Antagonist') {
+            roleTypeColour = 'var(--sl-color-antagonist-accent-low)';
+        } else {
+            // agent
+            roleTypeColour = 'var(--sl-color-agent-accent-low)';
+        }
     } else {
-      return false
+        // normal
+        teamColour =
+            team === 2
+                ? 'var(--sl-color-accent)'
+                : team === 1
+                  ? 'var(--sl-color-loyalist-accent)'
+                  : 'var(--sl-color-unknown-accent)';
+        if (roleType === 'Detrimental') {
+            roleTypeColour = 'var(--sl-color-detrimental-accent)';
+        } else if (roleType === 'Antagonist') {
+            roleTypeColour = 'var(--sl-color-antagonist-accent)';
+        } else {
+            // agent
+            roleTypeColour = 'var(--sl-color-agent-accent)';
+        }
     }
 
-  }
-
-  return getUserTypeCheckedComponent();
-
-}, (oldProps, newProps) => {
-
-  const result = oldProps.player === newProps.player
-   && oldProps.display === newProps.display
-   && oldProps.selected === newProps.selected
-  
-  return result;
-})
-
-export default PlayerIndicator
-
-const getButtonBackground = (state: "hover" | "normal", team: number, roleType: string): string => {
-  let teamColour: string;
-  let roleTypeColour: string;
-  if (state === "hover") {
-    teamColour = team === 2 ? "var(--sl-color-accent-low)" : team === 1 ? "var(--sl-color-loyalist-accent-low)" : "var(--sl-color-unknown-accent-low)";
-    if (roleType === "Detrimental") {
-      roleTypeColour = "var(--sl-color-detrimental-accent-low)"
-    } else if (roleType === "Antagonist") {
-      roleTypeColour = "var(--sl-color-antagonist-accent-low)"
-    } else { // agent
-      roleTypeColour = "var(--sl-color-agent-accent-low)"
-    }
-  } else { // normal
-    teamColour = team === 2 ? "var(--sl-color-accent)" : team === 1 ? "var(--sl-color-loyalist-accent)" : "var(--sl-color-unknown-accent)";
-    if (roleType === "Detrimental") {
-      roleTypeColour = "var(--sl-color-detrimental-accent)"
-    } else if (roleType === "Antagonist") {
-      roleTypeColour = "var(--sl-color-antagonist-accent)"
-    } else { // agent
-      roleTypeColour = "var(--sl-color-agent-accent)"
-    }
-  }
-
-  return `linear-gradient(to bottom right, ${roleTypeColour} 15%, ${teamColour} 17%)`;
-}
+    return `linear-gradient(to bottom right, ${roleTypeColour} 15%, ${teamColour} 17%)`;
+};
 
 const BUTTON_STYLE = (team: number, rState: number, isSelected: boolean, roleType: string) => ({
-  aspectRatio: "1/1",
-  margin: "5px",
-  px: "4px",
-  flexDirection: "column",
-  justifyContent: "flex-start",
-  overflow: "clip",
-  background: getButtonBackground("normal", team, roleType),
-  backgroundImage: rState === 0 ? "linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,0.5), rgba(0,0,0,1))" : "",
-  ":hover": {
-    background: getButtonBackground("hover", team, roleType),
-    backgroundImage: rState === 0 ? "linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.5), rgba(0,0,0,1))" : "",
-    boxShadow: isSelected ? "inset 0 0 10px 7px rgba(0,0,0,0.8)" : "",
-  },
-  textTransform: "none",
-  boxShadow: isSelected ? "inset 0 0 10px 7px rgba(0,0,0,0.8)" : "",
-  maxHeight: "calc(100% - 10px)"
-})
+    aspectRatio: '1/1',
+    margin: '5px',
+    px: '4px',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    overflow: 'clip',
+    background: getButtonBackground('normal', team, roleType),
+    backgroundImage:
+        rState === 0
+            ? 'linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,0.5), rgba(0,0,0,1))'
+            : '',
+    ':hover': {
+        background: getButtonBackground('hover', team, roleType),
+        backgroundImage:
+            rState === 0
+                ? 'linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.5), rgba(0,0,0,1))'
+                : '',
+        boxShadow: isSelected ? 'inset 0 0 10px 7px rgba(0,0,0,0.8)' : '',
+    },
+    textTransform: 'none',
+    boxShadow: isSelected ? 'inset 0 0 10px 7px rgba(0,0,0,0.8)' : '',
+    maxHeight: 'calc(100% - 10px)',
+});
 
 const BUTTON_CONTAINER_STYLE = (vertical: boolean) => ({
-  width: vertical ? "100%" : "20%",
-  maxHeight: vertical ? "33.33%" : "unset",
-  aspectRatio: "1/1",
-  flexDirection: "column",
-  justifyContent: "flex-start",
-  display: "flex",
-  position: "relative",
-  // overflow: "clip", do not use this as it will clip player reminders from showing when they are being moved between player indicators
-})
+    width: vertical ? '100%' : '20%',
+    maxHeight: vertical ? '33.33%' : 'unset',
+    aspectRatio: '1/1',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    display: 'flex',
+    position: 'relative',
+    // overflow: "clip", do not use this as it will clip player reminders from showing when they are being moved between player indicators
+});
 
 const BUTTON_TEXT_CONTAINER_STYLE = {
-  display: "flex", 
-  justifyContent: "center", 
-  flexDirection: "column",
-  flexGrow: 1,
-  overflow: "inherit",
-  width: "100%",
-  whiteSpace: "break-spaces"
-}
+    display: 'flex',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    flexGrow: 1,
+    overflow: 'inherit',
+    width: '100%',
+    whiteSpace: 'break-spaces',
+};
 
 interface RegularPlayerIndicatorProps {
-  player: Player;
-  handleClick: (playerId: string) => void;
-  vertical: boolean;
-  chars: Char[];
-  roles: Role[];
-  selected: DisplaySlice["selected"];
+    player: Player;
+    handleClick: (playerId: string) => void;
+    vertical: boolean;
+    chars: Char[];
+    roles: Role[];
+    selected: DisplaySlice['selected'];
 }
 
-function RegularPlayerIndicator({player, handleClick, vertical, chars, roles, selected}: RegularPlayerIndicatorProps) {
+function RegularPlayerIndicator({
+    player,
+    handleClick,
+    vertical,
+    chars,
+    roles,
+    selected,
+}: RegularPlayerIndicatorProps) {
+    const thisPlayerSelected = selected === player.id;
 
-  const thisPlayerSelected = selected === player.id;
+    const getValue = (value: number | string, list: Char[] | Role[]) => {
+        if (typeof value === 'string') {
+            return value;
+        } else if (typeof value === 'number' && value === 0) {
+            return '';
+        } else if (typeof value === 'number') {
+            return GameData.hackValue(list[value].name);
+        }
+    };
 
-  const getValue = (value: number | string, list: Char[] | Role[]) => {
-    if (typeof value === "string") {
-      return value;
-    } 
-    else if (typeof value === "number" && value === 0) {
-      return "";
-    }
-    else if (typeof value === "number") {
-      return GameData.hackValue(list[value].name);
-    }
-  }
+    const getName = (name: string, nickname: string) => {
+        if (nickname) {
+            return nickname;
+        } else {
+            return name;
+        }
+    };
 
-  const getName = (name: string, nickname: string) => {
-    if (nickname) {
-      return nickname;
-    } else {
-      return name;
-    }
-  }
-
-  return (
-    <Box sx={BUTTON_CONTAINER_STYLE(vertical)}>
-      <Button 
-        variant="contained" 
-        onClick={() => {handleClick(player.id)}} 
-        sx={BUTTON_STYLE(player.team, player.rState, thisPlayerSelected, GameData.hackValue(roles[player.role]?.type))}
-      >
-        <Box sx={{position: "relative", width: "100%"}}>
-          <Typography>{getName(player.name, player.label)}</Typography>
-          <Typography variant="caption" sx={{
-            position: "absolute",
-            top: "110%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            wordBreak: "keep-all",
-            fontSize: "9px"
-            }}
-          >
-            {player.label && `(${player.name})`}
-          </Typography>
-          <Typography variant="caption" sx={{
-            position: "absolute",
-            top: player.label ? "150%" : "110%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            wordBreak: "keep-all",
-            fontSize: "9px"
-            }}
-          >
-            {player.pronouns && `(${player.pronouns})`}
-          </Typography>
+    return (
+        <Box sx={BUTTON_CONTAINER_STYLE(vertical)}>
+            <Button
+                variant="contained"
+                onClick={() => {
+                    handleClick(player.id);
+                }}
+                sx={BUTTON_STYLE(
+                    player.team,
+                    player.rState,
+                    thisPlayerSelected,
+                    GameData.hackValue(roles[player.role]?.type),
+                )}
+            >
+                <Box sx={{ position: 'relative', width: '100%' }}>
+                    <Typography>{getName(player.name, player.label)}</Typography>
+                    <Typography
+                        variant="caption"
+                        sx={{
+                            position: 'absolute',
+                            top: '110%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            wordBreak: 'keep-all',
+                            fontSize: '9px',
+                        }}
+                    >
+                        {player.label && `(${player.name})`}
+                    </Typography>
+                    <Typography
+                        variant="caption"
+                        sx={{
+                            position: 'absolute',
+                            top: player.label ? '150%' : '110%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            wordBreak: 'keep-all',
+                            fontSize: '9px',
+                        }}
+                    >
+                        {player.pronouns && `(${player.pronouns})`}
+                    </Typography>
+                </Box>
+                <Box sx={BUTTON_TEXT_CONTAINER_STYLE}>
+                    <Typography
+                        variant="subtitle2"
+                        sx={{
+                            wordBreak: 'normal',
+                            overflow: 'inherit',
+                            lineHeight: 1.8,
+                            px: 0.5,
+                        }}
+                    >
+                        <Box component={'span'} sx={{ position: 'relative' }}>
+                            {getValue(player.role, roles)}
+                        </Box>
+                        <br />
+                        <Box component={'span'} sx={{ position: 'relative' }}>
+                            {getValue(player.char, chars)}
+                        </Box>
+                    </Typography>
+                </Box>
+            </Button>
         </Box>
-        <Box sx={BUTTON_TEXT_CONTAINER_STYLE}>
-          <Typography 
-            variant="subtitle2"
-            sx={{
-              wordBreak: "normal",
-              overflow: "inherit",
-              lineHeight: 1.8,
-              px: 0.5
-            }}>
-              <Box component={"span"} sx={{position: "relative"}}>
-                {getValue(player.role, roles)}
-              </Box>
-              <br />
-              <Box component={"span"} sx={{position: "relative"}}>
-                {getValue(player.char, chars)}
-              </Box>
-          </Typography>
-        </Box>
-      </Button>
-    </Box>
-  );
-
+    );
 }
-
-
 
 interface NarratorPlayerIndicator {
-  player: Player;
-  handleClick: (playerId: string) => void;
-  vertical: boolean;
-  chars: Char[];
-  roles: Role[];
-  selected: DisplaySlice["selected"];
+    player: Player;
+    handleClick: (playerId: string) => void;
+    vertical: boolean;
+    chars: Char[];
+    roles: Role[];
+    selected: DisplaySlice['selected'];
 }
 
-function NarratorPlayerIndicator({player, handleClick, vertical, chars, roles, selected}: NarratorPlayerIndicator) {
+function NarratorPlayerIndicator({
+    player,
+    handleClick,
+    vertical,
+    chars,
+    roles,
+    selected,
+}: NarratorPlayerIndicator) {
+    const chats = useStore((state) => state.chats);
+    const getPrivateNarratorChatId = useStore((state) => state.getPrivateNarratorChatId);
 
-  const chats = useStore(state => state.chats);
-  const getPrivateNarratorChatId = useStore(state => state.getPrivateNarratorChatId);
+    const { isOver, setNodeRef } = useDroppable({
+        id: 'droppable-|-' + player.id,
+    });
 
-  const {isOver, setNodeRef} = useDroppable({
-    id: "droppable-|-" + player.id
-  });
+    const style = {
+        boxShadow: isOver ? 'inset 0 0 20px rgba(0, 200, 0, 0.5)' : undefined,
+        transform: isOver ? 'translate3d(0px, -5px, 0)' : undefined,
+        transition: 'transform 0.2s',
+    };
 
-  const style = {
-    boxShadow: isOver ? "inset 0 0 20px rgba(0, 200, 0, 0.5)" : undefined,
-    transform: isOver ? "translate3d(0px, -5px, 0)" : undefined,
-    transition: "transform 0.2s",
-  };
+    const thisPlayerSelected = selected === player.id;
 
-  const thisPlayerSelected = selected === player.id;
+    function captionBuilder(text: string) {
+        return (
+            <Typography
+                variant="caption"
+                sx={{
+                    position: 'absolute',
+                    top: '110%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    wordBreak: 'keep-all',
+                    fontSize: '9px',
+                }}
+            >
+                ({text})
+            </Typography>
+        );
+    }
 
-  function captionBuilder(text: string) {
-    return(
-      <Typography variant="caption" sx={{
-        position: "absolute",
-        top: "110%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-        wordBreak: "keep-all",
-        fontSize: "9px"
-        }}
-      >
-        ({text})
-      </Typography>
-    )
-  }
+    const chatId = getPrivateNarratorChatId(player?.id);
+    const isUnread = chats[chatId]?.unread;
 
-  const chatId = getPrivateNarratorChatId(player?.id);
-  const isUnread = chats[chatId]?.unread;
-
-  const unreadNotification = (
-  <Box
-    sx={{
-      background: "var(--sl-color-accent)",
-      p: 0.1,
-      border: "var(--sl-color-gray-5) solid 1px",
-      borderRadius: 1,
-      boxSizing: "border-box",
-      fontFamily: "monospace",
-      fontWeight: 800,
-      fontSize: "1rem",
-      height: "1.4rem",
-      aspectRatio: "1/1",
-      userSelect: "none",
-      textAlign: "center",
-      position: "absolute",
-      bottom: "2px",
-      right: "2px",
-      zIndex: 1
-    }}
-  >
-    ?
-  </Box>
-  )
-
-  return (
-    <Box sx={BUTTON_CONTAINER_STYLE(vertical)}>
-      <Stack spacing={{xs: 0.4}} sx={{
-        position: "absolute",
-        top: "2px",
-        left: "2px",
-        zIndex: 1
-      }}>
-        {player.reminders.map(reminderId => {
-          return (
-            <Draggable key={String(player.id) + String(reminderId)} draggableId={String(player.id) + "-|-" + String(reminderId)}>
-              <Reminder reminder={GameData.reminders.find(reminder => reminder.id === reminderId)!} />
-            </Draggable>
-          )
-        })}
-      </Stack>
-      <Stack spacing={{xs: 0.4}} sx={{
-        position: "absolute",
-        top: "2px",
-        right: "2px",
-        zIndex: 1
-      }}>
-        {player.nightOrders.map(nightOrder => (<NightOrderIndicator key={nightOrder.id} nightOrder={nightOrder}/>))}
-      </Stack>
-      {isUnread && unreadNotification}
-      <Button 
-        variant="contained" 
-        onClick={() => {handleClick(player.id)}} 
-        sx={BUTTON_STYLE(player.team, player.rState, thisPlayerSelected, GameData.hackValue(roles[player.role]?.type))}
-        ref={setNodeRef}
-        style={style}
-      >
-        <Typography>
-          {player.name}
-          <Typography variant="caption" sx={{
-            position: "absolute",
-            top: "21%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            wordBreak: "keep-all",
-            fontSize: "9px"
-            }}
-          >
-            {player.pronouns && `(${player.pronouns})`}
-          </Typography>
-        </Typography>
-        <Box sx={BUTTON_TEXT_CONTAINER_STYLE}>
-          <Typography 
-            variant="subtitle2"
+    const unreadNotification = (
+        <Box
             sx={{
-              wordBreak: "break-word",
-              overflow: "inherit",
-              width: "inherit",
-              lineHeight: 1.8,
-              pb: 0.5
-            }}>
-              <Box component={"span"} sx={{position: "relative"}}>
-                {GameData.states[player.rState]}{player.state !== player.rState ? "*" : ""}
-                {player.state !== player.rState ? captionBuilder(GameData.states[player.state]) : ""}
-              </Box>
-              <br />
-              <Box component={"span"} sx={{position: "relative"}}>
-                {GameData.hackValue(roles[player.rRole]?.name)}{player.role !== player.rRole ? "*" : ""}
-                {player.role !== player.rRole ? captionBuilder(GameData.hackValue(roles[player.role]?.name)) : ""}
-              </Box>
-              <br />
-              <Box component={"span"} sx={{position: "relative"}}>
-                {GameData.hackValue(chars[player.rChar]?.name)}{player.char !== player.rChar ? "*" : ""}
-                {player.char !== player.rChar ? captionBuilder(GameData.hackValue(chars[player.char]?.name)) : ""}
-              </Box>
-              <br />
-              <Box component={"span"} sx={{position: "relative"}}>
-                {GameData.teams[player.rTeam]}{player.team !== player.rTeam? "*" : ""}
-                {player.team !== player.rTeam ? captionBuilder(GameData.teams[player.team]) : ""}
-              </Box>
-          </Typography>
+                background: 'var(--sl-color-accent)',
+                p: 0.1,
+                border: 'var(--sl-color-gray-5) solid 1px',
+                borderRadius: 1,
+                boxSizing: 'border-box',
+                fontFamily: 'monospace',
+                fontWeight: 800,
+                fontSize: '1rem',
+                height: '1.4rem',
+                aspectRatio: '1/1',
+                userSelect: 'none',
+                textAlign: 'center',
+                position: 'absolute',
+                bottom: '2px',
+                right: '2px',
+                zIndex: 1,
+            }}
+        >
+            ?
         </Box>
-      </Button>
-    </Box>
-  );
+    );
 
+    return (
+        <Box sx={BUTTON_CONTAINER_STYLE(vertical)}>
+            <Stack
+                spacing={{ xs: 0.4 }}
+                sx={{
+                    position: 'absolute',
+                    top: '2px',
+                    left: '2px',
+                    zIndex: 1,
+                }}
+            >
+                {player.reminders.map((reminderId) => {
+                    return (
+                        <Draggable
+                            key={String(player.id) + String(reminderId)}
+                            draggableId={String(player.id) + '-|-' + String(reminderId)}
+                        >
+                            <Reminder
+                                reminder={
+                                    GameData.reminders.find(
+                                        (reminder) => reminder.id === reminderId,
+                                    )!
+                                }
+                            />
+                        </Draggable>
+                    );
+                })}
+            </Stack>
+            <Stack
+                spacing={{ xs: 0.4 }}
+                sx={{
+                    position: 'absolute',
+                    top: '2px',
+                    right: '2px',
+                    zIndex: 1,
+                }}
+            >
+                {player.nightOrders.map((nightOrder) => (
+                    <NightOrderIndicator key={nightOrder.id} nightOrder={nightOrder} />
+                ))}
+            </Stack>
+            {isUnread && unreadNotification}
+            <Button
+                variant="contained"
+                onClick={() => {
+                    handleClick(player.id);
+                }}
+                sx={BUTTON_STYLE(
+                    player.team,
+                    player.rState,
+                    thisPlayerSelected,
+                    GameData.hackValue(roles[player.role]?.type),
+                )}
+                ref={setNodeRef}
+                style={style}
+            >
+                <Typography>
+                    {player.name}
+                    <Typography
+                        variant="caption"
+                        sx={{
+                            position: 'absolute',
+                            top: '21%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            wordBreak: 'keep-all',
+                            fontSize: '9px',
+                        }}
+                    >
+                        {player.pronouns && `(${player.pronouns})`}
+                    </Typography>
+                </Typography>
+                <Box sx={BUTTON_TEXT_CONTAINER_STYLE}>
+                    <Typography
+                        variant="subtitle2"
+                        sx={{
+                            wordBreak: 'break-word',
+                            overflow: 'inherit',
+                            width: 'inherit',
+                            lineHeight: 1.8,
+                            pb: 0.5,
+                        }}
+                    >
+                        <Box component={'span'} sx={{ position: 'relative' }}>
+                            {GameData.states[player.rState]}
+                            {player.state !== player.rState ? '*' : ''}
+                            {player.state !== player.rState
+                                ? captionBuilder(GameData.states[player.state])
+                                : ''}
+                        </Box>
+                        <br />
+                        <Box component={'span'} sx={{ position: 'relative' }}>
+                            {GameData.hackValue(roles[player.rRole]?.name)}
+                            {player.role !== player.rRole ? '*' : ''}
+                            {player.role !== player.rRole
+                                ? captionBuilder(GameData.hackValue(roles[player.role]?.name))
+                                : ''}
+                        </Box>
+                        <br />
+                        <Box component={'span'} sx={{ position: 'relative' }}>
+                            {GameData.hackValue(chars[player.rChar]?.name)}
+                            {player.char !== player.rChar ? '*' : ''}
+                            {player.char !== player.rChar
+                                ? captionBuilder(GameData.hackValue(chars[player.char]?.name))
+                                : ''}
+                        </Box>
+                        <br />
+                        <Box component={'span'} sx={{ position: 'relative' }}>
+                            {GameData.teams[player.rTeam]}
+                            {player.team !== player.rTeam ? '*' : ''}
+                            {player.team !== player.rTeam
+                                ? captionBuilder(GameData.teams[player.team])
+                                : ''}
+                        </Box>
+                    </Typography>
+                </Box>
+            </Button>
+        </Box>
+    );
 }
