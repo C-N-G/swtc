@@ -1,7 +1,12 @@
-### 00/00/00 v0.7.0
+### 18/07/2026 v0.7.0
 
 - added app audio system
     - implemented day/night announcement sounds
+- added locations
+    - added initial location data files
+    - added location loading support internally
+    - added location support to scenario creator
+    - added location config system
 
 ---
 
