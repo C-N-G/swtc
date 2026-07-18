@@ -10,6 +10,7 @@ import { createTimersSlice } from '../stores/storeTimers.ts';
 import { createNightOrderSlice } from '../stores/storeNightOrders.ts';
 import { CombinedSlice } from '../stores/storeTypes.ts';
 import { createChatSlice } from '../stores/storeChat.ts';
+import { createAudioPlayerSlice } from '../stores/storeAudioPlayer.ts';
 
 const useStore = create<CombinedSlice>()((...a) => ({
     ...createPlayerSlice(...a),
@@ -22,6 +23,7 @@ const useStore = create<CombinedSlice>()((...a) => ({
     ...createTimersSlice(...a),
     ...createNightOrderSlice(...a),
     ...createChatSlice(...a),
+    ...createAudioPlayerSlice(...a),
 }));
 
 export default useStore;

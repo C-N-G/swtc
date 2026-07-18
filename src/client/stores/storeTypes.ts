@@ -190,6 +190,11 @@ export interface ChatSlice {
     getOtherChatUser: (chatId: string) => Player;
 }
 
+export interface AudioPlayerSlice {
+    currentTrack: HTMLAudioElement | null;
+    playAudio: (track: string) => void;
+}
+
 export type CombinedSlice = SessionSlice &
     UserIdSlice &
     DisplaySlice &
@@ -199,4 +204,5 @@ export type CombinedSlice = SessionSlice &
     VotesSlice &
     TimersSlice &
     NightOrderSlice &
-    ChatSlice;
+    ChatSlice &
+    AudioPlayerSlice;

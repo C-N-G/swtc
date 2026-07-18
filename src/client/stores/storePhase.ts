@@ -63,18 +63,18 @@
 //   DAY:   [0,  0,  1,  1,  2,  2,  3,  3,  4,  4]
 
 // Parameters
-// 1000 first day:         0 or 1      
+// 1000 first day:         0 or 1
 // 0100 day grouping:  (N,D) or (D,N)  - Night+Day or Day+Night
 // 0010 first phase:       N or D      - Night or Day
 // 0001 first progress:    S or F      - Slow or Fast
 
-//1:  0000    5:  0100    9:  1000    13: 1100 
-//2:  0001    6:  0101    10: 1001    14: 1101 
-//3:  0010    7:  0110    11: 1011    15: 1110 
-//4:  0011    8:  0111    12: 1010    16: 1111 
+//1:  0000    5:  0100    9:  1000    13: 1100
+//2:  0001    6:  0101    10: 1001    14: 1101
+//3:  0010    7:  0110    11: 1011    15: 1110
+//4:  0011    8:  0111    12: 1010    16: 1111
 
 // isaac wants 13 = go night 1 to day 1  - disjointed
-// currently is 9 = go night 1 to day 1  - wrong day grouping 
+// currently is 9 = go night 1 to day 1  - wrong day grouping
 // option 1       = go night 0 to day 0  - starts on night 0
 // option 4       = go day 0 to night 1  - wrong day grouping
 // option 6       = go night 0 to day 1  - starts on night 0
@@ -90,39 +90,46 @@
 // isaac believes disjointed > wrong day grouping
 // mac believes wrong day grouping > disjointed
 // this has been sorted out
-import { StateCreator } from "zustand";
-import { CombinedSlice, PhaseSlice } from "./storeTypes.ts";
+import { StateCreator } from 'zustand';
+import { CombinedSlice, PhaseSlice } from './storeTypes.ts';
+import { SOUNDS } from './storeAudioPlayer.ts';
 
-export const createPhaseSlice: StateCreator<
-  CombinedSlice,
-  [],
-  [],
-  PhaseSlice
-> = (set, get) => ({
-  phase: {
-    cycle: "Night",
-    round: 1,
-  },
+export const createPhaseSlice: StateCreator<CombinedSlice, [], [], PhaseSlice> = (set, get) => ({
+    phase: {
+        cycle: 'Night',
+        round: 1,
+    },
 
-  nextPhase: (newPhase) => set(state => {
-    
-    if (typeof newPhase !== "undefined") return {phase: newPhase};
+    nextPhase: (newPhase) =>
+        set((state) => {
+            if (typeof newPhase !== 'undefined') {
+                const roundAudioKey = Math.min(newPhase.round, 5);
+                const audioKey =
+                    `${newPhase.cycle.toUpperCase()}_${roundAudioKey}` as keyof typeof SOUNDS;
+                get().playAudio(SOUNDS[audioKey]);
+                return { phase: newPhase };
+            }
 
-    let newCycle, newRound;
-    if (state.phase.cycle === "Night") {
-      newCycle = "Day";
-      newRound = state.phase.round;
-      get().calculateVoteHistory(newRound);
-    } else if (state.phase.cycle === "Day") {
-      newCycle = "Night";
-      newRound = state.phase.round + 1;
-    }
+            let newCycle, newRound;
+            if (state.phase.cycle === 'Night') {
+                newCycle = 'Day';
+                newRound = state.phase.round;
+                get().calculateVoteHistory(newRound);
+            } else if (state.phase.cycle === 'Day') {
+                newCycle = 'Night';
+                newRound = state.phase.round + 1;
+            }
 
-    get().addLogMessage(`Entering ${newCycle} ${newRound}`);
+            get().addLogMessage(`Entering ${newCycle} ${newRound}`);
 
-    if (typeof newCycle === "undefined" || typeof newRound === "undefined") {
-      throw new Error("error progressing phase, new phase was not defined");
-    }
-    return {phase: {cycle: newCycle, round: newRound}};
-  }),
-})
+            if (typeof newCycle === 'undefined' || typeof newRound === 'undefined') {
+                throw new Error('error progressing phase, new phase was not defined');
+            }
+
+            const roundAudioKey = Math.min(newRound, 5);
+            const audioKey = `${newCycle.toUpperCase()}_${roundAudioKey}` as keyof typeof SOUNDS;
+            get().playAudio(SOUNDS[audioKey]);
+
+            return { phase: { cycle: newCycle, round: newRound } };
+        }),
+});
