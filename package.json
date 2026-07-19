@@ -16,7 +16,7 @@
         "vitest": "vitest",
         "report": "npx playwright show-report",
         "bundleSize": "npx vite-bundle-visualizer",
-        "createStrings": "tsx ./src/server/createStrings.ts"
+        "importData": "tsx ./src/server/importData.ts"
     },
     "dependencies": {
         "@dnd-kit/core": "^6.1.0",

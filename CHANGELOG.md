@@ -11,7 +11,7 @@
     - allowed dead player voting via setting
     - allowed dead player nominating via setting
     - allowed public voting via setting
-    - added location support in createStrings for swtc-pedia import
+    - added location support for swtc-pedia data import
 
 ---
 

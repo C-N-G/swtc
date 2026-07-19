@@ -192,16 +192,20 @@ async function convertDataToStrings(dataObj: StringData, basePath: string): Prom
     create('locations');
 }
 
-const vaultPath = '../swtc-site/vault';
-const stringsPath = './src/client/strings';
-// const scenarioPath = stringsPath + "/scenarios";
+async function importData() {
+    const vaultPath = '../swtc-site/vault';
+    const stringsPath = './src/client/strings';
+    // const scenarioPath = stringsPath + "/scenarios";
 
-// check if vault directory exists before continuing
-if (!(await fileExists(vaultPath))) {
-    throw new Error('Error: obsidian vault directory does not exist');
+    // check if vault directory exists before continuing
+    if (!(await fileExists(vaultPath))) {
+        throw new Error('Error: obsidian vault directory does not exist');
+    }
+
+    const mdFiles = await glob(`${vaultPath}/**/*.md`);
+    const data = await convertFrontMatterToData(mdFiles);
+    await convertDataToStrings(data, stringsPath);
+    console.log('front matter conversion complete');
 }
 
-const mdFiles = await glob(`${vaultPath}/**/*.md`);
-const data = await convertFrontMatterToData(mdFiles);
-await convertDataToStrings(data, stringsPath);
-console.log('front matter conversion complete');
+importData();
