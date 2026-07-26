@@ -27,6 +27,7 @@ import VoteHistoryDialog from './VoteHistoryDialog.tsx';
 import Scenario from '../classes/scenario.ts';
 import ScenarioSelectionButton from './ScenarioSeletionButton.tsx';
 import { useUserContext } from '../contexts/UserContext.tsx';
+import AssetIcon from './AssetIcon.tsx';
 
 type CharacterProps = PlayerCharacterProps & NarratorCharacterProps;
 
@@ -114,7 +115,9 @@ function PlayerCharacter({ user, useLocal = false }: PlayerCharacterProps) {
                     <Typography fontWeight={'Bold'}>Team</Typography>
                 </Grid>
                 <Grid item xs={6} textAlign="left">
-                    <Typography>{fullRole['name']}</Typography>
+                    <Typography>
+                        {fullRole['name']} {<AssetIcon asset={fullRole} size="l" />}
+                    </Typography>
                     <Typography>{team}</Typography>
                 </Grid>
                 {fullRole['name'] !== 'Unknown' && (
