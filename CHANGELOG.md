@@ -1,6 +1,7 @@
 ### 00/00/0000 v0.7.1
 
 - moved location information to top of scenario viewer
+- added asset GameData importing (icon svgs)
 
 ---
 
