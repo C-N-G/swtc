@@ -34,7 +34,11 @@ export interface GameDataStore {
 
 export type RawImportData = { [file: string]: string };
 
-export default function gameDataLoader(load_obj: GameDataStore, files: RawImportData) {
+export default function gameDataLoader(
+    load_obj: GameDataStore,
+    stringFiles: RawImportData,
+    assetFiles: RawImportData,
+) {
     function import_json(
         file_path: string,
         load_origin: RawImportData,
@@ -86,6 +90,7 @@ export default function gameDataLoader(load_obj: GameDataStore, files: RawImport
                         charData.additional,
                         charData.setup,
                         reminders,
+                        getAssetIcon(charData.name),
                     ),
                 );
                 break;
@@ -106,6 +111,7 @@ export default function gameDataLoader(load_obj: GameDataStore, files: RawImport
                         roleData.setup,
                         reminders,
                         roleData.appears,
+                        getAssetIcon(roleData.name),
                     ),
                 );
                 break;
@@ -190,6 +196,20 @@ export default function gameDataLoader(load_obj: GameDataStore, files: RawImport
         );
     }
 
+    function getAssetIcon(assetName: string): string {
+        const assetKey = `../assets/${assetName}.svg`;
+        if (Object.hasOwn(assetFiles, assetKey)) {
+            return assetFiles[assetKey];
+        }
+
+        const unknownKey = `../assets/Unknown.svg`;
+        if (Object.hasOwn(assetFiles, unknownKey)) {
+            return assetFiles[unknownKey];
+        }
+
+        return '';
+    }
+
     function sort_game_data(load_target: GameDataStore) {
         type SortType = Role | Char;
 
@@ -218,22 +238,7 @@ export default function gameDataLoader(load_obj: GameDataStore, files: RawImport
         if (load_target.scenarios.length > 1) load_target.scenarios.sort(sort_Scenario);
     }
 
-    // function remove_module_prefix(load_target: GameDataStore) {
-
-    //   if (Array.isArray(load_target.modules)) {
-    //     load_target.modules =  load_target.modules.map((mod) => {
-    //       return {
-    //         ...mod,
-    //         name: mod.name.split("_")[1]
-    //       }
-    //     })
-    //   }
-
-    // }
-
-    Object.keys(files).forEach((path) => import_json(path, files, load_obj));
+    Object.keys(stringFiles).forEach((path) => import_json(path, stringFiles, load_obj));
 
     sort_game_data(load_obj);
-
-    // remove_module_prefix(load_obj);
 }

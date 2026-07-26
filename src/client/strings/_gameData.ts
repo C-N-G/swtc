@@ -9,6 +9,11 @@ const stringFiles = import.meta.glob(['./*.json5', './*/*.json5'], {
     eager: true,
 }) as RawImportData;
 
+const assetFiles = import.meta.glob(['../assets/*.svg'], {
+    import: 'default',
+    eager: true,
+}) as RawImportData;
+
 const GameData: GameDataStore = {
     chars: [],
     roles: [],
@@ -58,7 +63,7 @@ const GameData: GameDataStore = {
     },
 };
 
-loader(GameData, stringFiles);
+loader(GameData, stringFiles, assetFiles);
 
 console.log('GameData loaded', GameData);
 
