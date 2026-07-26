@@ -12,11 +12,9 @@ import { socket } from '../helpers/socket.ts';
 import Player from '../classes/player.ts';
 import useStore from '../hooks/useStore.ts';
 
-interface useSocketProps {
-    user: Player | null;
-}
+const useSocket = () => {
+    const user = useStore((state) => state.getUser());
 
-const useSocket = ({ user }: useSocketProps) => {
     const handlePlayerDataChange = useStore((state) => state.changePlayerAttribute);
     const setPlayers = useStore((state) => state.setPlayers);
     const syncPlayers = useStore((state) => state.syncPlayers);

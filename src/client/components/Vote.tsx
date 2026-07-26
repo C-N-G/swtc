@@ -1,4 +1,3 @@
-import { useContext } from 'react';
 import {
     Button,
     Typography,
@@ -11,10 +10,10 @@ import {
     ListItemText,
     Paper,
 } from '@mui/material';
-import { UserContext } from '../App.tsx';
 import { socket } from '../helpers/socket.ts';
 import useStore from '../hooks/useStore.ts';
 import Player from '../classes/player.ts';
+import { useUserContext } from '../contexts/UserContext.tsx';
 
 interface VoteListProps {
     full?: boolean;
@@ -94,7 +93,7 @@ function VoteList({ full }: VoteListProps) {
 type VoteProps = NarratorVoteProps & PlayerVoteProps;
 
 function Vote(props: VoteProps) {
-    const user = useContext(UserContext);
+    const { user } = useUserContext();
 
     const getUserTypeCheckedComponent = () => {
         if (user?.type === 0) {

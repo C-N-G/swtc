@@ -1,6 +1,5 @@
-import { memo, useContext } from 'react';
+import { memo } from 'react';
 import { Box, Button, Stack, Typography } from '@mui/material';
-import { UserContext } from '../App.tsx';
 import { useDroppable } from '@dnd-kit/core';
 import GameData from '../strings/_gameData.ts';
 import Reminder from './Reminder.tsx';
@@ -11,6 +10,7 @@ import Role from '../classes/role.ts';
 import { DisplaySlice } from '../stores/storeTypes.ts';
 import NightOrderIndicator from './NightOrderIndicator.tsx';
 import useStore from '../hooks/useStore.ts';
+import { useUserContext } from '../contexts/UserContext.tsx';
 
 type PlayerIndicatorProps = RegularPlayerIndicatorProps &
     NarratorPlayerIndicator & {
@@ -19,7 +19,7 @@ type PlayerIndicatorProps = RegularPlayerIndicatorProps &
 
 const PlayerIndicator = memo(
     function PlayerIndicator(props: PlayerIndicatorProps) {
-        const user = useContext(UserContext);
+        const { user } = useUserContext();
 
         const getUserTypeCheckedComponent = () => {
             if (user?.type === 0) {

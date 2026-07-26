@@ -1,4 +1,4 @@
-import { useState, useMemo, useContext } from 'react';
+import { useState, useMemo } from 'react';
 import { Card, Stack, MenuItem, SelectChangeEvent } from '@mui/material';
 import PlayerIndicator from './PlayerIndicator.tsx';
 import DynamicWindow from './DynamicWindow.tsx';
@@ -13,8 +13,8 @@ import config from '../../appConfig.ts';
 import { OpenChatTab, OpenBoardDialog as OpenDialog } from '../helpers/enumTypes.ts';
 import ViewPlayerDialog from './ViewPlayerDialog.tsx';
 import DismissalDialog from './DismissalDialog.tsx';
-import { UserContext } from '../App.tsx';
 import { isNarrator } from '../helpers/util.ts';
+import { useUserContext } from '../contexts/UserContext.tsx';
 
 function Board() {
     const [openDialog, setOpenDialog] = useState<OpenDialog>(OpenDialog.None);
@@ -56,7 +56,7 @@ function Board() {
 
     const locationSettings = useStore((state) => state.getLocationSettings());
 
-    const user = useContext(UserContext);
+    const { user } = useUserContext();
 
     function createIndicator(player: Player, index: number, vertical: boolean) {
         return (

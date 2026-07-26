@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import {
     Box,
     Typography,
@@ -15,7 +15,6 @@ import {
     FormControlLabel,
     Switch,
 } from '@mui/material';
-import { UserContext } from '../App.tsx';
 import GameData from '../strings/_gameData.ts';
 import Reminder from './Reminder.tsx';
 import useStore from '../hooks/useStore.ts';
@@ -23,11 +22,12 @@ import Player from '../classes/player.ts';
 import Char from '../classes/char.ts';
 import Role from '../classes/role.ts';
 import { PlayerSlice } from '../stores/storeTypes.ts';
+import { useUserContext } from '../contexts/UserContext.tsx';
 
 type PlayerDetailsProps = RegularPlayerDetailsProps & NarratorDetailsProps;
 
 function PlayerDetails(props: PlayerDetailsProps) {
-    const user = useContext(UserContext);
+    const { user } = useUserContext();
 
     const getUserTypeCheckedComponent = () => {
         if (user?.type === 0) {

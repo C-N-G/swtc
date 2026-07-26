@@ -1,15 +1,15 @@
-import { useContext, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Card, Button, Typography, ButtonGroup, Stack, Grid, Box } from '@mui/material';
-import { UserContext } from '../App.tsx';
 import { socket } from '../helpers/socket.ts';
 import GameData from '../strings/_gameData.ts';
 import useStore from '../hooks/useStore.ts';
 import { OpenPhaseDialog as OpenDialog } from '../helpers/enumTypes.ts';
 import ScenarioDialog from './ScenarioDialog.tsx';
 import NightOrderDialog from './NightOrderDialog.tsx';
+import { useUserContext } from '../contexts/UserContext.tsx';
 
 function Phase() {
-    const user = useContext(UserContext);
+    const { user } = useUserContext();
 
     const getUserTypeCheckedComponent = () => {
         if (user?.type === 0) {
