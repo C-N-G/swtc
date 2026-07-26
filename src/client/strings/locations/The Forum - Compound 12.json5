@@ -1,6 +1,6 @@
 {
   "name": "The Forum - Compound 12",
-  "flavour": "Those who have nothing to hide have nothing to fear.",
+  "flavour": "“Those who have nothing to hide have nothing to fear.”",
   "effect": "All votes are public.\n",
   "config": {
     "allow_public_votes": true

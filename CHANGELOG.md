@@ -1,3 +1,9 @@
+### 00/00/0000 v0.7.1
+
+- moved location information to top of scenario viewer
+
+---
+
 ### 18/07/2026 v0.7.0
 
 - added app audio system

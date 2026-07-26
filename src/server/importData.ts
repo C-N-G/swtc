@@ -6,6 +6,7 @@ import { RoleData } from '../client/classes/role';
 import { CharData } from '../client/classes/char';
 import { ScenarioData } from '../client/classes/scenario';
 import { LocationData } from '../client/classes/location';
+import path from 'node:path';
 
 /**
  * this will grab the md files inside of swtc-pedia vault
@@ -94,9 +95,23 @@ async function createDataFile(path: string, jsonData: string) {
 async function createDir(path: string) {
     try {
         await fs.mkdir(path);
-        console.log('successfully created dir ', path);
+        console.log('successfully created dir', path);
     } catch (err) {
         console.error('failed to create new dir', path);
+        console.error(err);
+    }
+}
+
+/**
+ * Copys an asset between locations
+ * @param path
+ */
+async function copyAsset(sourcePath: string, destinationPath: string) {
+    try {
+        await fs.copyFile(sourcePath, destinationPath);
+        console.log('successfully copied file at', sourcePath);
+    } catch (err) {
+        console.error('failed to copy file at', sourcePath);
         console.error(err);
     }
 }
@@ -192,20 +207,37 @@ async function convertDataToStrings(dataObj: StringData, basePath: string): Prom
     create('locations');
 }
 
+async function importAssets(filePaths: string[], destinationPath: string) {
+    for (let i = 0; i < filePaths.length; i++) {
+        const fileName = filePaths[i].split(path.sep).reverse()[0];
+        const destinationFile = path.join(destinationPath, fileName);
+        await copyAsset(filePaths[i], destinationFile);
+    }
+}
+
 async function importData() {
+    console.log('starting data import');
     const vaultPath = '../swtc-site/vault';
     const stringsPath = './src/client/strings';
-    // const scenarioPath = stringsPath + "/scenarios";
+    const assetsPath = './src/client/assets';
 
-    // check if vault directory exists before continuing
+    console.log('checking vault folder exists');
     if (!(await fileExists(vaultPath))) {
         throw new Error('Error: obsidian vault directory does not exist');
     }
 
+    console.log('starting front matter import');
     const mdFiles = await glob(`${vaultPath}/**/*.md`);
     const data = await convertFrontMatterToData(mdFiles);
     await convertDataToStrings(data, stringsPath);
-    console.log('front matter conversion complete');
+    console.log('front matter import complete');
+
+    console.log('starting asset import');
+    const svgFiles = await glob(`${vaultPath}/**/*.svg`);
+    await importAssets(svgFiles, assetsPath);
+    console.log('asset import complete');
+
+    console.log('data import complete');
 }
 
 importData();
