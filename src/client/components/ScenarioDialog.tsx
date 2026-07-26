@@ -166,6 +166,12 @@ function ScenarioDialog({ openDialog, handleClose, chars, roles, location }: Sce
                     </Tabs>
                 </Box>
                 <Box hidden={openTab !== 0}>
+                    <Typography variant="h4">Location</Typography>
+                    <Typography>{location?.name}</Typography>
+                    <Typography variant="caption">{location?.flavour}</Typography>
+                    <Typography sx={{ mt: 1 }}>Effect:</Typography>
+                    <Typography variant="caption">{location?.effect}</Typography>
+                    <Divider sx={{ my: 4 }} />
                     <Typography variant="h4">Roles: {usableRoles.length}</Typography>
                     <Typography variant="h5">Agents: {agentRoleList.length}</Typography>
                     <List>{agentRoleList}</List>
@@ -176,12 +182,6 @@ function ScenarioDialog({ openDialog, handleClose, chars, roles, location }: Sce
                     <Divider sx={{ my: 4 }} />
                     <Typography variant="h4">Characteristics: {charList.length}</Typography>
                     <List>{charList}</List>
-                    <Divider sx={{ my: 4 }} />
-                    <Typography variant="h4">Location</Typography>
-                    <Typography>{location?.name}</Typography>
-                    <Typography variant="caption">{location?.flavour}</Typography>
-                    <Typography sx={{ mt: 1 }}>Effect:</Typography>
-                    <Typography variant="caption">{location?.effect}</Typography>
                 </Box>
                 <Box hidden={openTab !== 1}>{nightOrderList}</Box>
             </DialogContent>
