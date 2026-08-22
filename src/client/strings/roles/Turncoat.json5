@@ -4,8 +4,13 @@
   "type": "Detrimental",
   "flavour": "Which way? This way, or that way? I say, whichever way the wind blows.",
   "ability": "Each night, after the first, you change team.\n",
-  "orderType": "role_converts_self",
   "attributes": [
     "Human"
-  ]
+  ],
+  "setup": [
+    [
+      "You do not know who else is on the Subversive team."
+    ]
+  ],
+  "orderType": "role_converts_self"
 }
