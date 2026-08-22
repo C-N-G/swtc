@@ -4,7 +4,7 @@ import Role from '../classes/role';
 
 const ICON_SIZES = {
     s: 10,
-    m: 20,
+    m: 48,
     l: 64,
 };
 

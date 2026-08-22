@@ -110,14 +110,15 @@ function PlayerCharacter({ user, useLocal = false }: PlayerCharacterProps) {
                         </Typography>
                     </Paper>
                 </Grid>
-                <Grid item xs={6} textAlign="right">
+                <Grid item xs={3} justifyItems="right">
+                    {<AssetIcon asset={fullRole} size="m" />}
+                </Grid>
+                <Grid item xs={3} textAlign="right">
                     <Typography fontWeight={'Bold'}>Role</Typography>
                     <Typography fontWeight={'Bold'}>Team</Typography>
                 </Grid>
-                <Grid item xs={6} textAlign="left">
-                    <Typography>
-                        {fullRole['name']} {<AssetIcon asset={fullRole} size="l" />}
-                    </Typography>
+                <Grid item xs={3} textAlign="left">
+                    <Typography>{fullRole['name']}</Typography>
                     <Typography>{team}</Typography>
                 </Grid>
                 {fullRole['name'] !== 'Unknown' && (
