@@ -3,7 +3,7 @@ import Char from '../classes/char';
 import Role from '../classes/role';
 
 const ICON_SIZES = {
-    s: 10,
+    s: 24,
     m: 48,
     l: 64,
 };

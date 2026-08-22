@@ -23,6 +23,7 @@ import Char from '../classes/char.ts';
 import Role from '../classes/role.ts';
 import { PlayerSlice } from '../stores/storeTypes.ts';
 import { useUserContext } from '../contexts/UserContext.tsx';
+import AssetIcon from './AssetIcon.tsx';
 
 type PlayerDetailsProps = RegularPlayerDetailsProps & NarratorDetailsProps;
 
@@ -85,6 +86,13 @@ function RegularPlayerDetails({
         list: string[],
         value: number | string,
     ) {
+        const icons: { [assetName: string]: Role | Char } = {};
+        GameData.roles.forEach((role) => {
+            icons[role.name] = role;
+        });
+        GameData.chars.forEach((char) => {
+            icons[char.name] = char;
+        });
         return (
             <Autocomplete
                 disablePortal
@@ -109,6 +117,13 @@ function RegularPlayerDetails({
                         checkSetValue(newValue, list),
                     )
                 }
+                renderOption={(props, option) => {
+                    return (
+                        <Box key={option} component="li" sx={{ gap: 0.5 }} {...props}>
+                            <AssetIcon asset={icons[option]} size="s" /> {option}
+                        </Box>
+                    );
+                }}
             />
         );
     }
@@ -229,10 +244,18 @@ function NarratorDetails({ player, handleDismissalClick, chars, roles }: Narrato
         playerId: string,
         type: string,
         real: boolean,
-        list: (string | Char | Role)[],
+        list: string[],
         value: number,
         handleChange: PlayerSlice['changePlayerAttribute'],
+        useIcon: boolean = false,
     ) {
+        const icons: { [assetName: string]: Role | Char } = {};
+        GameData.roles.forEach((role) => {
+            icons[role.name] = role;
+        });
+        GameData.chars.forEach((char) => {
+            icons[char.name] = char;
+        });
         return (
             <Autocomplete
                 disablePortal
@@ -251,21 +274,28 @@ function NarratorDetails({ player, handleDismissalClick, chars, roles }: Narrato
                         list.indexOf(newValue),
                     )
                 }
+                renderOption={(props, option) => {
+                    return (
+                        <Box key={option} component="li" sx={{ gap: 0.5 }} {...props}>
+                            {!!useIcon && <AssetIcon asset={icons[option]} size="s" />} {option}
+                        </Box>
+                    );
+                }}
             />
         );
     }
 
     const shownInputs = [
         selectBuilder(player.id, 'State', true, GameData.states, player.rState, handleChange),
-        selectBuilder(player.id, 'Role', true, roles, player.rRole, handleChange),
-        selectBuilder(player.id, 'Char', true, chars, player.rChar, handleChange),
+        selectBuilder(player.id, 'Role', true, roles, player.rRole, handleChange, true),
+        selectBuilder(player.id, 'Char', true, chars, player.rChar, handleChange, true),
         selectBuilder(player.id, 'Team', true, GameData.teams, player.rTeam, handleChange),
     ];
 
     const trueInputs = [
         selectBuilder(player.id, 'State', false, GameData.states, player.state, handleChange),
-        selectBuilder(player.id, 'Role', false, roles, player.role, handleChange),
-        selectBuilder(player.id, 'Char', false, chars, player.char, handleChange),
+        selectBuilder(player.id, 'Role', false, roles, player.role, handleChange, true),
+        selectBuilder(player.id, 'Char', false, chars, player.char, handleChange, true),
         selectBuilder(player.id, 'Team', false, GameData.teams, player.team, handleChange),
     ];
 
