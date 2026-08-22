@@ -197,7 +197,7 @@ export default function gameDataLoader(
     }
 
     function getAssetIcon(assetName: string): string {
-        const assetKey = `../assets/${assetName}.svg`;
+        const assetKey = `../assets/${assetName.replaceAll(' ', '_')}.svg`;
         if (Object.hasOwn(assetFiles, assetKey)) {
             return assetFiles[assetKey];
         }

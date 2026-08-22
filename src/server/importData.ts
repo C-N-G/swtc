@@ -209,7 +209,7 @@ async function convertDataToStrings(dataObj: StringData, basePath: string): Prom
 
 async function importAssets(filePaths: string[], destinationPath: string) {
     for (let i = 0; i < filePaths.length; i++) {
-        const fileName = filePaths[i].split(path.sep).reverse()[0];
+        const fileName = filePaths[i].split(path.sep).reverse()[0].replaceAll(' ', '_');
         const destinationFile = path.join(destinationPath, fileName);
         await copyAsset(filePaths[i], destinationFile);
     }
