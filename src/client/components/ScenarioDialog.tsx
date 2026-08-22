@@ -13,6 +13,7 @@ import {
     Grid,
     List,
     ListItem,
+    ListItemAvatar,
     ListItemText,
     Tab,
     Tabs,
@@ -21,6 +22,7 @@ import {
 import NightOrders, { OrderItem } from '../helpers/nightOrders.ts';
 import GameData from '../strings/_gameData.ts';
 import Location from '../classes/location.ts';
+import AssetIcon from './AssetIcon.tsx';
 
 interface ScenarioDialogProps {
     openDialog: OpenDialog;
@@ -63,6 +65,9 @@ function ScenarioDialog({ openDialog, handleClose, chars, roles, location }: Sce
         );
         return (
             <ListItem disablePadding key={index}>
+                <ListItemAvatar>
+                    <AssetIcon asset={ele} size="l" />
+                </ListItemAvatar>
                 <ListItemText
                     primary={primary}
                     secondary={
