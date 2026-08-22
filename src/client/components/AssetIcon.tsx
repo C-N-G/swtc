@@ -24,7 +24,7 @@ const COLORS: ColorObject = {
 };
 
 interface IconProps {
-    asset: Role | Char;
+    asset: Role | Char | undefined;
     size: keyof typeof ICON_SIZES;
 }
 const AssetIcon = ({ asset, size }: IconProps) => {
@@ -40,6 +40,10 @@ const AssetIcon = ({ asset, size }: IconProps) => {
 
         return COLORS.Unknown;
     };
+
+    if (asset === undefined) {
+        return;
+    }
 
     return (
         <Avatar

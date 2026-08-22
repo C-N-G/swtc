@@ -11,6 +11,7 @@ import { DisplaySlice } from '../stores/storeTypes.ts';
 import NightOrderIndicator from './NightOrderIndicator.tsx';
 import useStore from '../hooks/useStore.ts';
 import { useUserContext } from '../contexts/UserContext.tsx';
+import AssetIcon from './AssetIcon.tsx';
 
 type PlayerIndicatorProps = RegularPlayerIndicatorProps &
     NarratorPlayerIndicator & {
@@ -45,40 +46,40 @@ const PlayerIndicator = memo(
 
 export default PlayerIndicator;
 
+const getTeamColor = (team: number, variant: string = '') => {
+    switch (team) {
+        case 1:
+            return `var(--sl-color-loyalist-accent${variant})`;
+        case 2:
+            return `var(--sl-color-accent${variant})`;
+        default:
+            return `var(--sl-color-unknown-accent${variant})`;
+    }
+};
+
+const getRoleColor = (roleType: string, variant: string = '') => {
+    switch (roleType) {
+        case 'Agent':
+            return `var(--sl-color-agent-accent${variant})`;
+        case 'Detrimental':
+            return `var(--sl-color-detrimental-accent${variant})`;
+        case 'Antagonist':
+            return `var(--sl-color-antagonist-accent${variant})`;
+        default:
+            return `var(--sl-color-unknown-accent${variant})`;
+    }
+};
+
 const getButtonBackground = (state: 'hover' | 'normal', team: number, roleType: string): string => {
     let teamColour: string;
     let roleTypeColour: string;
     if (state === 'hover') {
-        teamColour =
-            team === 2
-                ? 'var(--sl-color-accent-low)'
-                : team === 1
-                  ? 'var(--sl-color-loyalist-accent-low)'
-                  : 'var(--sl-color-unknown-accent-low)';
-        if (roleType === 'Detrimental') {
-            roleTypeColour = 'var(--sl-color-detrimental-accent-low)';
-        } else if (roleType === 'Antagonist') {
-            roleTypeColour = 'var(--sl-color-antagonist-accent-low)';
-        } else {
-            // agent
-            roleTypeColour = 'var(--sl-color-agent-accent-low)';
-        }
+        teamColour = getTeamColor(team, '-low');
+        roleTypeColour = getRoleColor(roleType, '-low');
     } else {
         // normal
-        teamColour =
-            team === 2
-                ? 'var(--sl-color-accent)'
-                : team === 1
-                  ? 'var(--sl-color-loyalist-accent)'
-                  : 'var(--sl-color-unknown-accent)';
-        if (roleType === 'Detrimental') {
-            roleTypeColour = 'var(--sl-color-detrimental-accent)';
-        } else if (roleType === 'Antagonist') {
-            roleTypeColour = 'var(--sl-color-antagonist-accent)';
-        } else {
-            // agent
-            roleTypeColour = 'var(--sl-color-agent-accent)';
-        }
+        teamColour = getTeamColor(team);
+        roleTypeColour = getRoleColor(roleType);
     }
 
     return `linear-gradient(to bottom right, ${roleTypeColour} 15%, ${teamColour} 17%)`;
@@ -181,6 +182,15 @@ function RegularPlayerIndicator({
                     GameData.hackValue(roles[player.role]?.type),
                 )}
             >
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        right: 0,
+                        bottom: 0,
+                    }}
+                >
+                    <AssetIcon asset={roles[player.role]} size="m" />
+                </Box>
                 <Box sx={{ position: 'relative', width: '100%' }}>
                     <Typography>{getName(player.name, player.label)}</Typography>
                     <Typography
@@ -368,6 +378,15 @@ function NarratorPlayerIndicator({
                 ref={setNodeRef}
                 style={style}
             >
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        right: 0,
+                        bottom: 0,
+                    }}
+                >
+                    <AssetIcon asset={roles[player.role]} size="m" />
+                </Box>
                 <Typography>
                     {player.name}
                     <Typography
