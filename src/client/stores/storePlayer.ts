@@ -103,6 +103,20 @@ export const createPlayerSlice: StateCreator<CombinedSlice, [], [], PlayerSlice>
             if (session.players.length === 0) return { players: [] };
             const clientPlayerIds = new Set(newPlayers.map((player) => player.id));
 
+            // subversive team info sharing
+            const sessionDataForLocalPlayer = session.players.find(
+                (player) => player.id === state.userId,
+            )!;
+            const isSubversive = (team: number) => team === 2;
+            const { allow_subversive_team_starting_info } = state.getLocationSettings();
+            let shareSubversiveTeam = false;
+            if (
+                isSubversive(sessionDataForLocalPlayer.rTeam) &&
+                allow_subversive_team_starting_info
+            ) {
+                shareSubversiveTeam = true;
+            }
+
             // loop through all the players sent from the server
             session.players.forEach((player, index) => {
                 const clientHasPlayer = clientPlayerIds.has(player.id);
@@ -115,9 +129,12 @@ export const createPlayerSlice: StateCreator<CombinedSlice, [], [], PlayerSlice>
                     newPlayers[index] = Object.assign({}, newPlayers[index]); // change reference value so react will push an update
                     newPlayers[index].rChar = player.rChar;
                     newPlayers[index].rRole = player.rRole;
-                    newPlayers[index].rTeam = player.rTeam;
                     newPlayers[index].rState = player.rState;
                     newPlayers[index].rVotePower = player.rVotePower;
+                    newPlayers[index].rTeam = player.rTeam;
+                    if (shareSubversiveTeam && isSubversive(player.rTeam)) {
+                        newPlayers[index].team = player.rTeam;
+                    }
                 }
 
                 if (state.userId === player.id) {

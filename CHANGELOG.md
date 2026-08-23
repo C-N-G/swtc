@@ -7,6 +7,8 @@
     - player indicators
     - player detail selectors
     - night order viewer
+- added new allow_subversive_team_starting_info location effect
+    - this will cause players on the subversive team to be shown each others teams when syncing
 
 ---
 

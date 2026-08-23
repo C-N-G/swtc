@@ -40,7 +40,10 @@ export const createSessionSlice: StateCreator<CombinedSlice, [], [], SessionSlic
         })),
 
     getLocationSettings: () => {
-        return get().session?.scenarios?.[0]?.location?.config ?? DEFAULT_LOCATION_SETTINGS;
+        return {
+            ...DEFAULT_LOCATION_SETTINGS,
+            ...(get().session?.scenarios?.[0]?.location?.config ?? {}),
+        };
     },
 
     syncOff: () => set((state) => ({ session: { ...state.session, sync: false } })),

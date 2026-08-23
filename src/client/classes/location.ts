@@ -9,6 +9,7 @@ export const DEFAULT_LOCATION_SETTINGS = {
     allow_public_votes: false,
     allow_dead_player_voting: false,
     allow_dead_player_nominating: false,
+    allow_subversive_team_starting_info: true,
 };
 
 export type LocationSettings = Record<keyof typeof DEFAULT_LOCATION_SETTINGS, boolean>;
