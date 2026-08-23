@@ -24,6 +24,7 @@
         "@emotion/styled": "^11.11.0",
         "@mui/icons-material": "^5.14.18",
         "@mui/material": "^5.14.13",
+        "@tsparticles/react": "^4.3.2",
         "front-matter": "^4.0.2",
         "glob": "^11.0.0",
         "json5": "^2.2.3",
@@ -32,6 +33,7 @@
         "socket.io": "^4.7.2",
         "socket.io-client": "^4.7.2",
         "sqlite3": "^5.1.6",
+        "tsparticles": "^4.3.2",
         "zustand": "^4.5.2"
     },
     "devDependencies": {

@@ -8,13 +8,15 @@ import Chat from './components/Chat.tsx';
 import './App.css';
 import useSocket from './hooks/useSocket.ts';
 import RootStoreProvider from './contexts/RootContext.tsx';
+import ParticleBackground from './components/ParticleBackground.tsx';
 
 function App() {
     useSocket();
 
     return (
         <RootStoreProvider>
-            <Container sx={{ maxWidth: '1440px' }}>
+            <ParticleBackground />
+            <Container sx={{ maxWidth: '1440px', zIndex: 990 }}>
                 <Grid container spacing={2}>
                     <Grid item xs={8}>
                         <Phase />
